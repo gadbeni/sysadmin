@@ -1,0 +1,10 @@
+.form-control, .select2-selection, .mce-tinymce {
+    border: 1px solid #D6DBDF !important
+}
+.control-label{
+    color: #5D6D7E !important
+}
+.container-fluid, .app-container{
+    /* background-image: linear-gradient(#D5D8DC, #FFF) !important; */
+    background-color: #f0f0f0;
+}

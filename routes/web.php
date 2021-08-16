@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
+// Controllers
+use App\Http\Controllers\PlanillasController;
+use App\Http\Controllers\CashiersController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,6 +28,15 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
+
+    Route::post('cashiers/store', [CashiersController::class, 'store'])->name('cashiers.store');
+    Route::post('cashiers/amount/store', [CashiersController::class, 'amount_store'])->name('cashiers.amount.store');
+    Route::get('cashiers/{cashier}/add-amount', [CashiersController::class, 'add_amount'])->name('cashiers.add.amount');
+
+    Route::get('planillas', [PlanillasController::class, 'planilla_index'])->name('planillas.index');
+    Route::post('planillas/search', [PlanillasController::class, 'planilla_search'])->name('planillas.search');
+    Route::post('planillas/details/update/status', [PlanillasController::class, 'planilla_details_update_status'])->name('planillas.details.update.status');
+    Route::post('planillas/update/status', [PlanillasController::class, 'planilla_update_status'])->name('planillas.update.status');
 });
 
 // Clear cache

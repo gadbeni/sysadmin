@@ -28,6 +28,7 @@ return [
 
     'controllers' => [
         'namespace' => 'TCG\\Voyager\\Http\\Controllers',
+        // 'namespace' => 'App\Http\Controllers\Voyager',
     ],
 
     /*
@@ -187,11 +188,12 @@ return [
 
     // Here you can specify additional assets you would like to be included in the master.blade
     'additional_css' => [
-        //'css/custom.css',
+        'css/custom.css',
+        'vendor/loading/loading.css',
     ],
 
     'additional_js' => [
-        //'js/custom.js',
+        'vendor/loading/loading.js',
     ],
 
     'googlemaps' => [

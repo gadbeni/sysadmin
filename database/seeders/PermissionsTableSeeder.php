@@ -18,6 +18,7 @@ class PermissionsTableSeeder extends Seeder
             'browse_database',
             'browse_media',
             'browse_compass',
+            'browse_clear-cache',
         ];
 
         foreach ($keys as $key) {
@@ -26,13 +27,14 @@ class PermissionsTableSeeder extends Seeder
                 'table_name' => null,
             ]);
         }
-
+        
         Permission::generateFor('menus');
-
         Permission::generateFor('roles');
-
         Permission::generateFor('users');
-
+        Permission::generateFor('permissions');
         Permission::generateFor('settings');
+
+        Permission::generateFor('planillas');
+        Permission::generateFor('cashiers');
     }
 }

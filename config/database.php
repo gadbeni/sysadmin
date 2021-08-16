@@ -63,6 +63,20 @@ return [
             ]) : [],
         ],
 
+        'mysqlgobe' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST_GOBE', 'localhost'),
+            'port' => env('DB_PORT_GOBE', '3306'),
+            'database' => env('DB_DATABASE_GOBE', 'forge'),
+            'username' => env('DB_USERNAME_GOBE', 'forge'),
+            'password' => env('DB_PASSWORD_GOBE', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
