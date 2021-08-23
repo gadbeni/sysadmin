@@ -141,6 +141,13 @@
                                 <td><b>Liquido Pagable</b></td>
                                 <td><h1 class="text-right" id="label-amount"></h1></td>
                             </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="form-group text-right" style="margin-top: 20px">
+                                        <label class="checkbox-inline"><input type="checkbox" id="check-print" value="1" required>Imprimir recibo</label>
+                                    </div>
+                                </td>
+                            </tr>
                         </table>
                         <div class="row">
                             <div class="col-md-12" style="margin: 0px">
@@ -230,6 +237,9 @@
                 if(res.success){
                     toastr.success(message, 'Bien hecho!');
                     getData();
+                    if(formId == 'form-pagar' && $('#check-print').is(':checked')){
+                        window.open("{{ url('admin/planillas/pago/pdf') }}/"+res.payment_id, "Recibo", `width=700, height=400`)
+                    }
                 }else{
                     toastr.error(res.message ? res.message : 'Ocurrió un error en nuestro servidor.', 'Oops!')
                 }

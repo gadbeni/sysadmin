@@ -4,6 +4,9 @@ namespace App\Actions;
 
 use TCG\Voyager\Actions\AbstractAction;
 
+// Models
+use App\Models\Cashier;
+
 class CashiersAddAmount extends AbstractAction
 {
     public function getTitle()
@@ -23,15 +26,17 @@ class CashiersAddAmount extends AbstractAction
 
     public function getAttributes()
     {
+        $cashier = Cashier::findOrFail($this->data->id);
+        $display = $cashier->status == 'abierta' ? 'display: block;' : 'display: none;';
         return [
             'class' => 'btn btn-sm btn-success pull-right',
-            'style' => 'margin: 5px'
+            'style' => 'margin: 5px;'.$display,
         ];
     }
 
     public function getDefaultRoute()
     {
-        return route('cashiers.add.amount', ['cashier' => $this->data->id]);
+        return route('cashiers.amount', ['cashier' => $this->data->id]);
     }
     
     public function shouldActionDisplayOnDataType()

@@ -99,7 +99,7 @@
                             <td>
                                 @switch($item->pagada)
                                     @case(1)
-                                        <label class="label label-dark">Pendiente</label>
+                                        <label class="label label-danger">Pendiente</label>
                                         @break
                                     @case(2)
                                         <label class="label label-success">Pagada</label>
@@ -112,7 +112,9 @@
                             <td width="100px" class="text-right">
                                 <div class="btn-group btn-group-sm" role="group">
                                     {{-- <button type="button" class="btn btn-warning"><i class="voyager-eye"></i> Ver</button> --}}
-                                    <button type="button" @if($item->pagada == 0 || $item->pagada == 2) disabled @else data-toggle="modal" data-target="#pagar-modal" onclick='setValuePay(@json($item), @json($cashier))' @endif class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
+                                    @if($item->pagada == 1)
+                                    <button type="button" data-toggle="modal" data-target="#pagar-modal" onclick='setValuePay(@json($item), @json($cashier))' class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
+                                    @endif
                                 </div>
                             </td>
                             @endif

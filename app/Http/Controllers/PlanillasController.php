@@ -66,14 +66,14 @@ class PlanillasController extends Controller
                 'pagada' => $request->status
             ]);
 
-            CashiersPayment::create([
+            $payment = CashiersPayment::create([
                 'cashier_id' => $request->cashier_id,
                 'planilla_haber_id' => $request->id,
                 'amount' => $request->amount,
                 'description' => 'Pago de haberes mensuales a '.$request->name.'.'
             ]);
 
-            return response()->json(['success' => 1]);
+            return response()->json(['success' => 1, 'payment_id' => $payment->id]);
         } catch (\Throwable $th) {
             return response()->json(['error' => 1]);
         }
@@ -102,5 +102,12 @@ class PlanillasController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['error' => 1]);
         }
+    }
+
+    public function planillas_pago_pdf($id){
+        $payment = CashiersPayment::findOrFail($id);
+        $planilla = DB::connection('mysqlgobe')->table('planillahaberes')
+            ->where('id', $payment->planilla_haber_id)->first();
+        // dd($payment, $planilla);
     }
 }

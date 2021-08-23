@@ -36,5 +36,6 @@ class PermissionsTableSeeder extends Seeder
 
         Permission::generateFor('planillas');
         Permission::generateFor('cashiers');
+        Permission::generateFor('vaults');
     }
 }
