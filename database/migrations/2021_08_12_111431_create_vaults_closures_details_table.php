@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVaultsTable extends Migration
+class CreateVaultsClosuresDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateVaultsTable extends Migration
      */
     public function up()
     {
-        Schema::create('vaults', function (Blueprint $table) {
+        Schema::create('vaults_closures_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users');
-            $table->string('name')->nullable();
-            $table->text('description')->nullable();
-            $table->string('status')->default('activa')->nullable();
+            $table->foreignId('vaults_closure_id')->nullable()->constrained('vaults_closures');
+            $table->decimal('cash_value', 10, 2)->nullable();
+            $table->decimal('quantity', 10, 2)->nullable();
             $table->timestamps();
-            $table->datetime('closed_at')->nullable();
             $table->softDeletes();
         });
     }
@@ -32,6 +30,6 @@ class CreateVaultsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vaults');
+        Schema::dropIfExists('vaults_closures_details');
     }
 }

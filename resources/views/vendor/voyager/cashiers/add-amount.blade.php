@@ -42,7 +42,6 @@
                     <form role="form" action="{{ route('cashiers.amount.store') }}" method="post">
                         @csrf
                         <input type="hidden" name="cashier_id" value="{{ $id }}">
-                        <input type="hidden" name="type" value="ingreso">
                         <input type="hidden" name="vault_id" value="{{ $vault ? $vault->id : 0 }}">
                         <div class="panel-body">
                             <div class="form-group col-md-12">
@@ -80,11 +79,50 @@
     </div>
 @stop
 
+@php
+    $vault = \App\Models\Vault::with(['details.cash'])->where('status', 'activa')->where('deleted_at', NULL)->first();
+    $cash_value = [
+        '200.00' => 0,
+        '100.00' => 0,
+        '50.00' => 0,
+        '20.00' => 0,
+        '10.00' => 0,
+        '5.00' => 0,
+        '2.00' => 0,
+        '1.00' => 0,
+        '0.50' => 0,
+        '0.20' => 0,
+        '0.10' => 0,
+    ];
+    if($vault){
+        foreach($vault->details as $detail){
+            foreach($detail->cash as $cash){
+                if($detail->type == 'ingreso'){
+                    $cash_value[$cash->cash_value] += $cash->quantity;
+                }else{
+                    $cash_value[$cash->cash_value] -= $cash->quantity;
+                }
+            }
+        }
+    }
+@endphp
+
 @section('javascript')
     <script src="{{ asset('js/cash_value.js') }}"></script>
     <script>
         $(document).ready(function(){
-
+            let vault = JSON.parse('@json($cash_value)');
+            $(`#input-cash-200`).attr('max', vault['200.00']);
+            $(`#input-cash-100`).attr('max', vault['100.00']);
+            $(`#input-cash-50`).attr('max', vault['50.00']);
+            $(`#input-cash-20`).attr('max', vault['20.00']);
+            $(`#input-cash-10`).attr('max', vault['10.00']);
+            $(`#input-cash-5`).attr('max', vault['5.00']);
+            $(`#input-cash-2`).attr('max', vault['2.00']);
+            $(`#input-cash-1`).attr('max', vault['1.00']);
+            $(`#input-cash-0-5`).attr('max', vault['0.50']);
+            $(`#input-cash-0-2`).attr('max', vault['0.20']);
+            $(`#input-cash-0-1`).attr('max', vault['0.10']);
         });
     </script>
 @stop

@@ -19,9 +19,18 @@
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
                             @if ($vault)
-                            <a href="#" data-toggle="modal" data-target="#vaults-details-modal" class="btn btn-success">
-                                <i class="voyager-dollar"></i> <span>Agregar ingreso</span>
-                            </a>
+                                @if ($vault->status == 'activa')
+                                    <a href="#" data-toggle="modal" data-target="#vaults-details-modal" class="btn btn-success">
+                                        <i class="voyager-dollar"></i> <span>Agregar ingreso</span>
+                                    </a>
+                                    <a href="{{ route('vaults.close', ['id' => $vault ? $vault->id : 0]) }}" class="btn btn-danger">
+                                        <i class="voyager-lock"></i> <span>Cerrar Bóveda</span>
+                                    </a>
+                                @else
+                                    <a href="#" data-toggle="modal" data-target="#vaults-open-modal" class="btn btn-dark">
+                                        <i class="voyager-key"></i> <span>Abrir Bóveda</span>
+                                    </a>
+                                @endif
                             @else
                             <a href="#" data-toggle="modal" data-target="#vaults-create-modal" class="btn btn-danger">
                                 <i class="voyager-plus"></i> <span>Crear bóveda</span>
@@ -69,6 +78,7 @@
                                 }
                             }
                         @endphp
+                        <h3>Detalles de bóveda</h3>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -155,6 +165,28 @@
         </div>
     </form>
 
+    {{-- vault open modal --}}
+    <form action="{{ route('vaults.open', ['id' => $vault ? $vault->id : 0]) }}" method="post">
+        @csrf
+        <div class="modal modal-primary fade" tabindex="-1" id="vaults-open-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-key"></i> Abrir Bóveda</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Al abrir la bóveda aceptas que tienes todos los cortes de billetes mostrados en el detalle de bóveda, ¿Desea continuar?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-dark">Sí, abrir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
     {{-- vault add register modal --}}
     <form action="{{ route('vaults.details.store', ['id' => $vault ? $vault->id : 0]) }}" method="post">
         @csrf
@@ -235,7 +267,7 @@
                                     <input type="number" name="quantity[]" min="0" step="1" style="width:80px" data-value="${value}" class="form-control input-corte" value="0" required>
                                 </td>
                                 <td><label id="label-${value.replace('.', '')}">0.00 Bs.</label><input type="hidden" class="input-subtotal" id="input-${value.replace('.', '')}"></td>
-                            </tr>`)
+                            </tr>`);
             });
 
             let columns = [
@@ -245,7 +277,8 @@
                 { data: 'bill_number', title: 'N&deg; de Cheque' },
                 { data: 'name_sender', title: 'Nombre' },
                 { data: 'amount', title: 'Monto' },
-                // { data: 'total', title: 'Total' },
+                { data: 'description', title: 'Descripción' },
+                { data: 'date', title: 'Fecha' },
                 { data: 'actions', title: 'Acciones', orderable: false, searchable: false },
             ]
             let id = "{{ $vault ? $vault->id : 0 }}";

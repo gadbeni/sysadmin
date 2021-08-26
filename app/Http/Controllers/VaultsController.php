@@ -12,6 +12,9 @@ use Carbon\Carbon;
 use App\Models\Vault;
 use App\Models\VaultsDetail;
 use App\Models\VaultsDetailsCash;
+use App\Models\Cashier;
+use App\Models\VaultsClosure;
+use App\Models\VaultsClosuresDetail;
 
 class VaultsController extends Controller
 {
@@ -22,7 +25,7 @@ class VaultsController extends Controller
      */
     public function index()
     {
-        $vault = Vault::with(['details.cash'])->where('status', 'activa')->where('deleted_at', NULL)->first();
+        $vault = Vault::with(['details.cash'])->where('deleted_at', NULL)->first();
         return view('vaults.browse', compact('vault'));
     }
 
@@ -43,6 +46,9 @@ class VaultsController extends Controller
                 }
                 return number_format($total, 2, ',', '.');
             })
+            ->addColumn('date', function($row){
+                return date('d-m-Y H:i:s', strtotime($row->created_at)).'<br><small>'.\Carbon\Carbon::parse($row->created_at)->diffForHumans().'</small>';
+            })
             ->addColumn('actions', function($row){
                 $actions = '
                     <div class="no-sort no-click bread-actions text-right">
@@ -53,7 +59,7 @@ class VaultsController extends Controller
                 ';
                 return $actions;
             })
-            ->rawColumns(['actions'])
+            ->rawColumns(['date', 'actions'])
             ->make(true);
     }
 
@@ -155,16 +161,82 @@ class VaultsController extends Controller
             ]);
 
             for ($i=0; $i < count($request->cash_value); $i++) { 
-                if($request->quantity[$i]){
+                // if($request->quantity[$i]){
                     VaultsDetailsCash::create([
                         'vaults_detail_id' => $detail->id,
                         'cash_value' => $request->cash_value[$i],
                         'quantity' => $request->quantity[$i],
                     ]);
-                }
+                // }
             }
             DB::commit();
             return redirect()->route('vaults.index')->with(['message' => 'Detalle de bóveda guardado exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            // dd($th);
+            return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function open($id, Request $request){
+        DB::beginTransaction();
+        try {
+
+            Vault::where('id', $id)->update([
+                'status' => 'activa',
+                // 'closed_at' => Carbon::now()
+            ]);
+            DB::commit();
+            return redirect()->route('vaults.index')->with(['message' => 'Bóveda abierta exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            // dd($th);
+            return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function close($id){
+        $vault_closure = VaultsClosure::with('details')->where('vault_id', $id)->orderBy('id', 'DESC')->first();
+        $date = $vault_closure ? $vault_closure->created_at : NULL;
+        $vault = Vault::with(['details' => function($q) use($date){
+                        if($date){
+                            $q->where('created_at', '>', $date);
+                        }
+                    }, 'details.cash', 'details.cashier.user'])
+                    ->where('status', 'activa')->where('id', $id)->where('deleted_at', NULL)->first();
+        // dd($vault);
+        return view('vaults.close', compact('vault', 'vault_closure'));
+    }
+
+    public function close_store($id, Request $request){
+        $cashier_open = Cashier::where('status', 'abierta')->where('deleted_at', NULL)->count();
+        if($cashier_open){
+            return redirect()->route('vaults.index')->with(['message' => 'No puedes cerrar bóveda porque existe una caja abierta.', 'alert-type' => 'error']);
+        }
+
+        DB::beginTransaction();
+        try {
+
+            Vault::where('id', $id)->update([
+                'status' => 'cerrada',
+                'closed_at' => Carbon::now()
+            ]);
+
+            $vault_closure = VaultsClosure::create([
+                'vault_id' => $id,
+                'user_id' => Auth::user()->id,
+                'observations' => $request->observations
+            ]);
+
+            for ($i=0; $i < count($request->cash_value); $i++) { 
+                VaultsClosuresDetail::create([
+                    'vaults_closure_id' => $vault_closure->id,
+                    'cash_value' => $request->cash_value[$i],
+                    'quantity' => $request->quantity[$i],
+                ]);
+            }
+            DB::commit();
+            return redirect()->route('vaults.index')->with(['message' => 'Bóveda cerrada exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);

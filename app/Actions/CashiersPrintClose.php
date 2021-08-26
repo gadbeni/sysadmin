@@ -7,11 +7,11 @@ use TCG\Voyager\Actions\AbstractAction;
 // Models
 use App\Models\Cashier;
 
-class CashiersPrintOpen extends AbstractAction
+class CashiersPrintClose extends AbstractAction
 {
     public function getTitle()
     {
-        return 'Imprimir apertura';
+        return 'Imprimir cierre';
     }
 
     public function getIcon()
@@ -27,7 +27,7 @@ class CashiersPrintOpen extends AbstractAction
     public function getAttributes()
     {
         $cashier = Cashier::findOrFail($this->data->id);
-        $display = $cashier->status == 'abierta' ? 'display: block;' : 'display: none;';
+        $display = $cashier->status == 'cerrada' ? 'display: block;' : 'display: none;';
         return [
             'class' => 'btn btn-sm btn-default pull-right',
             'style' => 'margin: 5px;'.$display,
@@ -37,7 +37,7 @@ class CashiersPrintOpen extends AbstractAction
 
     public function getDefaultRoute()
     {
-        return route('print.open', ['cashier' => $this->data->id]);
+        return route('print.close', ['cashier' => $this->data->id]);
     }
     
     public function shouldActionDisplayOnDataType()

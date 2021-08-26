@@ -394,5 +394,15 @@
             });
             $('.selected_ids').val(ids);
         });
+
+        // Custon action
+        $(document).ready(function () {
+            // Si retorna las opciones para generar recibo de traspaso a caja
+            @if (session('id_transfer'))
+                let id_transfer = "{{ session('id_transfer') }}";
+
+                window.open("{{ url('admin/cashiers/print/transfer') }}/"+id_transfer, "Entrega de fondos", `width=700, height=400`)
+            @endif
+        });
     </script>
 @stop

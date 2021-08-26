@@ -119,21 +119,21 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p style="margin-top: 20px">Monto faltante</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="panel-heading" style="border-bottom:0;">
-                                        <h3 class="text-right" style="padding-right: 20px" id="label-missing_amount">0,00</h3>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
                                     <p style="margin-top: 20px">Monto sobrante</p>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="panel-heading" style="border-bottom:0;">
                                         <h3 class="text-right" style="padding-right: 20px" id="label-plus_amount">0,00</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p style="margin-top: 20px">Monto faltante</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="panel-heading" style="border-bottom:0;">
+                                        <h3 class="text-right" style="padding-right: 20px" id="label-missing_amount">0,00</h3>
                                     </div>
                                 </div>
                             </div>

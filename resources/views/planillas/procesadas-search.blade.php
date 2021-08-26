@@ -4,15 +4,23 @@
         @php
             $planilla_no_pagada = false;
             $planilla_haberes = $planilla->groupBy('idPlanillaprocesada');
-            $id = '';
+            $planilla_id = '';
+            $haberes_id = '';
             
+            // Obtener todos los id de planillas para hacer cierre masivo
             foreach ($planilla_haberes as $value) {
-                $id .= $value[0]->idPlanillaprocesada.',';
+                $planilla_id .= $value[0]->idPlanillaprocesada.',';
                 if($value[0]->estado_planilla_procesada != 3 && $value[0]->pagada != 0){
                     $planilla_no_pagada = true;
                 }
             }
-            $id = substr($id, 0, -1);
+            $planilla_id = substr($planilla_id, 0, -1);
+
+            // Obtener todos los id de planillas haberes para hacer habilitación masivo
+            foreach ($planilla as $value) {
+                $haberes_id .= $value->ID.',';
+            }
+            $haberes_id = substr($haberes_id, 0, -1);
 
             $cashier = \App\Models\Cashier::where('deleted_at', NULL)->where('closed_at', NULL)->where('user_id', Auth::user()->id)->first();
         @endphp
@@ -28,12 +36,12 @@
                 <div class="col-md-8" style="margin: 0px">
                     {{-- Si todos los haberes están inhabilitados (pagada = 0) se muestra el botón "Habilitar planilla" --}}
                     @if ($planilla->where('pagada', 0)->count() == $planilla->count())
-                    <button type="button" data-toggle="modal" data-target="#pago-listo_modal" class="btn btn-success"><i class="voyager-file-text"></i> Habilitar planilla</button>
+                    <button type="button" data-toggle="modal" data-target="#pago-listo_modal" class="btn btn-success" onclick="setValueOpen('{{ $haberes_id }}')"><i class="voyager-file-text"></i> Habilitar planilla</button>
                     @endif
                     
                     {{-- Si todos los haberes están pendientes (pagada = 1) o alguna planilla esté pendiente (Estado != 3) se muestra el botón "Cerrar planilla" --}}
                     @if ($planilla_no_pagada)
-                    <button type="button" data-toggle="modal" data-target="#cerrar-planilla-modal" class="btn btn-danger" onclick="setValueClose('{{ $id }}')"><i class="voyager-check"></i> Cerrar planilla</button>
+                    <button type="button" data-toggle="modal" data-target="#cerrar-planilla-modal" class="btn btn-danger" onclick="setValueClose('{{ $planilla_id }}')"><i class="voyager-check"></i> Cerrar planilla</button>
                     @endif
 
                     {{-- Si hay haberes pendientes (pagada = 1), pagados (pagada = 2) y las planillas a las que corresponden se encuentan pagadas (Estado = 3)
@@ -74,7 +82,7 @@
                             <th>Apellidos y Nombre(s)</th>
                             <th>C.I.</th>
                             <th>Líquido</th>
-                            <th>Estado</th>
+                            <th style="width: 100px">Estado</th>
                             @if ($cashier)
                             <th>Acciones</th>
                             @endif
@@ -102,7 +110,13 @@
                                         <label class="label label-danger">Pendiente</label>
                                         @break
                                     @case(2)
-                                        <label class="label label-success">Pagada</label>
+                                        <label class="label label-success">Pagada</label> <br>
+                                        @php
+                                            $detalle_pago = \App\Models\CashiersPayment::with('cashier.user')->where('planilla_haber_id', $item->ID)->first();
+                                        @endphp
+                                        @if ($detalle_pago)
+                                            <small>Por {{ $detalle_pago->cashier->user->name }} <br> {{ date('d-m-Y', strtotime($detalle_pago->created_at)) }} <br> {{ date('H:i:s', strtotime($detalle_pago->created_at)) }} </small>
+                                        @endif
                                         @break
                                     @default
                                         <label class="label label-default">inhabilitada</label>
@@ -114,6 +128,9 @@
                                     {{-- <button type="button" class="btn btn-warning"><i class="voyager-eye"></i> Ver</button> --}}
                                     @if($item->pagada == 1)
                                     <button type="button" data-toggle="modal" data-target="#pagar-modal" onclick='setValuePay(@json($item), @json($cashier))' class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
+                                    @endif
+                                    @if($item->pagada == 2)
+                                        {{-- <button type="button" class="btn btn-warning btn-ver"><i class="voyager-eye"></i> Ver</button> --}}
                                     @endif
                                 </div>
                             </td>

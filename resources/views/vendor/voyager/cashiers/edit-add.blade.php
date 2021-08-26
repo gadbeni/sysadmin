@@ -31,6 +31,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+@stop
+
+@section('content')
+    <div class="page-content edit-add container-fluid">
+        <div class="row">
             @php
                 $vault = \App\Models\Vault::with(['details.cash'])->where('status', 'activa')->where('deleted_at', NULL)->first();
                 $cash_value = [
@@ -58,19 +65,6 @@
                     }
                 }
             @endphp
-            @if (!$vault)
-            <div class="alert alert-warning">
-                <strong>Advertencia:</strong>
-                <p>No puedes aperturar caja debido a que no existe un registro de bóveda activo.</p>
-            </div>
-            @endif
-        </div>
-    </div>
-@stop
-
-@section('content')
-    <div class="page-content edit-add container-fluid">
-        <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-bordered">
                     @if ($cashier)
@@ -80,6 +74,12 @@
                         @csrf
                         <input type="hidden" name="vault_id" value="{{ $vault ? $vault->id : 0 }}">
                         <div class="panel-body">
+                            @if (!$vault)
+                                <div class="alert alert-warning">
+                                    <strong>Advertencia:</strong>
+                                    <p>No puedes aperturar caja debido a que no existe un registro de bóveda activo.</p>
+                                </div>
+                            @endif
                             <div class="col-md-6">
                                 <div class="panel-body" style="padding-top:0;max-height:400px;overflow-y:auto">
                                     <table class="table table-hover">
@@ -138,7 +138,6 @@
     <script>
         $(document).ready(function(){
             let vault = JSON.parse('@json($cash_value)');
-            console.log(vault)
             $(`#input-cash-200`).attr('max', vault['200.00']);
             $(`#input-cash-100`).attr('max', vault['100.00']);
             $(`#input-cash-50`).attr('max', vault['50.00']);

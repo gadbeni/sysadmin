@@ -48,7 +48,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="panel-heading" style="border-bottom:0;">
-                                <h3 class="panel-title">Nombre</h3>
+                                <h3 class="panel-title">Nombre de remitente</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
                                 <p>{{ $details->name_sender ?? 'No definido' }}</p>
@@ -86,7 +86,7 @@
                                             $total += $item->cash_value * $item->quantity;
                                         @endphp
                                             <tr>
-                                                <td><img src="{{ asset('images/cash/'.number_format($item->cash_value, $item->cash_value < 1 ? 1 : 0, ',', '.').'.jpg') }}" alt="{{ $item->cash_value }} Bs." width="70px"> {{ $item->cash_value }} Bs.</td>
+                                                <td><img src="{{ asset('images/cash/'.number_format($item->cash_value, $item->cash_value < 1 ? 1 : 0, '.', '.').'.jpg') }}" alt="{{ $item->cash_value }} Bs." width="70px"> {{ $item->cash_value }} Bs.</td>
                                                 <td>{{ number_format($item->quantity, 0) }}</td>
                                                 <td class="text-right">Bs.{{ number_format($item->cash_value * $item->quantity, 2, ',', '.') }}</td>
                                             </tr>

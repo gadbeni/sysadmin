@@ -54,7 +54,7 @@
                 <table width="100%" cellpadding="5">
                     <tr>
                         <td width="100px"><b>ID</b></td>
-                        <td style="border: 1px solid #ddd">{{ str_pad($cashier->id, 6, "0", STR_PAD_LEFT) }}</td>
+                        <td style="border: 1px solid #ddd">{{ str_pad($movement->id, 6, "0", STR_PAD_LEFT) }}</td>
                     </tr>
                     <tr>
                         <td><b>FECHA</b></td>
@@ -63,45 +63,38 @@
                                 $dias = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
                                 $meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                             @endphp
-                            {{ $dias[date('N', strtotime($cashier->created_at))].', '.date('d', strtotime($cashier->created_at)).' de '.$meses[intval(date('m', strtotime($cashier->created_at)))].' de '.date('Y', strtotime($cashier->created_at)).' a las '.date('H:i:s', strtotime($cashier->created_at)) }}
+                            {{ $dias[date('N', strtotime($movement->created_at))].', '.date('d', strtotime($movement->created_at)).' de '.$meses[intval(date('m', strtotime($movement->created_at)))].' de '.date('Y', strtotime($movement->created_at)).' a las '.date('H:i:s', strtotime($movement->created_at)) }}
                         </td>
                     </tr>
                     <tr>
                         <td><b>CAJERO(A)</b></td>
-                        <td style="border: 1px solid #ddd">{{ $cashier->user->name }}</td>
+                        <td style="border: 1px solid #ddd">{{ $movement->cashier->user->name }}</td>
                     </tr>
                     <tr>
                         <td><b>CONCEPTO</b></td>
-                        <td style="border: 1px solid #ddd">Apertura de caja</td>
+                        <td style="border: 1px solid #ddd">{{ $movement->description }}</td>
                     </tr>
                     <tr>
                         <td><b>MONTO</b></td>
-                        @php
-                            $amount = 0;
-                            foreach($cashier->movements as $movement){
-                                if($movement->description == 'Monto de apertura de caja.'){
-                                    $amount += $movement->amount;
-                                }
-                            }
-                        @endphp
-                        <td style="border: 1px solid #ddd">{{ number_format($amount, 2, ',', '.') }}</td>
+                        <td style="border: 1px solid #ddd">{{ number_format($movement->amount, 2, ',', '.') }}</td>
                     </tr>
                     <tr>
                         <td><b>NOTA</b></td>
-                        <td style="border: 1px solid #ddd">{{ $cashier->observations ?? 'Ninguna' }}</td>
+                        <td style="border: 1px solid #ddd">{{ $movement->observations ?? 'Ninguna' }}</td>
                     </tr>
                 </table>
             </td>
             <td width="30%" style="padding: 0px 10px">
+                <br>
                 <div>
                     <p style="text-align: center; margin-top: 0px"><b><small>RECIBIDO POR</small></b></p>
                     <br>
-                    <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($cashier->user->name) }}</small> <br> <small>{{ $cashier->user->ci }}</small> <br> <b>{{ strtoupper($cashier->user->role->name) }}</b> </p>
+                    <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($movement->cashier->user->name) }}</small> <br> <small>{{ $movement->cashier->user->ci }}</small> <br> <b>{{ strtoupper($movement->cashier->user->role->name) }}</b> </p>
                 </div>
                 <div>
                     <p style="text-align: center; margin-top: 0px"><b><small>ENTREGADO POR</small></b></p>
                     <br>
-                    <p style="text-align: center">.............................................. <br> <small>{{ strtoupper(Auth::user()->name) }}</small> <br> <small>{{ Auth::user()->ci }}</small> <br> <b>{{ strtoupper(Auth::user()->role->name) }}</b> </p>
+                    <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($movement->cashier_from ? $movement->cashier_from->user->name : Auth::user()->name) }}</small> <br> <small>{{ $movement->cashier_from ? $movement->cashier_from->user->ci : Auth::user()->ci }}</small> <br> <b>{{ strtoupper($movement->cashier_from ? $movement->cashier_from->user->role->name : Auth::user()->role->name) }}</b> </p>
                 </div>
             </td>
         </tr>

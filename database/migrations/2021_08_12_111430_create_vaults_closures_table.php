@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCashiersMovementsTable extends Migration
+class CreateVaultsClosuresTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateCashiersMovementsTable extends Migration
      */
     public function up()
     {
-        Schema::create('cashiers_movements', function (Blueprint $table) {
+        Schema::create('vaults_closures', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cashier_id')->nullable()->constrained('cashiers');
-            $table->foreignId('cashier_id_from')->nullable()->constrained('cashiers');
+            $table->foreignId('vault_id')->nullable()->constrained('vaults');
             $table->foreignId('user_id')->nullable()->constrained('users');
-            $table->decimal('amount', 10, 2)->nullable();
-            $table->text('description')->nullable();
-            $table->string('type')->nullable();
+            $table->text('observations')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -33,6 +30,6 @@ class CreateCashiersMovementsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cashiers_movements');
+        Schema::dropIfExists('vaults_closures');
     }
 }

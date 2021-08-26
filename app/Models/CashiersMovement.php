@@ -9,6 +9,14 @@ class CashiersMovement extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'cashier_id', 'user_id', 'amount', 'description', 'type'
+        'cashier_id', 'cashier_id_from', 'user_id', 'amount', 'description', 'type'
     ];
+
+    public function cashier(){
+        return $this->belongsTo(Cashier::class, 'cashier_id');
+    }
+
+    public function cashier_from(){
+        return $this->belongsTo(Cashier::class, 'cashier_id_from');
+    }
 }

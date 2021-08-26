@@ -21,13 +21,23 @@
                             <form id="form-search" action="{{ route('planillas.search') }}" method="post">
                                 @csrf
                                 <div class="form-group text-right">
-                                    <label class="radio-inline"><input type="radio" name="centralizada" class="radio-tipo_planilla" value="1" checked>Centralizada</label>
-                                    <label class="radio-inline"><input type="radio" name="centralizada" class="radio-tipo_planilla" value="0">No centralizada</label>
+                                    <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="1" checked>Centralizada</label>
+                                    <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="0">No centralizada</label>
+                                    <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="2">Por CI</label>
                                 </div>
                                 {{-- Opciones que se despliegan cuando se hace check en la opción "No centralizada" --}}
-                                <div class="input-no-centralizada" style="display: none">
+                                <div class="input-no-centralizada" style="display: none; margin-bottom: 20px">
                                     <div class="input-group">
                                         <input type="number" step="1" name="planilla_id" class="form-control" placeholder="N&deg; de planilla">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-success" type="submit" style="margin-top: 0px; padding: 5px 12px"><i class="voyager-search"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="input-ci" style="display: none; margin-bottom: 20px">
+                                    <div class="input-group">
+                                        <input type="text" step="1" name="ci" class="form-control" placeholder="Cédula de Identidad">
                                         <span class="input-group-btn">
                                             <button class="btn btn-success" type="submit" style="margin-top: 0px; padding: 5px 12px"><i class="voyager-search"></i></button>
                                         </span>
@@ -76,10 +86,9 @@
     </div>
 
     {{-- Pago listo modal --}}
-    <form id="form-planilla" action="{{ route('planillas.details.update.status') }}" method="post">
+    <form id="form-abrir-planilla" action="{{ route('planillas.details.open') }}" method="post">
         @csrf
-        <input type="hidden" name="status" value="1">
-        <input type="hidden" name="status" value="1">
+        <input type="hidden" name="id">
         <div class="modal modal-success fade" tabindex="-1" id="pago-listo_modal" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -92,7 +101,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-success" onclick="sendForm('form-planilla', 'Planilla habilitada para pago exitosamente.')">Sí, habilitar</button>
+                        {{-- <button type="submit" class="btn btn-default">Test pagar</button> --}}
+                        <button type="button" class="btn btn-success" onclick="sendForm('form-abrir-planilla', 'Planilla habilitada para pago exitosamente.')">Sí, habilitar</button>
                     </div>
                 </div>
             </div>
@@ -100,9 +110,8 @@
     </form>
 
     {{-- Pagar modal --}}
-    <form id="form-pagar" action="{{ route('planillas.details.update.status') }}" method="post">
+    <form id="form-pagar" action="{{ route('planillas.details.payment') }}" method="post">
         @csrf
-        <input type="hidden" name="status" value="2">
         <input type="hidden" name="cashier_id">
         <input type="hidden" name="id">
         <input type="hidden" name="name">
@@ -151,7 +160,7 @@
                         </table>
                         <div class="row">
                             <div class="col-md-12" style="margin: 0px">
-                                <textarea name="observaciones" class="form-control" rows="3" placeholder="Observaciones..."></textarea>
+                                <textarea name="observations" class="form-control" rows="3" placeholder="Observaciones..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -204,14 +213,22 @@
 
             $('.radio-tipo_planilla').click(function(){
                 let val = $('.radio-tipo_planilla:checked').val();
-                if(val == 1){
-                    $('.input-no-centralizada').fadeOut('fast', () => {
-                        $('.input-centralizada').fadeIn();
-                    });
-                }else{
-                    $('.input-centralizada').fadeOut('fast', () => {
-                        $('.input-no-centralizada').fadeIn();
-                    });
+                switch (val) {
+                    case "1":
+                        $('.input-centralizada').fadeIn('fast');
+                        $('.input-no-centralizada').fadeOut('fast');
+                        $('.input-ci').fadeOut('fast');
+                        break;
+                    case "0":
+                        $('.input-no-centralizada').fadeIn('fast');
+                        $('.input-centralizada').fadeOut('fast');
+                        $('.input-ci').fadeOut('fast');
+                        break;
+                    default:
+                        $('.input-ci').fadeIn('fast');
+                        $('.input-centralizada').fadeOut('fast');
+                        $('.input-no-centralizada').fadeOut('fast');
+                        break;
                 }
             });
         });
@@ -261,6 +278,10 @@
             $('#form-pagar input[name="name"]').val(data.Nombre_Empleado);
             $('#form-pagar input[name="amount"]').val(data.Liquido_Pagable);
             $('#form-pagar input[name="cashier_id"]').val(cashier.id);
+        }
+
+        function setValueOpen(id){
+            $('#form-abrir-planilla input[name="id"]').val(id);
         }
 
         function setValueClose(id){
