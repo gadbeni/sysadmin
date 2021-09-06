@@ -72,6 +72,7 @@
                 <table id="dataTable" class="table table-bordered">
                     <thead>
                         <tr>
+                            <th>N&deg;</th>
                             <th>Secretaría</th>
                             <th>código</th>
                             <th>Tipo de contrato</th>
@@ -90,10 +91,12 @@
                     </thead>
                     @php
                         $total = 0;
+                        $cont = 1;
                     @endphp
                     <tbody id="dataTable-body">
                         @forelse ($planilla as $item)
                         <tr>
+                            <td>{{ $cont }}</td>
                             <td>{{ $item->Direccion_Administrativa }}</td>
                             <td>{{ $item->Codigoid }}</td>
                             <td>{{ $item->tipo_planilla }}</td>
@@ -129,23 +132,24 @@
                                     @if($item->pagada == 1)
                                     <button type="button" data-toggle="modal" data-target="#pagar-modal" onclick='setValuePay(@json($item), @json($cashier))' class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
                                     @endif
-                                    @if($item->pagada == 2)
-                                        {{-- <button type="button" class="btn btn-warning btn-ver"><i class="voyager-eye"></i> Ver</button> --}}
+                                    @if($item->pagada == 2 && $detalle_pago)
+                                        <button type="button" onclick="print_recipe({{ $detalle_pago->id }})" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
                                     @endif
                                 </div>
                             </td>
                             @endif
                             @php
                                 $total += $item->Liquido_Pagable;
+                                $cont++;
                             @endphp
                         </tr>
                         @empty
                             <tr>
-                                <td colspan="12"><h4 class="text-center">No hay registros</h4></td>
+                                <td colspan="13"><h4 class="text-center">No hay registros</h4></td>
                             </tr>
                         @endforelse
                         <tr>
-                            <td colspan="9"><h5>TOTAL</h5></td>
+                            <td colspan="11"><h5>TOTAL</h5></td>
                             <td><h5 class="text-right">{{ number_format($total, 2, ',', '.') }}</h3></td>
                             <td colspan="2"></td>
                         </tr>
@@ -168,5 +172,9 @@
                 $('tr').fadeIn('fast')
             }
         })
-    })
+    });
+
+    function print_recipe(id){
+        window.open("{{ url('admin/planillas/pago/print') }}/"+id, "Recibo", `width=700, height=500`)
+    }
 </script>

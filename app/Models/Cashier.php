@@ -30,8 +30,7 @@ class Cashier extends Model
         return $this->hasMany(CashiersDetail::class);
     }
 
-    public function transfers(){
-        return $this->hasMany(CashiersTransfer::class, 'from');
+    public function vault_details(){
+        return $this->hasOne(VaultsDetail::class, 'cashier_id');
     }
-
 }

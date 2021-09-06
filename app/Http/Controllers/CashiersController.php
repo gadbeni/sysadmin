@@ -50,7 +50,7 @@ class CashiersController extends Controller
     public function store(Request $request)
     {
         // dd($request);
-        $cashier = Cashier::where('user_id', $request->user_id)->where('closed_at', NULL)->where('deleted_at', NULL)->first();
+        $cashier = Cashier::where('user_id', $request->user_id)->where('status', '!=', 'cerrada')->where('deleted_at', NULL)->first();
 
         if(!$cashier){
             DB::beginTransaction();
@@ -59,7 +59,7 @@ class CashiersController extends Controller
                     'user_id' => $request->user_id,
                     'title' => $request->title,
                     'observations' => $request->observations,
-                    'status' => 'abierta'
+                    'status' => 'apertura pendiente'
                 ]);
 
                 if($request->amount){
@@ -102,7 +102,7 @@ class CashiersController extends Controller
                 return redirect()->route('voyager.cashiers.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
             }
         }else{
-            return redirect()->route('voyager.cashiers.index')->with(['message' => 'El usuario seleccionado tiene una caja abierta.', 'alert-type' => 'warning']);
+            return redirect()->route('voyager.cashiers.index')->with(['message' => 'El usuario seleccionado tiene una caja que no ha sido cerrada.', 'alert-type' => 'warning']);
         }
     }
 
@@ -138,6 +138,7 @@ class CashiersController extends Controller
                 CashiersMovement::create([
                     'user_id' => Auth::user()->id,
                     'cashier_id' => $request->id,
+                    'cashier_id_to' => $request->cashier_id,
                     'amount' => $request->amount,
                     'description' => 'Traspaso a '.$cashier->title,
                     'type' => 'egreso'
@@ -154,13 +155,11 @@ class CashiersController extends Controller
                         'status' => 'aprobado'
                     ]);
                     for ($i=0; $i < count($request->cash_value); $i++) { 
-                        // if($request->quantity[$i]){
-                            VaultsDetailsCash::create([
-                                'vaults_detail_id' => $detail->id,
-                                'cash_value' => $request->cash_value[$i],
-                                'quantity' => $request->quantity[$i],
-                            ]);
-                        // }
+                        VaultsDetailsCash::create([
+                            'vaults_detail_id' => $detail->id,
+                            'cash_value' => $request->cash_value[$i],
+                            'quantity' => $request->quantity[$i],
+                        ]);
                     }
                 }
             }
@@ -171,6 +170,53 @@ class CashiersController extends Controller
             DB::rollback();
             // dd($th);
             return redirect()->route($request->redirect ?? 'voyager.cashiers.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function change_status($id, Request $request){
+        // DB::beginTransaction();
+        try {
+            if($request->status == 'abierta'){
+                $message = 'Caja aceptada exitosamente.';
+                Cashier::where('id', $id)->update([
+                    'status' => $request->status
+                ]);
+            }else{
+                $cashier = Cashier::with(['vault_details.cash' => function($q){
+                    $q->where('deleted_at', NULL);
+                }])->where('id', $id)->first();
+
+                $message = 'Caja rechazada exitosamente.';
+                Cashier::where('id', $id)->update([
+                    'status' => $request->status,
+                    // 'deleted_at' => Carbon::now()
+                ]);
+
+                $vault_detail = VaultsDetail::create([
+                    'user_id' => Auth::user()->id,
+                    'vault_id' => $cashier->vault_details->vault_id,
+                    'cashier_id' => $cashier->id,
+                    'description' => 'Rechazo de apertura de caja de '.$cashier->title.'.',
+                    'type' => 'ingreso',
+                    'status' => 'aprobado'
+                ]);
+                foreach ($cashier->vault_details->cash as $item) {
+                    if($item->quantity > 0){
+                        VaultsDetailsCash::create([
+                            'vaults_detail_id' => $vault_detail->id,
+                            'cash_value' => $item->cash_value,
+                            'quantity' => $item->quantity
+                        ]);
+                    }
+                }
+            }
+
+            // DB::commit();
+            return redirect()->route('voyager.dashboard')->with(['message' => $message, 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            // DB::rollback();
+            // dd($th);
+            return redirect()->route('voyager.dashboard')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
 
@@ -326,7 +372,7 @@ class CashiersController extends Controller
             return redirect()->route('voyager.cashiers.index')->with(['message' => 'Caja cerrada exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
-            dd($th);
+            // dd($th);
             return redirect()->route('voyager.cashiers.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
@@ -343,7 +389,7 @@ class CashiersController extends Controller
     }
 
     public function print_transfer($id){
-        $movement = CashiersMovement::with(['cashier', 'cashier_from'])->where('id', $id)->first();
+        $movement = CashiersMovement::with(['cashier', 'cashier_to', 'user'])->where('id', $id)->first();
         // dd($movement);
         return view('vendor.voyager.cashiers.print-transfer', compact('movement'));
     }

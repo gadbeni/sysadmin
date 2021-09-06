@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PlanillasController;
 use App\Http\Controllers\CashiersController;
 use App\Http\Controllers\VaultsController;
+use App\Http\Controllers\ReportsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::delete('cashiers/destroy/{id}', [CashiersController::class, 'destroy'])->name('voyager.cashiers.destroy');
     Route::get('cashiers/{cashier}/amount', [CashiersController::class, 'amount'])->name('cashiers.amount');
     Route::post('cashiers/amount/store', [CashiersController::class, 'amount_store'])->name('cashiers.amount.store');
+    Route::post('cashiers/{cashier}/change/status', [CashiersController::class, 'change_status'])->name('cashiers.change.status');
     Route::get('cashiers/{cashier}/close/', [CashiersController::class, 'close'])->name('cashiers.close');
     Route::post('cashiers/{cashier}/close/store', [CashiersController::class, 'close_store'])->name('cashiers.close.store');
     Route::post('cashiers/{cashier}/close/revert', [CashiersController::class, 'close_revert'])->name('cashiers.close.revert');
@@ -56,7 +58,17 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('planillas/details/open', [PlanillasController::class, 'planilla_details_open'])->name('planillas.details.open');
     Route::post('planillas/details/payment', [PlanillasController::class, 'planilla_details_payment'])->name('planillas.details.payment');
     Route::post('planillas/update/status', [PlanillasController::class, 'planilla_update_status'])->name('planillas.update.status');
-    Route::get('planillas/pago/pdf/{id}', [PlanillasController::class, 'planillas_pago_pdf']);
+    Route::get('planillas/pago/print/{id}', [PlanillasController::class, 'planillas_pago_print']);
+
+    // Reportes
+
+    // *Recursos humanos
+    Route::get('reports/humans-resources/contraloria', [ReportsController::class, 'humans_resources_contraloria_index'])->name('reports.humans_resources.contraloria');
+    Route::post('reports/humans-resources/contraloria/list', [ReportsController::class, 'humans_resources_contraloria_list'])->name('reports.humans_resources.contraloria.list');
+    Route::post('reports/humans-resources/contraloria/print', [ReportsController::class, 'humans_resources_contraloria_print'])->name('reports.humans_resources.contraloria.print');
+
+    Route::get('reports/humans-resources/aniversarios', [ReportsController::class, 'humans_resources_aniversarios_index'])->name('reports.humans_resources.aniversarios');
+    Route::post('reports/humans-resources/aniversarios/list', [ReportsController::class, 'humans_resources_aniversarios_list'])->name('reports.humans_resources.aniversarios.list');
 });
 
 // Clear cache

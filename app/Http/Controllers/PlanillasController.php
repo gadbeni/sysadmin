@@ -29,7 +29,7 @@ class PlanillasController extends Controller
                                 ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
                                 ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
                                 ->where('p.idPlanillaprocesada', $request->planilla_id ?? 0)
-                                ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
+                                ->whereRaw($request->afp_no_centralizada ? 'p.Afp = '.$request->afp_no_centralizada : 1)
                                 ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
                                 ->orderByRaw("FIELD(p.idDa, '9','16','10','15','8','13','37','41','42','50','55','61','64','6','62','69','5','17','48','53')")
                                 ->get();
@@ -144,7 +144,7 @@ class PlanillasController extends Controller
         }
     }
 
-    public function planillas_pago_pdf($id){
+    public function planillas_pago_print($id){
         $payment = CashiersPayment::with(['cashier.user'])->where('id', $id)->first();
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')

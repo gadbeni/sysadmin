@@ -25,7 +25,13 @@ class VaultsController extends Controller
      */
     public function index()
     {
-        $vault = Vault::with(['details.cash'])->where('deleted_at', NULL)->first();
+        $vault = Vault::with(['details.cash' => function($q){
+            $q->where('deleted_at', NULL);
+        }])
+        ->whereHas('details', function($q){
+            $q->where('deleted_at', NULL);
+        })
+        ->where('deleted_at', NULL)->first();
         return view('vaults.browse', compact('vault'));
     }
 

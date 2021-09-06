@@ -27,7 +27,12 @@ class CashiersPrintOpen extends AbstractAction
     public function getAttributes()
     {
         $cashier = Cashier::findOrFail($this->data->id);
-        $display = $cashier->status == 'abierta' ? 'display: block;' : 'display: none;';
+        if ($cashier->status == 'abierta' || $cashier->status == 'apertura pendiente') {
+            $display = 'display: block;';
+        }else{
+            $display = 'display: none;';
+        }
+
         return [
             'class' => 'btn btn-sm btn-default pull-right',
             'style' => 'margin: 5px;'.$display,

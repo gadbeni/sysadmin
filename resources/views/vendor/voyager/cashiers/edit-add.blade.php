@@ -110,8 +110,8 @@
                                         <input type="text" name="title" class="form-control" value="Caja 1" placeholder="Caja 1" required>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label" for="amount">Monto de apertura</label>
-                                        <input type="number" name="amount" id="input-total" class="form-control" value="0" readonly required>
+                                        <input type="hidden" name="amount" id="input-total">
+                                        <h2 class="text-right" id="label-total">0.00</h2>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label" for="observations">Observaciones</label>

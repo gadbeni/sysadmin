@@ -26,22 +26,29 @@
                                     <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="2">Por CI</label>
                                 </div>
                                 {{-- Opciones que se despliegan cuando se hace check en la opción "No centralizada" --}}
-                                <div class="input-no-centralizada" style="display: none; margin-bottom: 20px">
-                                    <div class="input-group">
+                                <div class="input-no-centralizada" style="display: none">
+                                    <div class="form-group">
                                         <input type="number" step="1" name="planilla_id" class="form-control" placeholder="N&deg; de planilla">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-success" type="submit" style="margin-top: 0px; padding: 5px 12px"><i class="voyager-search"></i></button>
-                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="afp_no_centralizada" class="form-control select2">
+                                            <option value="">Todas las AFP</option>
+                                            <option value="1">Futuro</option>
+                                            <option value="2">Previsión</option>
+                                        </select>
+                                    </div>
+                                    <div class="text-right">
+                                        <button type="submit" class="btn btn-info" style="margin-top: 0px; padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
                                     </div>
                                 </div>
 
-                                <div class="input-ci" style="display: none; margin-bottom: 20px">
+                                <div class="input-ci" style="display: none;">
                                     <div class="input-group">
                                         <input type="text" step="1" name="ci" class="form-control" placeholder="Cédula de Identidad">
                                         <span class="input-group-btn">
-                                            <button class="btn btn-success" type="submit" style="margin-top: 0px; padding: 5px 12px"><i class="voyager-search"></i></button>
+                                            <button class="btn btn-info" type="submit" style="margin-top: -1px; height: 35px; padding: 5px 15px"><i class="voyager-search"></i></button>
                                         </span>
-                                    </div>
+                                    </div><br>
                                 </div>
                                 
                                 {{-- Opciones que se despliegan cuando se hace check en la opción "No centralizada" --}}
@@ -65,7 +72,7 @@
                                         </select>
                                     </div>
                                     <div class="text-right">
-                                        <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
+                                        <button type="submit" class="btn btn-info" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
                                     </div>
                                 </div>
                             </form>
@@ -255,7 +262,7 @@
                     toastr.success(message, 'Bien hecho!');
                     getData();
                     if(formId == 'form-pagar' && $('#check-print').is(':checked')){
-                        window.open("{{ url('admin/planillas/pago/pdf') }}/"+res.payment_id, "Recibo", `width=700, height=400`)
+                        window.open("{{ url('admin/planillas/pago/print') }}/"+res.payment_id, "Recibo", `width=700, height=400`)
                     }
                 }else{
                     toastr.error(res.message ? res.message : 'Ocurrió un error en nuestro servidor.', 'Oops!')

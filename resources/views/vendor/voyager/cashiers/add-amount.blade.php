@@ -27,7 +27,7 @@
             @if (!$vault)
             <div class="alert alert-warning">
                 <strong>Advertencia:</strong>
-                <p>No puedes aperturar caja debido a que no existe un registro de bóveda activo.</p>
+                <p>No puedes abonar dinero a una caja debido a que no existe un registro de bóveda activo.</p>
             </div>
             @endif
         </div>
@@ -59,8 +59,8 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-12">
-                                <label class="control-label" for="amount">Monto a abonar</label>
-                                <input type="number" name="amount" id="input-total" class="form-control" readonly required>
+                                <input type="hidden" name="amount" id="input-total">
+                                <h2 class="text-right" id="label-total">0.00</h2>
                             </div>
                             <div class="form-group col-md-12">
                                 <label class="control-label" for="description">Detalle</label>
