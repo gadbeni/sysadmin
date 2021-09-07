@@ -22,7 +22,7 @@
             }
             $haberes_id = substr($haberes_id, 0, -1);
 
-            $cashier = \App\Models\Cashier::where('deleted_at', NULL)->where('closed_at', NULL)->where('user_id', Auth::user()->id)->first();
+            $cashier = \App\Models\Cashier::where('deleted_at', NULL)->where('status', 'abierta')->where('user_id', Auth::user()->id)->first();
         @endphp
         @if (count($planilla))
         <div class="panel-body" style="padding-bottom: 0px">
@@ -104,7 +104,7 @@
                             <td>{{ $item->Mes }}</td>
                             <td>{{ $item->Anio }}</td>
                             <td>{{ $item->item }}</td>
-                            <td>{{ $item->Apaterno }} {{ $item->Amaterno }} {{ $item->Nombre_Empleado }}</td>
+                            <td>{{ $item->Apaterno }} {{ $item->Amaterno }} {{ $item->Pnombre }} {{ $item->Snombre }}</td>
                             <td>{{ $item->CedulaIdentidad }}</td>
                             <td class="text-right">{{ number_format($item->Liquido_Pagable, 2, '.', ',') }}</td>
                             <td>

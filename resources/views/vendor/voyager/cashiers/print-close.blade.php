@@ -112,11 +112,10 @@
                                 if($movement->type == 'egreso'){
                                     $amount_out += $movement->amount;
                                 }
-                            }
 
-                            // Recorer transferencias realizadas
-                            foreach($cashier->transfers as $transfer){
-                                $amount_transfers += $transfer->amount;
+                                if($movement->type == 'ingreso' && $movement->cashier_id_from){
+                                    $amount_transfers += $movement->amount;
+                                }
                             }
 
                             // Recorer pagos realizados

@@ -95,7 +95,7 @@ class CashiersController extends Controller
 
                 DB::commit();
     
-                return redirect()->route('voyager.cashiers.index')->with(['message' => 'Registro guardado exitosamente.', 'alert-type' => 'success']);
+                return redirect()->route('voyager.cashiers.index')->with(['message' => 'Registro guardado exitosamente.', 'alert-type' => 'success', 'id_cashier_open' => $cashier->id]);
             } catch (\Throwable $th) {
                 DB::rollback();
                 //throw $th;
@@ -112,7 +112,7 @@ class CashiersController extends Controller
         if($cashier->status == 'abierta'){
             return view('vendor.voyager.cashiers.add-amount', compact('id'));
         }else{
-            return redirect()->route('voyager.cashiers.index')->with(['message' => 'La caja ya no está abierta.', 'alert-type' => 'warning']);
+            return redirect()->route('voyager.cashiers.index')->with(['message' => 'La caja seleccionada ya no se encuentra abierta.', 'alert-type' => 'warning']);
         }
     }
 
@@ -120,6 +120,12 @@ class CashiersController extends Controller
     {
         DB::beginTransaction();
         try {
+
+            $cashier = Cashier::with('user')->where('id', $request->cashier_id)->where('status', 'abierta')->first();
+            if(!$cashier){
+                return redirect()->route($request->redirect ?? 'voyager.cashiers.index')->with(['message' => 'La caja seleccionada ya no se encuentra abierta.', 'alert-type' => 'warning']);
+            }
+
             // Registrar traspaso a la caja
             $movement = CashiersMovement::create([
                 'user_id' => Auth::user()->id,
@@ -133,7 +139,6 @@ class CashiersController extends Controller
             $id_transfer = $movement->id;
 
             // En caso de ser un trapaso entre cajas
-            $cashier = Cashier::with('user')->where('id', $request->cashier_id)->first();
             if($request->id){
                 CashiersMovement::create([
                     'user_id' => Auth::user()->id,
@@ -345,7 +350,6 @@ class CashiersController extends Controller
         DB::beginTransaction();
         try {
             $cashier = Cashier::findOrFail($id);
-            $cashier->closed_at = Carbon::now();
             $cashier->status = 'cerrada';
             $cashier->save();
             
@@ -369,7 +373,7 @@ class CashiersController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('voyager.cashiers.index')->with(['message' => 'Caja cerrada exitosamente.', 'alert-type' => 'success']);
+            return redirect()->route('voyager.cashiers.index')->with(['message' => 'Caja cerrada exitosamente.', 'alert-type' => 'success', 'id_cashier_close' => $id]);
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
@@ -399,8 +403,6 @@ class CashiersController extends Controller
         'movements' => function($q){
             $q->where('deleted_at', NULL);
         }, 'payments' => function($q){
-            $q->where('deleted_at', NULL);
-        }, 'transfers' => function($q){
             $q->where('deleted_at', NULL);
         }, 'details' => function($q){
             $q->where('deleted_at', NULL);
