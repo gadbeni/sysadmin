@@ -37,5 +37,17 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('planillas');
         Permission::generateFor('cashiers');
         Permission::generateFor('vaults');
+
+        $keys = [
+            'browse_reportshumans-resourcescontraloria',
+            'browse_reportshumans-resourcesaniversarios'
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'reports',
+            ]);
+        }
     }
 }

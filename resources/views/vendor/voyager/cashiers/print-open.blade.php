@@ -16,7 +16,7 @@
         }
         #watermark {
             position: absolute;
-            opacity: 0.1;
+            opacity: 0.2;
             z-index:  -1000;
         }
         #watermark img{
@@ -108,6 +108,17 @@
                             <td style="border: 1px solid #ddd">{{ $cashier->observations ?? 'Ninguna' }}</td>
                         </tr>
                     </table>
+                    <br>
+                    <b>CORTES DE BILLETES</b>
+                    <div style="display: flex; border: 1px solid #ddd; padding: 10px 0px; margin-top: 10px">
+                        @foreach ($cashier->vault_details->cash as $cash)
+                            <div style="width: 33%; text-aign: center">
+                                <div style="text-align: center">{{ $cash->cash_value >= 1 ? intval($cash->cash_value) : number_format($cash->cash_value, 2, '.', '') }}</div>
+                                <div style="text-align: center">&darr;</div>
+                                <div style="text-align: center"><b>{{ intval($cash->quantity) }}</b></div>
+                            </div>
+                        @endforeach
+                    </div>
                 </td>
                 <td width="30%" style="padding: 0px 10px">
                     <div>

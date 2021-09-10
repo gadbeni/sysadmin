@@ -399,19 +399,23 @@
         $(document).ready(function () {
             // Si retorna las opciones para generar recibo de traspaso a caja
             @if (session('id_transfer'))
-                let id_transfer = "{{ session('id_transfer') }}";
-                window.open("{{ url('admin/cashiers/print/transfer') }}/"+id_transfer, "Entrega de fondos", `width=700, height=400`)
+                let url = "{{ route('print.transfer', ['transfer' => session('id_transfer')]) }}";
+                openWindow(url, "Entrega de fondos");
             @endif
 
             @if (session('id_cashier_open'))
                 let url = "{{ route('print.open', ['cashier' => session('id_cashier_open')]) }}";
-                window.open(url, "Apertura de caja", `width=700, height=400`)
+                openWindow(url, "Apertura de caja");
             @endif
 
             @if (session('id_cashier_close'))
                 let url = "{{ route('print.close', ['cashier' => session('id_cashier_close')]) }}";
-                window.open(url, "Cierre de caja", `width=700, height=400`)
+                openWindow(url, "Cierre de caja");
             @endif
         });
+
+        function openWindow(url, title = null){
+            window.open(url, title, `width=700, height=400`);
+        }
     </script>
 @stop

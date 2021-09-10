@@ -34,8 +34,8 @@
             @endif
             <div class="row">
                 <div class="col-md-8" style="margin: 0px">
-                    {{-- Si todos los haberes están inhabilitados (pagada = 0) se muestra el botón "Habilitar planilla" --}}
-                    @if ($planilla->where('pagada', 0)->count() == $planilla->count())
+                    {{-- Si todos los haberes están inhabilitados (pagada = 0) y la busqueda no se hizo por CI se muestra el botón "Habilitar planilla" --}}
+                    @if ($planilla->where('pagada', 0)->count() == $planilla->count() && $tipo_planilla != 2)
                     <button type="button" data-toggle="modal" data-target="#pago-listo_modal" class="btn btn-success" onclick="setValueOpen('{{ $haberes_id }}')"><i class="voyager-file-text"></i> Habilitar planilla</button>
                     @endif
                     
@@ -58,12 +58,14 @@
                     <h3>Planilla pagada <i class="voyager-check"></i></h3>
                     @endif
                 </div>
-                <div class="col-md-4 text-right" style="margin: 0px">
-                    <div class="input-group" style="padding-top: 10px">
-                        <input type="text" class="form-control" id="input-search" placeholder="Nombre, Apellidos o CI">
-                        <span class="input-group-addon" id="basic-addon1"><i class="voyager-search"></i></span>
+                @if ($tipo_planilla != 2)
+                    <div class="col-md-4 text-right" style="margin: 0px">
+                        <div class="input-group" style="padding-top: 10px">
+                            <input type="text" class="form-control" id="input-search" placeholder="Nombre, Apellidos o CI">
+                            <span class="input-group-addon" id="basic-addon1"><i class="voyager-search"></i></span>
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
         @endif
@@ -92,6 +94,7 @@
                     @php
                         $total = 0;
                         $cont = 1;
+                        $meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                     @endphp
                     <tbody id="dataTable-body">
                         @forelse ($planilla as $item)
@@ -101,7 +104,7 @@
                             <td>{{ $item->Codigoid }}</td>
                             <td>{{ $item->tipo_planilla }}</td>
                             <td>{{ $item->Afp == 1 ? 'Futuro' : 'Previsión' }}</td>
-                            <td>{{ $item->Mes }}</td>
+                            <td>{{ $meses[intval($item->Mes)] }}</td>
                             <td>{{ $item->Anio }}</td>
                             <td>{{ $item->item }}</td>
                             <td>{{ $item->Apaterno }} {{ $item->Amaterno }} {{ $item->Pnombre }} {{ $item->Snombre }}</td>

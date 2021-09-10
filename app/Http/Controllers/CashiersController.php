@@ -382,9 +382,14 @@ class CashiersController extends Controller
     }
 
     public function print_open($id){
-        $cashier = Cashier::with(['user', 'movements' => function($q){
+        $cashier = Cashier::with(['user', 'vault_details' => function($q){
+            $q->where('deleted_at', NULL);
+        }, 'vault_details.cash' => function($q){
+            $q->where('deleted_at', NULL);
+        }, 'movements' => function($q){
             $q->where('deleted_at', NULL);
         }])->where('id', $id)->first();
+        // dd($cashier);
         $view = view('vendor.voyager.cashiers.print-open', compact('cashier'));
         return $view;
         // $pdf = \App::make('dompdf.wrapper');

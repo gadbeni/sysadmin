@@ -48,7 +48,13 @@
                                         <span class="input-group-btn">
                                             <button class="btn btn-info" type="submit" style="margin-top: -1px; height: 35px; padding: 5px 15px"><i class="voyager-search"></i></button>
                                         </span>
-                                    </div><br>
+                                    </div>
+                                    <select name="pagada" class="form-control select2" style="margin-bottom: 10px">
+                                        <option value="">Todos</option>
+                                        <option value="1">Pagos pendientes</option>
+                                    </select>
+                                    <div class="clearfix"></div>
+                                    <br>
                                 </div>
                                 
                                 {{-- Opciones que se despliegan cuando se hace check en la opción "No centralizada" --}}

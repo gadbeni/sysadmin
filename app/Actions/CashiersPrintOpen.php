@@ -32,17 +32,16 @@ class CashiersPrintOpen extends AbstractAction
         }else{
             $display = 'display: none;';
         }
-
+        $url = route('print.open', ['cashier' => $this->data->id]);
         return [
             'class' => 'btn btn-sm btn-default pull-right',
             'style' => 'margin: 5px;'.$display,
-            'target' => '_blank'
+            'onclick' => "openWindow('$url', 'Apertura de caja')"
         ];
     }
 
-    public function getDefaultRoute()
-    {
-        return route('print.open', ['cashier' => $this->data->id]);
+    public function getDefaultRoute(){
+        return '#';
     }
     
     public function shouldActionDisplayOnDataType()

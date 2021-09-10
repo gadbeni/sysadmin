@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use DataTables;
 
 // Models
 use App\Models\Cashier;
 use App\Models\CashiersPayment;
+use App\Models\CashiersPaymentsDelete;
 
 class PlanillasController extends Controller
 {
@@ -53,6 +56,7 @@ class PlanillasController extends Controller
                                     ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
                                     ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
                                     ->where('p.CedulaIdentidad', $request->ci)
+                                    ->whereRaw($request->pagada ? 'p.pagada = '.$request->pagada : 1)
                                     ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
                                     ->orderBy("p.Periodo", "DESC")
                                     ->get();
@@ -98,6 +102,8 @@ class PlanillasController extends Controller
         if($total - $request->amount < 0){
             return response()->json(['error' => 1, 'message' => 'No tiene suficiente dinero en caja.']);
         }
+
+        DB::beginTransaction();
         try {
             DB::connection('mysqlgobe')->table('planillahaberes')
             ->where('id', $request->id)
@@ -113,8 +119,11 @@ class PlanillasController extends Controller
                 'observations' => $request->observations
             ]);
 
+            DB::commit();
             return response()->json(['success' => 1, 'payment_id' => $payment->id]);
         } catch (\Throwable $th) {
+            DB::rollback();
+            // dd($th);
             return response()->json(['error' => 1]);
         }
     }
@@ -129,18 +138,44 @@ class PlanillasController extends Controller
                 $id = [];
             }
         }
-        // dd($id);
+
         try {
             DB::connection('mysqlgobe')->table('planillaprocesada')
             ->whereIn('id', $id)
             ->update([
                 'Estado' => $request->status,
-                // 'Fecha_Pago' => date('Y-m-d')
+                'Fecha_Pago' => date('Y-m-d')
             ]);
 
             return response()->json(['success' => 1]);
         } catch (\Throwable $th) {
             return response()->json(['error' => 1]);
+        }
+    }
+
+    public function planilla_payment_delete(Request $request){
+        // dd($request);
+        DB::beginTransaction();
+        try {
+            DB::connection('mysqlgobe')->table('planillahaberes')
+                ->where('id', $request->planilla_haber_id)->update(['pagada' => 1]);
+
+            $payment = CashiersPayment::where('planilla_haber_id', $request->planilla_haber_id)->first();
+            $payment->deleted_at = Carbon::now();
+            $payment->save();
+
+            CashiersPaymentsDelete::create([
+                'cashiers_payment_id' => $payment->id,
+                'user_id' => Auth::user()->id,
+                'observations' => $request->observations
+            ]);
+
+            DB::commit();
+            return redirect()->route('voyager.cashiers.show', ['id' => $request->id])->with(['message' => 'Pago anulado correctamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            // dd($th);
+            return redirect()->route('voyager.cashiers.show', ['id' => $request->id])->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
 
@@ -154,5 +189,15 @@ class PlanillasController extends Controller
                         ->first();
         // dd($payment, $planilla);
         return view('planillas.payment-recipe', compact('payment', 'planilla'));
+    }
+
+    public function planillas_pago_delete_print($id){
+        $payment = CashiersPayment::with(['cashier.user', 'deletes.user'])->where('id', $id)->first();
+        $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                        ->where('p.id', $payment->planilla_haber_id)
+                        ->select('p.ID', 'p.Liquido_Pagable')
+                        ->first();
+        // dd($payment, $planilla);
+        return view('planillas.payment-recipe-delete', compact('payment', 'planilla'));
     }
 }

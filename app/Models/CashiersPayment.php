@@ -15,4 +15,8 @@ class CashiersPayment extends Model
     public function cashier(){
         return $this->belongsTo(Cashier::class);
     }
+
+    public function deletes(){
+        return $this->hasOne(CashiersPaymentsDelete::class);
+    }
 }

@@ -16,7 +16,7 @@
         }
         #watermark {
             position: absolute;
-            opacity: 0.1;
+            opacity: 0.2;
             z-index:  -1000;
         }
         #watermark img{
@@ -91,7 +91,7 @@
                 <td width="70%">
                     <table width="100%" cellpadding="3">
                         <tr>
-                            <td colspan="2" style="text-align: center"><b><small>SALDO</small></b></td>
+                            <td colspan="4" style="text-align: center"><b><small>SALDO</small></b></td>
                         </tr>
                         @php
                             $amount_open = 0;
@@ -130,25 +130,25 @@
                         @endphp
                         <tr>
                             <td width="120px"><b>SALDO INICIAL</b></td>
-                            <td style="border: 1px solid #ddd">{{ number_format($amount_open, 2, ',', '.') }}</td>
+                            <td style="border: 1px solid #ddd" colspan="3">{{ number_format($amount_open, 2, ',', '.') }}</td>
                         </tr>
-                        <tr>
+                        {{-- <tr>
                             <td colspan="2" style="text-align: center"><b><small>MOVIMIENTOS</small></b></td>
-                        </tr>
+                        </tr> --}}
                         <tr>
                             <td><b>INGRESOS TOTAL</b></td>
-                            <td style="border: 1px solid #ddd">{{ number_format($amount_in - $amount_transfers, 2, ',', '.') }}</td>
+                            <td style="border: 1px solid #ddd" colspan="3">{{ number_format($amount_in - $amount_transfers, 2, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td><b>EGRESOS TOTAL</b></td>
-                            <td style="border: 1px solid #ddd">{{ number_format($amount_out + $amount_payments, 2, ',', '.') }}</td>
+                            <td style="border: 1px solid #ddd" colspan="3">{{ number_format($amount_out + $amount_payments, 2, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td><b>TRASPASOS TOTAL</b></td>
-                            <td style="border: 1px solid #ddd">{{ number_format($amount_transfers, 2, ',', '.') }}</td>
+                            <td style="border: 1px solid #ddd" colspan="3">{{ number_format($amount_transfers, 2, ',', '.') }}</td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="text-align: center"><b><small>ARQUEO</small></b></td>
+                            <td colspan="4" style="text-align: center"><b><small>ARQUEO</small></b></td>
                         </tr>
                         @php
                             $total_cashier = $amount_open + $amount_in - $amount_out - $amount_payments;
@@ -157,9 +157,9 @@
                             <tr>
                                 <td><b>SALDO CAJA</b></td>
                                 <td style="border: 1px solid #ddd">{{ number_format($total_cashier, 2, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td><b>SALDO ARQUEO</b></td>
+                            {{-- </tr>
+                            <tr> --}}
+                                <td style="text-align: right; width: 120px"><b>SALDO ARQUEO</b></td>
                                 <td style="border: 1px solid #ddd">{{ number_format($amount_close, 2, ',', '.') }}</td>
                             </tr>
                         </tr>
@@ -170,13 +170,24 @@
                             <tr>
                                 <td><b>MONTO SOBRANTE</b></td>
                                 <td style="border: 1px solid #ddd">{{ number_format( $amount_diff > 0 ? abs($amount_diff) : 0, 2, ',', '.') }}</td>
-                            </tr>
-                            <tr>
-                                <td><b>MONTO FALTANTE</b></td>
+                            {{-- </tr>
+                            <tr> --}}
+                                <td style="text-align: right; width: 120px"><b>MONTO FALTANTE</b></td>
                                 <td style="border: 1px solid #ddd">{{ number_format($amount_diff < 0 ? abs($amount_diff) : 0, 2, ',', '.') }}</td>
                             </tr>
                         </tr>
                     </table>
+                    <br>
+                    <b>CORTES DE BILLETES</b>
+                    <div style="display: flex; border: 1px solid #ddd; padding: 10px 0px; margin-top: 10px">
+                        @foreach ($cashier->details as $cash)
+                            <div style="width: 33%; text-aign: center">
+                                <div style="text-align: center">{{ $cash->cash_value >= 1 ? intval($cash->cash_value) : number_format($cash->cash_value, 2, '.', '') }}</div>
+                                <div style="text-align: center">&darr;</div>
+                                <div style="text-align: center"><b>{{ intval($cash->quantity) }}</b></div>
+                            </div>
+                        @endforeach
+                    </div>
                 </td>
                 <td width="30%">
                     <div>
