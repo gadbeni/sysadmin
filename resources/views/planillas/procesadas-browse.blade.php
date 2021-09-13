@@ -68,7 +68,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <input type="number" min="0" name="periodo" class="form-control" value="202007" placeholder="Periodo"  />
+                                        <input type="number" min="0" name="periodo" class="form-control" placeholder="Periodo"  />
                                     </div>
                                     <div class="form-group">
                                         <select name="afp" class="form-control select2">

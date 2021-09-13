@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Reporte de aniversarios</title>
+    <link rel="shortcut icon" href="{{ asset('images/icon.png') }}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body{
+            margin: 0px auto;
+            font-family: Arial, sans-serif;
+            font-weight: 100;
+            /* max-width: 1024px; */
+        }
+        .btn-print{
+            padding: 5px 10px
+        }
+        th{
+            font-size: 7px
+        }
+        td{
+            font-size: 10px
+        }
+        @media print{
+            .hide-print{
+                display: none
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hide-print" style="text-align: right; padding: 10px 0px">
+        <button class="btn-print" onclick="window.close()">Cancelar <i class="fa fa-close"></i></button>
+        <button class="btn-print" onclick="window.print()"> Imprimir <i class="fa fa-print"></i></button>
+    </div>
+    <table width="100%">
+        <tr>
+            <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="80px"></td>
+            <td style="text-align: right">
+                <h3 style="margin-bottom: 0px; margin-top: 5px">
+                    REPORTE DE PAGOS AL SEGURO SOCIAL <br>
+                    @php
+                        $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                    @endphp
+                    <small>DIRECCIÓN DE BIENESTAR LABORAL Y PREVISIÓN SOCIAL</small> <br>
+                    <small style="font-size: 11px; font-weight: 100">Impreso por: {{ Auth::user()->name }} <br> {{ date('d/M/Y H:i:s') }}</small>
+                </h3>
+            </td>
+        </tr>
+        <tr>
+            <tr></tr>
+        </tr>
+    </table>
+    <br><br>
+    <table style="width: 100%; font-size: 12px" border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th style="text-align: center" colspan="9">DATOS GENERALES</th>
+                <th style="text-align: center" colspan="3">ADMINISTRADORES DE FONDOS DE PENSIONES</th>
+                <th style="text-align: center" colspan="6">CAJA DE SALUD CORDES</th>
+            </tr>
+            <tr>
+                <th>N&deg;</th>
+                {{-- <th>ID PAGO</th> --}}
+                <th>HR/NCI</th>
+                <th>PERIODO</th>
+                <th>DIRECCIÓN ADMINISTRATIVA</th>
+                <th>TIPO DE PLANILLA</th>
+                <th>CÓDIGO DE PLANILLA</th>
+                <th>N&deg; DE PERSONAS</th>
+                <th>AFP</th>
+                <th style="text-align: right">TOTAL GANADO</th>
+                <th style="text-align: right">APORTE AFP</th>
+                <th>FECHA DE PAGO AFP</th>
+                <th>N&deg; FCP</th>
+                <th style="text-align: right">APORTE CC</th>
+                <th>FECHA DE PAGO CC</th>
+                <th>F GTC-11</th>
+                <th>N&deg; DE CHEQUE</th>
+                <th>N&deg; DE RECIBO</th>
+                <th>N&deg; DE DEPOSITO</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php
+                $cont = 1;
+                $total_ganado = 0;
+                $total_afp = 0;
+                $total_cc = 0;
+            @endphp
+            @forelse ($planillas as $item)
+                <tr>
+                    <td>{{ $cont }}</td>
+                    {{-- <td></td> --}}
+                    <td>{{ $item->certificacion ? $item->certificacion->HojaRuta_NCI : '' }}</td>
+                    <td>{{ $item->Periodo }}</td>
+                    <td>{{ $item->Direccion_Administrativa }}</td>
+                    <td>{{ $item->tipo_planilla }} {{ $item->certificacion ? ' - '.$item->certificacion->nombre_planilla : '' }}</td>
+                    <td>{{ $item->idPlanillaprocesada }}</td>
+                    <td>{{ $item->cantidad_personas }}</td>
+                    <td>{{ $item->Afp == 1 ? 'Futuro' : 'Previsión' }}</td>
+                    <td style="text-align: right">{{ number_format($item->Liquido_Pagable, 2, ',', '.') }}</td>
+                    <td style="text-align: right">{{ number_format($item->Total_Aportes_Afp, 2, ',', '.') }}</td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right">{{ number_format($item->Liquido_Pagable*0.1, 2, ',', '.') }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                @php
+                    $cont++;
+                    $total_ganado += $item->Liquido_Pagable;
+                    $total_afp += $item->Total_Aportes_Afp;
+                    $total_cc += $item->Liquido_Pagable * 0.1;
+                @endphp
+            @empty
+                
+            @endforelse
+            <tr>
+                <td colspan="8"></td>
+                <td><b>{{ number_format($total_ganado, 2, ',', '.') }}</b></td>
+                <td><b>{{ number_format($total_afp, 2, ',', '.') }}</b></td>
+                <td></td>
+                <td></td>
+                <td><b>{{ number_format($total_cc, 2, ',', '.') }}</b></td>
+                <td colspan="5"></td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        document.body.addEventListener('keypress', function(e) {
+            switch (e.key) {
+                case 'Enter':
+                    window.print();
+                    break;
+                case 'Escape':
+                    window.close();
+                default:
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>

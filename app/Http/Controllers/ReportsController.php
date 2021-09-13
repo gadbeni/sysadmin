@@ -62,4 +62,40 @@ class ReportsController extends Controller
             return view('reports.rr_hh.aniversarios-list', compact('funcionarios'));
         }
     }
+
+    public function social_security_payments_index(){
+        $direcciones_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
+        return view('reports.social_security.payments-browse', compact('direcciones_administrativa'));
+    }
+
+    public function social_security_payments_list(Request $request){
+        $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                        ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                        ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                        ->whereRaw($request->afp ? 'ph.Afp = '.$request->afp : 1)
+                        ->whereRaw($request->id_ad ? 'pp.idDa = '.$request->id_ad : 1)
+                        ->whereRaw($request->periodo ? 'ph.Periodo = '.$request->periodo : 1)
+                        ->whereRaw($request->id_planilla ? 'ph.idPlanillaprocesada = '.$request->id_planilla : 1)
+                        ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
+                        ->orderBy('ph.idPlanillaprocesada')
+                        ->selectRaw('ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, sum(ph.Total_Aportes_Afp) as Total_Aportes_Afp, count(ph.Total_Aportes_Afp) as cantidad_personas, ph.pagada as certificacion, sum(ph.Liquido_Pagable) as Liquido_Pagable, ph.Direccion_Administrativa, ph.Afp')
+                        ->get();
+        $cont = 0;
+        foreach ($planillas as $item) {
+            $certificacion = DB::connection('mysqlgobe')->table('certiplanilla as cp')
+                                    ->join('planilla as p', 'p.ID', 'cp.IDplanilla')
+                                    ->where('Num_planilla', 'like', '%'.$item->idPlanillaprocesada.'%')
+                                    ->select('cp.*', 'p.Nombre as nombre_planilla')
+                                    ->first();
+            $planillas[$cont]->certificacion = $certificacion;
+            $cont++;
+        }
+        
+        // dd($planillas);
+        if($request->print){
+            return view('reports.social_security.payments-list-pdf', compact('planillas'));
+        }else{
+            return view('reports.social_security.payments-list', compact('planillas'));
+        }
+    }
 }

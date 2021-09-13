@@ -272,7 +272,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 0,
                 'add' => 0,
                 'delete' => 0,
-                'details' => NULL,
+                'details' => '{}',
                 'order' => 1,
             ),
             16 => 
@@ -288,7 +288,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => NULL,
+                'details' => '{}',
                 'order' => 2,
             ),
             17 => 
@@ -304,7 +304,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 0,
                 'add' => 0,
                 'delete' => 0,
-                'details' => NULL,
+                'details' => '{}',
                 'order' => 3,
             ),
             18 => 
@@ -320,7 +320,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 0,
                 'add' => 0,
                 'delete' => 0,
-                'details' => NULL,
+                'details' => '{}',
                 'order' => 4,
             ),
             19 => 
@@ -336,7 +336,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => NULL,
+                'details' => '{}',
                 'order' => 5,
             ),
             20 => 

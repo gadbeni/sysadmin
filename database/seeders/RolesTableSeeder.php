@@ -19,24 +19,38 @@ class RolesTableSeeder extends Seeder
             ])->save();
         }
 
-        $role = Role::firstOrNew(['name' => 'encargado_caja']);
+        $role = Role::firstOrNew(['name' => 'caja_responsable_boveda']);
         if (!$role->exists) {
             $role->fill([
-                'display_name' => 'Responsable de sección caja',
+                'display_name' => 'Responsable de bóveda',
             ])->save();
         }
 
-        $role = Role::firstOrNew(['name' => 'cajero']);
+        $role = Role::firstOrNew(['name' => 'caja_cajero']);
         if (!$role->exists) {
             $role->fill([
                 'display_name' => 'Cajero(a)',
             ])->save();
         }
 
-        $role = Role::firstOrNew(['name' => 'jefe_seccion_caja']);
+        $role = Role::firstOrNew(['name' => 'caja_responsable_valores']);
         if (!$role->exists) {
             $role->fill([
-                'display_name' => 'Jefe de sección caja',
+                'display_name' => 'Responsable de valores',
+            ])->save();
+        }
+
+        $role = Role::firstOrNew(['name' => 'caja_administrador']);
+        if (!$role->exists) {
+            $role->fill([
+                'display_name' => 'Administrador',
+            ])->save();
+        }
+
+        $role = Role::firstOrNew(['name' => 'prevision_administrador']);
+        if (!$role->exists) {
+            $role->fill([
+                'display_name' => 'Administrador',
             ])->save();
         }
     }
