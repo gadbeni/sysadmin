@@ -3,7 +3,7 @@
 @section('content')
     <div class="page-content browse container-fluid">
         @include('voyager::alerts')
-        @if (Auth::user()->role_id == 3)
+        @if (Auth::user()->role->name == 'caja_cajero')
             @php
                 $cashier = \App\Models\Cashier::with(['movements' => function($q){
                     $q->where('deleted_at', NULL);
@@ -376,7 +376,7 @@
 @stop
 
 @section('javascript')
-    @if (Auth::user()->role_id == 3 && $cashier)
+    @if (Auth::user()->role->name == 'caja_cajero' && $cashier)
         @if ($cashier->status == 'abierta')
             <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js"></script>
             <script>

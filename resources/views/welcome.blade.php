@@ -68,7 +68,7 @@
         <img src="{{ asset('vendor/landingpage/img/hero-img.png') }}" alt="" class="img-fluid">
       </div>
 
-      <form id="form-search" action="{{ route('home.search') }}" method="post">
+      <form id="form-search" action="{{ route('home.search.payroll.ci') }}" method="post">
         <div class="hero-info" data-aos="zoom-in" data-aos-delay="100">
             <h2>SISTEMA DE GESTIÓN DE PAGOS</h2>
             <div class="input-group mb-3 mt-5 input-group-lg">

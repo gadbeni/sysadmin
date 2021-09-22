@@ -82,9 +82,9 @@
                     <td>{{ $item->CedulaIdentidad }}</td>
                     <td>{{ $item->Expedido }}</td>
                     <td>{{ $item->Num_Nua }}</td>
-                    <td>{{ $item->Fecha_Ingreso }}</td>
+                    <td>{{ $item->Fecha_Inicio }}</td>
                     <td>{{ $item->fechanacimiento }}</td>
-                    <td></td>
+                    <td>{{ $item->Fecha_Conclusion == '0000-00-00' ? 'No definida' : $item->Fecha_Conclusion }}</td>
                 </tr>
                 @php
                     $cont++;

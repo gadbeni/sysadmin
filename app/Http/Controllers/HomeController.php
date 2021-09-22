@@ -11,7 +11,7 @@ class HomeController extends Controller
         return view('welcome');
     }
 
-    public function search(Request $request){
+    public function search_payroll_by_ci(Request $request){
         $search = $request->search;
         $person = DB::connection('mysqlgobe')->table('contribuyente')
                         ->where('N_Carnet', $search)

@@ -12,46 +12,68 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
+        // Root
         $role = Role::firstOrNew(['name' => 'admin']);
         if (!$role->exists) {
-            $role->fill([
-                'display_name' => __('voyager::seeders.roles.admin'),
-            ])->save();
+            $role->fill(['display_name' => __('voyager::seeders.roles.admin')])->save();
+        }
+
+        // Caja
+        $role = Role::firstOrNew(['name' => 'caja_jefe_seccion']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Jefe(a) de sección'])->save();
         }
 
         $role = Role::firstOrNew(['name' => 'caja_responsable_boveda']);
         if (!$role->exists) {
-            $role->fill([
-                'display_name' => 'Responsable de bóveda',
-            ])->save();
-        }
-
-        $role = Role::firstOrNew(['name' => 'caja_cajero']);
-        if (!$role->exists) {
-            $role->fill([
-                'display_name' => 'Cajero(a)',
-            ])->save();
+            $role->fill(['display_name' => 'Responsable de bóveda'])->save();
         }
 
         $role = Role::firstOrNew(['name' => 'caja_responsable_valores']);
         if (!$role->exists) {
-            $role->fill([
-                'display_name' => 'Responsable de valores',
-            ])->save();
+            $role->fill(['display_name' => 'Responsable de valores'])->save();
         }
 
-        $role = Role::firstOrNew(['name' => 'caja_administrador']);
+        $role = Role::firstOrNew(['name' => 'caja_cajero']);
         if (!$role->exists) {
-            $role->fill([
-                'display_name' => 'Administrador',
-            ])->save();
+            $role->fill(['display_name' => 'Cajero(a)'])->save();
         }
 
-        $role = Role::firstOrNew(['name' => 'prevision_administrador']);
+        // Previsión social
+        $role = Role::firstOrNew(['name' => 'prevision_director']);
         if (!$role->exists) {
-            $role->fill([
-                'display_name' => 'Administrador',
-            ])->save();
+            $role->fill(['display_name' => 'Director(a)'])->save();
+        }
+
+        $role = Role::firstOrNew(['name' => 'prevision_jefe_seccion']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Jefe(a) de sección'])->save();
+        }
+
+        $role = Role::firstOrNew(['name' => 'prevision_tecnico']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Técnico'])->save();
+        }
+
+        // Recursos humanos
+        $role = Role::firstOrNew(['name' => 'rrhh_director']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Director(a)'])->save();
+        }
+
+        $role = Role::firstOrNew(['name' => 'rrhh_jefe_unidad']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Jefe(a) de unidad'])->save();
+        }
+
+        $role = Role::firstOrNew(['name' => 'rrhh_jefe_seccion']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Jefe(a) de sección'])->save();
+        }
+
+        $role = Role::firstOrNew(['name' => 'rrhh_tecnico']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Técnico'])->save();
         }
     }
 }

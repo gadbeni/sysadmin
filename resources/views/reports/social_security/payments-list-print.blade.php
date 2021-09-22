@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Reporte de aniversarios</title>
+    <title>Reporte de pagos al seguro social</title>
     <link rel="shortcut icon" href="{{ asset('images/icon.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
@@ -101,22 +101,22 @@
                     <td>{{ $item->idPlanillaprocesada }}</td>
                     <td>{{ $item->cantidad_personas }}</td>
                     <td>{{ $item->Afp == 1 ? 'Futuro' : 'Previsión' }}</td>
-                    <td style="text-align: right">{{ number_format($item->Liquido_Pagable, 2, ',', '.') }}</td>
+                    <td style="text-align: right">{{ number_format($item->total_ganado, 2, ',', '.') }}</td>
                     <td style="text-align: right">{{ number_format($item->Total_Aportes_Afp, 2, ',', '.') }}</td>
-                    <td></td>
-                    <td></td>
-                    <td style="text-align: right">{{ number_format($item->Liquido_Pagable*0.1, 2, ',', '.') }}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ $item->detalle_pago ? $item->detalle_pago->date_payment_afp : '' }}</td>
+                    <td>{{ $item->detalle_pago ? $item->detalle_pago->fpc_number : '' }}</td>
+                    <td style="text-align: right">{{ number_format($item->total_ganado*0.1, 2, ',', '.') }}</td>
+                    <td>{{ $item->detalle_pago ? $item->detalle_pago->date_payment_cc : '' }}</td>
+                    <td>{{ $item->detalle_pago ? $item->detalle_pago->gtc_number : '' }}</td>
+                    <td>{{ $item->detalle_pago ? $item->detalle_pago->check_number : '' }}</td>
+                    <td>{{ $item->detalle_pago ? $item->detalle_pago->recipe_number : '' }}</td>
+                    <td>{{ $item->detalle_pago ? $item->detalle_pago->deposit_number : '' }}</td>
                 </tr>
                 @php
                     $cont++;
-                    $total_ganado += $item->Liquido_Pagable;
+                    $total_ganado += $item->total_ganado;
                     $total_afp += $item->Total_Aportes_Afp;
-                    $total_cc += $item->Liquido_Pagable * 0.1;
+                    $total_cc += $item->total_ganado * 0.1;
                 @endphp
             @empty
                 

@@ -21,28 +21,34 @@
                             <form name="form_search" id="form-search" action="{{ route('reports.humans_resources.contraloria.list') }}" method="post">
                                 @csrf
                                 <input type="hidden" name="print">
-                                <div class="form-group">
-                                    {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
-                                    <select name="t_planilla" class="form-control select2">
-                                        <option selected disabled>Tipo de planilla</option>
-                                        <option value="1">Funcionamiento</option>
-                                        <option value="2">Inversión</option>
-                                    </select>
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
+                                        <select name="t_planilla" class="form-control select2">
+                                            <option selected disabled>Tipo de planilla</option>
+                                            <option value="1">Funcionamiento</option>
+                                            <option value="2">Inversión</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <input type="number" min="0" name="periodo" class="form-control" value="{{ date('Y') }}{{ str_pad(date('m')-1, 2, '0',STR_PAD_LEFT) }}" placeholder="Periodo"  />
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <select name="afp" class="form-control select2">
+                                            <option value="">Todas las AFP</option>
+                                            <option value="1">Futuro</option>
+                                            <option value="2">Previsión</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        {{-- <label class="radio-inline"><input type="radio" value="todos" name="type">Todos</label> --}}
+                                        <label class="radio-inline"><input type="radio" value="activos" name="type" checked>Activos</label>
+                                        <label class="radio-inline"><input type="radio" value="inactivos" name="type">Inactivos</label>
+                                    </div>
+                                    <div class="text-right col-md-12">
+                                        <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <input type="number" min="0" name="periodo" class="form-control" value="{{ date('Y') }}{{ str_pad(date('m')-1, 2, '0',STR_PAD_LEFT) }}" placeholder="Periodo"  />
-                                </div>
-                                <div class="form-group">
-                                    <select name="afp" class="form-control select2">
-                                        <option value="">Todas las AFP</option>
-                                        <option value="1">Futuro</option>
-                                        <option value="2">Previsión</option>
-                                    </select>
-                                </div>
-                                <div class="text-right">
-                                    <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
-                                </div>
-                                <br>
                             </form>
                         </div>
                     </div>

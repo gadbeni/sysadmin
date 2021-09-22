@@ -12,8 +12,14 @@ class PermissionsTableSeeder extends Seeder
      */
     public function run()
     {
+        \DB::table('permissions')->delete();
+        
+        Permission::firstOrCreate([
+            'key'        => 'browse_admin',
+            'table_name' => 'admin',
+        ]);
+        
         $keys = [
-            'browse_admin',
             'browse_bread',
             'browse_database',
             'browse_media',
@@ -38,9 +44,23 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('cashiers');
         Permission::generateFor('vaults');
 
+
+        $keys = [
+            'browse_social-securitypayments'
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'social-security',
+            ]);
+        }
+
+        // Reports
         $keys = [
             'browse_reportshumans-resourcescontraloria',
-            'browse_reportshumans-resourcesaniversarios'
+            'browse_reportshumans-resourcesaniversarios',
+            'browse_reportssocial-security'
         ];
 
         foreach ($keys as $key) {

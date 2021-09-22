@@ -66,6 +66,21 @@ class PlanillasController extends Controller
         return view('planillas.procesadas-search', compact('planilla', 'tipo_planilla'));
     }
 
+    public function planilla_search_by_id(){
+        $search = \Request::query('q');
+        if($search){
+            return DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                        ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                        ->join('planilla as p', 'p.ID', 'pp.idPlanilla')
+                        ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                        ->whereRaw('ph.idPlanillaprocesada like "%'.$search.'%"')
+                        ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
+                        ->orderBy('ph.idPlanillaprocesada')
+                        ->selectRaw('ph.ID as id, ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, sum(ph.Total_Aportes_Afp) as Total_Aportes_Afp, count(ph.Total_Aportes_Afp) as cantidad_personas, ph.pagada as certificacion, sum(ph.Liquido_Pagable) as Liquido_Pagable, ph.Direccion_Administrativa, ph.Afp')
+                        ->get();
+        }
+    }
+
     public function planilla_details_open(Request $request){
         try {
             $id = $request->id;

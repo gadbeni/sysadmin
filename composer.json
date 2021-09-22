@@ -16,6 +16,7 @@
         "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
         "laraveles/spanish": "^1.5",
+        "maatwebsite/excel": "^3.1",
         "orangehill/iseed": "^3.0",
         "tcg/voyager": "^1.4",
         "yajra/laravel-datatables-oracle": "^9.18"
