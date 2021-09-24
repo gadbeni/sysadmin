@@ -91,13 +91,22 @@ class ReportsController extends Controller
     }
 
     public function social_security_payments_list(Request $request){
+        $periodo = $request->periodo;
+        $query_range = 1;
+        if(strpos($periodo, '-') != false){
+            $periodos = explode('-', $periodo);
+            $query_range = '(ph.Periodo >= "'.$periodos[0].'" and ph.Periodo <= "'.$periodos[1].'")';
+        }else{
+            $query_range = 'ph.Periodo = '.$request->periodo;
+        }
         $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
                         ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
                         ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
                         ->whereRaw($request->afp ? 'ph.Afp = '.$request->afp : 1)
-                        ->whereRaw($request->id_ad ? 'pp.idDa = '.$request->id_ad : 1)
-                        ->whereRaw($request->periodo ? 'ph.Periodo = '.$request->periodo : 1)
+                        ->whereRaw($request->id_da ? 'pp.idDa = '.$request->id_da : 1)
+                        ->whereRaw($query_range)
                         ->whereRaw($request->id_planilla ? 'ph.idPlanillaprocesada = '.$request->id_planilla : 1)
+                        ->whereRaw('(tp.ID = 1 or tp.ID = 2)')
                         ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
                         ->orderBy('ph.idPlanillaprocesada')
                         ->selectRaw('ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, sum(ph.Total_Aportes_Afp) as Total_Aportes_Afp, count(ph.Total_Aportes_Afp) as cantidad_personas, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp')

@@ -68,9 +68,9 @@ Route::group(['prefix' => 'admin'], function () {
     // * Cheques
     Route::get('social-security/checks', [SocialSecurityController::class, 'checks_index'])->name('checks.index');
     Route::get('social-security/checks/list', [SocialSecurityController::class, 'checks_list'])->name('checks.list');
-    Route::get('social-security/checks/{check}', [SocialSecurityController::class, 'checks_show'])->name('checks.show');
     Route::get('social-security/checks/create', [SocialSecurityController::class, 'checks_create'])->name('checks.create');
     Route::post('social-security/checks/store', [SocialSecurityController::class, 'checks_store'])->name('checks.store');
+    Route::get('social-security/checks/{check}', [SocialSecurityController::class, 'checks_show'])->name('checks.show');
     Route::get('social-security/checks/{check}/edit', [SocialSecurityController::class, 'checks_edit'])->name('checks.edit');
     Route::put('social-security/checks/{check}/update', [SocialSecurityController::class, 'checks_update'])->name('checks.update');
     Route::delete('social-security/checks/{check}/delete', [SocialSecurityController::class, 'checks_delete'])->name('checks.delete');
@@ -78,9 +78,9 @@ Route::group(['prefix' => 'admin'], function () {
     // *Pagos
     Route::get('social-security/payments', [SocialSecurityController::class, 'payments_index'])->name('payments.index');
     Route::get('social-security/payments/list', [SocialSecurityController::class, 'payments_list'])->name('payments.list');
-    Route::get('social-security/payments/{payment}', [SocialSecurityController::class, 'payments_show'])->name('payments.show');
     Route::get('social-security/payments/create', [SocialSecurityController::class, 'payments_create'])->name('payments.create');
     Route::post('social-security/payments/store', [SocialSecurityController::class, 'payments_store'])->name('payments.store');
+    Route::get('social-security/payments/{payment}', [SocialSecurityController::class, 'payments_show'])->name('payments.show');
     Route::get('social-security/payments/{payment}/edit', [SocialSecurityController::class, 'payments_edit'])->name('payments.edit');
     Route::put('social-security/payments/{payment}/update', [SocialSecurityController::class, 'payments_update'])->name('payments.update');
     Route::delete('social-security/payments/{payment}/delete', [SocialSecurityController::class, 'payments_delete'])->name('payments.delete');

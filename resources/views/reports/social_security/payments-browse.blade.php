@@ -38,6 +38,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <input type="text" name="periodo" class="form-control" placeholder="Periodo">
+                                    <small>Por rango Ej: 202101-202105</small>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <input type="text" name="id_planilla" class="form-control" placeholder="Código de planilla">

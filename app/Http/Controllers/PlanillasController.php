@@ -76,7 +76,7 @@ class PlanillasController extends Controller
                         ->whereRaw('ph.idPlanillaprocesada like "%'.$search.'%"')
                         ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
                         ->orderBy('ph.idPlanillaprocesada')
-                        ->selectRaw('ph.ID as id, ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, sum(ph.Total_Aportes_Afp) as Total_Aportes_Afp, count(ph.Total_Aportes_Afp) as cantidad_personas, ph.pagada as certificacion, sum(ph.Liquido_Pagable) as Liquido_Pagable, ph.Direccion_Administrativa, ph.Afp')
+                        ->selectRaw('ph.ID as id, ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, sum(ph.Total_Aportes_Afp) as Total_Aportes_Afp, count(ph.Total_Aportes_Afp) as cantidad_personas, ph.pagada as certificacion, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp')
                         ->get();
         }
     }

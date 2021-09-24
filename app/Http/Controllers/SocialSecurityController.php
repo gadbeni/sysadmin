@@ -73,8 +73,9 @@ class SocialSecurityController extends Controller
             ChecksPayment::create([
                 'user_id' => Auth::user()->id,
                 'planilla_haber_id' => $request->planilla_haber_id,
+                'number' => $request->number,
                 'amount' => $request->amount,
-                'beneficiary' => $request->beneficiary,
+                'checks_beneficiary_id' => $request->checks_beneficiary_id,
                 'date_print' => $request->date_print,
                 'observations' => $request->observations
             ]);

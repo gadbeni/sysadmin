@@ -13,8 +13,8 @@
                     <thead>
                         <tr>
                             <th style="text-align: center" colspan="9">DATOS GENERALES</th>
-                            <th style="text-align: center" colspan="3">ADMINISTRADORES DE FONDOS DE PENSIONES</th>
-                            <th style="text-align: center" colspan="6">CAJA DE SALUD CORDES</th>
+                            <th style="text-align: center" colspan="4">ADMINISTRADORES DE FONDOS DE PENSIONES</th>
+                            <th style="text-align: center" colspan="7">CAJA DE SALUD CORDES</th>
                         </tr>
                         <tr>
                             <th>N&deg;</th>
@@ -30,12 +30,14 @@
                             <th style="text-align: right">APORTE AFP</th>
                             <th>FECHA DE PAGO AFP</th>
                             <th>N&deg; FCP</th>
+                            <th>MULTA AFP</th>
                             <th style="text-align: right">APORTE CC</th>
                             <th>FECHA DE PAGO CC</th>
                             <th>F GTC-11</th>
                             <th>N&deg; DE CHEQUE</th>
                             <th>N&deg; DE RECIBO</th>
                             <th>N&deg; DE DEPOSITO</th>
+                            <th>MULTA CC</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,12 +62,14 @@
                                 <td style="text-align: right">{{ number_format($item->Total_Aportes_Afp, 2, ',', '.') }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->date_payment_afp : '' }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->fpc_number : '' }}</td>
+                                <td></td>
                                 <td style="text-align: right">{{ number_format($item->total_ganado*0.1, 2, ',', '.') }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->date_payment_cc : '' }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->gtc_number : '' }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->check_number : '' }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->recipe_number : '' }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->deposit_number : '' }}</td>
+                                <td></td>
                             </tr>
                             @php
                                 $cont++;
@@ -77,9 +81,10 @@
                             
                         @endforelse
                         <tr>
-                            <td colspan="8"></td>
+                            <td colspan="8"><b>TOTAL</b></td>
                             <td><b>{{ number_format($total_ganado, 2, ',', '.') }}</b></td>
                             <td><b>{{ number_format($total_afp, 2, ',', '.') }}</b></td>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td><b>{{ number_format($total_cc, 2, ',', '.') }}</b></td>

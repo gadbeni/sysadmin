@@ -26,6 +26,10 @@
                                     <label for="planilla_haber_id">Planilla(s)</label>
                                     <select name="planilla_haber_id" id="select-planilla_haber_id" class="form-control" required></select>
                                 </div>
+                                <div class="col-md-12" style="margin: 0px">
+                                    <br>
+                                    <h4>AFP's  <hr> </h4>
+                                </div>
                                 <div class="form-group col-md-6">
                                     <label for="date_payment_afp">Fecha de pago a AFP</label>
                                     <input type="date" class="form-control" name="date_payment_afp" value="{{ $type == 'edit' ? $data->date_payment_afp : '' }}" >
@@ -33,6 +37,10 @@
                                 <div class="form-group col-md-6">
                                     <label for="fpc_number">N&deg; de FPC</label>
                                     <input type="number" class="form-control" name="fpc_number" value="{{ $type == 'edit' ? $data->fpc_number : '' }}">
+                                </div>
+                                <div class="col-md-12" style="margin: 0px">
+                                    <br>
+                                    <h4>Caja Cordes  <hr> </h4>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="date_payment_cc">Fecha de pago a Caja Cordes</label>
@@ -42,19 +50,15 @@
                                     <label for="gtc_number">N&deg; de GTC-11</label>
                                     <input type="number" class="form-control" name="gtc_number" value="{{ $type == 'edit' ? $data->gtc_number : '' }}">
                                 </div>
-                                <div class="col-md-12" style="margin: 0px">
-                                    <br>
-                                    <h4>Datos adicionales  <hr> </h4>
-                                </div>
-                                <div class="form-group col-md-4">
+                                {{-- <div class="form-group col-md-4">
                                     <label for="gtc_number">N&deg; de cheque</label>
                                     <input type="number" class="form-control" name="check_number" value="{{ $type == 'edit' ? $data->check_number : '' }}">
-                                </div>
-                                <div class="form-group col-md-4">
+                                </div> --}}
+                                <div class="form-group col-md-6">
                                     <label for="recipe_number">N&deg; de recibo</label>
                                     <input type="number" class="form-control" name="recipe_number" value="{{ $type == 'edit' ? $data->recipe_number : '' }}">
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <label for="deposit_number">N&deg; de deposito</label>
                                     <input type="number" class="form-control" name="deposit_number" value="{{ $type == 'edit' ? $data->deposit_number : '' }}">
                                 </div>

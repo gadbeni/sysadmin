@@ -16,7 +16,9 @@ class CreateChecksPaymentsTable extends Migration
         Schema::create('checks_payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->foreignId('checks_beneficiary_id')->nullable()->constrained('checks_beneficiaries');
             $table->integer('planilla_haber_id')->nullable();
+            $table->text('number')->nullable();
             $table->decimal('amount', 10, 2)->nullable();
             $table->text('beneficiary')->nullable();
             $table->date('date_print')->nullable();
