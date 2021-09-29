@@ -96,7 +96,7 @@ class ReportsController extends Controller
         if(strpos($periodo, '-') != false){
             $periodos = explode('-', $periodo);
             $query_range = '(ph.Periodo >= "'.$periodos[0].'" and ph.Periodo <= "'.$periodos[1].'")';
-        }else{
+        }else if($periodo){
             $query_range = 'ph.Periodo = '.$request->periodo;
         }
         $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
@@ -122,7 +122,7 @@ class ReportsController extends Controller
             $planillas[$cont]->certificacion = $certificacion;
 
             // Obtener detalle de pago
-            $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $item->idPlanillaprocesada)->get();
+            $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('Afp', $item->Afp)->where('idPlanillaprocesada', $item->idPlanillaprocesada)->get();
             $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->first();
             $planillas[$cont]->detalle_pago = $pago;
 

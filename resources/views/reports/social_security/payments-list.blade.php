@@ -48,6 +48,10 @@
                             $total_cc = 0;
                         @endphp
                         @forelse ($planillas as $item)
+                            @php
+                                $aporte_patronal = $item->total_ganado * 0.0671;
+                                $aporte_caja_cordes = $item->total_ganado * 0.1;
+                            @endphp
                             <tr>
                                 <td>{{ $cont }}</td>
                                 {{-- <td></td> --}}
@@ -59,11 +63,11 @@
                                 <td>{{ $item->cantidad_personas }}</td>
                                 <td>{{ $item->Afp == 1 ? 'Futuro' : 'Previsión' }}</td>
                                 <td style="text-align: right">{{ number_format($item->total_ganado, 2, ',', '.') }}</td>
-                                <td style="text-align: right">{{ number_format($item->Total_Aportes_Afp, 2, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($item->Total_Aportes_Afp + $aporte_patronal, 2, ',', '.') }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->date_payment_afp : '' }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->fpc_number : '' }}</td>
                                 <td></td>
-                                <td style="text-align: right">{{ number_format($item->total_ganado*0.1, 2, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($aporte_caja_cordes, 2, ',', '.') }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->date_payment_cc : '' }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->gtc_number : '' }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->check_number : '' }}</td>
@@ -74,8 +78,8 @@
                             @php
                                 $cont++;
                                 $total_ganado += $item->total_ganado;
-                                $total_afp += $item->Total_Aportes_Afp;
-                                $total_cc += $item->total_ganado * 0.1;
+                                $total_afp += $item->Total_Aportes_Afp + $aporte_patronal;
+                                $total_cc += $aporte_caja_cordes;
                             @endphp
                         @empty
                             

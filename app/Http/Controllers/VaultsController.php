@@ -32,10 +32,12 @@ class VaultsController extends Controller
     {
         $vault = Vault::with(['details.cash' => function($q){
             $q->where('deleted_at', NULL);
-        }])
-        ->whereHas('details', function($q){
+        }, 'details' => function($q){
             $q->where('deleted_at', NULL);
-        })
+        }])
+        // ->whereHas('details', function($q){
+        //     $q->where('deleted_at', NULL);
+        // })
         ->where('deleted_at', NULL)->first();
         return view('vaults.browse', compact('vault'));
     }
