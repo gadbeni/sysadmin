@@ -21,7 +21,7 @@
                             {{-- <form name="form_search" id="form-search" action="{{ route('reports.social_security.payments.list') }}" method="post">
                                 @csrf
                             </form> --}}
-                            <form id="form-search" action="{{ route('reports.social_security.payments.list') }}" method="post">
+                            <form id="form-search" name="form_search" action="{{ route('reports.social_security.payments.list') }}" method="post">
                                 @csrf
                                 <div class="form-group text-right">
                                     <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="1" checked>No centralizada</label>
@@ -31,14 +31,6 @@
                                 <div class="input-no-centralizada">
                                     <input type="hidden" name="type">
                                     <div class="form-group col-md-12">
-                                        {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
-                                        <select name="t_planilla" class="form-control select2">
-                                            <option selected disabled>Todos los tipos de planilla</option>
-                                            <option value="1">Funcionamiento</option>
-                                            <option value="2">Inversión</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-md-12">
                                         <select name="id_da" class="form-control select2">
                                             <option value="">Todas las direcciones administrativas</option>
                                             @foreach ($direcciones_administrativa as $item)
@@ -46,7 +38,15 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group col-md-12">
+                                    <div class="form-group col-md-6">
+                                        {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
+                                        <select name="t_planilla" class="form-control select2">
+                                            <option selected disabled>Todos los tipos de planilla</option>
+                                            <option value="1">Funcionamiento</option>
+                                            <option value="2">Inversión</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
                                         <select name="afp" class="form-control select2">
                                             <option value="">Todas las AFP</option>
                                             <option value="1">Futuro</option>
@@ -59,9 +59,6 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <input type="text" name="id_planilla" class="form-control" placeholder="Código de planilla">
-                                    </div>
-                                    <div class="col-md-12 text-right">
-                                        <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
                                     </div>
                                 </div>
                                 
@@ -85,9 +82,12 @@
                                             <option value="2">Previsión</option>
                                         </select>
                                     </div>
-                                    <div class="text-right">
-                                        <button type="submit" class="btn btn-info" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
-                                    </div>
+                                </div>
+                                <div class="form-group col-md-12 text-right">
+                                    <label class="checkbox-inline"><input type="checkbox" name="group_afp" value="1" checked>Agrupar por AFP</label>
+                                </div>
+                                <div class="col-md-12 text-right">
+                                    <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
                                 </div>
                             </form>
                         </div>

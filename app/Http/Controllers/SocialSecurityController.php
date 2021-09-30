@@ -24,13 +24,16 @@ class SocialSecurityController extends Controller
     }
 
     public function checks_list(){
-        $data = ChecksPayment::with(['user'])->where('deleted_at', NULL)->get();
-        // return $data;
+        $data = ChecksPayment::with(['user', 'check_beneficiary.type'])->where('deleted_at', NULL)->get();
+        // return $data[0]->check_beneficiary;
         return
             DataTables::of($data)
             ->addColumn('planilla_id', function($row){
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $row->planilla_haber_id)->first();
                 return $planilla->idPlanillaprocesada;
+            })
+            ->addColumn('beneficiary', function($row){
+                return $row->check_beneficiary->full_name.'<br><small>'.$row->check_beneficiary->type->name.'<small>';
             })
             ->addColumn('user', function($row){
                 return $row->user->name;
@@ -53,7 +56,7 @@ class SocialSecurityController extends Controller
                     </div>';
                 return $actions;
             })
-            ->rawColumns(['planilla_id', 'user', 'created_at', 'actions'])
+            ->rawColumns(['planilla_id', 'beneficiary', 'user', 'created_at', 'actions'])
             ->make(true);
     }
 

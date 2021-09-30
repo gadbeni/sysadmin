@@ -99,59 +99,100 @@ class ReportsController extends Controller
             }else if($periodo){
                 $query_range = 'ph.Periodo = '.$request->periodo;
             }
-            $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
-                            ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
-                            ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
-                            ->whereRaw($request->t_planilla ? 'ph.Tplanilla = '.$request->t_planilla : 1)
-                            ->whereRaw($request->afp ? 'ph.Afp = '.$request->afp : 1)
-                            ->whereRaw($request->id_da ? 'pp.idDa = '.$request->id_da : 1)
-                            ->whereRaw($query_range)
-                            ->whereRaw($request->id_planilla ? 'ph.idPlanillaprocesada = '.$request->id_planilla : 1)
-                            ->whereRaw('(tp.ID = 1 or tp.ID = 2)')
-                            ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
-                            ->orderBy('ph.idPlanillaprocesada')
-                            ->selectRaw('ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, ROUND(SUM(ph.Total_Aportes_Afp), 2) as Total_Aportes_Afp, ROUND(SUM(ph.Riesgo_Comun), 2) as riesgo_comun, count(ph.Total_Aportes_Afp) as cantidad_personas, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp')
-                            ->get();
+
+            if($request->group_afp){
+                $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                                    ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                                    ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                    ->whereRaw($request->t_planilla ? 'ph.Tplanilla = '.$request->t_planilla : 1)
+                                    ->whereRaw($request->afp ? 'ph.Afp = '.$request->afp : 1)
+                                    ->whereRaw($request->id_da ? 'pp.idDa = '.$request->id_da : 1)
+                                    ->whereRaw($query_range)
+                                    ->whereRaw($request->id_planilla ? 'ph.idPlanillaprocesada = '.$request->id_planilla : 1)
+                                    ->whereRaw('(tp.ID = 1 or tp.ID = 2)')
+                                    ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
+                                    ->orderBy('ph.idPlanillaprocesada')
+                                    ->selectRaw('ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, ROUND(SUM(ph.Total_Aportes_Afp), 2) as Total_Aportes_Afp, ROUND(SUM(ph.Riesgo_Comun), 2) as riesgo_comun, count(ph.Total_Aportes_Afp) as cantidad_personas, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp')
+                                    ->get();
+            }else{
+                $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                                    ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                                    ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                    ->whereRaw($request->t_planilla ? 'ph.Tplanilla = '.$request->t_planilla : 1)
+                                    ->whereRaw($request->afp ? 'ph.Afp = '.$request->afp : 1)
+                                    ->whereRaw($request->id_da ? 'pp.idDa = '.$request->id_da : 1)
+                                    ->whereRaw($query_range)
+                                    ->whereRaw($request->id_planilla ? 'ph.idPlanillaprocesada = '.$request->id_planilla : 1)
+                                    ->whereRaw('(tp.ID = 1 or tp.ID = 2)')
+                                    ->orderBy('ph.idPlanillaprocesada')
+                                    ->selectRaw('ph.*')
+                                    ->get();
+            }
         }else{
-            $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
-                            ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
-                            ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
-                            ->where('ph.Estado', 1)
-                            ->where('ph.Tplanilla', $request->t_planilla_alt ?? 0)
-                            ->whereRaw('(ph.idGda=1 or ph.idGda=2)')
-                            ->where('ph.Periodo', $request->periodo_alt ?? 0)
-                            ->where('ph.Centralizado', 'SI')
-                            ->whereRaw($request->afp_alt ? 'ph.Afp = '.$request->afp_alt : 1)
-                            ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
-                            ->orderBy('ph.idPlanillaprocesada')
-                            ->selectRaw('ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, ROUND(SUM(ph.Total_Aportes_Afp), 2) as Total_Aportes_Afp, ROUND(SUM(ph.Riesgo_Comun), 2) as riesgo_comun, count(ph.Total_Aportes_Afp) as cantidad_personas, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp')
-                            ->get();        }
+            if($request->group_afp){
+                $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                                    ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                                    ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                    ->where('ph.Estado', 1)
+                                    ->where('ph.Tplanilla', $request->t_planilla_alt ?? 0)
+                                    ->whereRaw('(ph.idGda=1 or ph.idGda=2)')
+                                    ->where('ph.Periodo', $request->periodo_alt ?? 0)
+                                    ->where('ph.Centralizado', 'SI')
+                                    ->whereRaw($request->afp_alt ? 'ph.Afp = '.$request->afp_alt : 1)
+                                    ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
+                                    ->orderBy('ph.idPlanillaprocesada')
+                                    ->selectRaw('ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, ROUND(SUM(ph.Total_Aportes_Afp), 2) as Total_Aportes_Afp, ROUND(SUM(ph.Riesgo_Comun), 2) as riesgo_comun, count(ph.Total_Aportes_Afp) as cantidad_personas, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp')
+                                    ->get();
+            }else{
+                $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                                    ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                                    ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                    ->where('ph.Estado', 1)
+                                    ->where('ph.Tplanilla', $request->t_planilla_alt ?? 0)
+                                    ->whereRaw('(ph.idGda=1 or ph.idGda=2)')
+                                    ->where('ph.Periodo', $request->periodo_alt ?? 0)
+                                    ->where('ph.Centralizado', 'SI')
+                                    ->whereRaw($request->afp_alt ? 'ph.Afp = '.$request->afp_alt : 1)
+                                    ->orderBy('ph.idPlanillaprocesada')
+                                    ->selectRaw('ph.*')
+                                    ->get();
+            }
+        }
         
-        $cont = 0;
-        foreach ($planillas as $item) {
-            // Obtener datos de certificación
-            $certificacion = DB::connection('mysqlgobe')->table('certiplanilla as cp')
-                                    ->join('planilla as p', 'p.ID', 'cp.IDplanilla')
-                                    ->where('Num_planilla', 'like', '%'.$item->idPlanillaprocesada.'%')
-                                    ->select('cp.*', 'p.Nombre as nombre_planilla')
-                                    ->first();
-            $planillas[$cont]->certificacion = $certificacion;
+        if($request->group_afp){
+            $cont = 0;
+            foreach ($planillas as $item) {
+                // Obtener datos de certificación
+                $certificacion = DB::connection('mysqlgobe')->table('certiplanilla as cp')
+                                        ->join('planilla as p', 'p.ID', 'cp.IDplanilla')
+                                        ->where('Num_planilla', 'like', '%'.$item->idPlanillaprocesada.'%')
+                                        ->select('cp.*', 'p.Nombre as nombre_planilla')
+                                        ->first();
+                $planillas[$cont]->certificacion = $certificacion;
 
-            // Obtener detalle de pago
-            $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('Afp', $item->Afp)->where('idPlanillaprocesada', $item->idPlanillaprocesada)->get();
-            $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->first();
-            $planillas[$cont]->detalle_pago = $pago;
-
-            $cont++;
+                // Obtener detalle de pago
+                $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('Afp', $item->Afp)->where('idPlanillaprocesada', $item->idPlanillaprocesada)->get();
+                $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->first();
+                $planillas[$cont]->detalle_pago = $pago;
+                $cont++;
+            }
         }
         
         // dd($planillas);
         if($request->type == 'print'){
-            return view('reports.social_security.payments-list-print', compact('planillas'));
+            if($request->group_afp || $request->group_afp){
+                return view('reports.social_security.payments-group-list-print', compact('planillas'));
+            }else{
+                return view('reports.social_security.payments-list-print', compact('planillas'));
+            }
         }elseif($request->type == 'excel'){
             return Excel::download(new PaymentsExport, 'users.xlsx');
         }else{
-            return view('reports.social_security.payments-list', compact('planillas'));
+            if($request->group_afp || $request->group_afp){
+                return view('reports.social_security.payments-group-list', compact('planillas'));
+            }else{
+                return view('reports.social_security.payments-list', compact('planillas'));
+            }
         }
     }
 }
