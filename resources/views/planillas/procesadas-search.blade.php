@@ -152,7 +152,7 @@
                             </tr>
                         @endforelse
                         <tr>
-                            <td colspan="11"><h5>TOTAL</h5></td>
+                            <td colspan="10"><h5>TOTAL</h5></td>
                             <td><h5 class="text-right">{{ number_format($total, 2, ',', '.') }}</h3></td>
                             <td colspan="2"></td>
                         </tr>

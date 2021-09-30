@@ -88,11 +88,16 @@
         <tbody>
             @php
                 $cont = 1;
+                $total_personas = 0;
                 $total_ganado = 0;
                 $total_afp = 0;
                 $total_cc = 0;
             @endphp
             @forelse ($planillas as $item)
+                @php
+                    $aporte_patronal = ($item->total_ganado * 0.05) + $item->riesgo_comun;
+                    $aporte_caja_cordes = $item->total_ganado * 0.1;
+                @endphp
                 <tr>
                     <td>{{ $cont }}</td>
                     {{-- <td></td> --}}
@@ -101,14 +106,14 @@
                     <td>{{ $item->Direccion_Administrativa }}</td>
                     <td>{{ $item->tipo_planilla }} {{ $item->certificacion ? ' - '.$item->certificacion->nombre_planilla : '' }}</td>
                     <td>{{ $item->idPlanillaprocesada }}</td>
-                    <td>{{ $item->cantidad_personas }}</td>
+                    <td style="text-align: right">{{ $item->cantidad_personas }}</td>
                     <td>{{ $item->Afp == 1 ? 'Futuro' : 'Previsión' }}</td>
                     <td style="text-align: right">{{ number_format($item->total_ganado, 2, ',', '.') }}</td>
-                    <td style="text-align: right">{{ number_format($item->Total_Aportes_Afp, 2, ',', '.') }}</td>
+                    <td style="text-align: right">{{ number_format($item->Total_Aportes_Afp + $aporte_patronal, 2, ',', '.') }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->date_payment_afp : '' }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->fpc_number : '' }}</td>
                     <td></td>
-                    <td style="text-align: right">{{ number_format($item->total_ganado*0.1, 2, ',', '.') }}</td>
+                    <td style="text-align: right">{{ number_format($aporte_caja_cordes, 2, ',', '.') }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->date_payment_cc : '' }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->gtc_number : '' }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->check_number : '' }}</td>
@@ -118,15 +123,18 @@
                 </tr>
                 @php
                     $cont++;
+                    $total_personas += $item->cantidad_personas;
                     $total_ganado += $item->total_ganado;
-                    $total_afp += $item->Total_Aportes_Afp;
-                    $total_cc += $item->total_ganado * 0.1;
+                    $total_afp += $item->Total_Aportes_Afp + $aporte_patronal;
+                    $total_cc += $aporte_caja_cordes;
                 @endphp
             @empty
                 
             @endforelse
             <tr>
-                <td colspan="8"></td>
+                <td colspan="7"><b>TOTAL</b></td>
+                <td style="text-align: right">{{ $total_personas }}</td>
+                <td></td>
                 <td style="text-align: right"><b>{{ number_format($total_ganado, 2, ',', '.') }}</b></td>
                 <td style="text-align: right"><b>{{ number_format($total_afp, 2, ',', '.') }}</b></td>
                 <td></td>

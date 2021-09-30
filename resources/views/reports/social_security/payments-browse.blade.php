@@ -18,41 +18,77 @@
                             </div> --}}
                         </div>
                         <div class="col-md-4" style="margin-top: 30px">
-                            <form name="form_search" id="form-search" action="{{ route('reports.social_security.payments.list') }}" method="post">
+                            {{-- <form name="form_search" id="form-search" action="{{ route('reports.social_security.payments.list') }}" method="post">
                                 @csrf
-                                <input type="hidden" name="type">
-                                <div class="form-group col-md-12">
-                                    <select name="id_da" class="form-control select2">
-                                        <option value="">Todas las direcciones administrativas</option>
-                                        @foreach ($direcciones_administrativa as $item)
-                                        <option value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
-                                        @endforeach
-                                    </select>
+                            </form> --}}
+                            <form id="form-search" action="{{ route('reports.social_security.payments.list') }}" method="post">
+                                @csrf
+                                <div class="form-group text-right">
+                                    <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="1" checked>No centralizada</label>
+                                    <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="2">Centralizada</label>
                                 </div>
-                                <div class="form-group col-md-12">
-                                    <select name="afp" class="form-control select2">
-                                        <option value="">Todas las AFP</option>
-                                        <option value="1">Futuro</option>
-                                        <option value="2">Previsión</option>
-                                    </select>
+                                {{-- Opciones que se despliegan cuando se hace check en la opción "No centralizada" --}}
+                                <div class="input-no-centralizada">
+                                    <input type="hidden" name="type">
+                                    <div class="form-group col-md-12">
+                                        {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
+                                        <select name="t_planilla" class="form-control select2">
+                                            <option selected disabled>Todos los tipos de planilla</option>
+                                            <option value="1">Funcionamiento</option>
+                                            <option value="2">Inversión</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <select name="id_da" class="form-control select2">
+                                            <option value="">Todas las direcciones administrativas</option>
+                                            @foreach ($direcciones_administrativa as $item)
+                                            <option value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <select name="afp" class="form-control select2">
+                                            <option value="">Todas las AFP</option>
+                                            <option value="1">Futuro</option>
+                                            <option value="2">Previsión</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <input type="text" name="periodo" class="form-control" placeholder="Periodo">
+                                        <small>Por rango Ej: 202101-202105</small>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <input type="text" name="id_planilla" class="form-control" placeholder="Código de planilla">
+                                    </div>
+                                    <div class="col-md-12 text-right">
+                                        <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
+                                    </div>
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <input type="text" name="periodo" class="form-control" placeholder="Periodo">
-                                    <small>Por rango Ej: 202101-202105</small>
+                                
+                                {{-- Opciones que se despliegan cuando se hace check en la opción "centralizada" --}}
+                                <div class="input-centralizada" style="display: none">
+                                    <div class="form-group col-md-12">
+                                        {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
+                                        <select name="t_planilla_alt" class="form-control select2">
+                                            <option selected disabled>Tipo de planilla</option>
+                                            <option value="1">Funcionamiento</option>
+                                            <option value="2">Inversión</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <input type="number" min="0" name="periodo_alt" class="form-control" placeholder="Periodo"  />
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <select name="afp_alt" class="form-control select2">
+                                            <option value="">Todas las AFP</option>
+                                            <option value="1">Futuro</option>
+                                            <option value="2">Previsión</option>
+                                        </select>
+                                    </div>
+                                    <div class="text-right">
+                                        <button type="submit" class="btn btn-info" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
+                                    </div>
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <input type="text" name="id_planilla" class="form-control" placeholder="Código de planilla">
-                                </div>
-                                {{-- <div class="form-group col-md-6">
-                                    <input type="text" name="gtc" class="form-control" placeholder="GTC-11">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <input type="text" name="nro_cheque" class="form-control" placeholder="N&deg; de cheque">
-                                </div> --}}
-                                <div class="col-md-12 text-right">
-                                    <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
-                                </div>
-                                <br>
                             </form>
                         </div>
                     </div>
@@ -79,7 +115,21 @@
     <script src="{{ url('js/main.js') }}"></script>
     <script>
         $(document).ready(function() {
-
+            $('.radio-tipo_planilla').click(function(){
+                let val = $('.radio-tipo_planilla:checked').val();
+                switch (val) {
+                    case "1":
+                        $('.input-no-centralizada').fadeIn('fast');
+                        $('.input-centralizada').fadeOut('fast');
+                        break;
+                    case "2":
+                        $('.input-centralizada').fadeIn('fast');
+                        $('.input-no-centralizada').fadeOut('fast');
+                        break;
+                    default:
+                        break;
+                }
+            });
             $('#form-search').on('submit', function(e){
                 e.preventDefault();
                 $('#div-results').loading({message: 'Cargando...'});

@@ -44,7 +44,6 @@ class ReportsController extends Controller
                             ->where('p.Estado', 1)->whereRaw($query_type)
                             ->where('p.Tplanilla', $request->t_planilla ?? 0)
                             ->whereRaw('(p.idGda=1 or p.idGda=2)')
-                            ->where('p.Centralizado', 'SI')
                             ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
                             ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada', 'c.Fecha_Inicio', 'c.Fecha_Conclusion')
                             ->orderBy('p.Apaterno')
@@ -71,7 +70,6 @@ class ReportsController extends Controller
                             ->where('p.Estado', 1)->where('c.Estado', 1)
                             ->where('p.Tplanilla', $request->t_planilla ?? 0)
                             ->whereRaw('(p.idGda=1 or p.idGda=2)')
-                            ->where('p.Centralizado', 'SI')
                             ->whereMonth('p.fechanacimiento', $mes)
                             ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
                             ->orderBy('p.Apaterno')
@@ -91,26 +89,44 @@ class ReportsController extends Controller
     }
 
     public function social_security_payments_list(Request $request){
-        $periodo = $request->periodo;
-        $query_range = 1;
-        if(strpos($periodo, '-') != false){
-            $periodos = explode('-', $periodo);
-            $query_range = '(ph.Periodo >= "'.$periodos[0].'" and ph.Periodo <= "'.$periodos[1].'")';
-        }else if($periodo){
-            $query_range = 'ph.Periodo = '.$request->periodo;
-        }
-        $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
-                        ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
-                        ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
-                        ->whereRaw($request->afp ? 'ph.Afp = '.$request->afp : 1)
-                        ->whereRaw($request->id_da ? 'pp.idDa = '.$request->id_da : 1)
-                        ->whereRaw($query_range)
-                        ->whereRaw($request->id_planilla ? 'ph.idPlanillaprocesada = '.$request->id_planilla : 1)
-                        ->whereRaw('(tp.ID = 1 or tp.ID = 2)')
-                        ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
-                        ->orderBy('ph.idPlanillaprocesada')
-                        ->selectRaw('ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, sum(ph.Total_Aportes_Afp) as Total_Aportes_Afp, count(ph.Total_Aportes_Afp) as cantidad_personas, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp')
-                        ->get();
+        // Planilla no centralizada
+        if($request->tipo_planilla == 1){
+            $periodo = $request->periodo;
+            $query_range = 1;
+            if(strpos($periodo, '-') != false){
+                $periodos = explode('-', $periodo);
+                $query_range = '(ph.Periodo >= "'.$periodos[0].'" and ph.Periodo <= "'.$periodos[1].'")';
+            }else if($periodo){
+                $query_range = 'ph.Periodo = '.$request->periodo;
+            }
+            $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                            ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                            ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                            ->whereRaw($request->t_planilla ? 'ph.Tplanilla = '.$request->t_planilla : 1)
+                            ->whereRaw($request->afp ? 'ph.Afp = '.$request->afp : 1)
+                            ->whereRaw($request->id_da ? 'pp.idDa = '.$request->id_da : 1)
+                            ->whereRaw($query_range)
+                            ->whereRaw($request->id_planilla ? 'ph.idPlanillaprocesada = '.$request->id_planilla : 1)
+                            ->whereRaw('(tp.ID = 1 or tp.ID = 2)')
+                            ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
+                            ->orderBy('ph.idPlanillaprocesada')
+                            ->selectRaw('ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, ROUND(SUM(ph.Total_Aportes_Afp), 2) as Total_Aportes_Afp, ROUND(SUM(ph.Riesgo_Comun), 2) as riesgo_comun, count(ph.Total_Aportes_Afp) as cantidad_personas, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp')
+                            ->get();
+        }else{
+            $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                            ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                            ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                            ->where('ph.Estado', 1)
+                            ->where('ph.Tplanilla', $request->t_planilla_alt ?? 0)
+                            ->whereRaw('(ph.idGda=1 or ph.idGda=2)')
+                            ->where('ph.Periodo', $request->periodo_alt ?? 0)
+                            ->where('ph.Centralizado', 'SI')
+                            ->whereRaw($request->afp_alt ? 'ph.Afp = '.$request->afp_alt : 1)
+                            ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
+                            ->orderBy('ph.idPlanillaprocesada')
+                            ->selectRaw('ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, ROUND(SUM(ph.Total_Aportes_Afp), 2) as Total_Aportes_Afp, ROUND(SUM(ph.Riesgo_Comun), 2) as riesgo_comun, count(ph.Total_Aportes_Afp) as cantidad_personas, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp')
+                            ->get();        }
+        
         $cont = 0;
         foreach ($planillas as $item) {
             // Obtener datos de certificación
