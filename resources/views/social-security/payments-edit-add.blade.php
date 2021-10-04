@@ -38,6 +38,14 @@
                                     <label for="fpc_number">N&deg; de FPC</label>
                                     <input type="number" class="form-control" name="fpc_number" value="{{ $type == 'edit' ? $data->fpc_number : '' }}">
                                 </div>
+                                <div class="form-group col-md-6">
+                                    <label for="payment_id">ID de pago</label>
+                                    <input type="text" name="payment_id" class="form-control" value="{{ $type == 'edit' ? $data->payment_id : '' }}">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="penalty_payment">Multa</label>
+                                    <input type="number" step="0.01" min="0" name="penalty_payment" class="form-control" value="{{ $type == 'edit' ? $data->penalty_payment : '' }}">
+                                </div>
                                 <div class="col-md-12" style="margin: 0px">
                                     <br>
                                     <h4>Caja Cordes  <hr> </h4>
@@ -61,6 +69,14 @@
                                 <div class="form-group col-md-6">
                                     <label for="deposit_number">N&deg; de deposito</label>
                                     <input type="number" class="form-control" name="deposit_number" value="{{ $type == 'edit' ? $data->deposit_number : '' }}">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="check_id">ID de pago</label>
+                                    <input type="text" name="check_id" class="form-control" value="{{ $type == 'edit' ? $data->check_id : '' }}">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="penalty_check">Multa</label>
+                                    <input type="number" step="0,01" min="0" name="penalty_check" class="form-control" value="{{ $type == 'edit' ? $data->penalty_check : '' }}">
                                 </div>
                             </div>
                         </div>

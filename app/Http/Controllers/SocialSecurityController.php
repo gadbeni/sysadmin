@@ -184,12 +184,16 @@ class SocialSecurityController extends Controller
                 'user_id' => Auth::user()->id,
                 'planilla_haber_id' => $request->planilla_haber_id,
                 'date_payment_afp' => $request->date_payment_afp,
+                'payment_id' => $request->payment_id,
+                'penalty_payment' => $request->penalty_payment,
                 'fpc_number' => $request->fpc_number,
                 'date_payment_cc' => $request->date_payment_cc,
                 'gtc_number' => $request->gtc_number,
                 'check_number' => $request->check_number,
                 'recipe_number' => $request->recipe_number,
-                'deposit_number' => $request->deposit_number
+                'deposit_number' => $request->deposit_number,
+                'check_id' => $request->check_id,
+                'penalty_check' => $request->penalty_check
             ]);
             // return redirect()->route($request->redirect ?? 'payments.index')->with(['message' => 'Pago agregado correctamente.', 'alert-type' => 'success']);
             return response()->json(['data' => 'success']);
@@ -214,11 +218,15 @@ class SocialSecurityController extends Controller
                 'planilla_haber_id' => $request->planilla_haber_id,
                 'date_payment_afp' => $request->date_payment_afp,
                 'fpc_number' => $request->fpc_number,
+                'payment_id' => $request->payment_id,
+                'penalty_payment' => $request->penalty_payment,
                 'date_payment_cc' => $request->date_payment_cc,
                 'gtc_number' => $request->gtc_number,
                 'check_number' => $request->check_number,
                 'recipe_number' => $request->recipe_number,
-                'deposit_number' => $request->deposit_number
+                'deposit_number' => $request->deposit_number,
+                'check_id' => $request->check_id,
+                'penalty_check' => $request->penalty_check
             ]);
             return redirect()->route('payments.index')->with(['message' => 'Pago agregado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {

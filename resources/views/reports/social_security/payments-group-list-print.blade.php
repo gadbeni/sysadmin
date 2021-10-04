@@ -58,12 +58,11 @@
         <thead>
             <tr>
                 <th style="text-align: center" colspan="9">DATOS GENERALES</th>
-                <th style="text-align: center" colspan="4">ADMINISTRADORES DE FONDOS DE PENSIONES</th>
-                <th style="text-align: center" colspan="7">CAJA DE SALUD CORDES</th>
+                <th style="text-align: center" colspan="5">ADMINISTRADORES DE FONDOS DE PENSIONES</th>
+                <th style="text-align: center" colspan="8">CAJA DE SALUD CORDES</th>
             </tr>
             <tr>
                 <th>N&deg;</th>
-                {{-- <th>ID PAGO</th> --}}
                 <th>HR/NCI</th>
                 <th>PERIODO</th>
                 <th>DIRECCIÓN ADMINISTRATIVA</th>
@@ -75,6 +74,7 @@
                 <th style="text-align: right">APORTE AFP</th>
                 <th>FECHA DE PAGO AFP</th>
                 <th>N&deg; FCP</th>
+                <th>ID PAGO</th>
                 <th>MULTA AFP</th>
                 <th style="text-align: right">APORTE CC</th>
                 <th>FECHA DE PAGO CC</th>
@@ -82,6 +82,7 @@
                 <th>N&deg; DE CHEQUE</th>
                 <th>N&deg; DE RECIBO</th>
                 <th>N&deg; DE DEPOSITO</th>
+                <th>ID PAGO</th>
                 <th>MULTA CC</th>
             </tr>
         </thead>
@@ -91,7 +92,9 @@
                 $total_personas = 0;
                 $total_ganado = 0;
                 $total_afp = 0;
+                $total_multa_afp = 0;
                 $total_cc = 0;
+                $total_multa_cc = 0;
             @endphp
             @forelse ($planillas as $item)
                 @php
@@ -112,21 +115,25 @@
                     <td style="text-align: right">{{ number_format($item->Total_Aportes_Afp + $aporte_patronal, 2, ',', '.') }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->date_payment_afp : '' }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->fpc_number : '' }}</td>
-                    <td></td>
+                    <td>{{ $item->detalle_pago ? $item->detalle_pago->payment_id : '' }}</td>
+                    <td>{{ $item->detalle_pago ? number_format($item->detalle_pago->penalty_payment, 2, ',', '.') : '' }}</td>
                     <td style="text-align: right">{{ number_format($aporte_caja_cordes, 2, ',', '.') }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->date_payment_cc : '' }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->gtc_number : '' }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->check_number : '' }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->recipe_number : '' }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->deposit_number : '' }}</td>
-                    <td></td>
+                    <td>{{ $item->detalle_pago ? $item->detalle_pago->check_id : '' }}</td>
+                    <td>{{ $item->detalle_pago ? number_format($item->detalle_pago->penalty_check, 2, ',', '.') : '' }}</td>
                 </tr>
                 @php
                     $cont++;
                     $total_personas += $item->cantidad_personas;
                     $total_ganado += $item->total_ganado;
                     $total_afp += $item->Total_Aportes_Afp + $aporte_patronal;
+                    $total_multa_afp += $item->detalle_pago->penalty_payment;
                     $total_cc += $aporte_caja_cordes;
+                    $total_multa_cc += $item->detalle_pago->penalty_check;
                 @endphp
             @empty
                 
@@ -137,12 +144,11 @@
                 <td></td>
                 <td style="text-align: right"><b>{{ number_format($total_ganado, 2, ',', '.') }}</b></td>
                 <td style="text-align: right"><b>{{ number_format($total_afp, 2, ',', '.') }}</b></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td colspan="3"></td>
+                <td style="text-align: right"><b>{{ number_format($total_multa_afp, 2, ',', '.') }}</b></td>
                 <td style="text-align: right"><b>{{ number_format($total_cc, 2, ',', '.') }}</b></td>
-                <td colspan="5"></td>
-                <td></td>
+                <td colspan="6"></td>
+                <td style="text-align: right"><b>{{ number_format($total_multa_cc, 2, ',', '.') }}</b></td>
             </tr>
         </tbody>
     </table>
