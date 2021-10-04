@@ -33,7 +33,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="beneficiary">Beneficiario</label>
                                     {{-- <input type="text" class="form-control" name="beneficiary" value="{{ $type == 'edit' ? $data->beneficiary : '' }}" required /> --}}
-                                    <select name="checks_beneficiary_id" id="select-checks_beneficiary_id" class="form-control select2" required>
+                                    <select name="checks_beneficiary_id" id="select-checks_beneficiary_id" class="form-control" required>
                                         <option value="">-- Seleccione al beneficiario --</option>
                                         @foreach (\App\Models\ChecksBeneficiary::with('type')->where('deleted_at', NULL)->get() as $item)
                                         <option value="{{ $item->id }}" data-type='@json($item->type)'>{{ $item->full_name }} - {{ $item->type->name }}</option>
@@ -78,6 +78,7 @@
     <script>
         var planillaSelect = null;
         $(document).ready(function(){
+            $('#select-checks_beneficiary_id').select2();
             @if($type == 'create')
                 $("#select-planilla_haber_id").select2({
                     ajax: {
@@ -112,6 +113,7 @@
             @else
                 let data = @json($data);
                 $("#select-planilla_haber_id").append(`<option value="${data.planilla_haber_id}">${data.planilla_haber_id}</option>`)
+                $('#select-checks_beneficiary_id').val(data.check_beneficiary.id).trigger('change');
             @endif
 
             @if($type == 'create')

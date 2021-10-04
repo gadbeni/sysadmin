@@ -93,7 +93,7 @@ class SocialSecurityController extends Controller
 
     public function checks_edit($id){
         $type = 'edit';
-        $data = ChecksPayment::where('id', $id)->where('deleted_at', NULL)->first();
+        $data = ChecksPayment::with('check_beneficiary.type')->where('id', $id)->where('deleted_at', NULL)->first();
         return view('social-security.checks-edit-add', compact('type', 'id', 'data'));
     }
 

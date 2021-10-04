@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 // Models
 use App\Models\PayrollPayment;
+use App\Models\ChecksPayment;
 
 // Exports
 use App\Exports\PaymentsExport;
@@ -174,6 +175,8 @@ class ReportsController extends Controller
                 $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('Afp', $item->Afp)->where('idPlanillaprocesada', $item->idPlanillaprocesada)->get();
                 $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->first();
                 $planillas[$cont]->detalle_pago = $pago;
+                $cheque = ChecksPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->first();
+                $planillas[$cont]->detalle_cheque = $cheque;
                 $cont++;
             }
         }

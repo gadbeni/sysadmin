@@ -120,7 +120,7 @@
                     <td style="text-align: right">{{ number_format($aporte_caja_cordes, 2, ',', '.') }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->date_payment_cc : '' }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->gtc_number : '' }}</td>
-                    <td>{{ $item->detalle_pago ? $item->detalle_pago->check_number : '' }}</td>
+                    <td>{{ $item->detalle_cheque ? $item->detalle_cheque->number : '' }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->recipe_number : '' }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->deposit_number : '' }}</td>
                     <td>{{ $item->detalle_pago ? $item->detalle_pago->check_id : '' }}</td>
@@ -131,9 +131,9 @@
                     $total_personas += $item->cantidad_personas;
                     $total_ganado += $item->total_ganado;
                     $total_afp += $item->Total_Aportes_Afp + $aporte_patronal;
-                    $total_multa_afp += $item->detalle_pago->penalty_payment;
+                    $total_multa_afp += $item->detalle_pago ? $item->detalle_pago->penalty_payment : 0;
                     $total_cc += $aporte_caja_cordes;
-                    $total_multa_cc += $item->detalle_pago->penalty_check;
+                    $total_multa_cc += $item->detalle_pago ? $item->detalle_pago->penalty_check : 0;
                 @endphp
             @empty
                 
