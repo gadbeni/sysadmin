@@ -100,7 +100,7 @@
                                         <label class="control-label" for="user_id">Cajero</label>
                                         <select name="user_id" class="form-control select2" required>
                                             <option value="">Seleccione al usuario</option>
-                                            @foreach (\App\Models\User::where('deleted_at', NULL)->where('role_id', 3)->get() as $user)
+                                            @foreach (\App\Models\User::where('deleted_at', NULL)->where('role_id', 5)->get() as $user)
                                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                                             @endforeach
                                         </select>

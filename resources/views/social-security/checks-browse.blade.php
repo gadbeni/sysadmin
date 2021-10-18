@@ -56,7 +56,7 @@
             let columns = [
                 { data: 'id', title: 'id' },
                 { data: 'planilla_id', title: 'Planilla' },
-                { data: 'number', title: 'Nro' },
+                { data: 'number', title: 'Nro de checque' },
                 { data: 'amount', title: 'Monto' },
                 { data: 'beneficiary', title: 'Beneficiario' },
                 { data: 'date_print', title: 'Fecha de impresión' },

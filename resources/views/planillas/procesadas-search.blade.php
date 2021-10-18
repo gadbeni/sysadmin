@@ -74,7 +74,6 @@
                 <table id="dataTable" class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>N&deg;</th>
                             <th>Secretaría</th>
                             <th>código</th>
                             <th>Tipo de contrato</th>
@@ -99,7 +98,6 @@
                     <tbody id="dataTable-body">
                         @forelse ($planilla as $item)
                         <tr>
-                            <td>{{ $cont }}</td>
                             <td>{{ $item->Direccion_Administrativa }}</td>
                             <td>{{ $item->Codigoid }}</td>
                             <td>{{ $item->tipo_planilla }}</td>
