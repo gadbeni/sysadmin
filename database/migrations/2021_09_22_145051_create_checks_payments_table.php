@@ -20,7 +20,6 @@ class CreateChecksPaymentsTable extends Migration
             $table->integer('planilla_haber_id')->nullable();
             $table->text('number')->nullable();
             $table->decimal('amount', 10, 2)->nullable();
-            $table->text('beneficiary')->nullable();
             $table->date('date_print')->nullable();
             $table->text('observations')->nullable();
             $table->timestamps();

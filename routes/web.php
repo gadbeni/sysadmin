@@ -86,7 +86,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::delete('social-security/payments/{payment}/delete', [SocialSecurityController::class, 'payments_delete'])->name('payments.delete');
 
     // *Formularios de impresión
-    Route::get('social-security/print/forms/{name}', [SocialSecurityController::class, 'print_form'])->name('print.form');
+    Route::get('social-security/print', [SocialSecurityController::class, 'print_index'])->name('social.security.print.index');
+    Route::post('social-security/print/forms/{name}', [SocialSecurityController::class, 'print_form'])->name('print.form');
 
     // Reportes
 

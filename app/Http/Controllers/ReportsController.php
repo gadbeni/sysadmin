@@ -175,7 +175,10 @@ class ReportsController extends Controller
                 $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('Afp', $item->Afp)->where('idPlanillaprocesada', $item->idPlanillaprocesada)->get();
                 $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->first();
                 $planillas[$cont]->detalle_pago = $pago;
-                $cheque = ChecksPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->first();
+                // Obtener detalle de cheques
+                $cheque = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary', function($q){
+                    $q->where('full_name', 'like', '%caja de salud%');
+                })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->first();
                 $planillas[$cont]->detalle_cheque = $cheque;
                 $cont++;
             }

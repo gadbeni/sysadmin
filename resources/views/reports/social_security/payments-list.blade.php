@@ -77,7 +77,7 @@
                                 <td>{{ $item->Dias_Trabajado }}</td>
                                 <td style="text-align: right">{{ number_format($item->Sueldo_Mensual, 2, ',', '.') }}</td>
                                 <td style="text-align: right">{{ number_format($item->Sueldo_Parcial, 2, ',', '.') }}</td>
-                                <td></td>
+                                <td>0%</td>
                                 <td style="text-align: right">{{ number_format($item->Bono_Antiguedad, 2, ',', '.') }}</td>
                                 <td style="text-align: right">{{ number_format($item->Total_Ganado, 2, ',', '.') }}</td>
                                 <td style="text-align: right">{{ number_format($item->Aporte_Solidario, 2, ',', '.') }}</td>

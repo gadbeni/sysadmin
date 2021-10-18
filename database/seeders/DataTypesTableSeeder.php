@@ -145,6 +145,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2021-09-23 09:39:48',
                 'updated_at' => '2021-09-23 09:47:06',
             ),
+            7 => 
+            array (
+                'id' => 8,
+                'name' => 'dependences',
+                'slug' => 'dependences',
+                'display_name_singular' => 'Dependencia',
+                'display_name_plural' => 'Dependencias',
+                'icon' => 'voyager-company',
+                'model_name' => 'App\\Models\\Dependence',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2021-10-14 10:46:30',
+                'updated_at' => '2021-10-14 10:51:07',
+            ),
         ));
         
         

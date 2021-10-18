@@ -11,6 +11,7 @@ use Carbon\Carbon;
 // Models
 use App\Models\PayrollPayment;
 use App\Models\ChecksPayment;
+use App\Models\Dependence;
 
 class SocialSecurityController extends Controller
 {
@@ -250,7 +251,18 @@ class SocialSecurityController extends Controller
 
     // ======================================================================
 
-    public function print_form($name){
-        return view('social-security.print.form-gtc');
+    public function print_index(){
+        $dependences = Dependence::where('deleted_at', NULL)->get();
+        return view('social-security.print.browse', compact('dependences'));
+    }
+
+    public function print_form(Request $request){
+        $dependence = Dependence::findOrFail($request->dependence_id);
+        $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                        ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
+                        ->where('idPlanillaprocesada', $request->nro_planilla)
+                        ->select('p.Total_Ganado', 'tp.Nombre as tipo_planilla', 'p.Anio as year', 'p.Mes as month')
+                        ->get();
+        return view('social-security.print.form-gtc', compact('dependence', 'planillas'));
     }
 }

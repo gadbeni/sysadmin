@@ -45,9 +45,12 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('vaults');
         Permission::generateFor('social_security_types');
         Permission::generateFor('checks_beneficiaries');
+        Permission::generateFor('dependences');
 
         $keys = [
-            'browse_social-securitypayments'
+            'browse_social-securitypayments',
+            'browse_social-securitychecks',
+            'browse_social-securityprint'
         ];
 
         foreach ($keys as $key) {
@@ -57,17 +60,28 @@ class PermissionsTableSeeder extends Seeder
             ]);
         }
 
-        // Reports
+        // Reports RRHH
         $keys = [
             'browse_reportshumans-resourcescontraloria',
-            'browse_reportshumans-resourcesaniversarios',
-            'browse_reportssocial-security'
+            'browse_reportshumans-resourcesaniversarios'
         ];
 
         foreach ($keys as $key) {
             Permission::firstOrCreate([
                 'key'        => $key,
-                'table_name' => 'reports',
+                'table_name' => 'reports_rrhh',
+            ]);
+        }
+
+        // Reports social security
+        $keys = [
+            'browse_reportssocial-securitypayments'
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'reports_social_security',
             ]);
         }
     }
