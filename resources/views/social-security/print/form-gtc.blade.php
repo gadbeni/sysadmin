@@ -12,7 +12,7 @@
             /* font-family: Arial, sans-serif; */
             font-weight: 100;
             max-width: 670px;
-            padding-top: 12px
+            padding-top: 12px;
         }
 
         table, th, td {
@@ -21,10 +21,10 @@
 
         @media print{
             body{
-                color: white
+                color: transparent
             }
             table, th, td {
-                border: 1px solid white;
+                border: 1px solid transparent;
             }
             .text-print{
                 color: black
@@ -114,10 +114,10 @@
                     <tr style="height: 60px">
                         <td width="30%" class="text-print">{{ $dependence->legal_representative_name }}</td>
                         <td width="30%" style="text-align: right; font-size: 13px" class="text-print">
-                            <br><br>
+                            <br>
                             {{ $dependence->legal_representative_dni }}&nbsp;&nbsp;&nbsp;
                         </td>
-                        <td width="30%" class="text-print"><br>{{ date('d/m/Y') }}</td>
+                        <td width="30%" class="text-print"><br></td>
                     </tr>
                     <tr style="font-size: 10px">
                         <td><b>Nombre del representante legal</b></td>

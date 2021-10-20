@@ -55,13 +55,12 @@
         $(document).ready(function() {
             let columns = [
                 { data: 'id', title: 'id' },
-                { data: 'planilla_id', title: 'Planilla' },
-                { data: 'number', title: 'Nro de checque' },
-                { data: 'amount', title: 'Monto' },
+                { data: 'details', title: 'Detalles del cheque' },
                 { data: 'beneficiary', title: 'Beneficiario' },
-                { data: 'date_print', title: 'Fecha de impresión' },
-                { data: 'user', title: 'Resgistrado por' },
-                { data: 'created_at', title: 'Creado' },
+                { data: 'date_print', title: 'Impresión' },
+                { data: 'date_expire', title: 'Vencimiento' },
+                { data: 'user', title: 'Registrado por' },
+                { data: 'created_at', title: 'Registrado el' },
                 { data: 'actions', title: 'Acciones' },
             ];
             customDataTable("{{ url('admin/social-security/checks/list') }}", columns);

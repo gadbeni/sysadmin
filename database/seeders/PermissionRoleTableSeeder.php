@@ -45,7 +45,7 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'prevision_jefe_seccion')->firstOrFail();
-        $permissions = Permission::whereRaw('table_name = "admin" or table_name = "social-security" or table_name = "dependences" or table_name = "social_security_types" or table_name = "reports_social_security"')->get();
+        $permissions = Permission::whereRaw('table_name = "admin" or table_name = "social-security" or table_name = "dependences" or table_name = "social_security_types" or table_name = "checks_beneficiaries" or table_name = "reports_social_security"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'prevision_tecnico')->firstOrFail();

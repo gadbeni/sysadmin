@@ -55,6 +55,10 @@
                                     <input type="date" class="form-control" name="date_payment_cc" value="{{ $type == 'edit' ? $data->date_payment_cc : '' }}">
                                 </div>
                                 <div class="form-group col-md-6">
+                                    <label for="deposit_number">N&deg; de deposito</label>
+                                    <input type="number" class="form-control" name="deposit_number" value="{{ $type == 'edit' ? $data->deposit_number : '' }}">
+                                </div>
+                                <div class="form-group col-md-6">
                                     <label for="gtc_number">N&deg; de GTC-11</label>
                                     <input type="number" class="form-control" name="gtc_number" value="{{ $type == 'edit' ? $data->gtc_number : '' }}">
                                 </div>
@@ -65,10 +69,6 @@
                                 <div class="form-group col-md-6">
                                     <label for="recipe_number">N&deg; de recibo</label>
                                     <input type="number" class="form-control" name="recipe_number" value="{{ $type == 'edit' ? $data->recipe_number : '' }}">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="deposit_number">N&deg; de deposito</label>
-                                    <input type="number" class="form-control" name="deposit_number" value="{{ $type == 'edit' ? $data->deposit_number : '' }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="check_id">ID de pago</label>
@@ -165,7 +165,13 @@
 
             var $container = $(
                 `<div class="option-select2-custom">
-                    <h4>${data.idPlanillaprocesada} <br> <p style="font-size: 13px; margin-top: 5px">${data.Afp == 1 ? 'AFP Futuro' : 'AFP Previsión'} - ${data.Periodo}</p> </h4>
+                    <h4>
+                        ${data.idPlanillaprocesada} <br>
+                        <p style="font-size: 13px; margin-top: 5px">
+                            ${data.Afp == 1 ? 'AFP Futuro' : 'AFP Previsión'} - ${data.Periodo} <br>
+                            ${data.total_ganado.toFixed(2)} Bs. - ${data.cantidad_personas} Persona(s)
+                        </p>
+                    </h4>
                 </div>`
             );
 

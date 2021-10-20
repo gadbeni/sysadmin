@@ -26,6 +26,7 @@
                                 <div class="form-group text-right">
                                     <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="1" checked>No centralizada</label>
                                     <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="2">Centralizada</label>
+                                    <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="3">Detallado</label>
                                 </div>
                                 {{-- Opciones que se despliegan cuando se hace check en la opción "No centralizada" --}}
                                 <div class="input-no-centralizada">
@@ -83,7 +84,31 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group col-md-12 text-right">
+
+                                {{-- Opciones que se despliegan cuando se hace check en la opción "centralizada" --}}
+                                <div class="input-detallada" style="display: none">
+                                    <div class="form-group col-md-12">
+                                        <select name="id_da_detallada[]" class="form-control select2" multiple>
+                                            @foreach ($direcciones_administrativa as $item)
+                                            <option value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
+                                        <select name="t_planilla_detallada" class="form-control select2">
+                                            <option value="">Todos los Tipos de planilla</option>
+                                            <option value="1">Funcionamiento</option>
+                                            <option value="2">Inversión</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <input type="text" name="periodo_detallada" class="form-control" placeholder="Periodo">
+                                        <small>Por rango Ej: 202101-202105</small>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-12 text-right group_afp">
                                     <label class="checkbox-inline"><input type="checkbox" name="group_afp" value="1" checked>Agrupar por AFP</label>
                                 </div>
                                 <div class="col-md-12 text-right">
@@ -121,10 +146,20 @@
                     case "1":
                         $('.input-no-centralizada').fadeIn('fast');
                         $('.input-centralizada').fadeOut('fast');
+                        $('.input-detallada').fadeOut('fast');
+                        $('.group_afp').fadeIn('fast');
                         break;
                     case "2":
                         $('.input-centralizada').fadeIn('fast');
                         $('.input-no-centralizada').fadeOut('fast');
+                        $('.input-detallada').fadeOut('fast');
+                        $('.group_afp').fadeIn('fast');
+                        break;
+                    case "3":
+                        $('.input-detallada').fadeIn('fast');
+                        $('.input-centralizada').fadeOut('fast');
+                        $('.input-no-centralizada').fadeOut('fast');
+                        $('.group_afp').fadeOut('fast');
                         break;
                     default:
                         break;

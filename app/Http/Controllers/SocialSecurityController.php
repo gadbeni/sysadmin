@@ -29,15 +29,43 @@ class SocialSecurityController extends Controller
         // return $data[0]->check_beneficiary;
         return
             DataTables::of($data)
-            ->addColumn('planilla_id', function($row){
+            ->addColumn('details', function($row){
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $row->planilla_haber_id)->first();
-                return $planilla->idPlanillaprocesada;
+                $status = '';
+                switch ($row->status) {
+                    case '0':
+                        $status = '<label class="label label-danger">anulado</label>';
+                        break;
+                    case '1':
+                        $status = '<label class="label label-warning">Pendiente</label>';
+                        break;
+                    case '2':
+                        $status = '<label class="label label-success">Pagado</label>';
+                        break;
+                    
+                    default:
+                        # code...
+                        break;
+                }
+                return '<p>
+                            <b><small>N&deg;:</small></b> '.$row->number.' <br>
+                            <b><small>Planilla:</small></b> '.$planilla->idPlanillaprocesada.' <br>
+                            <b><small>Monto:</small></b> '.$row->amount.' <br>
+                            '.$status.'
+                        </p>';
             })
             ->addColumn('beneficiary', function($row){
                 return $row->check_beneficiary->full_name.'<br><small>'.$row->check_beneficiary->type->name.'<small>';
             })
             ->addColumn('user', function($row){
                 return $row->user->name;
+            })
+            ->addColumn('date_print', function($row){
+                return date('d/m/Y', strtotime($row->date_print)).'<br><small>'.Carbon::parse($row->date_print)->diffForHumans().'</small>';
+            })
+            ->addColumn('date_expire', function($row){
+                $date_expire = date('Y-m-d', strtotime($row->date_print.' +29 days'));
+                return '<span style="'.($date_expire <= date('Y-m-d') && $row->status == 1 ? 'color: red' : '').'">'.date('d/m/Y', strtotime($date_expire)).'<br><small>'.Carbon::parse($date_expire)->diffForHumans().'</small></span>';
             })
             ->addColumn('created_at', function($row){
                 return date('d/m/Y H:i', strtotime($row->created_at)).'<br><small>'.Carbon::parse($row->created_at)->diffForHumans().'</small>';
@@ -57,7 +85,7 @@ class SocialSecurityController extends Controller
                     </div>';
                 return $actions;
             })
-            ->rawColumns(['planilla_id', 'beneficiary', 'user', 'created_at', 'actions'])
+            ->rawColumns(['details', 'beneficiary', 'user', 'date_print', 'date_expire', 'created_at', 'actions'])
             ->make(true);
     }
 
@@ -144,6 +172,22 @@ class SocialSecurityController extends Controller
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $row->planilla_haber_id)->first();
                 return $planilla->idPlanillaprocesada;
             })
+            ->addColumn('fpc_number', function($row){
+                if($row->fpc_number){
+                    $date = $row->date_payment_afp ? date('d/m/Y H:i', strtotime($row->date_payment_afp)) : 'Pendiente';
+                    return $row->fpc_number.'<br>'.$date;
+                }else{
+                    return null;
+                }
+            })
+            ->addColumn('deposit_number', function($row){
+                if($row->deposit_number){
+                    $date = $row->date_payment_cc ? date('d/m/Y', strtotime($row->date_payment_cc)) : 'Pendiente';
+                    return $row->deposit_number.'<br>'.$date;
+                }else{
+                    return null;
+                }
+            })
             ->addColumn('user', function($row){
                 return $row->user->name;
             })
@@ -165,7 +209,7 @@ class SocialSecurityController extends Controller
                     </div>';
                 return $actions;
             })
-            ->rawColumns(['planilla_id', 'user', 'created_at', 'actions'])
+            ->rawColumns(['planilla_id', 'fpc_number', 'deposit_number', 'user', 'created_at', 'actions'])
             ->make(true);
     }
 
@@ -261,6 +305,7 @@ class SocialSecurityController extends Controller
         $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
                         ->where('idPlanillaprocesada', $request->nro_planilla)
+                        ->whereRaw($request->afp ? "p.Afp = ".$request->afp : 1)
                         ->select('p.Total_Ganado', 'tp.Nombre as tipo_planilla', 'p.Anio as year', 'p.Mes as month')
                         ->get();
         return view('social-security.print.form-gtc', compact('dependence', 'planillas'));

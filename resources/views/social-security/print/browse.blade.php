@@ -31,7 +31,7 @@
                         <div class="panel-body">
                             <h3>Impresión de GTC-11</h3>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label for="dependence_id">Dependencia</label>
                                     <select name="dependence_id" class="form-control select2">
                                         @foreach (\App\Models\Dependence::where('deleted_at', NULL)->get() as $item)
@@ -39,7 +39,15 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <label for="afp">Tipo de AFP</label>
+                                    <select name="afp" class="form-control select2">
+                                        <option value="">Todas</option>
+                                        <option value="1">Futuro</option>
+                                        <option value="2">Previsión</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
                                     <label for="nro_planilla">N&deg; de planilla</label>
                                     <input type="text" name="nro_planilla" class="form-control" required>
                                 </div>

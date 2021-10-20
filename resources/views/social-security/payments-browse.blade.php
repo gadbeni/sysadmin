@@ -58,8 +58,9 @@
                 { data: 'planilla_id', title: 'Planilla' },
                 { data: 'fpc_number', title: 'Nro de FPC' },
                 { data: 'gtc_number', title: 'Nro de GTC-11' },
+                { data: 'deposit_number', title: 'Nro de deposito' },
                 { data: 'user', title: 'Resgistrado por' },
-                { data: 'created_at', title: 'Creado' },
+                { data: 'created_at', title: 'Registrado el' },
                 { data: 'actions', title: 'Acciones' },
             ];
             customDataTable("{{ url('admin/social-security/payments/list') }}", columns);

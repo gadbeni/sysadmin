@@ -10,7 +10,7 @@ class ChecksPayment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'planilla_haber_id', 'number', 'amount', 'checks_beneficiary_id', 'date_print', 'observations'
+        'user_id', 'planilla_haber_id', 'number', 'amount', 'checks_beneficiary_id', 'date_print', 'observations', 'status'
     ];
 
     public function user(){

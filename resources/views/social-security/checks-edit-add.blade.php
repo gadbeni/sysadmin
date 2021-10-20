@@ -155,7 +155,7 @@
                         ${data.idPlanillaprocesada} <br>
                         <p style="font-size: 13px; margin-top: 5px">
                             ${data.Afp == 1 ? 'AFP Futuro' : 'AFP Previsión'} - ${data.Periodo} <br>
-                            ${data.total_ganado.toFixed(2)} Bs. - ${data.cantidad_personas} Personas
+                            ${data.total_ganado.toFixed(2)} Bs. - ${data.cantidad_personas} Persona(s)
                         </p>
                     </h4>
                 </div>`
