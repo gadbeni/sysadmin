@@ -74,13 +74,13 @@
                 <table id="dataTable" class="table table-bordered">
                     <thead>
                         <tr>
+                            <th>Item</th>
                             <th>Secretaría</th>
                             <th>código</th>
                             <th>Tipo de contrato</th>
                             <th>AFP</th>
                             <th>Mes</th>
                             <th>Gestión</th>
-                            <th>Item</th>
                             <th>Apellidos y Nombre(s)</th>
                             <th>C.I.</th>
                             <th>Líquido</th>
@@ -98,13 +98,13 @@
                     <tbody id="dataTable-body">
                         @forelse ($planilla as $item)
                         <tr>
+                            <td>{{ $cont }}</td>
                             <td>{{ $item->Direccion_Administrativa }}</td>
                             <td>{{ $item->Codigoid }}</td>
                             <td>{{ $item->tipo_planilla }}</td>
                             <td>{{ $item->Afp == 1 ? 'Futuro' : 'Previsión' }}</td>
                             <td>{{ $meses[intval($item->Mes)] }}</td>
                             <td>{{ $item->Anio }}</td>
-                            <td>{{ $item->item }}</td>
                             <td>{{ $item->Apaterno }} {{ $item->Amaterno }} {{ $item->Pnombre }} {{ $item->Snombre }}</td>
                             <td>{{ $item->CedulaIdentidad }}</td>
                             <td class="text-right">{{ number_format($item->Liquido_Pagable, 2, '.', ',') }}</td>
@@ -150,7 +150,7 @@
                             </tr>
                         @endforelse
                         <tr>
-                            <td colspan="10"><h5>TOTAL</h5></td>
+                            <td colspan="9"><h5>TOTAL</h5></td>
                             <td><h5 class="text-right">{{ number_format($total, 2, ',', '.') }}</h3></td>
                             <td colspan="2"></td>
                         </tr>

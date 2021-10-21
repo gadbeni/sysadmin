@@ -48,7 +48,7 @@ class PlanillasController extends Controller
                                 ->where('p.Centralizado', 'SI')
                                 ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
                                 ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
-                                ->orderByRaw("FIELD(p.idDa, '9','16','10','15','8','13','37','41','42','50','55','61','64','6','62','69','5','17','48','53')")
+                                ->orderByRaw("FIELD (p.idDa,'9','16','10','15','8','13','37','41','42','50','55','61','64','6','62','69','5','17','48','53'), p.Nivel")
                                 ->get();
                 break;
             case '2':

@@ -22,7 +22,7 @@
                     <div class="panel panel-bordered">
                         <div class="panel-body">
                             <div class="row">
-                                <div class="form-group col-md-12">
+                                <div class="form-group col-md-6">
                                     <label for="planilla_haber_id">Planilla(s)</label>
                                     <select name="planilla_haber_id" id="select-planilla_haber_id" class="form-control" required></select>
                                 </div>
@@ -47,6 +47,15 @@
                                 <div class="form-group col-md-6">
                                     <label for="date_print">Fecha de impresión</label>
                                     <input type="date" class="form-control" name="date_print" max="{{ date('Y-m-d') }}" value="{{ $type == 'edit' ? $data->date_print : '' }}" required />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="status">Estado</label>
+                                    <select name="status" id="select-status" class="form-control">
+                                        <option value="0">Anulado</option>
+                                        <option value="1">Pendiente</option>
+                                        <option value="2">Pagado</option>
+                                        <option value="3">Vencido</option>
+                                    </select>
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label for="observations">Observaciones</label>
@@ -110,10 +119,13 @@
                         }
                     }
                 });
+
+                $('#select-status').val(1);
             @else
                 let data = @json($data);
                 $("#select-planilla_haber_id").append(`<option value="${data.planilla_haber_id}">${data.planilla_haber_id}</option>`)
                 $('#select-checks_beneficiary_id').val(data.check_beneficiary.id).trigger('change');
+                $('#select-status').val(data.status);
             @endif
 
             @if($type == 'create')

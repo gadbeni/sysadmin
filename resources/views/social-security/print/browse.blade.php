@@ -48,8 +48,8 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="nro_planilla">N&deg; de planilla</label>
-                                    <input type="text" name="nro_planilla" class="form-control" required>
+                                    <label for="nro_planilla">N&deg; de planilla</label> <br>
+                                    <input type="text" name="nro_planilla" data-role="tagsinput" id="tags" required>
                                 </div>
                             </div>
                         </div>
@@ -64,11 +64,17 @@
 @stop
 
 @section('css')
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css" crossorigin="anonymous">
+    <style>
+        .bootstrap-tagsinput{
+            width: 100%
+        }
+    </style>
 @stop
 
 @section('javascript')
     <script src="{{ url('js/main.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
             

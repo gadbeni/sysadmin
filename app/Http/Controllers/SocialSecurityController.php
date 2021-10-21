@@ -37,12 +37,14 @@ class SocialSecurityController extends Controller
                         $status = '<label class="label label-danger">anulado</label>';
                         break;
                     case '1':
-                        $status = '<label class="label label-warning">Pendiente</label>';
+                        $status = '<label class="label label-info">Pendiente</label>';
                         break;
                     case '2':
                         $status = '<label class="label label-success">Pagado</label>';
                         break;
-                    
+                    case '3':
+                        $status = '<label class="label label-warning">Vencido</label>';
+                        break;
                     default:
                         # code...
                         break;
@@ -109,7 +111,8 @@ class SocialSecurityController extends Controller
                 'amount' => $request->amount,
                 'checks_beneficiary_id' => $request->checks_beneficiary_id,
                 'date_print' => $request->date_print,
-                'observations' => $request->observations
+                'observations' => $request->observations,
+                'status' => $request->status
             ]);
             // return redirect()->route($request->redirect ?? 'payments.index')->with(['message' => 'Pago agregado correctamente.', 'alert-type' => 'success']);
             return response()->json(['data' => 'success']);
@@ -134,7 +137,8 @@ class SocialSecurityController extends Controller
                 'amount' => $request->amount,
                 'beneficiary' => $request->beneficiary,
                 'date_print' => $request->date_print,
-                'observations' => $request->observations
+                'observations' => $request->observations,
+                'status' => $request->status
             ]);
             return redirect()->route('checks.index')->with(['message' => 'Cheque editado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
@@ -174,7 +178,7 @@ class SocialSecurityController extends Controller
             })
             ->addColumn('fpc_number', function($row){
                 if($row->fpc_number){
-                    $date = $row->date_payment_afp ? date('d/m/Y H:i', strtotime($row->date_payment_afp)) : 'Pendiente';
+                    $date = $row->date_payment_afp ? date('d/m/Y', strtotime($row->date_payment_afp)) : 'Pendiente';
                     return $row->fpc_number.'<br>'.$date;
                 }else{
                     return null;
@@ -304,7 +308,7 @@ class SocialSecurityController extends Controller
         $dependence = Dependence::findOrFail($request->dependence_id);
         $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
-                        ->where('idPlanillaprocesada', $request->nro_planilla)
+                        ->whereRaw("p.idPlanillaprocesada IN (".$request->nro_planilla.")")
                         ->whereRaw($request->afp ? "p.Afp = ".$request->afp : 1)
                         ->select('p.Total_Ganado', 'tp.Nombre as tipo_planilla', 'p.Anio as year', 'p.Mes as month')
                         ->get();

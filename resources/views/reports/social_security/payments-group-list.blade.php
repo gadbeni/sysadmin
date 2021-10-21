@@ -32,11 +32,11 @@
                             <th>ID PAGO</th>
                             <th>MULTA AFP</th>
                             <th style="text-align: right">APORTE CC</th>
-                            <th>FECHA DE PAGO CC</th>
-                            <th>F GTC-11</th>
                             <th>N&deg; DE CHEQUE</th>
-                            <th>N&deg; DE RECIBO</th>
+                            <th>FECHA DE PAGO CC</th>
                             <th>N&deg; DE DEPOSITO</th>
+                            <th>F GTC-11</th>
+                            <th>N&deg; DE RECIBO</th>
                             <th>ID PAGO</th>
                             <th>MULTA CC</th>
                         </tr>
@@ -73,11 +73,11 @@
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->payment_id : '' }}</td>
                                 <td>{{ $item->detalle_pago ? number_format($item->detalle_pago->penalty_payment, 2, ',', '.') : '' }}</td>
                                 <td style="text-align: right">{{ number_format($aporte_caja_cordes, 2, ',', '.') }}</td>
-                                <td>{{ $item->detalle_pago ? $item->detalle_pago->date_payment_cc : '' }}</td>
-                                <td>{{ $item->detalle_pago ? $item->detalle_pago->gtc_number : '' }}</td>
                                 <td>{{ $item->detalle_cheque ? $item->detalle_cheque->number : '' }}</td>
-                                <td>{{ $item->detalle_pago ? $item->detalle_pago->recipe_number : '' }}</td>
+                                <td>{{ $item->detalle_pago ? $item->detalle_pago->date_payment_cc : '' }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->deposit_number : '' }}</td>
+                                <td>{{ $item->detalle_pago ? $item->detalle_pago->gtc_number : '' }}</td>
+                                <td>{{ $item->detalle_pago ? $item->detalle_pago->recipe_number : '' }}</td>
                                 <td>{{ $item->detalle_pago ? $item->detalle_pago->check_id : '' }}</td>
                                 <td>{{ $item->detalle_pago ? number_format($item->detalle_pago->penalty_check, 2, ',', '.') : '' }}</td>
                             </tr>

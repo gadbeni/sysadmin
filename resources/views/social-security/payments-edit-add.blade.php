@@ -31,16 +31,16 @@
                                     <h4>AFP's  <hr> </h4>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="date_payment_afp">Fecha de pago a AFP</label>
-                                    <input type="date" class="form-control" name="date_payment_afp" value="{{ $type == 'edit' ? $data->date_payment_afp : '' }}" >
+                                    <label for="payment_id">ID de pago</label>
+                                    <input type="text" name="payment_id" class="form-control" value="{{ $type == 'edit' ? $data->payment_id : '' }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="fpc_number">N&deg; de FPC</label>
                                     <input type="number" class="form-control" name="fpc_number" value="{{ $type == 'edit' ? $data->fpc_number : '' }}">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="payment_id">ID de pago</label>
-                                    <input type="text" name="payment_id" class="form-control" value="{{ $type == 'edit' ? $data->payment_id : '' }}">
+                                    <label for="date_payment_afp">Fecha de pago a AFP</label>
+                                    <input type="date" class="form-control" name="date_payment_afp" value="{{ $type == 'edit' ? $data->date_payment_afp : '' }}" >
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="penalty_payment">Multa</label>
