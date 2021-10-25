@@ -41,7 +41,7 @@
                                 <h3 class="panel-title">Beneficiario</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $check->beneficiary }}</p>
+                                <p>{{ $check->check_beneficiary->full_name }}<br><small>{{ $check->check_beneficiary->type->name }}</small></p>
                             </div>
                             <hr style="margin:0;">
                         </div>
@@ -50,7 +50,7 @@
                                 <h3 class="panel-title">Fecha de impresión</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ date('d/m/Y', strtotime($check->date_print)) }}</p>
+                                <p>{{ date('d/m/Y', strtotime($check->date_print)) }} <br><small>{{ \Carbon\Carbon::parse($check->date_print)->diffForHumans() }}</small> </p>
                             </div>
                             <hr style="margin:0;">
                         </div>

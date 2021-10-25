@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use App\Models\PayrollPayment;
 use App\Models\ChecksPayment;
 use App\Models\Dependence;
+use App\Models\ChecksBeneficiary;
 
 class SocialSecurityController extends Controller
 {
@@ -51,13 +52,13 @@ class SocialSecurityController extends Controller
                 }
                 return '<p>
                             <b><small>N&deg;:</small></b> '.$row->number.' <br>
-                            <b><small>Planilla:</small></b> '.$planilla->idPlanillaprocesada.' <br>
-                            <b><small>Monto:</small></b> '.$row->amount.' <br>
+                            <b><small>Planilla:</small></b> '.$planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión').' <br>
+                            <b><small>Monto:</small></b> '.number_format($row->amount, 2, ',', '.').' <br>
                             '.$status.'
                         </p>';
             })
             ->addColumn('beneficiary', function($row){
-                return $row->check_beneficiary->full_name.'<br><small>'.$row->check_beneficiary->type->name.'<small>';
+                return $row->check_beneficiary->full_name.'<br><small>'.$row->check_beneficiary->type->name.'</small>';
             })
             ->addColumn('user', function($row){
                 return $row->user->name;
@@ -92,7 +93,7 @@ class SocialSecurityController extends Controller
     }
 
     public function checks_show($id){
-        $check = ChecksPayment::where('id', $id)->where('deleted_at', NULL)->first();
+        $check = ChecksPayment::with(['user', 'check_beneficiary.type'])->where('id', $id)->where('deleted_at', NULL)->first();
         return view('social-security.checks-read', compact('check'));        
     }
 
@@ -102,18 +103,47 @@ class SocialSecurityController extends Controller
     }
 
     public function checks_store(Request $request){
-        // dd($request);
         try {
-            ChecksPayment::create([
-                'user_id' => Auth::user()->id,
-                'planilla_haber_id' => $request->planilla_haber_id,
-                'number' => $request->number,
-                'amount' => $request->amount,
-                'checks_beneficiary_id' => $request->checks_beneficiary_id,
-                'date_print' => $request->date_print,
-                'observations' => $request->observations,
-                'status' => $request->status
-            ]);
+            if($request->planilla_haber_id){
+                ChecksPayment::create([
+                    'user_id' => Auth::user()->id,
+                    'planilla_haber_id' => $request->planilla_haber_id,
+                    'number' => $request->number,
+                    'amount' => $request->amount,
+                    'checks_beneficiary_id' => $request->checks_beneficiary_id,
+                    'date_print' => $request->date_print,
+                    'observations' => $request->observations,
+                    'status' => $request->status
+                ]);
+            }else{
+                $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                        ->where('p.Estado', 1)
+                        ->where('p.Tplanilla', $request->t_planilla ?? 0)
+                        ->whereRaw('(p.idGda=1 or p.idGda=2)')
+                        ->where('p.Periodo', $request->periodo ?? 0)
+                        ->where('p.Centralizado', 'SI')
+                        ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
+                        ->groupBy('p.Afp', 'p.idPlanillaprocesada')
+                        ->selectRaw('p.ID, SUM(p.Total_Ganado) as total_ganado')
+                        ->get();
+                // dd($planillas);
+                $beneficiary = ChecksBeneficiary::findOrFail($request->checks_beneficiary_id);
+                if($beneficiary->type->percentage){
+                    foreach ($planillas as $item) {
+                        // dd($item, $item->total_ganado, $beneficiary->type->percentage);
+                        ChecksPayment::create([
+                            'user_id' => Auth::user()->id,
+                            'planilla_haber_id' => $item->ID,
+                            'number' => $request->number,
+                            'amount' => $item->total_ganado * ($beneficiary->type->percentage / 100),
+                            'checks_beneficiary_id' => $request->checks_beneficiary_id,
+                            'date_print' => $request->date_print,
+                            'observations' => $request->observations,
+                            'status' => $request->status
+                        ]);
+                    }
+                }
+            }
             // return redirect()->route($request->redirect ?? 'payments.index')->with(['message' => 'Pago agregado correctamente.', 'alert-type' => 'success']);
             return response()->json(['data' => 'success']);
         } catch (\Throwable $th) {
@@ -126,7 +156,8 @@ class SocialSecurityController extends Controller
     public function checks_edit($id){
         $type = 'edit';
         $data = ChecksPayment::with('check_beneficiary.type')->where('id', $id)->where('deleted_at', NULL)->first();
-        return view('social-security.checks-edit-add', compact('type', 'id', 'data'));
+        $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $data->planilla_haber_id)->first();
+        return view('social-security.checks-edit-add', compact('type', 'id', 'data', 'planilla'));
     }
 
     public function checks_update($id, Request $request){
@@ -174,7 +205,7 @@ class SocialSecurityController extends Controller
             Datatables::of($data)
             ->addColumn('planilla_id', function($row){
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $row->planilla_haber_id)->first();
-                return $planilla->idPlanillaprocesada;
+                return $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión');
             })
             ->addColumn('fpc_number', function($row){
                 if($row->fpc_number){
@@ -229,21 +260,51 @@ class SocialSecurityController extends Controller
 
     public function payments_store(Request $request){
         try {
-            PayrollPayment::create([
-                'user_id' => Auth::user()->id,
-                'planilla_haber_id' => $request->planilla_haber_id,
-                'date_payment_afp' => $request->date_payment_afp,
-                'payment_id' => $request->payment_id,
-                'penalty_payment' => $request->penalty_payment,
-                'fpc_number' => $request->fpc_number,
-                'date_payment_cc' => $request->date_payment_cc,
-                'gtc_number' => $request->gtc_number,
-                'check_number' => $request->check_number,
-                'recipe_number' => $request->recipe_number,
-                'deposit_number' => $request->deposit_number,
-                'check_id' => $request->check_id,
-                'penalty_check' => $request->penalty_check
-            ]);
+            if($request->planilla_haber_id){
+                PayrollPayment::create([
+                    'user_id' => Auth::user()->id,
+                    'planilla_haber_id' => $request->planilla_haber_id,
+                    'date_payment_afp' => $request->date_payment_afp,
+                    'payment_id' => $request->payment_id,
+                    'penalty_payment' => $request->penalty_payment,
+                    'fpc_number' => $request->fpc_number,
+                    'date_payment_cc' => $request->date_payment_cc,
+                    'gtc_number' => $request->gtc_number,
+                    'recipe_number' => $request->recipe_number,
+                    'deposit_number' => $request->deposit_number,
+                    'check_id' => $request->check_id,
+                    'penalty_check' => $request->penalty_check
+                ]);
+            }else{
+                $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                        ->where('p.Estado', 1)
+                        ->where('p.Tplanilla', $request->t_planilla ?? 0)
+                        ->whereRaw('(p.idGda=1 or p.idGda=2)')
+                        ->where('p.Periodo', $request->periodo ?? 0)
+                        ->where('p.Centralizado', 'SI')
+                        ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
+                        ->groupBy('p.Afp', 'p.idPlanillaprocesada')
+                        ->selectRaw('p.ID')
+                        ->get();
+                // dd($planillas);
+                foreach ($planillas as $item) {
+                    PayrollPayment::create([
+                        'user_id' => Auth::user()->id,
+                        'planilla_haber_id' => $item->ID,
+                        'date_payment_afp' => $request->date_payment_afp,
+                        'payment_id' => $request->payment_id,
+                        'penalty_payment' => $request->penalty_payment/count($planillas),
+                        'fpc_number' => $request->fpc_number,
+                        'date_payment_cc' => $request->date_payment_cc,
+                        'gtc_number' => $request->gtc_number,
+                        'recipe_number' => $request->recipe_number,
+                        'deposit_number' => $request->deposit_number,
+                        'check_id' => $request->check_id,
+                        'penalty_check' => $request->penalty_check / count($planillas)
+                    ]);
+                }
+            }
+
             // return redirect()->route($request->redirect ?? 'payments.index')->with(['message' => 'Pago agregado correctamente.', 'alert-type' => 'success']);
             return response()->json(['data' => 'success']);
         } catch (\Throwable $th) {
@@ -256,7 +317,8 @@ class SocialSecurityController extends Controller
     public function payments_edit($id){
         $type = 'edit';
         $data = PayrollPayment::where('id', $id)->where('deleted_at', NULL)->first();
-        return view('social-security.payments-edit-add', compact('type', 'id', 'data'));
+        $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $data->planilla_haber_id)->first();
+        return view('social-security.payments-edit-add', compact('type', 'id', 'data', 'planilla'));
     }
 
     public function payments_update($id, Request $request){
@@ -271,7 +333,6 @@ class SocialSecurityController extends Controller
                 'penalty_payment' => $request->penalty_payment,
                 'date_payment_cc' => $request->date_payment_cc,
                 'gtc_number' => $request->gtc_number,
-                'check_number' => $request->check_number,
                 'recipe_number' => $request->recipe_number,
                 'deposit_number' => $request->deposit_number,
                 'check_id' => $request->check_id,

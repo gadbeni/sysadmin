@@ -37,3 +37,27 @@ function customDataTable(url, columns = []){
 function deleteItem(url){
     $('#delete_form').attr('action', url);
 }
+
+function getPlanillas(url){
+    $('#select-checks_beneficiary_id').val('').trigger('change');
+    $.post(
+        url,
+        {t_planilla: $('#select-t_planilla').val(), periodo: $('#input-periodo').val(), afp: $('#select-afp').val()},
+        function(res){
+            let total = 0;
+            let people = 0;
+            res.planilla.map(item => {
+                total += parseFloat(item.Total_Ganado);
+                people++;
+            })
+            planillaSelect = {
+                total_ganado: total
+            }
+
+            $('#alert-details').fadeIn();
+            $('#alert-details').html(`
+                Cantidad de personas: <b>${people}</b> - Monto total: <b>${total.toFixed(2)}</b>
+            `);
+        }
+    );
+}

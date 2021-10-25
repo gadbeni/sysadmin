@@ -215,4 +215,20 @@ class PlanillasController extends Controller
         // dd($payment, $planilla);
         return view('planillas.payment-recipe-delete', compact('payment', 'planilla'));
     }
+
+    // Funcionales
+
+    public function planilla_centralizada_search(Request $request){
+        $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                        ->where('p.Estado', 1)
+                        ->where('p.Tplanilla', $request->t_planilla ?? 0)
+                        ->whereRaw('(p.idGda=1 or p.idGda=2)')
+                        ->where('p.Periodo', $request->periodo ?? 0)
+                        ->where('p.Centralizado', 'SI')
+                        ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
+                        // ->groupBy('p.Afp', 'p.idPlanillaprocesada')
+                        ->select('p.*')
+                        ->get();
+        return response()->json(['planilla' => $planilla]);
+    }
 }

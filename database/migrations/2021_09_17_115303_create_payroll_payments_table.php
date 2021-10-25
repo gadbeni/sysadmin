@@ -21,7 +21,6 @@ class CreatePayrollPaymentsTable extends Migration
             $table->text('fpc_number')->nullable();
             $table->date('date_payment_cc')->nullable();
             $table->text('gtc_number')->nullable();
-            $table->text('check_number')->nullable();
             $table->text('recipe_number')->nullable();
             $table->text('deposit_number')->nullable();
             $table->timestamps();

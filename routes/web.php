@@ -64,6 +64,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('planillas/pago/delete', [PlanillasController::class, 'planilla_payment_delete'])->name('planilla.payment.delete');
     Route::get('planillas/pago/delete/print/{id}', [PlanillasController::class, 'planillas_pago_delete_print']);
 
+    Route::post('planillas/centralizada/search', [PlanillasController::class, 'planilla_centralizada_search'])->name('planillas.centralizada.search');
+
     // Previsión social
     // * Cheques
     Route::get('social-security/checks', [SocialSecurityController::class, 'checks_index'])->name('checks.index');

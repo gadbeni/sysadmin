@@ -21,10 +21,35 @@
                     <input type="hidden" name="redirect">
                     <div class="panel panel-bordered">
                         <div class="panel-body">
+                            <div class="alert alert-info" role="alert" id="alert-details" style="display: none"></div>
                             <div class="row">
-                                <div class="form-group col-md-6">
+                                <div class="col-md-12" style="{{ $type == 'create' ? '' : 'display: none' }}">
+                                    <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="1" checked>No centralizadas</label>
+                                    <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="2">Centralizadas</label>
+                                </div>
+                                <div class="form-group col-md-6 div-no-centralizada">
                                     <label for="planilla_haber_id">Planilla(s)</label>
-                                    <select name="planilla_haber_id" id="select-planilla_haber_id" class="form-control" required></select>
+                                    <select name="planilla_haber_id" id="select-planilla_haber_id" class="form-control"></select>
+                                </div>
+                                <div class="form-group col-md-6 div-centralizada">
+                                    {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
+                                    <label for="t_planilla">Tipo de planilla</label>
+                                    <select name="t_planilla" id="select-t_planilla" class="form-control select2 select-request">
+                                        <option value="1">Funcionamiento</option>
+                                        <option value="2">Inversión</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6 div-centralizada">
+                                    <label for="periodo">Periodo</label>
+                                    <input type="number" min="0" name="periodo" id="input-periodo" class="form-control select-request" placeholder="Periodo"  />
+                                </div>
+                                <div class="form-group col-md-6 div-centralizada">
+                                    <label for="afp">Tipo de AFP</label>
+                                    <select name="afp" id="select-afp" class="form-control select2 select-request">
+                                        {{-- <option value="">Todas las AFP</option> --}}
+                                        <option value="1">Futuro</option>
+                                        <option value="2">Previsión</option>
+                                    </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="amount">N&deg; de cheque</label>
@@ -79,11 +104,14 @@
 
 @section('css')
     <style>
-        
+        .div-centralizada{
+            display: none
+        }
     </style>
 @stop
 
 @section('javascript')
+    <script src="{{ url('js/main.js') }}"></script>
     <script>
         var planillaSelect = null;
         $(document).ready(function(){
@@ -118,12 +146,16 @@
                             return `${data.idPlanillaprocesada} - ${data.Afp == 1 ? 'AFP Futuro' : 'AFP Previsión'}`;
                         }
                     }
+                }).change(function(){
+                    $('#select-checks_beneficiary_id').val('').trigger('change');
                 });
 
                 $('#select-status').val(1);
+		        $('#select-planilla_haber_id').select2('open');
             @else
                 let data = @json($data);
-                $("#select-planilla_haber_id").append(`<option value="${data.planilla_haber_id}">${data.planilla_haber_id}</option>`)
+                let planilla = @json($planilla);
+                $("#select-planilla_haber_id").append(`<option value="${planilla.idPlanillaprocesada}">${planilla.idPlanillaprocesada} - ${planilla.Afp == 1 ? 'Futuro' : 'Previsión'}</option>`)
                 $('#select-checks_beneficiary_id').val(data.check_beneficiary.id).trigger('change');
                 $('#select-status').val(data.status);
             @endif
@@ -149,11 +181,41 @@
                     let porcentaje = type.percentage/100;
                     let amount = planillaSelect.total_ganado * porcentaje;
                     $('#input-amout').val(amount.toFixed(2));
+                }else{
+                    $('#input-amout').val('');
                 }
             });
 
+            $('.radio-type').click(function(){
+                let type = $(".radio-type:checked").val();
+                if(type == 1){
+                    $('.div-no-centralizada').fadeIn('fast', () => {
+                        $('.div-centralizada').fadeOut('fast');
+                        $('#select-planilla_haber_id').select2('open');
+                        $('#select-planilla_haber_id').attr('required', 'required')
+                        $('#input-periodo').removeAttr('required');
+                        $('#select-checks_beneficiary_id').val('').trigger('change');
+                    });
+                }else{
+                    $('.div-centralizada').fadeIn('fast', () => {
+                        $('.div-no-centralizada').fadeOut('fast');
+                        $('#select-checks_beneficiary_id').val('').trigger('change');
+                        $('#select-planilla_haber_id').val('').trigger('change');
+                        $('#select-planilla_haber_id').removeAttr('required')
+                    });
+                }
+            });
+
+            $('.select-request').change(function(){
+                getPlanillas('{{ route("planillas.centralizada.search") }}');
+            });
+
             $('#btn-reset').click(function(){
-                $('#select-planilla_haber_id').val('').trigger('change')
+                $('#select-planilla_haber_id').val('').trigger('change');
+                setTimeout(() => {
+                    $('#select-status').val(1);
+                    $('#select-planilla_haber_id').select2('open');
+                }, 0);
             });
         });
 
