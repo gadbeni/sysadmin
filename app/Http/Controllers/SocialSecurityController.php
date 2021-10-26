@@ -52,7 +52,7 @@ class SocialSecurityController extends Controller
                 }
                 return '<p>
                             <b><small>N&deg;:</small></b> '.$row->number.' <br>
-                            <b><small>Planilla:</small></b> '.$planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión').' <br>
+                            <b><small>Planilla:</small></b> '.($planilla ? $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión') : 'No encontrada').' <br>
                             <b><small>Monto:</small></b> '.number_format($row->amount, 2, ',', '.').' <br>
                             '.$status.'
                         </p>';
@@ -104,44 +104,62 @@ class SocialSecurityController extends Controller
 
     public function checks_store(Request $request){
         try {
+            $beneficiary = ChecksBeneficiary::findOrFail($request->checks_beneficiary_id);
+            // Verificar que el pago sea de una planilla centralizada o no centralizada
             if($request->planilla_haber_id){
+                // Si el porcentaje es 0 se calcula el SIP
+                $sip = 0;
+                if(!$beneficiary->type->percentage){
+                    $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $request->planilla_haber_id)->first();
+                    $planilla = DB::connection('mysqlgobe')->table('planillahaberes')
+                                            ->where('Afp', $planillahaberes->Afp)->where('idPlanillaprocesada', $planillahaberes->idPlanillaprocesada)
+                                            ->groupBy('Afp', 'idPlanillaprocesada')
+                                            ->selectRaw('SUM(Total_Ganado) as total_ganado, SUM(Total_Aportes_Afp) as total_aportes_afp, SUM(Riesgo_Comun) as riesgo_comun')
+                                            ->first();
+                    
+                    $aporte_patronal = ($planilla->total_ganado * 0.05) + $planilla->riesgo_comun;
+                    $sip = $planilla->total_aportes_afp + $aporte_patronal - ($planilla->total_ganado * (5.5 / 100));
+                }
+
                 ChecksPayment::create([
                     'user_id' => Auth::user()->id,
                     'planilla_haber_id' => $request->planilla_haber_id,
                     'number' => $request->number,
-                    'amount' => $request->amount,
+                    'amount' => $beneficiary->type->percentage ? $request->amount : $sip,
                     'checks_beneficiary_id' => $request->checks_beneficiary_id,
                     'date_print' => $request->date_print,
                     'observations' => $request->observations,
                     'status' => $request->status
                 ]);
             }else{
-                $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                        ->where('p.Estado', 1)
-                        ->where('p.Tplanilla', $request->t_planilla ?? 0)
-                        ->whereRaw('(p.idGda=1 or p.idGda=2)')
-                        ->where('p.Periodo', $request->periodo ?? 0)
-                        ->where('p.Centralizado', 'SI')
-                        ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
-                        ->groupBy('p.Afp', 'p.idPlanillaprocesada')
-                        ->selectRaw('p.ID, SUM(p.Total_Ganado) as total_ganado')
-                        ->get();
-                // dd($planillas);
-                $beneficiary = ChecksBeneficiary::findOrFail($request->checks_beneficiary_id);
-                if($beneficiary->type->percentage){
-                    foreach ($planillas as $item) {
-                        // dd($item, $item->total_ganado, $beneficiary->type->percentage);
-                        ChecksPayment::create([
-                            'user_id' => Auth::user()->id,
-                            'planilla_haber_id' => $item->ID,
-                            'number' => $request->number,
-                            'amount' => $item->total_ganado * ($beneficiary->type->percentage / 100),
-                            'checks_beneficiary_id' => $request->checks_beneficiary_id,
-                            'date_print' => $request->date_print,
-                            'observations' => $request->observations,
-                            'status' => $request->status
-                        ]);
-                    }
+                 // Si el porcentaje es 0 se calcula el SIP
+                $sip = 0;
+                if(!$beneficiary->type->percentage){
+                    $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                            ->where('p.Estado', 1)
+                            ->where('p.Tplanilla', $request->t_planilla ?? 0)
+                            ->whereRaw('(p.idGda=1 or p.idGda=2)')
+                            ->where('p.Periodo', $request->periodo ?? 0)
+                            ->where('p.Centralizado', 'SI')
+                            ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
+                            ->groupBy('p.Afp', 'p.idPlanillaprocesada')
+                            ->selectRaw('p.ID, SUM(p.Total_Ganado) as total_ganado, SUM(p.Total_Aportes_Afp) as total_aportes_afp, SUM(p.Riesgo_Comun) as riesgo_comun')
+                            ->get();
+                    $aporte_patronal = ($planilla->total_ganado * 0.05) + $planilla->riesgo_comun;
+                    $sip = $planilla->total_aportes_afp + $aporte_patronal - ($planilla->total_ganado * (5.5 / 100));
+                }
+                
+                foreach ($planillas as $item) {
+                    ChecksPayment::create([
+                        'user_id' => Auth::user()->id,
+                        'planilla_haber_id' => $item->ID,
+                        'number' => $request->number,
+                        'amount' => $beneficiary->type->percentage ? $item->total_ganado * ($beneficiary->type->percentage / 100) : $sip,
+                        'checks_beneficiary_id' => $request->checks_beneficiary_id,
+                        'date_print' => $request->date_print,
+                        'observations' => $request->observations,
+                        'status' => $request->status
+                    ]);
                 }
             }
             // return redirect()->route($request->redirect ?? 'payments.index')->with(['message' => 'Pago agregado correctamente.', 'alert-type' => 'success']);
@@ -163,8 +181,8 @@ class SocialSecurityController extends Controller
     public function checks_update($id, Request $request){
         // dd($request);
         try {
-            ChecksPayment::where('id', $id)
-            ->update([
+            ChecksPayment::where('id', $id)->update([
+                'number' => $request->number,
                 'amount' => $request->amount,
                 'beneficiary' => $request->beneficiary,
                 'date_print' => $request->date_print,
@@ -205,7 +223,11 @@ class SocialSecurityController extends Controller
             Datatables::of($data)
             ->addColumn('planilla_id', function($row){
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $row->planilla_haber_id)->first();
-                return $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión');
+                if($planilla){
+                    return $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión');
+                }else{
+                    return '';
+                }
             })
             ->addColumn('fpc_number', function($row){
                 if($row->fpc_number){
@@ -326,7 +348,7 @@ class SocialSecurityController extends Controller
         try {
             PayrollPayment::where('id', $id)
             ->update([
-                'planilla_haber_id' => $request->planilla_haber_id,
+                // 'planilla_haber_id' => $request->planilla_haber_id,
                 'date_payment_afp' => $request->date_payment_afp,
                 'fpc_number' => $request->fpc_number,
                 'payment_id' => $request->payment_id,

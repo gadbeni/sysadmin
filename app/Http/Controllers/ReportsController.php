@@ -174,15 +174,29 @@ class ReportsController extends Controller
                             ->whereRaw($id_da != '' ? 'da.ID in ('.substr($id_da, 0, -1).')' : 1)->get();
                 $cont = 0;
                 foreach ($da as $item) {
-                    $da[$cont]->planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                    $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
                                                 ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
                                                 ->where('ph.idDa', $item->ID)
                                                 ->where('ph.Periodo', $request->periodo_detallada)
                                                 ->whereRaw($request->t_planilla_detallada ? 'ph.Tplanilla = '.$request->t_planilla_detallada : '(ph.Tplanilla = 1 or ph.Tplanilla = 2)')
                                                 ->groupBy('ph.Afp', 'ph.Tplanilla')
-                                                ->selectRaw('ph.Afp as afp, tp.Nombre as tipo_planilla, COUNT(ph.ID) as personas, SUM(ph.Total_Ganado) as total_ganado')
+                                                ->selectRaw('ph.Afp as afp, tp.Nombre as tipo_planilla, COUNT(ph.ID) as personas, SUM(ph.Total_Ganado) as total_ganado, ph.idPlanillaprocesada')
                                                 ->orderBy('ph.Tplanilla')
                                                 ->get();
+                    $index = 0;
+                    foreach ($planillas as $item) {        
+                        // Obtener detalle de pago
+                        $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('Afp', $item->afp)->where('idPlanillaprocesada', $item->idPlanillaprocesada)->get();
+                        $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
+                        $planillas[$index]->detalle_pago = $pago;
+                        // Obtener detalle de cheques
+                        $cheque = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary', function($q){
+                            $q->where('full_name', 'like', '%caja de salud%');
+                        })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
+                        $planillas[$index]->detalle_cheque = $cheque;
+                        $index++;
+                    }
+                    $da[$cont]->planillas = $planillas;
                     $cont++;
                 }
                 break;
@@ -205,12 +219,12 @@ class ReportsController extends Controller
 
                 // Obtener detalle de pago
                 $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('Afp', $item->Afp)->where('idPlanillaprocesada', $item->idPlanillaprocesada)->get();
-                $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->first();
+                $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->first();
                 $planillas[$cont]->detalle_pago = $pago;
                 // Obtener detalle de cheques
                 $cheque = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary', function($q){
                     $q->where('full_name', 'like', '%caja de salud%');
-                })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->first();
+                })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->first();
                 $planillas[$cont]->detalle_cheque = $cheque;
                 $cont++;
             }

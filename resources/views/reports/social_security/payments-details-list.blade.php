@@ -21,13 +21,13 @@
                                             <tr>
                                                 <th>Tipo de planilla</th>
                                                 <th>AFP</th>
-                                                <th>N&deg; de personas</th>
-                                                <th>Total ganado</th>
-                                                <th>N&deg; de cheque</th>
-                                                <th>Monto de cheque</th>
-                                                <th>Fecha de pago AFP</th>
-                                                <th>N&deg; FPC</th>
-                                                <th>Multa AFP</th>
+                                                <th style="text-align: right">N&deg; de personas</th>
+                                                <th style="text-align: right">Total ganado</th>
+                                                <th style="text-align: right">N&deg; de cheque</th>
+                                                <th style="text-align: right">Monto de cheque</th>
+                                                <th style="text-align: right">Fecha de pago AFP</th>
+                                                <th style="text-align: right">N&deg; FPC</th>
+                                                <th style="text-align: right">Multa AFP</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -35,8 +35,35 @@
                                                 <tr>
                                                     <td>{{ $planilla->tipo_planilla }}</td>
                                                     <td>{{ $planilla->afp == 1 ? 'Futuro' : 'Previsión' }}</td>
-                                                    <td>{{ $planilla->personas }}</td>
-                                                    <td>{{ number_format($planilla->total_ganado, 2, ',', '.') }}</td>
+                                                    <td style="text-align: right">{{ $planilla->personas }}</td>
+                                                    <td style="text-align: right">{{ number_format($planilla->total_ganado, 2, ',', '.') }}</td>
+                                                    <td style="text-align: right">
+                                                        <ul style="list-style: none">
+                                                            @foreach ($planilla->detalle_cheque as $cheque)
+                                                            <li>{{ $cheque->number }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </td>
+                                                    <td style="text-align: right">
+                                                        <ul style="list-style: none">
+                                                            @php
+                                                                $total = 0;
+                                                            @endphp
+                                                            @foreach ($planilla->detalle_cheque as $cheque)
+                                                            <li>Bs. {{ number_format($cheque->amount, 2, ',', '.') }}</li>
+                                                            @php
+                                                                $total += $cheque->amount;
+                                                            @endphp
+                                                            @endforeach
+                                                            <li>
+                                                                <hr style="margin: 5px 0px">
+                                                                <b>Bs. {{ number_format($total, 2, ',', '.') }}</b>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
                                                 </tr>
                                             @endforeach
                                         </tbody>

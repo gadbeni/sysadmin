@@ -8,7 +8,7 @@
             <div class="col-md-12">
                 <div class="panel panel-bordered">
                     <div class="panel-body" style="padding: 0px">
-                        <div class="col-md-8" style="padding: 0px">
+                        <div class="col-md-7" style="padding: 0px">
                             <h1 class="page-title">
                                 <i class="voyager-dollar"></i> Reporte de pagos al seguro social
                             </h1>
@@ -17,7 +17,7 @@
                                 <p>Puede obtener el valor de cada parámetro en cualquier lugar de su sitio llamando <code>setting('group.key')</code></p>
                             </div> --}}
                         </div>
-                        <div class="col-md-4" style="margin-top: 30px">
+                        <div class="col-md-5" style="margin-top: 30px">
                             {{-- <form name="form_search" id="form-search" action="{{ route('reports.social_security.payments.list') }}" method="post">
                                 @csrf
                             </form> --}}
@@ -85,7 +85,7 @@
                                     </div>
                                 </div>
 
-                                {{-- Opciones que se despliegan cuando se hace check en la opción "centralizada" --}}
+                                {{-- Opciones que se despliegan cuando se hace check en la opción "detallada" --}}
                                 <div class="input-detallada" style="display: none">
                                     <div class="form-group col-md-12">
                                         <select name="id_da_detallada[]" class="form-control select2" multiple>
@@ -104,7 +104,25 @@
                                     </div>
                                     <div class="form-group col-md-12">
                                         <input type="text" name="periodo_detallada" class="form-control" placeholder="Periodo">
-                                        <small>Por rango Ej: 202101-202105</small>
+                                        {{-- <small>Por rango Ej: 202101-202105</small> --}}
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="number" name="fpc_por_pago" class="form-control" placeholder="FPC">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="date" name="fecha_pago_afp_por_pago" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="number" name="id_afp_por_pago" class="form-control" placeholder="ID pago AFP">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="number" name="gtc_por_pago" class="form-control" placeholder="GTC-11">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="date" name="fecha_pago_cc_por_pago" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="number" name="id_cc_por_pago" class="form-control" placeholder="ID pago CC">
                                     </div>
                                 </div>
 
@@ -133,7 +151,11 @@
 @stop
 
 @section('css')
-
+    <style>
+        .col-md-12, .col-md-6, .col-md-4{
+            padding: 0px 3px
+        }
+    </style>
 @stop
 
 @section('javascript')
