@@ -46,9 +46,11 @@ function getPlanillas(url){
         function(res){
             let total = 0;
             let people = 0;
+            let periodo = '';
             res.planilla.map(item => {
                 total += parseFloat(item.Total_Ganado);
                 people++;
+                periodo = item.Periodo;
             })
             planillaSelect = {
                 total_ganado: total
@@ -57,6 +59,11 @@ function getPlanillas(url){
             $('#alert-details').fadeIn();
             $('#alert-details').html(`
                 Cantidad de personas: <b>${people}</b> - Monto total: <b>${total.toFixed(2)}</b>
+            `);
+            $('#alert-details').html(`
+                Cantidad de personas: <b>${people}</b> <br>
+                Periodo: <b>${periodo}</b> <br>
+                Monto total: <b>${new Intl.NumberFormat('es-ES').format(total.toFixed(2))} Bs.</b>
             `);
         }
     );

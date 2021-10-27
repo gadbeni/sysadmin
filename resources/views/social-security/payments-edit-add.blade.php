@@ -22,7 +22,7 @@
                     <div class="panel panel-bordered">
                         <div class="panel-body">
                             <div class="row">
-                                <div class="alert alert-info" role="alert" id="alert-details" style="display: none"></div>
+                                <div class="alert alert-info" role="alert" id="alert-details" style="display: none; margin-bottom: 20px"></div>
                                 <div class="col-md-12" style="{{ $type == 'create' ? '' : 'display: none' }}">
                                     <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="1" checked>No centralizadas</label>
                                     <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="2">Centralizadas</label>
@@ -154,8 +154,19 @@
                     templateResult: formatRepo,
                     templateSelection: data => {
                         if(data.id){
+                            planillaSelect = data;
                             return `${data.idPlanillaprocesada} - ${data.Afp == 1 ? 'AFP Futuro' : 'AFP Previsión'}`;
                         }
+                    }
+                }).change(function(){
+                    $('#select-checks_beneficiary_id').val('').trigger('change');
+                    if(planillaSelect){
+                        $('#alert-details').fadeIn();
+                        $('#alert-details').html(`
+                            Cantidad de personas: <b>${planillaSelect.cantidad_personas}</b> <br>
+                            Periodo: <b>${planillaSelect.Periodo}</b> <br>
+                            Monto total: <b>${new Intl.NumberFormat('es-ES').format(planillaSelect.total_ganado.toFixed(2))} Bs.</b>
+                        `);
                     }
                 });
                 $('#select-planilla_haber_id').select2('open');
@@ -185,7 +196,6 @@
                 if(type == 1){
                     $('.div-no-centralizada').fadeIn('fast', () => {
                         $('.div-centralizada').fadeOut('fast');
-                        $('#select-planilla_haber_id').select2('open');
                         $('#select-planilla_haber_id').attr('required', 'required')
                         $('#input-periodo').removeAttr('required');
                         $('#select-checks_beneficiary_id').val('').trigger('change');
@@ -195,9 +205,12 @@
                         $('.div-no-centralizada').fadeOut('fast');
                         $('#select-checks_beneficiary_id').val('').trigger('change');
                         $('#select-planilla_haber_id').val('').trigger('change');
-                        $('#select-planilla_haber_id').removeAttr('required')
+                        $('#select-planilla_haber_id').removeAttr('required');
+                        $('#input-periodo').val('');
                     });
                 }
+                $('#alert-details').fadeOut();
+                planillaSelect = null;
             });
 
             $('.select-request').change(function(){
@@ -207,6 +220,7 @@
             $('#btn-reset').click(function(){
                 $('#select-planilla_haber_id').val('').trigger('change');
                 setTimeout(() => {
+                    $('#select-status').val(1);
                     $('#select-planilla_haber_id').select2('open');
                 }, 0);
             });

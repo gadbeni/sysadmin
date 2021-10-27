@@ -21,7 +21,7 @@
                     <input type="hidden" name="redirect">
                     <div class="panel panel-bordered">
                         <div class="panel-body">
-                            <div class="alert alert-info" role="alert" id="alert-details" style="display: none"></div>
+                            <div class="alert alert-info" role="alert" id="alert-details" style="display: none; margin-bottom: 20px"></div>
                             <div class="row">
                                 <div class="col-md-12" style="{{ $type == 'create' ? '' : 'display: none' }}">
                                     <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="1" checked>No centralizadas</label>
@@ -148,6 +148,14 @@
                     }
                 }).change(function(){
                     $('#select-checks_beneficiary_id').val('').trigger('change');
+                    if(planillaSelect){
+                        $('#alert-details').fadeIn();
+                        $('#alert-details').html(`
+                            Cantidad de personas: <b>${planillaSelect.cantidad_personas}</b> <br>
+                            Periodo: <b>${planillaSelect.Periodo}</b> <br>
+                            Monto total: <b>${new Intl.NumberFormat('es-ES').format(planillaSelect.total_ganado.toFixed(2))} Bs.</b>
+                        `);
+                    }
                 });
 
                 $('#select-status').val(1);
@@ -178,9 +186,33 @@
             $('#select-checks_beneficiary_id').change(function(){
                 let type = $('#select-checks_beneficiary_id option:selected').data('type');
                 if(type && planillaSelect){
-                    let porcentaje = type.percentage/100;
-                    let amount = planillaSelect.total_ganado * porcentaje;
-                    $('#input-amout').val(amount.toFixed(2));
+
+                    let aporte_patronal = (planillaSelect.total_ganado * 0.05) + planillaSelect.riesgo_comun;
+                    let sip = planillaSelect.total_aportes_afp + aporte_patronal - (planillaSelect.total_ganado * (5.5 / 100));
+                    let aporte_solidario = planillaSelect.total_ganado * 0.035;
+                    let aporte_vivienda = planillaSelect.total_ganado * 0.02;
+                    let amount = 0;
+                    if(type.percentage != null){
+                        let porcentaje = type.percentage/100;
+                        amount = planillaSelect.total_ganado * porcentaje;
+                        $('#input-amout').val(amount.toFixed(2));
+                    }else{
+                        switch (type.id) {
+                            case 4:
+                                amount = sip + aporte_solidario;
+                                break;
+                            case 5:
+                                amount = sip;
+                                break;
+                            case 6:
+                                amount = sip + aporte_solidario + aporte_vivienda;
+                                break;
+                            default:
+                                amount = 0;
+                                break;
+                        }
+                        $('#input-amout').val(amount.toFixed(2));
+                    }
                 }else{
                     $('#input-amout').val('');
                 }
@@ -191,7 +223,6 @@
                 if(type == 1){
                     $('.div-no-centralizada').fadeIn('fast', () => {
                         $('.div-centralizada').fadeOut('fast');
-                        $('#select-planilla_haber_id').select2('open');
                         $('#select-planilla_haber_id').attr('required', 'required')
                         $('#input-periodo').removeAttr('required');
                         $('#select-checks_beneficiary_id').val('').trigger('change');
@@ -201,9 +232,12 @@
                         $('.div-no-centralizada').fadeOut('fast');
                         $('#select-checks_beneficiary_id').val('').trigger('change');
                         $('#select-planilla_haber_id').val('').trigger('change');
-                        $('#select-planilla_haber_id').removeAttr('required')
+                        $('#select-planilla_haber_id').removeAttr('required');
+                        $('#input-periodo').val('');
                     });
                 }
+                $('#alert-details').fadeOut();
+                planillaSelect = null;
             });
 
             $('.select-request').change(function(){
@@ -229,7 +263,7 @@
                         ${data.idPlanillaprocesada} <br>
                         <p style="font-size: 13px; margin-top: 5px">
                             ${data.Afp == 1 ? 'AFP Futuro' : 'AFP Previsión'} - ${data.Periodo} <br>
-                            ${data.total_ganado.toFixed(2)} Bs. - ${data.cantidad_personas} Persona(s)
+                            ${new Intl.NumberFormat('es-ES').format(data.total_ganado.toFixed(2))} Bs. - ${data.cantidad_personas} Persona(s)
                         </p>
                     </h4>
                 </div>`

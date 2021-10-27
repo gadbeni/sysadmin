@@ -55,7 +55,7 @@ class SocialSecurityController extends Controller
                 }
                 return '<p>
                             <b><small>N&deg;:</small></b> '.$row->number.' <br>
-                            <b>'.$planilla->tipo_planilla.'</b><br>
+                            <b>'.$planilla->tipo_planilla.' - '.$planilla->Periodo.'</b><br>
                             <b><small>Planilla:</small></b> '.($planilla ? $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión') : 'No encontrada').' <br>
                             <b><small>Monto:</small></b> '.number_format($row->amount, 2, ',', '.').' <br>
                             '.$status.'
@@ -110,26 +110,46 @@ class SocialSecurityController extends Controller
         try {
             $beneficiary = ChecksBeneficiary::findOrFail($request->checks_beneficiary_id);
             // Verificar que el pago sea de una planilla centralizada o no centralizada
+            $amount = 0;
+            $aporte_patronal = 0;
+            $sip = 0;
+            $aporte_solidario = 0;
+            $aporte_vivienda = 0;
             if($request->planilla_haber_id){
                 // Si el porcentaje es 0 se calcula el SIP
-                $sip = 0;
-                if(!$beneficiary->type->percentage){
+                if($beneficiary->type->percentage == 0){
                     $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $request->planilla_haber_id)->first();
                     $planilla = DB::connection('mysqlgobe')->table('planillahaberes')
                                             ->where('Afp', $planillahaberes->Afp)->where('idPlanillaprocesada', $planillahaberes->idPlanillaprocesada)
                                             ->groupBy('Afp', 'idPlanillaprocesada')
-                                            ->selectRaw('SUM(Total_Ganado) as total_ganado, SUM(Total_Aportes_Afp) as total_aportes_afp, SUM(Riesgo_Comun) as riesgo_comun')
+                                            ->selectRaw('SUM(Total_Ganado) as total_ganado, SUM(Total_Aportes_Afp) as total_aportes_afp, SUM(Riesgo_Comun) as riesgo_comun, SUM(Aporte_Solidario) as aporte_solidario')
                                             ->first();
                     
                     $aporte_patronal = ($planilla->total_ganado * 0.05) + $planilla->riesgo_comun;
                     $sip = $planilla->total_aportes_afp + $aporte_patronal - ($planilla->total_ganado * (5.5 / 100));
+                    $aporte_solidario = $planilla->total_ganado * 0.035;
+                    $aporte_vivienda = $planilla->total_ganado * 0.02;
+
+                    switch ($beneficiary->type->id) {
+                        case '4':
+                            $amount = $sip + $aporte_solidario;
+                            break;
+                        case '5':
+                            $amount = $sip;
+                            break;
+                        case '6':
+                            $amount = $sip + $aporte_solidario + $aporte_vivienda;
+                            break;
+                    }
+                }else{
+                    $amount = $request->amount;
                 }
 
                 ChecksPayment::create([
                     'user_id' => Auth::user()->id,
                     'planilla_haber_id' => $request->planilla_haber_id,
                     'number' => $request->number,
-                    'amount' => $beneficiary->type->percentage ? $request->amount : $sip,
+                    'amount' => $amount,
                     'checks_beneficiary_id' => $request->checks_beneficiary_id,
                     'date_print' => $request->date_print,
                     'observations' => $request->observations,
@@ -137,24 +157,47 @@ class SocialSecurityController extends Controller
                 ]);
             }else{
                 $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                        ->where('p.Estado', 1)
-                        ->where('p.Tplanilla', $request->t_planilla ?? 0)
-                        ->whereRaw('(p.idGda=1 or p.idGda=2)')
-                        ->where('p.Periodo', $request->periodo ?? 0)
-                        ->where('p.Centralizado', 'SI')
-                        ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
-                        ->groupBy('p.Afp', 'p.idPlanillaprocesada')
-                        ->selectRaw('p.ID, SUM(p.Total_Ganado) as total_ganado, SUM(p.Total_Aportes_Afp) as total_aportes_afp, SUM(p.Riesgo_Comun) as riesgo_comun')
-                        ->get();
+                                ->where('p.Estado', 1)
+                                ->where('p.Tplanilla', $request->t_planilla ?? 0)
+                                ->whereRaw('(p.idGda=1 or p.idGda=2)')
+                                ->where('p.Periodo', $request->periodo ?? 0)
+                                ->where('p.Centralizado', 'SI')
+                                ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
+                                ->groupBy('p.Afp', 'p.idPlanillaprocesada')
+                                ->selectRaw('p.ID, SUM(p.Total_Ganado) as total_ganado, SUM(p.Total_Aportes_Afp) as total_aportes_afp, SUM(p.Riesgo_Comun) as riesgo_comun')
+                                ->get();
                 
                 foreach ($planillas as $item) {
-                    $aporte_patronal = ($item->total_ganado * 0.05) + $item->riesgo_comun;
-                    $sip = $item->total_aportes_afp + $aporte_patronal - ($item->total_ganado * (5.5 / 100));
+                    $amount = 0;
+                    if($beneficiary->type->id == 4 || $beneficiary->type->id == 5 || $beneficiary->type->id == 6){
+                        $aporte_patronal = ($item->total_ganado * 0.05) + $item->riesgo_comun;
+                        $sip = $item->total_aportes_afp + $aporte_patronal - ($item->total_ganado * (5.5 / 100));
+                        $aporte_solidario = $item->total_ganado * 0.035;
+                        $aporte_vivienda = $item->total_ganado * 0.02;
+
+                        switch ($beneficiary->type->id) {
+                            case '4':
+                                $amount = $sip + $aporte_solidario;
+                                break;
+                            case '5':
+                                $amount = $sip;
+                                break;
+                            case '6':
+                                $amount = $sip + $aporte_solidario + $aporte_vivienda;
+                                break;
+                            default:
+                                $amount = 0;
+                                break;
+                        }
+                    }else{
+                        $amount = $item->total_ganado * ($beneficiary->type->percentage / 100);
+                    }
+                    
                     ChecksPayment::create([
                         'user_id' => Auth::user()->id,
                         'planilla_haber_id' => $item->ID,
                         'number' => $request->number,
-                        'amount' => $beneficiary->type->percentage ? $item->total_ganado * ($beneficiary->type->percentage / 100) : $sip,
+                        'amount' => $amount,
                         'checks_beneficiary_id' => $request->checks_beneficiary_id,
                         'date_print' => $request->date_print,
                         'observations' => $request->observations,
@@ -227,7 +270,7 @@ class SocialSecurityController extends Controller
                                 ->where('ph.ID', $row->planilla_haber_id)
                                 ->select('ph.*', 'tp.Nombre as tipo_planilla')->first();
                 if($planilla){
-                    return $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión').'<br><b>'.$planilla->tipo_planilla.'</b>';
+                    return $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión').'<br><b>'.$planilla->tipo_planilla.' - '.$planilla->Periodo.'</b>';
                 }else{
                     return '';
                 }

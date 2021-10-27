@@ -200,6 +200,7 @@
                     default:
                         break;
                 }
+                $('#div-results').empty();
             });
             $('#form-search').on('submit', function(e){
                 e.preventDefault();
