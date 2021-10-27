@@ -180,7 +180,7 @@ class ReportsController extends Controller
                                                 ->where('ph.Periodo', $request->periodo_detallada)
                                                 ->whereRaw($request->t_planilla_detallada ? 'ph.Tplanilla = '.$request->t_planilla_detallada : '(ph.Tplanilla = 1 or ph.Tplanilla = 2)')
                                                 ->groupBy('ph.Afp', 'ph.Tplanilla')
-                                                ->selectRaw('ph.Afp as afp, tp.Nombre as tipo_planilla, COUNT(ph.ID) as personas, SUM(ph.Total_Ganado) as total_ganado, ph.idPlanillaprocesada')
+                                                ->selectRaw('ph.Afp as afp, tp.Nombre as tipo_planilla, COUNT(ph.ID) as personas, SUM(ph.Total_Ganado) as total_ganado, ph.idPlanillaprocesada, ph.Periodo')
                                                 ->orderBy('ph.Tplanilla')
                                                 ->get();
                     $index = 0;
@@ -189,16 +189,21 @@ class ReportsController extends Controller
                         $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('Afp', $item->afp)->where('idPlanillaprocesada', $item->idPlanillaprocesada)->get();
                         $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
                         $planillas[$index]->detalle_pago = $pago;
-                        // Obtener detalle de cheques
-                        $cheque = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary', function($q){
-                            $q->where('full_name', 'like', '%caja de salud%');
+                        // Obtener detalle de cheques afp
+                        $cheques = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary.type', function($q){
+                            $q->where('name', 'not like', '%salud%');
                         })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
-                        $planillas[$index]->detalle_cheque = $cheque;
+                        $planillas[$index]->detalle_cheque_afp = $cheques;
+                        $cheques = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary.type', function($q){
+                            $q->where('name', 'like', '%salud%');
+                        })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
+                        $planillas[$index]->detalle_cheque_cc = $cheques;
                         $index++;
                     }
                     $da[$cont]->planillas = $planillas;
                     $cont++;
                 }
+                // dd($da);
                 break;
                 
             default:
@@ -222,8 +227,8 @@ class ReportsController extends Controller
                 $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->first();
                 $planillas[$cont]->detalle_pago = $pago;
                 // Obtener detalle de cheques
-                $cheque = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary', function($q){
-                    $q->where('full_name', 'like', '%caja de salud%');
+                $cheque = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary.type', function($q){
+                    $q->where('name', 'like', '%salud%');
                 })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->first();
                 $planillas[$cont]->detalle_cheque = $cheque;
                 $cont++;

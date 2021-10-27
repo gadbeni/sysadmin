@@ -106,24 +106,38 @@
                                         <input type="text" name="periodo_detallada" class="form-control" placeholder="Periodo">
                                         {{-- <small>Por rango Ej: 202101-202105</small> --}}
                                     </div>
-                                    <div class="form-group col-md-4">
-                                        <input type="number" name="fpc_por_pago" class="form-control" placeholder="FPC">
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <input type="date" name="fecha_pago_afp_por_pago" class="form-control">
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <input type="number" name="id_afp_por_pago" class="form-control" placeholder="ID pago AFP">
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <input type="number" name="gtc_por_pago" class="form-control" placeholder="GTC-11">
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <input type="date" name="fecha_pago_cc_por_pago" class="form-control">
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <input type="number" name="id_cc_por_pago" class="form-control" placeholder="ID pago CC">
-                                    </div>
+
+                                    <div class="clearfix"></div>
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                            <div class="panel panel-default" style="border: 0px">
+                                                <a role="button" title="Ver más filtros" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                    <span class="glyphicon glyphicon-plus"></span> Más filtros
+                                                </a>
+                                                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                                                    <div class="panel-body">
+                                                        <div class="form-group col-md-4">
+                                                            <input type="number" name="fpc_detallada" class="form-control" placeholder="FPC">
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <input type="date" name="fecha_pago_afp_detallada" class="form-control">
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <input type="number" name="id_afp_detallada" class="form-control" placeholder="ID pago AFP">
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <input type="number" name="gtc_detallada" class="form-control" placeholder="GTC-11">
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <input type="date" name="fecha_pago_cc_detallada" class="form-control">
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <input type="number" name="id_cc_detallada" class="form-control" placeholder="ID pago CC">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                      </div>
+
                                 </div>
 
                                 <div class="form-group col-md-12 text-right group_afp">

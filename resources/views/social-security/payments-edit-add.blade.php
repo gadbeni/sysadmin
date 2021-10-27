@@ -97,7 +97,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="penalty_check">Multa</label>
-                                    <input type="number" step="0,01" min="0" name="penalty_check" class="form-control" value="{{ $type == 'edit' ? $data->penalty_check : '' }}">
+                                    <input type="number" step="0.01" min="0" name="penalty_check" class="form-control" value="{{ $type == 'edit' ? $data->penalty_check : '' }}">
                                 </div>
                             </div>
                         </div>
@@ -158,6 +158,7 @@
                         }
                     }
                 });
+                $('#select-planilla_haber_id').select2('open');
             @else
                 let data = @json($data);
                 let planilla = @json($planilla);
@@ -204,7 +205,10 @@
             });
 
             $('#btn-reset').click(function(){
-                $('#select-planilla_haber_id').val('').trigger('change')
+                $('#select-planilla_haber_id').val('').trigger('change');
+                setTimeout(() => {
+                    $('#select-planilla_haber_id').select2('open');
+                }, 0);
             });
         });
 

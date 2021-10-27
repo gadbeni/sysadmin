@@ -31,7 +31,10 @@ class SocialSecurityController extends Controller
         return
             DataTables::of($data)
             ->addColumn('details', function($row){
-                $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $row->planilla_haber_id)->first();
+                $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                                ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                ->where('ph.ID', $row->planilla_haber_id)
+                                ->select('ph.*', 'tp.Nombre as tipo_planilla')->first();
                 $status = '';
                 switch ($row->status) {
                     case '0':
@@ -52,6 +55,7 @@ class SocialSecurityController extends Controller
                 }
                 return '<p>
                             <b><small>N&deg;:</small></b> '.$row->number.' <br>
+                            <b>'.$planilla->tipo_planilla.'</b><br>
                             <b><small>Planilla:</small></b> '.($planilla ? $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión') : 'No encontrada').' <br>
                             <b><small>Monto:</small></b> '.number_format($row->amount, 2, ',', '.').' <br>
                             '.$status.'
@@ -132,24 +136,20 @@ class SocialSecurityController extends Controller
                     'status' => $request->status
                 ]);
             }else{
-                 // Si el porcentaje es 0 se calcula el SIP
-                $sip = 0;
-                if(!$beneficiary->type->percentage){
-                    $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                            ->where('p.Estado', 1)
-                            ->where('p.Tplanilla', $request->t_planilla ?? 0)
-                            ->whereRaw('(p.idGda=1 or p.idGda=2)')
-                            ->where('p.Periodo', $request->periodo ?? 0)
-                            ->where('p.Centralizado', 'SI')
-                            ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
-                            ->groupBy('p.Afp', 'p.idPlanillaprocesada')
-                            ->selectRaw('p.ID, SUM(p.Total_Ganado) as total_ganado, SUM(p.Total_Aportes_Afp) as total_aportes_afp, SUM(p.Riesgo_Comun) as riesgo_comun')
-                            ->get();
-                    $aporte_patronal = ($planilla->total_ganado * 0.05) + $planilla->riesgo_comun;
-                    $sip = $planilla->total_aportes_afp + $aporte_patronal - ($planilla->total_ganado * (5.5 / 100));
-                }
+                $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                        ->where('p.Estado', 1)
+                        ->where('p.Tplanilla', $request->t_planilla ?? 0)
+                        ->whereRaw('(p.idGda=1 or p.idGda=2)')
+                        ->where('p.Periodo', $request->periodo ?? 0)
+                        ->where('p.Centralizado', 'SI')
+                        ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
+                        ->groupBy('p.Afp', 'p.idPlanillaprocesada')
+                        ->selectRaw('p.ID, SUM(p.Total_Ganado) as total_ganado, SUM(p.Total_Aportes_Afp) as total_aportes_afp, SUM(p.Riesgo_Comun) as riesgo_comun')
+                        ->get();
                 
                 foreach ($planillas as $item) {
+                    $aporte_patronal = ($item->total_ganado * 0.05) + $item->riesgo_comun;
+                    $sip = $item->total_aportes_afp + $aporte_patronal - ($item->total_ganado * (5.5 / 100));
                     ChecksPayment::create([
                         'user_id' => Auth::user()->id,
                         'planilla_haber_id' => $item->ID,
@@ -222,9 +222,12 @@ class SocialSecurityController extends Controller
         return
             Datatables::of($data)
             ->addColumn('planilla_id', function($row){
-                $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $row->planilla_haber_id)->first();
+                $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                                ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                ->where('ph.ID', $row->planilla_haber_id)
+                                ->select('ph.*', 'tp.Nombre as tipo_planilla')->first();
                 if($planilla){
-                    return $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión');
+                    return $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión').'<br><b>'.$planilla->tipo_planilla.'</b>';
                 }else{
                     return '';
                 }
