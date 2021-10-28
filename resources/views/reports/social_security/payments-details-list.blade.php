@@ -9,6 +9,11 @@
         <div class="panel-body">
             <div class="table-responsive">
                 <table id="dataTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="font-size: 18px; text-align: center">AFP</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         @foreach ($da as $item)
                             <tr>
@@ -110,6 +115,11 @@
         <div class="panel-body">
             <div class="table-responsive">
                 <table id="dataTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="font-size: 18px; text-align: center">Caja de Salud</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         @foreach ($da as $item)
                             <tr>

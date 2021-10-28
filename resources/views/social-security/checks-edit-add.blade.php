@@ -179,6 +179,7 @@
                         toastr.error('Ocuarrió un error.', 'Error!');
                     }
                     $('.page-content').loading('toggle');
+                    $('.alert-info').fadeOut();
                 });
             });
             @endif
@@ -186,8 +187,7 @@
             $('#select-checks_beneficiary_id').change(function(){
                 let type = $('#select-checks_beneficiary_id option:selected').data('type');
                 if(type && planillaSelect){
-
-                    let aporte_patronal = (planillaSelect.total_ganado * 0.05) + planillaSelect.riesgo_comun;
+                    let aporte_patronal = (planillaSelect.total_ganado * 0.05) + planillaSelect.total_riesgo_comun;
                     let sip = planillaSelect.total_aportes_afp + aporte_patronal - (planillaSelect.total_ganado * (5.5 / 100));
                     let aporte_solidario = planillaSelect.total_ganado * 0.035;
                     let aporte_vivienda = planillaSelect.total_ganado * 0.02;
@@ -249,6 +249,7 @@
                 setTimeout(() => {
                     $('#select-status').val(1);
                     $('#select-planilla_haber_id').select2('open');
+                    $('.alert-info').fadeOut();
                 }, 0);
             });
         });

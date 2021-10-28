@@ -224,12 +224,12 @@ class ReportsController extends Controller
 
                 // Obtener detalle de pago
                 $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('Afp', $item->Afp)->where('idPlanillaprocesada', $item->idPlanillaprocesada)->get();
-                $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->first();
+                $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
                 $planillas[$cont]->detalle_pago = $pago;
                 // Obtener detalle de cheques
                 $cheque = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary.type', function($q){
                     $q->where('name', 'like', '%salud%');
-                })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->first();
+                })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
                 $planillas[$cont]->detalle_cheque = $cheque;
                 $cont++;
             }
@@ -244,7 +244,7 @@ class ReportsController extends Controller
                     return view('reports.social_security.payments-list-print', compact('planillas'));
                 }
             }else{
-
+                return view('reports.social_security.payments-details-list-print', compact('da'));
             }
         }elseif($request->type == 'excel'){
             return Excel::download(new PaymentsExport, 'users.xlsx');

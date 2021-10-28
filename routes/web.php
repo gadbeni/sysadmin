@@ -76,6 +76,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('social-security/checks/{check}/edit', [SocialSecurityController::class, 'checks_edit'])->name('checks.edit');
     Route::put('social-security/checks/{check}/update', [SocialSecurityController::class, 'checks_update'])->name('checks.update');
     Route::delete('social-security/checks/{check}/delete', [SocialSecurityController::class, 'checks_delete'])->name('checks.delete');
+    Route::post('social-security/checks/delete/multiple', [SocialSecurityController::class, 'checks_delete_multiple'])->name('checks.delete_multiple');
 
     // *Pagos
     Route::get('social-security/payments', [SocialSecurityController::class, 'payments_index'])->name('payments.index');

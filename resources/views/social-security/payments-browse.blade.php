@@ -61,7 +61,7 @@
                 { data: 'deposit_number', title: 'Nro de deposito' },
                 { data: 'user', title: 'Resgistrado por' },
                 { data: 'created_at', title: 'Registrado el' },
-                { data: 'actions', title: 'Acciones' },
+                { data: 'actions', title: 'Acciones', orderable: false, searchable: false },
             ];
             customDataTable("{{ url('admin/social-security/payments/list') }}", columns);
         });

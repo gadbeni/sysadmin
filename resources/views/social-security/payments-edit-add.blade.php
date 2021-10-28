@@ -187,6 +187,7 @@
                         toastr.error('Ocuarrió un error.', 'Error!');
                     }
                     $('.page-content').loading('toggle');
+                    $('.alert-info').fadeOut();
                 });
             });
             @endif
@@ -222,6 +223,7 @@
                 setTimeout(() => {
                     $('#select-status').val(1);
                     $('#select-planilla_haber_id').select2('open');
+                    $('.alert-info').fadeOut();
                 }, 0);
             });
         });

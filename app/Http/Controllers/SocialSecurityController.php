@@ -27,9 +27,11 @@ class SocialSecurityController extends Controller
 
     public function checks_list(){
         $data = ChecksPayment::with(['user', 'check_beneficiary.type'])->where('deleted_at', NULL)->get();
-        // return $data[0]->check_beneficiary;
         return
             DataTables::of($data)
+            ->addColumn('checkbox', function($row){
+                return '<div><input type="checkbox" name="id[]" onclick="checkId()" value="'.$row->id.'" /></div>';
+            })
             ->addColumn('details', function($row){
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
                                 ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
@@ -92,7 +94,7 @@ class SocialSecurityController extends Controller
                     </div>';
                 return $actions;
             })
-            ->rawColumns(['details', 'beneficiary', 'user', 'date_print', 'date_expire', 'created_at', 'actions'])
+            ->rawColumns(['checkbox', 'details', 'beneficiary', 'user', 'date_print', 'date_expire', 'created_at', 'actions'])
             ->make(true);
     }
 
@@ -246,6 +248,20 @@ class SocialSecurityController extends Controller
                 'deleted_at' => Carbon::now()
             ]);
             return redirect()->route('checks.index')->with(['message' => 'Cheque eliminado correctamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            env('APP_DEBUG') ? dd($th) : null;
+            return redirect()->route('checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function checks_delete_multiple(Request $request){
+        try {
+            foreach ($request->id as $id) {
+                ChecksPayment::where('id', $id)->update([
+                    'deleted_at' => Carbon::now()
+                ]);
+            }
+            return redirect()->route('checks.index')->with(['message' => 'Cheques eliminados correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
             return redirect()->route('checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
