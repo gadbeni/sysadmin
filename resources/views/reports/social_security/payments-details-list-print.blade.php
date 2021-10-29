@@ -133,7 +133,7 @@
                                             <td>
                                                 <ul style="list-style: none;">
                                                     @foreach ($planilla->detalle_pago as $pago)
-                                                    <li>{{ date('d/m/Y', strtotime($pago->date_payment_afp)) }}</li>
+                                                    <li>{{ $pago->date_payment_afp ? date('d/m/Y', strtotime($pago->date_payment_afp)) : '' }}</li>
                                                     @endforeach
                                                 </ul>
                                             </td>
@@ -256,7 +256,7 @@
                                             <td style="text-align: right">
                                                 <ul style="list-style: none;">
                                                     @foreach ($planilla->detalle_pago as $pago)
-                                                    <li>{{ date('d/m/Y', strtotime($pago->date_payment_cc)) }}</li>
+                                                    <li>{{ $pago->date_payment_cc ? date('d/m/Y', strtotime($pago->date_payment_cc)) : '' }}</li>
                                                     @endforeach
                                                 </ul>
                                             </td>

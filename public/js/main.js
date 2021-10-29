@@ -72,3 +72,15 @@ function getPlanillas(url){
         }
     );
 }
+
+function checkId(){
+    let ids = [];
+    $('#form_delete_multiple input[name="id[]"]:checked').each(function() {
+        ids.push($(this).val());
+    });
+    if (ids.length > 0) {
+        $('#btn-delete-multiple').fadeIn();
+    } else {
+        $('#btn-delete-multiple').fadeOut();
+    }
+}

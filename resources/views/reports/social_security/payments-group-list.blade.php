@@ -70,7 +70,7 @@
                                 <td style="text-align: right">{{ number_format($item->Total_Aportes_Afp + $aporte_patronal, 2, ',', '.') }}</td>
                                 <td>
                                     @foreach ($item->detalle_pago as $pago)
-                                        {{ date('d/m/Y', strtotime($pago->date_payment_afp)) }}<br>
+                                        {{ $pago->date_payment_afp ? date('d/m/Y', strtotime($pago->date_payment_afp)) : '' }}<br>
                                     @endforeach
                                 </td>
                                 <td>
@@ -91,7 +91,7 @@
                                 <td style="text-align: right">{{ number_format($aporte_caja_cordes, 2, ',', '.') }}</td>
                                 <td>
                                     @foreach ($item->detalle_pago as $pago)
-                                        {{ date('d/m/Y', strtotime($pago->date_payment_cc)) }}<br>
+                                        {{ $pago->date_payment_cc ? date('d/m/Y', strtotime($pago->date_payment_cc)) : '' }}<br>
                                     @endforeach
                                 </td>
                                 <td>

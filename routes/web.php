@@ -87,6 +87,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('social-security/payments/{payment}/edit', [SocialSecurityController::class, 'payments_edit'])->name('payments.edit');
     Route::put('social-security/payments/{payment}/update', [SocialSecurityController::class, 'payments_update'])->name('payments.update');
     Route::delete('social-security/payments/{payment}/delete', [SocialSecurityController::class, 'payments_delete'])->name('payments.delete');
+    Route::post('social-security/payments/delete/multiple', [SocialSecurityController::class, 'payments_delete_multiple'])->name('payments.delete_multiple');
 
     // *Formularios de impresión
     Route::get('social-security/print', [SocialSecurityController::class, 'print_index'])->name('social.security.print.index');

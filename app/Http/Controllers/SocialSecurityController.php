@@ -88,9 +88,9 @@ class SocialSecurityController extends Controller
                         <a href="'.route('checks.edit', ['check' => $row->id]).'" title="Editar" class="btn btn-sm btn-info edit">
                             <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
                         </a>
-                        <button onclick="deleteItem('."'".route('checks.delete', ['check' => $row->id])."'".')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
+                        <button type="button" onclick="deleteItem('."'".route('checks.delete', ['check' => $row->id])."'".')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
                             <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
-                        </a>
+                        </button>
                     </div>';
                 return $actions;
             })
@@ -280,6 +280,9 @@ class SocialSecurityController extends Controller
 
         return
             Datatables::of($data)
+            ->addColumn('checkbox', function($row){
+                return '<div><input type="checkbox" name="id[]" onclick="checkId()" value="'.$row->id.'" /></div>';
+            })
             ->addColumn('planilla_id', function($row){
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
                                 ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
@@ -322,13 +325,13 @@ class SocialSecurityController extends Controller
                         <a href="'.route('payments.edit', ['payment' => $row->id]).'" title="Editar" class="btn btn-sm btn-info edit">
                             <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
                         </a>
-                        <button onclick="deleteItem('."'".route('payments.delete', ['payment' => $row->id])."'".')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
+                        <button type="button" onclick="deleteItem('."'".route('payments.delete', ['payment' => $row->id])."'".')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
                             <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
-                        </a>
+                        </button>
                     </div>';
                 return $actions;
             })
-            ->rawColumns(['planilla_id', 'fpc_number', 'deposit_number', 'user', 'created_at', 'actions'])
+            ->rawColumns(['checkbox', 'planilla_id', 'fpc_number', 'deposit_number', 'user', 'created_at', 'actions'])
             ->make(true);
     }
 
@@ -436,6 +439,20 @@ class SocialSecurityController extends Controller
                 'deleted_at' => Carbon::now()
             ]);
             return redirect()->route('payments.index')->with(['message' => 'Pago eliminado correctamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            env('APP_DEBUG') ? dd($th) : null;
+            return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function payments_delete_multiple(Request $request){
+        try {
+            foreach ($request->id as $id) {
+                PayrollPayment::where('id', $id)->update([
+                    'deleted_at' => Carbon::now()
+                ]);
+            }
+            return redirect()->route('payments.index')->with(['message' => 'Cheques eliminados correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
             return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
