@@ -342,21 +342,25 @@
                         });
                         return;
                     }
-
+                    let months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                     if(res.search.length > 0){
-                        Swal.fire({
-                            title: 'Habilitado para pago',
-                            text: 'Puedes pasar por caja a realizar el cobro.',
-                            icon: 'success',
-                            confirmButtonText: 'Entendido'
-                        });
+                      let data = '';
+                      res.search.forEach(function(item){
+                        data += `${months[parseInt(item.Mes)]}, `;
+                      });
+                      Swal.fire({
+                        title: `Habilitado para pago del mes de ${data.substr(0, data.length-2)}.`,
+                        text: 'Puedes pasar por caja a realizar el cobro.',
+                        icon: 'success',
+                        confirmButtonText: 'Entendido'
+                      });
                     }else{
-                        Swal.fire({
-                            title: 'Trámite de pago no encontrado',
-                            text: 'La cedula de identidad ingresada no tiene trámites de pago en el sistema.',
-                            icon: 'warning',
-                            confirmButtonText: 'Entendido'
-                        });
+                      Swal.fire({
+                        title: 'Trámite de pago no encontrado',
+                        text: 'La cedula de identidad ingresada no tiene trámites de pago en el sistema.',
+                        icon: 'warning',
+                        confirmButtonText: 'Entendido'
+                      });
                     }
                 });
             });

@@ -285,18 +285,20 @@ class CashiersController extends Controller
         DB::beginTransaction();
         try {
             $cashier = Cashier::findOrFail($id);
-            $cashier->closed_at = Carbon::now();
-            $cashier->status = 'cierre pendiente';
-            $cashier->save();
+            if($cashier->status != 'cierre pendiente'){
+                $cashier->closed_at = Carbon::now();
+                $cashier->status = 'cierre pendiente';
+                $cashier->save();
 
-            for ($i=0; $i < count($request->cash_value); $i++) { 
-                // if($request->quantity[$i]){
-                    CashiersDetail::create([
-                        'cashier_id' => $id,
-                        'cash_value' => $request->cash_value[$i],
-                        'quantity' => $request->quantity[$i],
-                    ]);
-                // }
+                for ($i=0; $i < count($request->cash_value); $i++) { 
+                    // if($request->quantity[$i]){
+                        CashiersDetail::create([
+                            'cashier_id' => $id,
+                            'cash_value' => $request->cash_value[$i],
+                            'quantity' => $request->quantity[$i],
+                        ]);
+                    // }
+                }
             }
 
             DB::commit();
@@ -418,4 +420,13 @@ class CashiersController extends Controller
         // $pdf->loadHTML($view);
         // return $pdf->download();
     }
+
+    // public function print_payments($id){
+    //     $cashier = Cashier::with(['user',
+    //     'payments' => function($q){
+    //         $q->where('deleted_at', NULL);
+    //     }])->where('id', $id)->first();
+    //     $view = view('vendor.voyager.cashiers.print-payments', compact('cashier'));
+    //     return $view;
+    // }
 }

@@ -1,5 +1,8 @@
 
 <div class="col-md-12">
+    <div style="z-index: -10;position: fixed;bottom:0">
+        <input type="text" id="text-copy">
+    </div>
     <div class="panel panel-bordered">
         @php
             $planilla_no_pagada = false;
@@ -26,6 +29,7 @@
         @endphp
         @if (count($planilla))
         <div class="panel-body" style="padding-bottom: 0px">
+            <h2 class="text-muted">{{ $title }}</h2><br>
             @if (!$cashier)
                 <div class="alert alert-warning">
                     <h4>Advertencia</h4>
@@ -38,9 +42,11 @@
                     @if ($planilla->where('pagada', 0)->count() == $planilla->count() && $tipo_planilla != 2)
                     <button type="button" data-toggle="modal" data-target="#pago-listo_modal" class="btn btn-success" onclick="setValueOpen('{{ $haberes_id }}')"><i class="voyager-file-text"></i> Habilitar planilla</button>
                     @endif
+
+                    <button type="button" data-toggle="modal" data-target="#pago-multiple_modal" id="btn-pago-multiple" class="btn btn-success" style="display: none"><i class="voyager-dollar"></i> Pago múltiple</button>
                     
                     {{-- Si todos los haberes están pendientes (pagada = 1) o alguna planilla esté pendiente (Estado != 3) se muestra el botón "Cerrar planilla" --}}
-                    @if ($planilla_no_pagada)
+                    @if ($planilla_no_pagada && $tipo_planilla != 2)
                     <button type="button" data-toggle="modal" data-target="#cerrar-planilla-modal" class="btn btn-danger" onclick="setValueClose('{{ $planilla_id }}')"><i class="voyager-check"></i> Cerrar planilla</button>
                     @endif
 
@@ -69,97 +75,141 @@
             </div>
         </div>
         @endif
-        <div class="panel-body">
-            <div class="table-responsive">
-                <table id="dataTable" class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Secretaría</th>
-                            <th>código</th>
-                            <th>Tipo de contrato</th>
-                            <th>AFP</th>
-                            <th>Mes</th>
-                            <th>Gestión</th>
-                            <th>Apellidos y Nombre(s)</th>
-                            <th>C.I.</th>
-                            <th>Líquido</th>
-                            <th style="width: 100px">Estado</th>
-                            @if ($cashier)
-                            <th>Acciones</th>
-                            @endif
-                        </tr>
-                    </thead>
-                    @php
-                        $total = 0;
-                        $cont = 1;
-                        $meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-                    @endphp
-                    <tbody id="dataTable-body">
-                        @forelse ($planilla as $item)
-                        <tr>
-                            <td>{{ $cont }}</td>
-                            <td>{{ $item->Direccion_Administrativa }}</td>
-                            <td>{{ $item->Codigoid }}</td>
-                            <td>{{ $item->tipo_planilla }}</td>
-                            <td>{{ $item->Afp == 1 ? 'Futuro' : 'Previsión' }}</td>
-                            <td>{{ $meses[intval($item->Mes)] }}</td>
-                            <td>{{ $item->Anio }}</td>
-                            <td>{{ $item->Apaterno }} {{ $item->Amaterno }} {{ $item->Pnombre }} {{ $item->Snombre }}</td>
-                            <td>{{ $item->CedulaIdentidad }}</td>
-                            <td class="text-right">{{ number_format($item->Liquido_Pagable, 2, '.', ',') }}</td>
-                            <td>
-                                @switch($item->pagada)
-                                    @case(1)
-                                        <label class="label label-danger">Pendiente</label>
-                                        @break
-                                    @case(2)
-                                        <label class="label label-success">Pagada</label> <br>
-                                        @php
-                                            $detalle_pago = \App\Models\CashiersPayment::with('cashier.user')->where('planilla_haber_id', $item->ID)->first();
-                                        @endphp
-                                        @if ($detalle_pago)
-                                            <small>Por {{ $detalle_pago->cashier->user->name }} <br> {{ date('d-m-Y', strtotime($detalle_pago->created_at)) }} <br> {{ date('H:i:s', strtotime($detalle_pago->created_at)) }} </small>
-                                        @endif
-                                        @break
-                                    @default
-                                        <label class="label label-default">inhabilitada</label>
-                                @endswitch
-                            </td>
-                            @if ($cashier)
-                            <td width="100px" class="text-right">
-                                <div class="btn-group btn-group-sm" role="group">
-                                    {{-- <button type="button" class="btn btn-warning"><i class="voyager-eye"></i> Ver</button> --}}
-                                    @if($item->pagada == 1)
-                                    <button type="button" data-toggle="modal" data-target="#pagar-modal" onclick='setValuePay(@json($item), @json($cashier))' class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
-                                    @endif
-                                    @if($item->pagada == 2 && $detalle_pago)
-                                        <button type="button" onclick="print_recipe({{ $detalle_pago->id }})" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
-                                    @endif
-                                </div>
-                            </td>
-                            @endif
-                            @php
-                                $total += $item->Liquido_Pagable;
-                                $cont++;
-                            @endphp
-                        </tr>
-                        @empty
+        <form id="form-pago-multiple" action="{{ route('planillas.details.payment.multiple') }}" method="post">
+            @csrf
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table id="dataTable" class="table table-bordered">
+                        <thead>
                             <tr>
-                                <td colspan="13"><h4 class="text-center">No hay registros</h4></td>
+                                @if (Auth::user()->role_id == 1)
+                                <th><input type="checkbox" id="check-all" @if ($tipo_planilla == 2 || $planilla->where('pagada', 0)->count() == $planilla->count()) disabled @endif></th>
+                                @endif
+                                <th>Item</th>
+                                <th>Secretaría</th>
+                                <th>código</th>
+                                <th>Tipo de contrato</th>
+                                <th>AFP</th>
+                                <th>Mes</th>
+                                <th>Gestión</th>
+                                <th>Apellidos y Nombre(s)</th>
+                                <th>C.I.</th>
+                                <th>Días trab.</th>
+                                <th>Líquido</th>
+                                <th style="width: 100px">Estado</th>
+                                @if ($cashier || Auth::user()->role_id == 1)
+                                <th>Acciones</th>
+                                @endif
                             </tr>
-                        @endforelse
-                        <tr>
-                            <td colspan="9"><h5>TOTAL</h5></td>
-                            <td><h5 class="text-right">{{ number_format($total, 2, ',', '.') }}</h3></td>
-                            <td colspan="2"></td>
-                        </tr>
-                    </tbody>
-                </table>
+                        </thead>
+                        @php
+                            $total = 0;
+                            $cont = 1;
+                            $meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                        @endphp
+                        <tbody id="dataTable-body">
+                            @forelse ($planilla as $item)
+                            <tr>
+                                @if (Auth::user()->role_id == 1)
+                                <td><input type="checkbox" name="planilla_haber_id[]" class="check-item" value="{{ $item->ID }}" @if($item->pagada != 1) disabled @endif></td>
+                                @endif
+                                <td>{{ $cont }}</td>
+                                <td class="text-selected">{{ $item->Direccion_Administrativa }}</td>
+                                <td>{{ $item->Codigoid }}</td>
+                                <td>{{ $item->tipo_planilla }}</td>
+                                <td>{{ $item->Afp == 1 ? 'Futuro' : 'Previsión' }}</td>
+                                <td>{{ $meses[intval($item->Mes)] }}</td>
+                                <td>{{ $item->Anio }}</td>
+                                <td class="text-selected">{{ $item->Apaterno }} {{ $item->Amaterno }} {{ $item->Pnombre }} {{ $item->Snombre }}</td>
+                                <td class="text-selected">{{ $item->CedulaIdentidad }}</td>
+                                <td>{{ $item->Dias_Trabajado }}</td>
+                                <td class="text-right text-selected">{{ number_format($item->Tplanilla == 3 ? $item->Total_Ganado : $item->Liquido_Pagable, 2, ',', '') }}</td>
+                                <td>
+                                    @switch($item->pagada)
+                                        @case(1)
+                                            <label class="label label-danger">Pendiente</label>
+                                            @break
+                                        @case(2)
+                                            <label class="label label-success">Pagada</label> <br>
+                                            @php
+                                                $detalle_pago = \App\Models\CashiersPayment::with('cashier.user')->where('planilla_haber_id', $item->ID)->first();
+                                            @endphp
+                                            @if ($detalle_pago)
+                                                <small>Por {{ $detalle_pago->cashier->user->name }} <br> {{ date('d-m-Y', strtotime($detalle_pago->created_at)) }} <br> {{ date('H:i:s', strtotime($detalle_pago->created_at)) }} </small>
+                                            @endif
+                                            @break
+                                        @default
+                                            <label class="label label-default">inhabilitada</label>
+                                    @endswitch
+                                </td>
+                                @if ($cashier || Auth::user()->role_id == 1)
+                                <td width="100px" class="text-right">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        {{-- <button type="button" class="btn btn-warning"><i class="voyager-eye"></i> Ver</button> --}}
+                                        @if($item->pagada == 1)
+                                        <button type="button" data-toggle="modal" data-target="#pagar-modal" onclick='setValuePay(@json($item), @json($cashier))' class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
+                                        @endif
+                                        @if($item->pagada == 2 && $detalle_pago)
+                                            <button type="button" onclick="print_recipe({{ $detalle_pago->id }})" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+                                        @endif
+                                    </div>
+                                </td>
+                                @endif
+                                @php
+                                    $total += $item->Tplanilla == 3 ? $item->Total_Ganado : $item->Liquido_Pagable;
+                                    $cont++;
+                                @endphp
+                            </tr>
+                            @empty
+                                <tr>
+                                    <td @if (Auth::user()->role_id == 1) colspan="14" @else colspan="13" @endif><h4 class="text-center">No hay registros</h4></td>
+                                </tr>
+                            @endforelse
+                            <tr>
+                                <td @if (Auth::user()->role_id == 1) colspan="11" @else colspan="10" @endif><h5>TOTAL</h5></td>
+                                <td><h5 class="text-right">{{ number_format($total, 2, ',', '') }}</h3></td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+
+            {{-- Modal de confirmación --}}
+            <div class="modal modal-success fade" tabindex="-1" id="pago-multiple_modal" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title"><i class="voyager-dollar"></i> Confirmación</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-muted">Desea registrar el pago múltiple?</p>
+                            <input type="hidden" name="id">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            {{-- <button type="submit" class="btn btn-default">Test pagar</button> --}}
+                            <button type="button" class="btn btn-success" onclick="sendForm('form-pago-multiple', 'Pago(s) realizado(s) exitosamente')">Sí, pagar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
+<style>
+    .text-selected {
+        cursor: pointer;
+    }
+    .app-footer {
+        opacity: 1 !important;
+    }
+    .text-selected-copy{
+        color: green !important;
+        text-decoration: underline !important;
+    }
+</style>
 
 <script>
     $(document).ready(function(){
@@ -172,7 +222,38 @@
             }else{
                 $('tr').fadeIn('fast')
             }
-        })
+        });
+
+        $('.text-selected').click(function(){
+            let val = $(this).text();
+            $('#text-copy').val(val);
+            $("#text-copy").select();
+            document.execCommand("copy");
+            $(this).addClass('text-selected-copy');
+            setTimeout(function(){
+                $('.text-selected-copy').removeClass('text-selected-copy');
+            }, 300);
+        });
+
+        $('.check-item').click(function(){
+            if ($(".check-item").is(":checked")) {
+                $('#check-all').prop('checked', true);
+                $('#btn-pago-multiple').fadeIn('fast');
+            }else{
+                $('#check-all').prop('checked', false);
+                $('#btn-pago-multiple').fadeOut('fast');
+            }
+        });
+
+        $('#check-all').click(function(){
+            if ($("#check-all").is(":checked")) {
+                $('.check-item').prop('checked', true);
+                $('#btn-pago-multiple').fadeIn('fast');
+            }else{
+                $('.check-item').prop('checked', false);
+                $('#btn-pago-multiple').fadeOut('fast');
+            }
+        });
     });
 
     function print_recipe(id){

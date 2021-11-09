@@ -26,6 +26,18 @@
             <span class="glyphicon glyphicon-list"></span>&nbsp;
             Volver a la lista
         </a>
+        <div class="btn-group">
+            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                <span class="glyphicon glyphicon-print"></span> Impresión <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="{{ route('print.open', ['cashier' => $cashier->id]) }}" target="_blank">Apertura</a></li>
+                @if ($cashier->status == 'cerrada')
+                <li><a href="{{ route('print.close', ['cashier' => $cashier->id]) }}" target="_blank">Cierre</a></li>
+                @endif
+                <li><a href="{{ route('print.payments', ['cashier' => $cashier->id]) }}" target="_blank">Pagos</a></li>
+            </ul>
+        </div>
     </h1>
 @stop
 
@@ -82,6 +94,7 @@
                                 <tbody>
                                     @php
                                         $cont = 1;
+                                        $total = 0;
                                     @endphp
                                     @forelse ($payments as $item)
                                         <tr>
@@ -112,6 +125,7 @@
                                         </tr>
                                         @php
                                             $cont++;
+                                            $total += $item->Liquido_Pagable;
                                         @endphp
                                     @empty
                                         <tr>

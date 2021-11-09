@@ -37,31 +37,34 @@ class SocialSecurityController extends Controller
                                 ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
                                 ->where('ph.ID', $row->planilla_haber_id)
                                 ->select('ph.*', 'tp.Nombre as tipo_planilla')->first();
-                $status = '';
-                switch ($row->status) {
-                    case '0':
-                        $status = '<label class="label label-danger">anulado</label>';
-                        break;
-                    case '1':
-                        $status = '<label class="label label-info">Pendiente</label>';
-                        break;
-                    case '2':
-                        $status = '<label class="label label-success">Pagado</label>';
-                        break;
-                    case '3':
-                        $status = '<label class="label label-warning">Vencido</label>';
-                        break;
-                    default:
-                        # code...
-                        break;
+                if($planilla){
+                    $status = '';
+                    switch ($row->status) {
+                        case '0':
+                            $status = '<label class="label label-danger">anulado</label>';
+                            break;
+                        case '1':
+                            $status = '<label class="label label-info">Pendiente</label>';
+                            break;
+                        case '2':
+                            $status = '<label class="label label-success">Pagado</label>';
+                            break;
+                        case '3':
+                            $status = '<label class="label label-warning">Vencido</label>';
+                            break;
+                        default:
+                            # code...
+                            break;
+                    }
+                    return '<p>
+                                <b><small>N&deg;:</small></b> '.$row->number.' <br>
+                                <b>'.$planilla->tipo_planilla.' - '.$planilla->Periodo.'</b><br>
+                                <b><small>Planilla:</small></b> '.($planilla ? $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión') : 'No encontrada').' <br>
+                                <b><small>Monto:</small></b> '.number_format($row->amount, 2, ',', '.').' <br>
+                                '.$status.'
+                            </p>';
                 }
-                return '<p>
-                            <b><small>N&deg;:</small></b> '.$row->number.' <br>
-                            <b>'.$planilla->tipo_planilla.' - '.$planilla->Periodo.'</b><br>
-                            <b><small>Planilla:</small></b> '.($planilla ? $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión') : 'No encontrada').' <br>
-                            <b><small>Monto:</small></b> '.number_format($row->amount, 2, ',', '.').' <br>
-                            '.$status.'
-                        </p>';
+                return '';
             })
             ->addColumn('beneficiary', function($row){
                 return $row->check_beneficiary->full_name.'<br><small>'.$row->check_beneficiary->type->name.'</small>';
@@ -452,7 +455,7 @@ class SocialSecurityController extends Controller
                     'deleted_at' => Carbon::now()
                 ]);
             }
-            return redirect()->route('payments.index')->with(['message' => 'Cheques eliminados correctamente.', 'alert-type' => 'success']);
+            return redirect()->route('payments.index')->with(['message' => 'Pagos eliminados correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
             return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);

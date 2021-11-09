@@ -148,6 +148,10 @@
                                 <td><h4 id="label-afp"></h4></td>
                             </tr>
                             <tr>
+                                <td><small>Mes</small></td>
+                                <td><h4 id="label-month"></h4></td>
+                            </tr>
+                            <tr>
                                 <td><small>Sueldo Mensual</small></td>
                                 <td><h4 id="label-salary"></h4></td>
                             </tr>
@@ -176,7 +180,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         {{-- <button type="submit" class="btn btn-default">test</button> --}}
-                        <button type="button" class="btn btn-success" onclick="sendForm('form-pagar', 'Pago realizado exitosamente.')">Sí, pagar</button>
+                        <button type="button" class="btn btn-success btn-submit" onclick="sendForm('form-pagar', 'Pago realizado exitosamente.')">Sí, pagar</button>
                     </div>
                 </div>
             </div>
@@ -259,33 +263,39 @@
         }
 
         function sendForm(formId, message){
+            $('.btn-submit').attr('disabled', true);
             $.post($('#'+formId).attr('action'), $('#'+formId).serialize(), function(res){
                 if(res.success){
                     toastr.success(message, 'Bien hecho!');
                     getData();
                     if(formId == 'form-pagar' && $('#check-print').is(':checked')){
                         window.open("{{ url('admin/planillas/pago/print') }}/"+res.payment_id, "Recibo", `width=700, height=400`)
+                        $('#form-pagar').trigger("reset");
                     }
                 }else{
-                    toastr.error(res.message ? res.message : 'Ocurrió un error en nuestro servidor.', 'Oops!')
+                    toastr.error(res.message ? res.message : 'Ocurrió un error.', 'Oops!')
                 }
+                $('.btn-submit').attr('disabled', false);
             })
             .fail(function() {
-                toastr.error('Ocurrió un error.', 'Oops!');
+                toastr.error('Ocurrió un error en nuestro servidor.', 'Oops!');
+                $('.btn-submit').attr('disabled', false);
             })
             $('.modal').modal('hide');
         }
 
         function setValuePay(data, cashier){
+            let months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
             $('#label-item').html(`N&deg; ${data.item}`);
             $('#label-name').text(data.Nombre_Empleado);
             $('#label-afp').html(data.Afp == 1 ? '<label class="label label-danger">Futuro</label>' : '<label class="label label-primary">Previsión</label>');
             $('#label-salary').html(`${data.Sueldo_Mensual.toFixed(2)} <small>Bs.</small>`);
+            $('#label-month').text(months[parseInt(data.Mes)]);
             $('#label-days').html(`${data.Dias_Trabajado} <small>Días</small>`);
-            $('#label-amount').html(`${data.Liquido_Pagable.toFixed(2)} <small>Bs.</small>`);
+            $('#label-amount').html(`${data.Tplanilla == 3 ? data.Total_Ganado.toFixed(2) : data.Liquido_Pagable.toFixed(2)} <small>Bs.</small>`);
             $('#form-pagar input[name="id"]').val(data.ID);
             $('#form-pagar input[name="name"]').val(data.Nombre_Empleado);
-            $('#form-pagar input[name="amount"]').val(data.Liquido_Pagable);
+            $('#form-pagar input[name="amount"]').val(data.Tplanilla == 3 ? data.Total_Ganado : data.Liquido_Pagable);
             $('#form-pagar input[name="cashier_id"]').val(cashier.id);
         }
 

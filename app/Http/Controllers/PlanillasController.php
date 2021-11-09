@@ -26,6 +26,7 @@ class PlanillasController extends Controller
 
     public function planilla_search(Request $request){
         $tipo_planilla = $request->tipo_planilla;
+        $title = '';
         switch ($tipo_planilla) {
             case '0':
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
@@ -36,6 +37,7 @@ class PlanillasController extends Controller
                                 ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
                                 ->orderByRaw("FIELD(p.idDa, '9','16','10','15','8','13','37','41','42','50','55','61','64','6','62','69','5','17','48','53')")
                                 ->get();
+                $title = 'Planilla '.$request->planilla_id.($request->afp_no_centralizada ? ($request->afp_no_centralizada == 1 ? ' - Futuro' : ' - Previsión') : '');
                 break;
             case '1':
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
@@ -50,6 +52,7 @@ class PlanillasController extends Controller
                                 ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
                                 ->orderByRaw("FIELD (p.idDa,'9','16','10','15','8','13','37','41','42','50','55','61','64','6','62','69','5','17','48','53'), p.Nivel")
                                 ->get();
+                $title = ($request->t_planilla ? ($request->t_planilla == 1 ? 'Funcionamiento ' : 'Inversión ') : '').($request->periodo ?? ' ').' '.($request->afp ? ($request->afp == 1 ? ' - Futuro' : ' - Previsión') : '');
                 break;
             case '2':
                     $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
@@ -60,10 +63,11 @@ class PlanillasController extends Controller
                                     ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
                                     ->orderBy("p.Periodo", "DESC")
                                     ->get();
+                $title = '';
                 break;
         }
         
-        return view('planillas.procesadas-search', compact('planilla', 'tipo_planilla'));
+        return view('planillas.procesadas-search', compact('planilla', 'tipo_planilla', 'title'));
     }
 
     public function planilla_search_by_id(){
@@ -120,22 +124,41 @@ class PlanillasController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::connection('mysqlgobe')->table('planillahaberes')
-            ->where('id', $request->id)
-            ->update([
-                'pagada' => 2
-            ]);
+            $pago = DB::connection('mysqlgobe')->table('planillahaberes')->where('id', $request->id)->first();
+            if($pago->pagada == 1){
+                DB::connection('mysqlgobe')->table('planillahaberes')
+                    ->where('id', $request->id)
+                    ->update(['pagada' => 2]);
 
-            $payment = CashiersPayment::create([
-                'cashier_id' => $request->cashier_id,
-                'planilla_haber_id' => $request->id,
-                'amount' => $request->amount,
-                'description' => 'Pago de haberes mensuales a '.$request->name.'.',
-                'observations' => $request->observations
-            ]);
+                $payment = CashiersPayment::create([
+                    'cashier_id' => $request->cashier_id,
+                    'planilla_haber_id' => $request->id,
+                    'amount' => $request->amount,
+                    'description' => 'Pago de haberes mensuales a '.$request->name.'.',
+                    'observations' => $request->observations
+                ]);
+            }else{
+                return response()->json(['error' => 1]);
+            }
 
             DB::commit();
             return response()->json(['success' => 1, 'payment_id' => $payment->id]);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            // dd($th);
+            return response()->json(['error' => 1]);
+        }
+    }
+
+    public function planilla_details_payment_multiple(Request $request){
+        // dd($request);
+        DB::beginTransaction();
+        try {
+            foreach ($request->planilla_haber_id as $item) {
+                DB::connection('mysqlgobe')->table('planillahaberes')->where('id', $item)->update(['pagada' => 2]);
+            }
+            DB::commit();
+            return response()->json(['success' => 1]);
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);

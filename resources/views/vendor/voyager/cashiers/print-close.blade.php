@@ -168,11 +168,11 @@
                         @endphp
                         <tr>
                             <tr>
-                                <td><b>MONTO SOBRANTE</b></td>
+                                <td><b>MONTO FALTANTE</b></td>
                                 <td style="border: 1px solid #ddd">{{ number_format( $amount_diff > 0 ? abs($amount_diff) : 0, 2, ',', '.') }}</td>
                             {{-- </tr>
                             <tr> --}}
-                                <td style="text-align: right; width: 120px"><b>MONTO FALTANTE</b></td>
+                                <td style="text-align: right; width: 120px"><b>MONTO SOBRANTE</b></td>
                                 <td style="border: 1px solid #ddd">{{ number_format($amount_diff < 0 ? abs($amount_diff) : 0, 2, ',', '.') }}</td>
                             </tr>
                         </tr>

@@ -45,6 +45,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('cashiers/{cashier}/print/open', [CashiersController::class, 'print_open'])->name('print.open');
     Route::get('cashiers/print/transfer/{transfer}', [CashiersController::class, 'print_transfer'])->name('print.transfer');
     Route::get('cashiers/{cashier}/print/close', [CashiersController::class, 'print_close'])->name('print.close');
+    Route::get('cashiers/{cashier}/print/payments', [CashiersController::class, 'print_payments'])->name('print.payments');
 
     Route::resource('vaults', VaultsController::class);
     Route::get('vaults/ajax/list/{id}', [VaultsController::class, 'list']);
@@ -59,6 +60,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('planillas/search/id', [PlanillasController::class, 'planilla_search_by_id'])->name('planillas.search.id');
     Route::post('planillas/details/open', [PlanillasController::class, 'planilla_details_open'])->name('planillas.details.open');
     Route::post('planillas/details/payment', [PlanillasController::class, 'planilla_details_payment'])->name('planillas.details.payment');
+    Route::post('planillas/details/payment/multiple', [PlanillasController::class, 'planilla_details_payment_multiple'])->name('planillas.details.payment.multiple');
     Route::post('planillas/update/status', [PlanillasController::class, 'planilla_update_status'])->name('planillas.update.status');
     Route::get('planillas/pago/print/{id}', [PlanillasController::class, 'planillas_pago_print']);
     Route::post('planillas/pago/delete', [PlanillasController::class, 'planilla_payment_delete'])->name('planilla.payment.delete');

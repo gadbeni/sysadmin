@@ -21,8 +21,9 @@ class HomeController extends Controller
                         ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
                         ->where('p.pagada', 1)
                         ->where('p.CedulaIdentidad', $search)
+                        ->where('p.Anio', date('Y'))
                         ->select('p.*', 'p.ITEM as item', 'pp.Estado as estado_planilla_procesada')
-                        ->get();
+                        ->orderBy('p.ID', 'DESC')->limit(3)->get();
             return response()->json(['search' => $data]);
         }else{
             return response()->json(['error' => 'La cédula de identidad ingresada no está registrada en el sistema.']);

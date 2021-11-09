@@ -37,7 +37,7 @@
     <div class="page-content edit-add container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <form action="{{ route('checks.delete_multiple') }}" id="form_delete_multiple" method="POST">
+                <form action="{{ route('payments.delete_multiple') }}" id="form_delete_multiple" method="POST">
                     <div class="panel panel-bordered">
                         <div class="panel-body">
                             <div class="table-responsive">
