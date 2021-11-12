@@ -79,12 +79,12 @@
                     <div>
                         <p style="text-align: center; margin-top: 0px"><b><small>GENERADO POR</small></b></p>
                         <br>
-                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($payment->cashier->user->name) }}</small> <br> <small>{{ $payment->cashier->user->ci }}</small> <br> <b>{{ strtoupper($payment->cashier->user->role->name) }}</b> </p>
+                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($payment->cashier->user->name) }}</small> <br> <small>{{ $payment->cashier->user->ci }}</small> <br> <b>{{ strtoupper($payment->cashier->user->role->display_name) }}</b> </p>
                     </div>
                     <div>
                         <p style="text-align: center; margin-top: 0px"><b><small>ANULADO POR</small></b></p>
                         <br>
-                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($payment->deletes->user->name) }}</small> <br> <small>{{ $payment->deletes->user->ci }}</small> <br> <b>{{ strtoupper($payment->deletes->user->role->name) }}</b> </p>
+                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($payment->deletes->user->name) }}</small> <br> <small>{{ $payment->deletes->user->ci }}</small> <br> <b>{{ strtoupper($payment->deletes->user->role->display_name) }}</b> </p>
                     </div>
                 </td>
             </tr>

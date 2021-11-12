@@ -124,12 +124,12 @@
                     <div>
                         <p style="text-align: center; margin-top: 0px"><b><small>RECIBIDO POR</small></b></p>
                         <br>
-                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($cashier->user->name) }}</small> <br> <small>{{ $cashier->user->ci }}</small> <br> <b>{{ strtoupper($cashier->user->role->name) }}</b> </p>
+                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($cashier->user->name) }}</small> <br> <small>{{ $cashier->user->ci }}</small> <br> <b>{{ strtoupper($cashier->user->role->display_name) }}</b> </p>
                     </div>
                     <div>
                         <p style="text-align: center; margin-top: 0px"><b><small>ENTREGADO POR</small></b></p>
                         <br>
-                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper(Auth::user()->name) }}</small> <br> <small>{{ Auth::user()->ci }}</small> <br> <b>{{ strtoupper(Auth::user()->role->name) }}</b> </p>
+                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper(Auth::user()->name) }}</small> <br> <small>{{ Auth::user()->ci }}</small> <br> <b>{{ strtoupper(Auth::user()->role->display_name) }}</b> </p>
                     </div>
                 </td>
             </tr>

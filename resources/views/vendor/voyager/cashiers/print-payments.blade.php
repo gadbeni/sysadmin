@@ -51,13 +51,15 @@
         <button class="btn-print" onclick="window.close()">Cancelar <i class="fa fa-close"></i></button>
         <button class="btn-print" onclick="window.print()"> Imprimir <i class="fa fa-print"></i></button>
     </div>
-    @for ($i = 0; $i < 2; $i++)
-    <div style="height: 45vh" @if ($i == 1) class="show-print" @else class="border-bottom" @endif>
+    {{-- @for ($i = 0; $i < 2; $i++) --}}
+    <div style="height: 45vh">
         <table width="100%">
             <tr>
                 <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="80px"></td>
                 <td style="text-align: right">
-                    <h3 style="margin-bottom: 0px; margin-top: 5px">CAJAS - GOBERNACIÓN<br> <small>ENTREGA DE FONDOS</small> </h3>
+                    <h3 style="margin-bottom: 0px; margin-top: 5px">CAJAS - GOBERNACIÓN<br> <small>PAGOS REALIZADOS {{ $cashier->created_at->format('d/m/Y') }}</small> </h3>
+                    <br>
+                    <small>Impreso por {{ Auth::user()->name }} - {{ date('d/m/Y H:i:s') }}</small>
                 </td>
             </tr>
         </table>
@@ -65,77 +67,75 @@
         <div id="watermark">
             <img src="{{ asset('images/icon.png') }}" height="100%" width="100%" /> 
         </div>
-        <table width="100%" cellpadding="10" style="font-size: 12px">
-            <tr>
-                <td width="70%">
-                    <table width="100%" cellpadding="5">
-                        <tr>
-                            <td width="100px"><b>ID</b></td>
-                            <td style="border: 1px solid #ddd">{{ str_pad($cashier->id, 6, "0", STR_PAD_LEFT) }}</td>
-                        </tr>
-                        <tr>
-                            <td><b>FECHA</b></td>
-                            <td style="border: 1px solid #ddd">
-                                @php
-                                    $dias = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-                                    $meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-                                @endphp
-                                {{ $dias[date('N', strtotime($cashier->created_at))].', '.date('d', strtotime($cashier->created_at)).' de '.$meses[intval(date('m', strtotime($cashier->created_at)))].' de '.date('Y', strtotime($cashier->created_at)).' a las '.date('H:i:s', strtotime($cashier->created_at)) }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><b>CAJERO(A)</b></td>
-                            <td style="border: 1px solid #ddd">{{ $cashier->user->name }}</td>
-                        </tr>
-                        <tr>
-                            <td><b>CONCEPTO</b></td>
-                            <td style="border: 1px solid #ddd">Apertura de caja</td>
-                        </tr>
-                        <tr>
-                            <td><b>MONTO</b></td>
-                            @php
-                                $amount = 0;
-                                foreach($cashier->movements as $movement){
-                                    if($movement->description == 'Monto de apertura de caja.'){
-                                        $amount += $movement->amount;
-                                    }
-                                }
-                            @endphp
-                            <td style="border: 1px solid #ddd">{{ number_format($amount, 2, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <td><b>NOTA</b></td>
-                            <td style="border: 1px solid #ddd">{{ $cashier->observations ?? 'Ninguna' }}</td>
-                        </tr>
-                    </table>
-                    <br>
-                    <b>CORTES DE BILLETES</b>
-                    <div style="display: flex; border: 1px solid #ddd; padding: 10px 0px; margin-top: 10px">
-                        @foreach ($cashier->vault_details->cash as $cash)
-                            <div style="width: 33%; text-aign: center">
-                                <div style="text-align: center">{{ $cash->cash_value >= 1 ? intval($cash->cash_value) : number_format($cash->cash_value, 2, '.', '') }}</div>
-                                <div style="text-align: center">&darr;</div>
-                                <div style="text-align: center"><b>{{ intval($cash->quantity) }}</b></div>
-                            </div>
-                        @endforeach
-                    </div>
-                </td>
-                <td width="30%" style="padding: 0px 10px">
-                    <div>
-                        <p style="text-align: center; margin-top: 0px"><b><small>RECIBIDO POR</small></b></p>
-                        <br>
-                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($cashier->user->name) }}</small> <br> <small>{{ $cashier->user->ci }}</small> <br> <b>{{ strtoupper($cashier->user->role->name) }}</b> </p>
-                    </div>
-                    <div>
-                        <p style="text-align: center; margin-top: 0px"><b><small>ENTREGADO POR</small></b></p>
-                        <br>
-                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper(Auth::user()->name) }}</small> <br> <small>{{ Auth::user()->ci }}</small> <br> <b>{{ strtoupper(Auth::user()->role->name) }}</b> </p>
-                    </div>
-                </td>
-            </tr>
+        {{-- {{ dd($cashier) }} --}}
+        <table width="100%" cellpadding="10" style="font-size: 13px">
+            <thead>
+                <tr>
+                    <th>N&deg;</th>
+                    <th>Nombre completo</th>
+                    <th>CI</th>
+                    <th>Planilla</th>
+                    <th>Fecha de pago</th>
+                    <th style="text-align: right">Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $cont = 0;
+                    $total = 0;
+                @endphp
+                @foreach ($cashier->payments as $payment)
+                    @php
+                        $data = DB::connection('mysqlgobe')->table('planillahaberes')->where('id', $payment->planilla_haber_id)->first();
+                        $cont++;
+                        if(!$payment->deletes){
+                            $total += $payment->amount;
+                        }
+                        $months = [
+                            '01' => 'Enero',
+                            '02' => 'Febrero',
+                            '03' => 'Marzo',
+                            '04' => 'Abril',
+                            '05' => 'Mayo',
+                            '06' => 'Junio',
+                            '07' => 'Julio',
+                            '08' => 'Agosto',
+                            '09' => 'Septiembre',
+                            '10' => 'Octubre',
+                            '11' => 'Noviembre',
+                            '12' => 'Diciembre'
+                        ];
+                        // dd($data);
+                    @endphp
+                    <tr @if($payment->deletes) style="text-decoration:line-through;" @endif>
+                        <td>{{ $cont }}</td>
+                        <td>{{ $data->Nombre_Empleado }} <br> <small>{{ $data->Direccion_Administrativa }}</small> </td>
+                        <td>{{ $data->CedulaIdentidad }}</td>
+                        <td>{{ $months[$data->Mes] }}/{{ $data->Anio }}</td>
+                        <td>{{ $payment->created_at->format('d/m/Y H:i') }}</td>
+                        <td style="text-align: right">{{ number_format($payment->amount, 2, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+                <tr>
+                    <td colspan="5" style="text-align: right"><b>TOTAL</b></td>
+                    <td style="text-align: right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
+                </tr>
+            </tbody>
         </table>
+        <div style="display: flex; justify-content: space-around; margin-top: 50px">
+            <div>
+                <p style="text-align: center; margin-top: 0px"><b><small>EMITIDO POR</small></b></p>
+                <br>
+                <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($cashier->user->name) }}</small> <br> <small>{{ $cashier->user->ci }}</small> <br> <b>{{ strtoupper($cashier->user->role->display_name) }}</b> </p>
+            </div>
+            <div>
+                <p style="text-align: center; margin-top: 0px"><b><small>APROBADO POR</small></b></p>
+                <br>
+                <p style="text-align: center">.............................................. <br> <small>{{ strtoupper(Auth::user()->name) }}</small> <br> <small>{{ Auth::user()->ci }}</small> <br> <b>{{ strtoupper(Auth::user()->role->display_name) }}</b> </p>
+            </div>
+        </div>
     </div>
-    @endfor
+    {{-- @endfor --}}
 
     <script>
         document.body.addEventListener('keypress', function(e) {

@@ -134,7 +134,7 @@ class PlanillasController extends Controller
                     'cashier_id' => $request->cashier_id,
                     'planilla_haber_id' => $request->id,
                     'amount' => $request->amount,
-                    'description' => 'Pago de haberes mensuales a '.$request->name.'.',
+                    'description' => 'Pago a '.$request->name.'.',
                     'observations' => $request->observations
                 ]);
             }else{

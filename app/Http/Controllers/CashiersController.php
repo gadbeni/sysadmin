@@ -405,6 +405,13 @@ class CashiersController extends Controller
         return view('vendor.voyager.cashiers.print-transfer', compact('movement'));
     }
 
+    public function print_payments($id){
+        $cashier = Cashier::with(['user', 'payments.deletes' => function($q){
+            $q->where('deleted_at', NULL);
+        }])->where('id', $id)->first();
+        return view('vendor.voyager.cashiers.print-payments', compact('cashier'));
+    }
+
     public function print_close($id){
         $cashier = Cashier::with(['user',
         'movements' => function($q){
@@ -420,13 +427,4 @@ class CashiersController extends Controller
         // $pdf->loadHTML($view);
         // return $pdf->download();
     }
-
-    // public function print_payments($id){
-    //     $cashier = Cashier::with(['user',
-    //     'payments' => function($q){
-    //         $q->where('deleted_at', NULL);
-    //     }])->where('id', $id)->first();
-    //     $view = view('vendor.voyager.cashiers.print-payments', compact('cashier'));
-    //     return $view;
-    // }
 }

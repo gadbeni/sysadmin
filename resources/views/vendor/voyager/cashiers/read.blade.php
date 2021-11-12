@@ -80,7 +80,7 @@
                     <div class="panel-body">
                         <div class="col-md-12">
                             <h4>Pagos realizados</h4>
-                            <table class="table table-bordered table-bordered">
+                            {{-- <table class="table table-bordered table-bordered">
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -133,6 +133,77 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
+                            </table> --}}
+
+                            <table class="table table-bordered table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>N&deg;</th>
+                                        <th>Nombre completo</th>
+                                        <th>CI</th>
+                                        <th>Planilla</th>
+                                        <th>Fecha de pago</th>
+                                        <th style="text-align: right">Monto</th>
+                                        <th style="text-align: right">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $cont = 0;
+                                        $total = 0;
+                                    @endphp
+                                    @foreach ($cashier->payments as $payment)
+                                        @php
+                                            $data = DB::connection('mysqlgobe')->table('planillahaberes')->where('id', $payment->planilla_haber_id)->first();
+                                            $cont++;
+                                            if(!$payment->deletes){
+                                                $total += $payment->amount;
+                                            }
+                                            $months = [
+                                                '01' => 'Enero',
+                                                '02' => 'Febrero',
+                                                '03' => 'Marzo',
+                                                '04' => 'Abril',
+                                                '05' => 'Mayo',
+                                                '06' => 'Junio',
+                                                '07' => 'Julio',
+                                                '08' => 'Agosto',
+                                                '09' => 'Septiembre',
+                                                '10' => 'Octubre',
+                                                '11' => 'Noviembre',
+                                                '12' => 'Diciembre'
+                                            ];
+                                            // dd($data);
+                                        @endphp
+                                        <tr>
+                                            <td>{{ $cont }}</td>
+                                            <td>
+                                                {{ $data->Nombre_Empleado }} <br> <small>{{ $data->Direccion_Administrativa }}</small>
+                                                <br>
+                                                @if ($payment->deletes)
+                                                    <label class="label label-danger">Anulado</label>
+                                                @endif
+                                            </td>
+                                            <td>{{ $data->CedulaIdentidad }}</td>
+                                            <td>{{ $months[$data->Mes] }}/{{ $data->Anio }}</td>
+                                            <td>{{ $payment->created_at->format('d/m/Y H:i') }}</td>
+                                            <td style="text-align: right">{{ number_format($payment->amount, 2, ',', '.') }}</td>
+                                            <td class="text-right">
+                                                @if (!$payment->deletes)
+                                                    <button type="button" onclick="print_recipe({{ $payment->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+                                                    <button type="button" data-toggle="modal" data-target="#delete_payment-modal" data-id="{{ $data->ID }}" class="btn btn-danger btn-delete"><i class="voyager-trash"></i> Anular</button>
+                                                @else
+                                                    <button type="button" onclick="print_recipe_delete({{ $payment->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Informe de anulación</button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <td colspan="5" style="text-align: right"><b>TOTAL</b></td>
+                                        <td style="text-align: right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -149,7 +220,7 @@
                                         <th>Tipo</th>
                                         <th>Hora</th>
                                         <th style="text-align: right">Monto</th>
-                                        {{-- <th style="text-align: right">Acciones</th> --}}
+                                        <th style="text-align: right">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -163,9 +234,9 @@
                                             <td>{{ $item->type }}</td>
                                             <td>{{ date('H:i:s', strtotime($item->created_at)) }}</td>
                                             <td class="text-right">{{ number_format($item->amount, 2, '.', ',') }}</td>
-                                            {{-- <td class="text-right">
-                                                
-                                            </td> --}}
+                                            <td class="text-right">
+                                                <button type="button" onclick="print_transfer({{ $item->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+                                            </td>
                                         </tr>
                                         @php
                                             $cont++;
@@ -227,6 +298,10 @@
 
         function print_recipe_delete(id){
             window.open("{{ url('admin/planillas/pago/delete/print') }}/"+id, "Recibo", `width=700, height=500`)
+        }
+
+        function print_transfer(id){
+            window.open("{{ url('admin/cashiers/print/transfer/') }}/"+id, "Comprobante de transferencia", `width=700, height=500`)
         }
     </script>
 @stop

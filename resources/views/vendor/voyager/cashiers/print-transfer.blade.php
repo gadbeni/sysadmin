@@ -106,12 +106,12 @@
                     <div>
                         <p style="text-align: center; margin-top: 0px"><b><small>RECIBIDO POR</small></b></p>
                         <br>
-                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($movement->type == 'egreso' ? $movement->cashier_to->user->name : $movement->cashier->user->name) }}</small> <br> <small>{{ $movement->type == 'egreso' ? $movement->cashier_to->user->ci : $movement->cashier->user->ci }}</small> <br> <b>{{ strtoupper( $movement->type == 'egreso' ? $movement->cashier_to->user->role->name : $movement->cashier->user->role->name) }}</b> </p>
+                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($movement->type == 'egreso' ? $movement->cashier_to->user->name : $movement->cashier->user->name) }}</small> <br> <small>{{ $movement->type == 'egreso' ? $movement->cashier_to->user->ci : $movement->cashier->user->ci }}</small> <br> <b>{{ strtoupper( $movement->type == 'egreso' ? $movement->cashier_to->user->role->display_name : $movement->cashier->user->role->display_name) }}</b> </p>
                     </div>
                     <div>
                         <p style="text-align: center; margin-top: 0px"><b><small>ENTREGADO POR</small></b></p>
                         <br>
-                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($movement->user->name) }}</small> <br> <small>{{ $movement->user->ci }}</small> <br> <b>{{ strtoupper($movement->user->role->name) }}</b> </p>
+                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($movement->user->name) }}</small> <br> <small>{{ $movement->user->ci }}</small> <br> <b>{{ strtoupper($movement->user->role->display_name) }}</b> </p>
                     </div>
                 </td>
             </tr>
