@@ -108,6 +108,9 @@ Route::group(['prefix' => 'admin'], function () {
     // *Previsión social
     Route::get('reports/social-security/payments', [ReportsController::class, 'social_security_payments_index'])->name('reports.social_security.payments');
     Route::post('reports/social-security/payments/list', [ReportsController::class, 'social_security_payments_list'])->name('reports.social_security.payments.list');
+
+    // Testing
+    Route::get('social-security/generate/payments/{year}', [SocialSecurityController::class, 'generate_payments']);
 });
 
 // Clear cache
