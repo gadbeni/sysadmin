@@ -110,7 +110,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('reports/social-security/payments/list', [ReportsController::class, 'social_security_payments_list'])->name('reports.social_security.payments.list');
 
     // Testing
-    Route::get('social-security/generate/payments/{year}', [SocialSecurityController::class, 'generate_payments']);
+    Route::get('social-security/generate/payments', [SocialSecurityController::class, 'generate_payments_index'])->name('generate.payments.index');
+    Route::post('social-security/generate/payments', [SocialSecurityController::class, 'generate_payments_list'])->name('generate.payments.list');
 });
 
 // Clear cache

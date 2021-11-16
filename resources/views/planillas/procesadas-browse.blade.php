@@ -247,6 +247,7 @@
         });
 
         function getData(){
+            $('#div-results').empty();
             $('#div-results').loading({message: 'Cargando...'});
             $.post($('#form-search').attr('action'), $('#form-search').serialize(), function(res){
                 $('#div-results').html(res);

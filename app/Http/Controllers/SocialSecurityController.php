@@ -482,10 +482,14 @@ class SocialSecurityController extends Controller
 
 
     // Testing
-    public function generate_payments($year){
+    public function generate_payments_index(){
+        return view('social-security.testing.payments-browse');
+    }
+
+    public function generate_payments_list(Request $request){
         $pagos_afp = DB::connection('mysqlgobe')->table('pagoafp as p')
                             ->join('certiplanilla as c', 'c.ID', 'p.IDCertiPlanilla')
-                            ->where("c.Gestion", $year)
+                            ->where("c.Gestion", $request->year)
                             // ->select('c.*')
                             ->selectRaw('c.Num_planilla AS planilla, p.ID AS pago_id, p.Fecha_Pago AS fecha_pago, c.Formularios AS fpc')
                             ->get();
@@ -514,6 +518,6 @@ class SocialSecurityController extends Controller
                 }
             }
         }
-        return view('social-security.testing.payments', compact('data'));
+        return view('social-security.testing.payments-list', compact('data'));
     }
 }
