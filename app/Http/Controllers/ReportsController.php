@@ -260,4 +260,86 @@ class ReportsController extends Controller
             }
         }
     }
+
+    public function social_security_payments_group_index(){
+        return view('social-security.testing.payments-browse');
+    }
+
+    public function social_security_payments_group_list(Request $request){
+        $pagos_afp = DB::connection('mysqlgobe')->table('pagoafp as p')
+                            ->join('certiplanilla as c', 'c.ID', 'p.IDCertiPlanilla')
+                            ->where("c.Gestion", $request->year)
+                            // ->select('c.*')
+                            ->selectRaw('c.Num_planilla AS planilla, p.ID AS pago_id, p.Fecha_Pago AS fecha_pago, c.Formularios AS fpc')
+                            ->get();
+        $data = Collect();
+        foreach ($pagos_afp as $item) {
+            $array = explode(' ', $item->fpc);
+            foreach ($array as $value) {
+                if($value){
+                    $fpc = explode(';', $value);
+                    $pagos_cc = DB::connection('mysqlgobe')->table('pagocajasalud as p')
+                                        ->join('certiplanilla as c', 'c.ID', 'p.IDcerti')
+                                        ->where("c.Num_planilla", 'like', '%'.$item->planilla.'%')
+                                        ->selectRaw('p.Fecha_deposito AS fecha_pago, p.N_Comprobante AS nro_deposito, p.Form_GTC11 AS gtc11, p.ID AS pago_id')
+                                        ->first();
+                    $data->push([
+                        'planilla' => $item->planilla,
+                        'pago_id' => $item->pago_id,
+                        'fpc_number' => str_replace('-', '', $fpc[0]),
+                        'afp' => count($fpc) > 1 ? $fpc[1] : '',
+                        'fecha_pago' => $item->fecha_pago,
+                        'pago_id_cc' => $pagos_cc ? $pagos_cc->pago_id : null,
+                        'fecha_pago_cc' => $pagos_cc ? $pagos_cc->fecha_pago : null,
+                        'nro_deposito_cc' => $pagos_cc ? $pagos_cc->nro_deposito : null,
+                        'gtc11' => $pagos_cc ? $pagos_cc->gtc11 :  null,
+                    ]);
+                }
+            }
+        }
+        return view('social-security.testing.payments-list', compact('data'));
+    }
+
+    public function social_security_contracts_index(){
+        return view('reports.rr_hh.contracts-browse');
+    }
+
+    public function social_security_contracts_list (Request $request){
+        $year = $request->year;
+        $month = $request->month;
+        $funcionarios_ingreso = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                            ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
+                            ->join('contratos as c', 'c.idContribuyente', 'p.CedulaIdentidad')
+                            ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
+                            // ->where('p.Estado', 1)
+                            ->whereRaw($request->t_planilla ? 'p.Tplanilla = '.$request->t_planilla : 1)
+                            ->whereYear('p.Fecha_Ingreso', $request->year)
+                            ->whereMonth('p.Fecha_Ingreso', $request->month)
+                            ->whereRaw('(p.idGda=1 or p.idGda=2)')
+                            ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada', 'c.Fecha_Inicio')
+                            ->orderBy('p.Apaterno')
+                            ->groupBy('c.idContribuyente')
+                            ->get();
+        // dd($funcionarios_ingreso);
+
+        $funcionarios_egreso = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                            ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
+                            ->join('contratos as c', 'c.idContribuyente', 'p.CedulaIdentidad')
+                            ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
+                            // ->where('p.Estado', 1)
+                            ->whereRaw($request->t_planilla ? 'p.Tplanilla = '.$request->t_planilla : 1)
+                            ->whereYear('c.Fecha_Conclusion', $request->year)
+                            ->whereMonth('c.Fecha_Conclusion', $request->month)
+                            ->whereRaw('(p.idGda=1 or p.idGda=2)')
+                            ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada', 'c.Fecha_Conclusion')
+                            ->orderBy('p.Apaterno')
+                            ->groupBy('c.idContribuyente')
+                            ->get();
+        
+        if($request->print){
+            return view('reports.rr_hh.contracts-print', compact('funcionarios_ingreso', 'funcionarios_egreso', 'year', 'month'));
+        }else{
+            return view('reports.rr_hh.contracts-list', compact('funcionarios_ingreso', 'funcionarios_egreso'));
+        }
+    }
 }

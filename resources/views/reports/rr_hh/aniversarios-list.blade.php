@@ -33,8 +33,8 @@
                                 <td>{{ $item->CedulaIdentidad }}</td>
                                 <td>{{ $item->Expedido }}</td>
                                 <td>{{ $item->Afp == 1 ? 'Futuro' : 'Previsión' }}</td>
-                                <td>{{ $item->Fecha_Ingreso }}</td>
-                                <td>{{ date('d/M/Y', strtotime($item->fechanacimiento)) }}</td>
+                                <td>{{ date('d', strtotime($item->Fecha_Ingreso)).'/'.$months[intval(date('m', strtotime($item->Fecha_Ingreso)))].'/'.date('Y', strtotime($item->Fecha_Ingreso)) }}</td>
+                                <td>{{ date('d', strtotime($item->fechanacimiento)).'/'.$months[intval(date('m', strtotime($item->fechanacimiento)))].'/'.date('Y', strtotime($item->fechanacimiento)) }}</td>
                             </tr>
                             @php
                                 $cont++;
