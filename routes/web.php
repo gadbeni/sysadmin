@@ -108,10 +108,10 @@ Route::group(['prefix' => 'admin'], function () {
     // *Previsión social
     Route::get('reports/social-security/payments', [ReportsController::class, 'social_security_payments_index'])->name('reports.social_security.payments');
     Route::post('reports/social-security/payments/list', [ReportsController::class, 'social_security_payments_list'])->name('reports.social_security.payments.list');
-
-    // Testing
-    Route::get('social-security/generate/payments', [SocialSecurityController::class, 'generate_payments_index'])->name('generate.payments.index');
-    Route::post('social-security/generate/payments', [SocialSecurityController::class, 'generate_payments_list'])->name('generate.payments.list');
+    Route::get('reports/social-security/contracts', [ReportsController::class, 'social_security_contracts_index'])->name('reports.social_security.contracts');
+    Route::post('reports/social-security/contracts/list', [ReportsController::class, 'social_security_contracts_list'])->name('reports.social_security.contracts.list');
+    Route::get('reports/social-security/payments-group', [ReportsController::class, 'social_security_payments_group_index'])->name('social-security.payments.group.index');
+    Route::post('reports/social-security/payments-group', [ReportsController::class, 'social_security_payments_group_list'])->name('social-security.payments.group.list');
 });
 
 // Clear cache

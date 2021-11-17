@@ -14,7 +14,7 @@
                             </h1>
                         </div>
                         <div class="col-md-4" style="margin-top: 30px">
-                            <form name="form_search" id="form-search" action="{{ route('generate.payments.list') }}" method="post">
+                            <form name="form_search" id="form-search" action="{{ route('social-security.payments.group.list') }}" method="post">
                                 @csrf
                                 <div class="input-group">
                                     <input type="number" name="year" value="{{ date('Y') }}" class="form-control" required>
