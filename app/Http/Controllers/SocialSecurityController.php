@@ -482,6 +482,7 @@ class SocialSecurityController extends Controller
     }
 
 
+
     // Testing
     public function generate_payments_index(){
         return view('social-security.testing.payments-browse');
@@ -540,3 +541,4 @@ class SocialSecurityController extends Controller
         return view('social-security.testing.checks-list', compact('data', 'year'));
     }
 }
+
