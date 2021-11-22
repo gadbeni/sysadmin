@@ -1,6 +1,6 @@
 @extends('voyager::master')
 
-@section('page_title', 'Pagos de Planilla')
+@section('page_title', 'Viendo Planillas Manuales')
 
 @section('page_header')
     <div class="container-fluid">
@@ -10,7 +10,7 @@
                     <div class="panel-body" style="padding: 0px">
                         <div class="col-md-8" style="padding: 0px">
                             <h1 class="page-title">
-                                <i class="voyager-dollar"></i> Pagos de Planilla
+                                <i class="voyager-edit"></i> Planillas Manuales
                             </h1>
                             {{-- <div class="alert alert-info">
                                 <strong>Información:</strong>
@@ -22,8 +22,8 @@
                             <a href="#" id="btn-delete-multiple" style="display: none" class="btn btn-danger" data-toggle="modal" data-target="#delete_multiple">
                                 <i class="voyager-trash"></i> <span>Eliminar seleccionados</span>
                             </a>
-                            <a href="{{ route('payments.create') }}" class="btn btn-success btn-add-new">
-                                <i class="voyager-plus"></i> <span>Añadir Pago</span>
+                            <a href="{{ route('spreadsheets.create') }}" class="btn btn-success btn-add-new">
+                                <i class="voyager-plus"></i> <span>Añadir nueva</span>
                             </a>
                         </div>
                     </div>
@@ -34,14 +34,16 @@
 @stop
 
 @section('content')
-    <div class="page-content edit-add container-fluid">
+    <div class="page-content browse container-fluid">
+        @include('voyager::alerts')
         <div class="row">
             <div class="col-md-12">
-                <form action="{{ route('payments.delete_multiple') }}" id="form_delete_multiple" method="POST">
+                <form action="{{ route('spreadsheets.delete_multiple') }}" id="form_delete_multiple" method="POST">
                     <div class="panel panel-bordered">
                         <div class="panel-body">
                             <div class="table-responsive">
-                                <table id="dataTable" class="table table-hover"></table>
+                                <table id="dataTable" class="table table-hover">
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -85,15 +87,22 @@
             let columns = [
                 { data: 'checkbox', title: '', orderable: false, searchable: false },
                 { data: 'id', title: 'id' },
-                { data: 'planilla_id', title: 'Planilla' },
-                { data: 'fpc_number', title: 'Nro de FPC' },
-                { data: 'gtc_number', title: 'Nro de GTC-11' },
-                { data: 'deposit_number', title: 'Nro de deposito' },
-                { data: 'user', title: 'Resgistrado por' },
+                { data: 'details', title: 'Detalles' },
+                { data: 'afp', title: 'AFP' },
+                { data: 'codigo_planilla', title: 'Planilla' },
+                { data: 'period', title: 'Periodo' },
+                { data: 'people', title: 'Nro Personas' },
+                { data: 'total', title: 'Total' },
+                { data: 'user', title: 'Registrado por' },
                 { data: 'created_at', title: 'Registrado el' },
                 { data: 'actions', title: 'Acciones', orderable: false, searchable: false },
-            ];
-            customDataTable("{{ url('admin/social-security/payments/list') }}", columns, 1);
+            ]
+            customDataTable("{{ url('admin/spreadsheets/ajax/list') }}/", columns, 1);
         });
+
+        function deleteItem(url){
+            $('#delete_form').attr('action', url);
+        }
+
     </script>
 @stop

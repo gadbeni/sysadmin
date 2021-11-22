@@ -108,6 +108,9 @@
 @endphp
 
 @section('javascript')
+    <script>
+        const APP_URL = '{{ url('') }}';
+    </script>
     <script src="{{ asset('js/cash_value.js') }}"></script>
     <script>
         $(document).ready(function(){

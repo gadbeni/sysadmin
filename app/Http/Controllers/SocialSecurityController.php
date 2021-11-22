@@ -120,6 +120,7 @@ class SocialSecurityController extends Controller
             $sip = 0;
             $aporte_solidario = 0;
             $aporte_vivienda = 0;
+            // Planilla no centralizada
             if($request->planilla_haber_id){
                 // Si el porcentaje es 0 se calcula el SIP
                 if($beneficiary->type->percentage == 0){
@@ -479,4 +480,65 @@ class SocialSecurityController extends Controller
                         ->get();
         return view('social-security.print.form-gtc', compact('dependence', 'planillas'));
     }
+
+
+
+    // Testing
+    public function generate_payments_index(){
+        return view('social-security.testing.payments-browse');
+    }
+
+    public function generate_payments_list(Request $request){
+        $pagos_afp = DB::connection('mysqlgobe')->table('pagoafp as p')
+                            ->join('certiplanilla as c', 'c.ID', 'p.IDCertiPlanilla')
+                            ->where("c.Gestion", $request->year)
+                            // ->select('c.*')
+                            ->selectRaw('c.Num_planilla AS planilla, p.ID AS pago_id, p.Fecha_Pago AS fecha_pago, c.Formularios AS fpc')
+                            ->get();
+        $data = Collect();
+        foreach ($pagos_afp as $item) {
+            $array = explode(' ', $item->fpc);
+            foreach ($array as $value) {
+                if($value){
+                    $fpc = explode(';', $value);
+                    $pagos_cc = DB::connection('mysqlgobe')->table('pagocajasalud as p')
+                                        ->join('certiplanilla as c', 'c.ID', 'p.IDcerti')
+                                        ->where("c.Num_planilla", 'like', '%'.$item->planilla.'%')
+                                        ->selectRaw('p.Fecha_deposito AS fecha_pago, p.N_Comprobante AS nro_deposito, p.Form_GTC11 AS gtc11, p.ID AS pago_id')
+                                        ->first();
+                    $data->push([
+                        'planilla' => $item->planilla,
+                        'pago_id' => $item->pago_id,
+                        'fpc_number' => str_replace('-', '', $fpc[0]),
+                        'afp' => count($fpc) > 1 ? $fpc[1] : '',
+                        'fecha_pago' => $item->fecha_pago,
+                        'pago_id_cc' => $pagos_cc ? $pagos_cc->pago_id : null,
+                        'fecha_pago_cc' => $pagos_cc ? $pagos_cc->fecha_pago : null,
+                        'nro_deposito_cc' => $pagos_cc ? $pagos_cc->nro_deposito : null,
+                        'gtc11' => $pagos_cc ? $pagos_cc->gtc11 :  null,
+                    ]);
+                }
+            }
+        }
+        return view('social-security.testing.payments-list', compact('data'));
+    }
+
+    public function test($year){
+        $data = ChecksPayment::with(['check_beneficiary.type'])
+                    ->whereYear('date_print', date('Y'))
+                    ->where('deleted_at', NULL)->get();
+        $cont = 0;
+        foreach ($data as $value) {
+            $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                                ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                                ->where('ph.ID', $value->planilla_haber_id)
+                                ->where('ph.Anio', $year)
+                                ->select('ph.*', 'pp.NumPersonas', 'pp.Monto', 'tp.Nombre as tipo_planilla')->first();
+            $data[$cont]->planilla = $planilla;
+            $cont++;
+        }
+        return view('social-security.testing.checks-list', compact('data', 'year'));
+    }
 }
+

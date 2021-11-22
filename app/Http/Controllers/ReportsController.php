@@ -260,7 +260,23 @@ class ReportsController extends Controller
             }
         }
     }
+  
+  public function social_security_spreadsheets_index(){
+        return view('reports.social_security.spreadsheets-browse');
+    }
 
+    public function social_security_spreadsheets_list(Request $request){
+        $start = '01-'.$request->start;
+        $end = '01-'.$request->end;
+        $planillas = DB::connection('mysqlgobe')->table('planillaprocesada as p')
+                                        ->join('direccionadministrativa as d', 'd.ID', 'p.idDa')
+                                        ->join('tplanilla as t', 't.ID', 'p.TipoP')
+                                        ->where('p.Periodo', '>=', date('Ym', strtotime($start)))
+                                        ->where('p.Periodo', '<=', date('Ym', strtotime($end)))
+                                        ->select('p.*', 't.Nombre as tipo_planilla', 'd.NOMBRE as direccion_administrativa')
+                                        ->orderBy('p.Mes', 'ASC')->get();
+        return view('reports.social_security.spreadsheets-list', compact('planillas'));
+    }
     public function social_security_payments_group_index(){
         return view('social-security.testing.payments-browse');
     }
@@ -341,5 +357,6 @@ class ReportsController extends Controller
         }else{
             return view('reports.rr_hh.contracts-list', compact('funcionarios_ingreso', 'funcionarios_egreso'));
         }
+
     }
 }

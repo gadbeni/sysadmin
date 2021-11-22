@@ -25,7 +25,7 @@
                                     <i class="voyager-trash"></i> <span>Eliminar seleccionados</span>
                                 </a>
                                 <a href="{{ route('checks.create') }}" class="btn btn-success btn-add-new">
-                                    <i class="voyager-plus"></i> <span>Agregar cheque</span>
+                                    <i class="voyager-plus"></i> <span>Añadir Cheque</span>
                                 </a>
                             </div>
                         </div>
