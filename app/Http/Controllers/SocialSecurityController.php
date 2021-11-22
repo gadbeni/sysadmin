@@ -120,6 +120,7 @@ class SocialSecurityController extends Controller
             $sip = 0;
             $aporte_solidario = 0;
             $aporte_vivienda = 0;
+            // Planilla no centralizada
             if($request->planilla_haber_id){
                 // Si el porcentaje es 0 se calcula el SIP
                 if($beneficiary->type->percentage == 0){
@@ -519,5 +520,23 @@ class SocialSecurityController extends Controller
             }
         }
         return view('social-security.testing.payments-list', compact('data'));
+    }
+
+    public function test($year){
+        $data = ChecksPayment::with(['check_beneficiary.type'])
+                    ->whereYear('date_print', date('Y'))
+                    ->where('deleted_at', NULL)->get();
+        $cont = 0;
+        foreach ($data as $value) {
+            $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                                ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                                ->where('ph.ID', $value->planilla_haber_id)
+                                ->where('ph.Anio', $year)
+                                ->select('ph.*', 'pp.NumPersonas', 'pp.Monto', 'tp.Nombre as tipo_planilla')->first();
+            $data[$cont]->planilla = $planilla;
+            $cont++;
+        }
+        return view('social-security.testing.checks-list', compact('data', 'year'));
     }
 }

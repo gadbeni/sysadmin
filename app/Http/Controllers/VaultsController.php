@@ -256,4 +256,8 @@ class VaultsController extends Controller
             return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
+
+    public function print_status($id){
+        return view('vaults.print.print-vaults');
+    } 
 }

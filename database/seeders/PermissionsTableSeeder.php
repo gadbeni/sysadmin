@@ -75,7 +75,8 @@ class PermissionsTableSeeder extends Seeder
 
         // Reports social security
         $keys = [
-            'browse_reportssocial-securitypayments'
+            'browse_reportssocial-securitypayments',
+            'browse_reportssocial-securityspreadsheets'
         ];
 
         foreach ($keys as $key) {

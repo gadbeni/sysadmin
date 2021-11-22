@@ -9,6 +9,7 @@ use App\Http\Controllers\CashiersController;
 use App\Http\Controllers\VaultsController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SocialSecurityController;
+use App\Http\Controllers\SpreadsheetsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +55,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('vaults/{id}/open', [VaultsController::class, 'open'])->name('vaults.open');
     Route::get('vaults/{id}/close', [VaultsController::class, 'close'])->name('vaults.close');
     Route::post('vaults/{id}/close/store', [VaultsController::class, 'close_store'])->name('vaults.close.store');
+    Route::get('vaults/{vault}/print/status', [VaultsController::class, 'print_status'])->name('vaults.print.status');
 
     Route::get('planillas', [PlanillasController::class, 'planilla_index'])->name('planillas.index');
     Route::post('planillas/search', [PlanillasController::class, 'planilla_search'])->name('planillas.search');
@@ -95,6 +97,11 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('social-security/print', [SocialSecurityController::class, 'print_index'])->name('social.security.print.index');
     Route::post('social-security/print/forms/{name}', [SocialSecurityController::class, 'print_form'])->name('print.form');
 
+    // *Planillas
+    Route::resource('spreadsheets', SpreadsheetsController::class);
+    Route::get('spreadsheets/ajax/list', [SpreadsheetsController::class, 'list']);
+    Route::post('spreadsheets/delete/multiple', [SpreadsheetsController::class, 'destroy_multiple'])->name('spreadsheets.delete_multiple');
+
     // Reportes
 
     // *Recursos humanos
@@ -108,6 +115,8 @@ Route::group(['prefix' => 'admin'], function () {
     // *Previsión social
     Route::get('reports/social-security/payments', [ReportsController::class, 'social_security_payments_index'])->name('reports.social_security.payments');
     Route::post('reports/social-security/payments/list', [ReportsController::class, 'social_security_payments_list'])->name('reports.social_security.payments.list');
+    Route::get('reports/social-security/spreadsheets', [ReportsController::class, 'social_security_spreadsheets_index'])->name('reports.social_security.spreadsheets');
+    Route::post('reports/social-security/spreadsheets/list', [ReportsController::class, 'social_security_spreadsheets_list'])->name('reports.social_security.spreadsheets.list');
 
     // Testing
     Route::get('social-security/generate/payments', [SocialSecurityController::class, 'generate_payments_index'])->name('generate.payments.index');
@@ -119,3 +128,5 @@ Route::get('/admin/clear-cache', function() {
     Artisan::call('optimize:clear');
     return redirect('/admin/profile')->with(['message' => 'Cache eliminada.', 'alert-type' => 'success']);
 })->name('clear.cache');
+
+Route::get('/test/{year}', [SocialSecurityController::class, 'test']);

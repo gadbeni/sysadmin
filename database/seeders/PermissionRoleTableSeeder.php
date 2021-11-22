@@ -27,7 +27,7 @@ class PermissionRoleTableSeeder extends Seeder
         $permissions = Permission::whereRaw('table_name = "admin"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
-        $role = Role::where('name', 'caja_responsable_boveda')->firstOrFail();
+        $role = Role::where('name', 'caja_tecnico_boveda')->firstOrFail();
         $permissions = Permission::whereRaw('table_name = "admin" or table_name = "cashiers" or table_name = "vaults"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
@@ -41,15 +41,26 @@ class PermissionRoleTableSeeder extends Seeder
 
         // Roles de previsión social
         $role = Role::where('name', 'prevision_director')->firstOrFail();
-        $permissions = Permission::whereRaw('table_name = "admin"')->get();
+        $permissions = Permission::whereRaw('table_name = "admin" or table_name = "reports_social_security"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'prevision_jefe_seccion')->firstOrFail();
-        $permissions = Permission::whereRaw('table_name = "admin" or table_name = "social-security" or table_name = "dependences" or table_name = "social_security_types" or table_name = "checks_beneficiaries" or table_name = "reports_social_security"')->get();
+        $permissions = Permission::whereRaw('   table_name = "admin" or
+                                                table_name = "social-security" or
+                                                table_name = "dependences" or
+                                                table_name = "social_security_types" or
+                                                table_name = "checks_beneficiaries" or
+                                                table_name = "social-securitypayments" or
+                                                table_name = "social-securitychecks" or
+                                                table_name = "reports_social_security"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'prevision_tecnico')->firstOrFail();
-        $permissions = Permission::whereRaw('table_name = "admin"')->get();
+        $permissions = Permission::whereRaw('   table_name = "admin" or
+                                                table_name = "social-security" or
+                                                table_name = "social-securitypayments" or
+                                                table_name = "social-securitychecks" or
+                                                table_name = "reports_social_security"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de recursos humanos
