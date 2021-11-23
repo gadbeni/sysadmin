@@ -119,15 +119,14 @@ Route::group(['prefix' => 'admin'], function () {
   
     Route::get('reports/social-security/spreadsheets', [ReportsController::class, 'social_security_spreadsheets_index'])->name('reports.social_security.spreadsheets');
     Route::post('reports/social-security/spreadsheets/list', [ReportsController::class, 'social_security_spreadsheets_list'])->name('reports.social_security.spreadsheets.list');
-
-    // Testing
-    Route::get('social-security/generate/payments', [SocialSecurityController::class, 'generate_payments_index'])->name('generate.payments.index');
-    Route::post('social-security/generate/payments', [SocialSecurityController::class, 'generate_payments_list'])->name('generate.payments.list');
-    
     Route::get('reports/social-security/contracts', [ReportsController::class, 'social_security_contracts_index'])->name('reports.social_security.contracts');
     Route::post('reports/social-security/contracts/list', [ReportsController::class, 'social_security_contracts_list'])->name('reports.social_security.contracts.list');
     Route::get('reports/social-security/payments-group', [ReportsController::class, 'social_security_payments_group_index'])->name('social-security.payments.group.index');
     Route::post('reports/social-security/payments-group', [ReportsController::class, 'social_security_payments_group_list'])->name('social-security.payments.group.list');
+
+
+    // Testing
+    Route::get('/test/{year}', [SocialSecurityController::class, 'test']);
 });
 
 // Clear cache
@@ -135,5 +134,3 @@ Route::get('/admin/clear-cache', function() {
     Artisan::call('optimize:clear');
     return redirect('/admin/profile')->with(['message' => 'Cache eliminada.', 'alert-type' => 'success']);
 })->name('clear.cache');
-
-Route::get('/test/{year}', [SocialSecurityController::class, 'test']);

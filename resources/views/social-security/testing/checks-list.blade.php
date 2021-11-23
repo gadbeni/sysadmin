@@ -16,9 +16,6 @@
                             <th>Total ganado</th>
                             <th>Nro Cheque</th>
                             <th>Monto</th>
-                            {{-- <th>Fecha de pago CC</th>
-                            <th>Nro de deposito CC</th>
-                            <th>GTC 11</th> --}}
                         </tr>
                     </thead>
                     <tbody>

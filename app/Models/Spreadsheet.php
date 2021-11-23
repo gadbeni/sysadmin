@@ -10,7 +10,7 @@ class Spreadsheet extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'direccion_administrativa_id', 'tipo_planilla_id', 'codigo_planilla', 'year', 'month', 'people', 'afp_id', 'total'
+        'user_id', 'direccion_administrativa_id', 'tipo_planilla_id', 'codigo_planilla', 'year', 'month', 'people', 'afp_id', 'total', 'total_afp'
     ];
 
     public function user(){

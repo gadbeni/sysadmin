@@ -24,6 +24,7 @@ class CreateSpreadsheetsTable extends Migration
             $table->integer('people')->nullable();
             $table->string('afp_id')->nullable();
             $table->decimal('total', 10, 2)->nullable();
+            $table->decimal('total_afp', 10, 2)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

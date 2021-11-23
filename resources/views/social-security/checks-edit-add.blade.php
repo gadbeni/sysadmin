@@ -43,8 +43,9 @@
                                 <div class="form-group col-md-6 div-manual">
                                     <label for="planilla_haber_id">Planilla manual</label>
                                     <select name="planilla_haber_id_manual" id="select-planilla_haber_id_manual" class="form-control select2">
+                                        <option value="">Seleccione la planilla manual</option>
                                     @foreach (App\Models\Spreadsheet::where('deleted_at', NULL)->get() as $item)
-                                    <option value="{{ $item->id }}">{{ $item->codigo_planilla }} | {{ $item->afp ? 'Futuro' : 'Previsión' }} Bs. {{ number_format($item->total, 2, ',', '.') }}</option>
+                                    <option value="{{ $item->id }}" data-total="{{ $item->total }}" data-total_afp="{{ $item->total_afp }}">{{ $item->codigo_planilla }} | {{ $item->afp ? 'Futuro' : 'Previsión' }} Bs. {{ number_format($item->total, 2, ',', '.') }}</option>
                                     @endforeach
                                     </select>
                                 </div>
@@ -70,7 +71,7 @@
                                     <select name="checks_beneficiary_id" id="select-checks_beneficiary_id" class="form-control" required>
                                         <option value="">-- Seleccione al beneficiario --</option>
                                         @foreach (\App\Models\ChecksBeneficiary::with('type')->where('deleted_at', NULL)->get() as $item)
-                                        <option value="{{ $item->id }}" data-type='@json($item->type)'>{{ $item->full_name }} - {{ $item->type->name }}</option>
+                                        <option value="{{ $item->id }}" data-value='{{ json_encode($item) }}'>{{ $item->full_name }} - {{ $item->type->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -167,6 +168,11 @@
                     }
                 });
 
+                $('#select-planilla_haber_id_manual').change(function(){
+                    let total = $('#select-planilla_haber_id_manual option:selected').data('total');
+                    console.log(total);
+                });
+
                 $('#select-status').val(1);
 		        $('#select-planilla_haber_id').select2('open');
             @else
@@ -196,16 +202,16 @@
             $('#select-checks_beneficiary_id').change(function(){
                 let type = $('#select-checks_beneficiary_id option:selected').data('type');
                 if(type && planillaSelect){
-                    let aporte_patronal = (planillaSelect.total_ganado * 0.05) + planillaSelect.total_riesgo_comun;
-                    let sip = planillaSelect.total_aportes_afp + aporte_patronal - (planillaSelect.total_ganado * (5.5 / 100));
-                    let aporte_solidario = planillaSelect.total_ganado * 0.035;
-                    let aporte_vivienda = planillaSelect.total_ganado * 0.02;
                     let amount = 0;
                     if(type.percentage != null){
                         let porcentaje = type.percentage/100;
                         amount = planillaSelect.total_ganado * porcentaje;
                         $('#input-amout').val(amount.toFixed(2));
                     }else{
+                        let aporte_patronal = (planillaSelect.total_ganado * 0.05) + planillaSelect.total_riesgo_comun;
+                        let sip = planillaSelect.total_aportes_afp + aporte_patronal - (planillaSelect.total_ganado * (5.5 / 100));
+                        let aporte_solidario = planillaSelect.total_ganado * 0.035;
+                        let aporte_vivienda = planillaSelect.total_ganado * 0.02;
                         switch (type.id) {
                             case 4:
                                 amount = sip + aporte_solidario;
@@ -274,6 +280,7 @@
 
             $('#btn-reset').click(function(){
                 $('#select-planilla_haber_id').val('').trigger('change');
+                $('#select-planilla_haber_id_manual').val('').trigger('change');
                 setTimeout(() => {
                     $('#select-status').val(1);
                     $('#select-planilla_haber_id').select2('open');

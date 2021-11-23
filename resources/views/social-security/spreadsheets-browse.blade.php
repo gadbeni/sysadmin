@@ -93,6 +93,7 @@
                 { data: 'period', title: 'Periodo' },
                 { data: 'people', title: 'Nro Personas' },
                 { data: 'total', title: 'Total' },
+                { data: 'total_afp', title: 'Total AFP' },
                 { data: 'user', title: 'Registrado por' },
                 { data: 'created_at', title: 'Registrado el' },
                 { data: 'actions', title: 'Acciones', orderable: false, searchable: false },

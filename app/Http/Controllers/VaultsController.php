@@ -258,6 +258,11 @@ class VaultsController extends Controller
     }
 
     public function print_status($id){
-        return view('vaults.print.print-vaults');
+        $vault = Vault::with(['user', 'details.cash' => function($q){
+            $q->where('deleted_at', NULL);
+        }, 'details' => function($q){
+            $q->where('deleted_at', NULL);
+        }])->where('id', $id)->where('deleted_at', NULL)->first();
+        return view('vaults.print.print-vaults', compact('vault'));
     } 
 }

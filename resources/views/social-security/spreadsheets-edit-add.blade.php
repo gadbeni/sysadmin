@@ -23,7 +23,7 @@
                         <div class="panel-body">
                             <div class="alert alert-info" role="alert" id="alert-details" style="display: none; margin-bottom: 20px"></div>
                             <div class="row">
-                                <div class="form-group col-md-6 div-no-centralizada">
+                                <div class="form-group col-md-12">
                                     <label for="direccion_administrativa_id">Dirección administrativa</label>
                                     <select name="direccion_administrativa_id" class="form-control select2" required>
                                         <option value="" disabled selected>Seleccione una dirección administrativa</option>
@@ -32,7 +32,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group col-md-6 div-no-centralizada">
+                                <div class="form-group col-md-6">
                                     <label for="tipo_planilla_id">Tipo de planilla</label>
                                     <select name="tipo_planilla_id" class="form-control select2" required>
                                         <option value="" disabled selected>Tipo de planilla</option>
@@ -82,6 +82,10 @@
                                 <div class="form-group col-md-6">
                                     <label for="total">Total ganado</label>
                                     <input type="number" name="total" min="0" step="0.01" class="form-control" value="{{ $type == 'edit' ? $data->total : '' }}" placeholder="Total ganado" required />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="total">Total AFP</label>
+                                    <input type="number" name="total_afp" min="0" step="0.01" class="form-control" value="{{ $type == 'edit' ? $data->total_afp : '' }}" placeholder="Total AFP" required />
                                 </div>
                             </div>
                         </div>

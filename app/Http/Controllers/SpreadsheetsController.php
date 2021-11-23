@@ -50,6 +50,9 @@ class SpreadsheetsController extends Controller
             ->addColumn('total', function($row){
                 return number_format($row->total, 2, ',', '.');
             })
+            ->addColumn('total_afp', function($row){
+                return number_format($row->total_afp, 2, ',', '.');
+            })
             ->addColumn('created_at', function($row){
                 return date('d/m/Y H:i', strtotime($row->created_at)).'<br><small>'.Carbon::parse($row->created_at)->diffForHumans().'</small>';
             })
@@ -105,7 +108,8 @@ class SpreadsheetsController extends Controller
                 'month' => $request->month,
                 'people' => $request->people,
                 'afp_id' => $request->afp_id,
-                'total' => $request->total
+                'total' => $request->total,
+                'total_afp' => $request->total_afp
             ]);
             return redirect()->route('spreadsheets.index')->with(['message' => 'Planilla registrada correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
@@ -162,7 +166,8 @@ class SpreadsheetsController extends Controller
                 'month' => $request->month,
                 'people' => $request->people,
                 'afp_id' => $request->afp_id,
-                'total' => $request->total
+                'total' => $request->total,
+                'total_afp' => $request->total_afp
             ]);
             return redirect()->route('spreadsheets.index')->with(['message' => 'Planilla editada correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
