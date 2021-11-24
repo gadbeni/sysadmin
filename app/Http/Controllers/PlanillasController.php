@@ -12,6 +12,7 @@ use DataTables;
 use App\Models\Cashier;
 use App\Models\CashiersPayment;
 use App\Models\CashiersPaymentsDelete;
+use App\Models\PlanillasHistory;
 
 class PlanillasController extends Controller
 {
@@ -85,6 +86,7 @@ class PlanillasController extends Controller
         }
     }
 
+    // Habilitar (pagada=1) planillas haberes para pago
     public function planilla_details_open(Request $request){
         try {
             $id = $request->id;
@@ -98,8 +100,12 @@ class PlanillasController extends Controller
             }
             DB::connection('mysqlgobe')->table('planillahaberes')
             ->whereIn('id', $id)
-            ->update([
-                'pagada' => 1
+            ->update(['pagada' => 1]);
+
+            PlanillasHistory::create([
+                'user_id' => Auth::user()->id,
+                'type' => 'Habilitar para pago',
+                'details' => json_encode($id)
             ]);
 
             return response()->json(['success' => 1]);
@@ -150,6 +156,7 @@ class PlanillasController extends Controller
         }
     }
 
+    // Realizar pagos de planilla haberes múltiple
     public function planilla_details_payment_multiple(Request $request){
         // dd($request);
         DB::beginTransaction();
@@ -157,6 +164,13 @@ class PlanillasController extends Controller
             foreach ($request->planilla_haber_id as $item) {
                 DB::connection('mysqlgobe')->table('planillahaberes')->where('id', $item)->update(['pagada' => 2]);
             }
+
+            PlanillasHistory::create([
+                'user_id' => Auth::user()->id,
+                'type' => 'Pago múltiple',
+                'details' => json_encode($request->planilla_haber_id)
+            ]);
+
             DB::commit();
             return response()->json(['success' => 1]);
         } catch (\Throwable $th) {
