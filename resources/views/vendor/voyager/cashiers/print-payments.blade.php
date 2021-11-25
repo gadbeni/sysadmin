@@ -14,7 +14,12 @@
             font-weight: 100;
             max-width: 740px;
         }
+        .table td, .table th{
+            padding: 2px;
+            border-bottom: 1px solid #000;
+        }
         #watermark {
+            margin-top: 200px;
             position: absolute;
             opacity: 0.2;
             z-index:  -1000;
@@ -68,7 +73,7 @@
             <img src="{{ asset('images/icon.png') }}" height="100%" width="100%" /> 
         </div>
         {{-- {{ dd($cashier) }} --}}
-        <table width="100%" cellpadding="10" style="font-size: 13px">
+        <table class="table" width="100%" cellspacing="0" style="font-size: 13px">
             <thead>
                 <tr>
                     <th>N&deg;</th>
@@ -109,7 +114,7 @@
                     @endphp
                     <tr @if($payment->deletes) style="text-decoration:line-through;" @endif>
                         <td>{{ $cont }}</td>
-                        <td>{{ $data->Nombre_Empleado }} <br> <small>{{ $data->Direccion_Administrativa }}</small> </td>
+                        <td style="font-size: 11px">{{ $data->Nombre_Empleado }} <br> <small>{{ $data->Direccion_Administrativa }}</small> </td>
                         <td>{{ $data->CedulaIdentidad }}</td>
                         <td>{{ $months[$data->Mes] }}/{{ $data->Anio }}</td>
                         <td>{{ $payment->created_at->format('d/m/Y H:i') }}</td>

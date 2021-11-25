@@ -52,6 +52,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 table_name = "checks_beneficiaries" or
                                                 table_name = "social-securitypayments" or
                                                 table_name = "social-securitychecks" or
+                                                table_name = "spreadsheets" or
                                                 table_name = "reports_social_security"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
@@ -60,6 +61,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 table_name = "social-security" or
                                                 table_name = "social-securitypayments" or
                                                 table_name = "social-securitychecks" or
+                                                table_name = "spreadsheets" or
                                                 table_name = "reports_social_security"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 

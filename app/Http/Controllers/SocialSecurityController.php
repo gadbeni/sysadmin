@@ -13,6 +13,7 @@ use App\Models\PayrollPayment;
 use App\Models\ChecksPayment;
 use App\Models\Dependence;
 use App\Models\ChecksBeneficiary;
+use App\Models\Spreadsheet;
 
 class SocialSecurityController extends Controller
 {
@@ -37,25 +38,25 @@ class SocialSecurityController extends Controller
                                 ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
                                 ->where('ph.ID', $row->planilla_haber_id)
                                 ->select('ph.*', 'tp.Nombre as tipo_planilla')->first();
+                $status = '';
+                switch ($row->status) {
+                    case '0':
+                        $status = '<label class="label label-danger">anulado</label>';
+                        break;
+                    case '1':
+                        $status = '<label class="label label-info">Pendiente</label>';
+                        break;
+                    case '2':
+                        $status = '<label class="label label-success">Pagado</label>';
+                        break;
+                    case '3':
+                        $status = '<label class="label label-warning">Vencido</label>';
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
                 if($planilla){
-                    $status = '';
-                    switch ($row->status) {
-                        case '0':
-                            $status = '<label class="label label-danger">anulado</label>';
-                            break;
-                        case '1':
-                            $status = '<label class="label label-info">Pendiente</label>';
-                            break;
-                        case '2':
-                            $status = '<label class="label label-success">Pagado</label>';
-                            break;
-                        case '3':
-                            $status = '<label class="label label-warning">Vencido</label>';
-                            break;
-                        default:
-                            # code...
-                            break;
-                    }
                     return '<p>
                                 <b><small>N&deg;:</small></b> '.$row->number.' <br>
                                 <b>'.$planilla->tipo_planilla.' - '.$planilla->Periodo.'</b><br>
@@ -63,6 +64,15 @@ class SocialSecurityController extends Controller
                                 <b><small>Monto:</small></b> '.number_format($row->amount, 2, ',', '.').' <br>
                                 '.$status.'
                             </p>';
+                }elseif($row->spreadsheet_id){
+                    $spreadsheet = Spreadsheet::find($row->spreadsheet_id);
+                    return '<p>
+                            <label class="label label-danger">Planilla manual</label> <br>
+                            <b>'.($spreadsheet->tipo_planilla_id == 1 ? 'Funcionamiento' : 'Inversión').' - '.$spreadsheet->year.str_pad($spreadsheet->month, 2, "0", STR_PAD_LEFT).'</b><br>
+                            <b><small>Planilla:</small></b> '.($spreadsheet->codigo_planilla.' - '.($spreadsheet->afp_id == 1 ? 'Futuro' : 'Previsión')).' <br>
+                            <b><small>Monto:</small></b> '.number_format($row->amount, 2, ',', '.').' <br>
+                            '.$status.'
+                        </p>';
                 }
                 return '';
             })
@@ -113,55 +123,57 @@ class SocialSecurityController extends Controller
 
     public function checks_store(Request $request){
         try {
-            $beneficiary = ChecksBeneficiary::findOrFail($request->checks_beneficiary_id);
+            // $beneficiary = ChecksBeneficiary::findOrFail($request->checks_beneficiary_id);
             // Verificar que el pago sea de una planilla centralizada o no centralizada
-            $amount = 0;
-            $aporte_patronal = 0;
-            $sip = 0;
-            $aporte_solidario = 0;
-            $aporte_vivienda = 0;
+            // $amount = 0;
+            // $aporte_patronal = 0;
+            // $sip = 0;
+            // $aporte_solidario = 0;
+            // $aporte_vivienda = 0;
             // Planilla no centralizada
-            if($request->planilla_haber_id){
+            if($request->planilla_haber_id || $request->spreadsheet_id){
                 // Si el porcentaje es 0 se calcula el SIP
-                if($beneficiary->type->percentage == 0){
-                    $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $request->planilla_haber_id)->first();
-                    $planilla = DB::connection('mysqlgobe')->table('planillahaberes')
-                                            ->where('Afp', $planillahaberes->Afp)->where('idPlanillaprocesada', $planillahaberes->idPlanillaprocesada)
-                                            ->groupBy('Afp', 'idPlanillaprocesada')
-                                            ->selectRaw('SUM(Total_Ganado) as total_ganado, SUM(Total_Aportes_Afp) as total_aportes_afp, SUM(Riesgo_Comun) as riesgo_comun, SUM(Aporte_Solidario) as aporte_solidario')
-                                            ->first();
+                // if($beneficiary->type->percentage == 0){
+                //     $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $request->planilla_haber_id)->first();
+                //     $planilla = DB::connection('mysqlgobe')->table('planillahaberes')
+                //                             ->where('Afp', $planillahaberes->Afp)->where('idPlanillaprocesada', $planillahaberes->idPlanillaprocesada)
+                //                             ->groupBy('Afp', 'idPlanillaprocesada')
+                //                             ->selectRaw('SUM(Total_Ganado) as total_ganado, SUM(Total_Aportes_Afp) as total_aportes_afp, SUM(Riesgo_Comun) as riesgo_comun, SUM(Aporte_Solidario) as aporte_solidario')
+                //                             ->first();
                     
-                    $aporte_patronal = ($planilla->total_ganado * 0.05) + $planilla->riesgo_comun;
-                    $sip = $planilla->total_aportes_afp + $aporte_patronal - ($planilla->total_ganado * (5.5 / 100));
-                    $aporte_solidario = $planilla->total_ganado * 0.035;
-                    $aporte_vivienda = $planilla->total_ganado * 0.02;
+                //     $aporte_patronal = ($planilla->total_ganado * 0.05) + $planilla->riesgo_comun;
+                //     $sip = $planilla->total_aportes_afp + $aporte_patronal - ($planilla->total_ganado * (5.5 / 100));
+                //     $aporte_solidario = $planilla->total_ganado * 0.035;
+                //     $aporte_vivienda = $planilla->total_ganado * 0.02;
 
-                    switch ($beneficiary->type->id) {
-                        case '4':
-                            $amount = $sip + $aporte_solidario;
-                            break;
-                        case '5':
-                            $amount = $sip;
-                            break;
-                        case '6':
-                            $amount = $sip + $aporte_solidario + $aporte_vivienda;
-                            break;
-                    }
-                }else{
-                    $amount = $request->amount;
-                }
+                //     switch ($beneficiary->type->id) {
+                //         case '4':
+                //             $amount = $sip + $aporte_solidario;
+                //             break;
+                //         case '5':
+                //             $amount = $sip;
+                //             break;
+                //         case '6':
+                //             $amount = $sip + $aporte_solidario + $aporte_vivienda;
+                //             break;
+                //     }
+                // }else{
+                //     $amount = $request->amount;
+                // }
 
                 ChecksPayment::create([
                     'user_id' => Auth::user()->id,
                     'planilla_haber_id' => $request->planilla_haber_id,
+                    'spreadsheet_id' => $request->spreadsheet_id,
                     'number' => $request->number,
-                    'amount' => $amount,
+                    'amount' => $request->amount,
                     'checks_beneficiary_id' => $request->checks_beneficiary_id,
                     'date_print' => $request->date_print,
                     'observations' => $request->observations,
                     'status' => $request->status
                 ]);
             }else{
+                $beneficiary = ChecksBeneficiary::findOrFail($request->checks_beneficiary_id);
                 $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
                                 ->where('p.Estado', 1)
                                 ->where('p.Tplanilla', $request->t_planilla ?? 0)

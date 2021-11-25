@@ -1,7 +1,8 @@
-1.- Ejecutar las siguientes migraciones:
-    php artisan migrate --path=database/migrations/2021_11_16_130819_create_spreadsheets_table.php
-    php artisan migrate --path=database/migrations/2021_11_23_223239_create_planillas_histories_table.php
+Ejecutar las siguientes migraciones:
+    php artisan migrate --path=database/migrations/2021_11_24_141829_update_checks_payments_alt_table.php
 
-2.- Ejecutar los siguientes seeders:
+Ejecutar los siguientes seeders:
     php artisan db:seed --class=UpdateBreadSeeder
     php artisan db:seed --class=UpdatePermissionsSeeder
+
+Quitar opciones de editar y eliminar a técnicos de previsión social y solo reporte de pagos

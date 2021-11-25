@@ -82,7 +82,7 @@
                     <table id="dataTable" class="table table-bordered">
                         <thead>
                             <tr>
-                                @if (Auth::user()->role_id == 1)
+                                @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5)
                                 <th><input type="checkbox" id="check-all" @if ($tipo_planilla == 2 || $planilla->where('pagada', 0)->count() == $planilla->count()) disabled @endif></th>
                                 @endif
                                 <th>Item</th>
@@ -110,7 +110,7 @@
                         <tbody id="dataTable-body">
                             @forelse ($planilla as $item)
                             <tr>
-                                @if (Auth::user()->role_id == 1)
+                                @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5)
                                 <td><input type="checkbox" name="planilla_haber_id[]" class="check-item" value="{{ $item->ID }}" @if($item->pagada != 1) disabled @endif></td>
                                 @endif
                                 <td>{{ $cont }}</td>

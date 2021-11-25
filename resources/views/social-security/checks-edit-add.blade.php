@@ -26,7 +26,7 @@
                                 <div class="col-md-12" style="{{ $type == 'create' ? '' : 'display: none' }}">
                                     <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="1" checked>No centralizadas</label>
                                     <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="2">Centralizadas</label>
-                                    {{-- <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="3">Manual</label> --}}
+                                    <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="3">Manual</label>
                                 </div>
                                 <div class="form-group col-md-6 div-no-centralizada">
                                     <label for="planilla_haber_id">Planilla(s)</label>
@@ -42,8 +42,8 @@
                                 </div>
                                 <div class="form-group col-md-6 div-manual">
                                     <label for="planilla_haber_id">Planilla manual</label>
-                                    <select name="planilla_haber_id_manual" id="select-planilla_haber_id_manual" class="form-control select2">
-                                        <option value="">Seleccione la planilla manual</option>
+                                    <select name="spreadsheet_id" id="select-planilla_haber_id_manual" class="form-control select2">
+                                    <option value="">Seleccione la planilla manual</option>
                                     @foreach (App\Models\Spreadsheet::where('deleted_at', NULL)->get() as $item)
                                     <option value="{{ $item->id }}" data-total="{{ $item->total }}" data-total_afp="{{ $item->total_afp }}">{{ $item->codigo_planilla }} | {{ $item->afp ? 'Futuro' : 'Previsión' }} Bs. {{ number_format($item->total, 2, ',', '.') }}</option>
                                     @endforeach
@@ -71,7 +71,7 @@
                                     <select name="checks_beneficiary_id" id="select-checks_beneficiary_id" class="form-control" required>
                                         <option value="">-- Seleccione al beneficiario --</option>
                                         @foreach (\App\Models\ChecksBeneficiary::with('type')->where('deleted_at', NULL)->get() as $item)
-                                        <option value="{{ $item->id }}" data-value='{{ json_encode($item) }}'>{{ $item->full_name }} - {{ $item->type->name }}</option>
+                                        <option value="{{ $item->id }}" data-type='{{ json_encode($item->type) }}'>{{ $item->full_name }} - {{ $item->type->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -169,8 +169,11 @@
                 });
 
                 $('#select-planilla_haber_id_manual').change(function(){
+                    $('#select-checks_beneficiary_id').val('').trigger('change');
                     let total = $('#select-planilla_haber_id_manual option:selected').data('total');
-                    console.log(total);
+                    let total_afp = $('#select-planilla_haber_id_manual option:selected').data('total_afp');
+                    planillaSelect = {total_ganado: total, total_afp}
+                    // console.log(total, total_afp);
                 });
 
                 $('#select-status').val(1);
@@ -200,27 +203,45 @@
             @endif
 
             $('#select-checks_beneficiary_id').change(function(){
-                let type = $('#select-checks_beneficiary_id option:selected').data('type');
-                if(type && planillaSelect){
+                let beneficiary = $('#select-checks_beneficiary_id option:selected').data('type');
+                if(beneficiary && planillaSelect){
                     let amount = 0;
-                    if(type.percentage != null){
-                        let porcentaje = type.percentage/100;
+                    if(beneficiary.percentage != null){
+                        let porcentaje = beneficiary.percentage/100;
                         amount = planillaSelect.total_ganado * porcentaje;
                         $('#input-amout').val(amount.toFixed(2));
                     }else{
-                        let aporte_patronal = (planillaSelect.total_ganado * 0.05) + planillaSelect.total_riesgo_comun;
-                        let sip = planillaSelect.total_aportes_afp + aporte_patronal - (planillaSelect.total_ganado * (5.5 / 100));
-                        let aporte_solidario = planillaSelect.total_ganado * 0.035;
-                        let aporte_vivienda = planillaSelect.total_ganado * 0.02;
-                        switch (type.id) {
+                        // Obtener el tipo de planilla
+                        let type = $(".radio-type:checked").val();
+                        let sip = 0;
+                        let sip_solidario = 0;
+                        let sip_solidario_vivienda = 0;
+
+                        if(type == 3){
+                            aporte_solidario = planillaSelect.total_ganado * 0.035;
+                            aporte_vivienda = planillaSelect.total_ganado * 0.02;
+
+                            sip = planillaSelect.total_afp - (planillaSelect.total_ganado * 0.055);
+                            sip_solidario = sip + aporte_solidario;
+                            sip_solidario_vivienda = sip_solidario + aporte_vivienda;
+                        }else{
+                            let aporte_patronal = (planillaSelect.total_ganado * 0.05) + planillaSelect.total_riesgo_comun;
+                            let aporte_solidario = planillaSelect.total_ganado * 0.035;
+                            let aporte_vivienda = planillaSelect.total_ganado * 0.02;
+
+                            sip = planillaSelect.total_aportes_afp + aporte_patronal - (planillaSelect.total_ganado * (5.5 / 100));
+                            sip_solidario = sip + aporte_solidario;
+                            sip_solidario_vivienda = sip + aporte_solidario + aporte_vivienda;
+                        }
+                        switch (beneficiary.id) {
                             case 4:
-                                amount = sip + aporte_solidario;
+                                amount = sip_solidario;
                                 break;
                             case 5:
                                 amount = sip;
                                 break;
                             case 6:
-                                amount = sip + aporte_solidario + aporte_vivienda;
+                                amount = sip_solidario_vivienda;
                                 break;
                             default:
                                 amount = 0;
