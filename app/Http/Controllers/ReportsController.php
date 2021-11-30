@@ -9,6 +9,8 @@ use Maatwebsite\Excel\Facades\Excel;
 // Models
 use App\Models\PayrollPayment;
 use App\Models\ChecksPayment;
+use App\Models\Cashier;
+use App\Models\CashiersPayment;
 
 // Exports
 use App\Exports\PaymentsExport;
@@ -358,5 +360,49 @@ class ReportsController extends Controller
             return view('reports.rr_hh.contracts-list', compact('funcionarios_ingreso', 'funcionarios_egreso'));
         }
 
+    }
+
+    public function cashier_cashiers_index(){
+        return view('reports.cashiers.cashiers-browse');
+    }
+
+    public function cashier_cashiers_list(Request $request){
+        $cashier = Cashier::with(['user', 'payments.deletes', 'movements', 'details'])
+                        ->whereDate('created_at', '>=', date('Y-m-d', strtotime($request->start)))
+                        ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->finish)))
+                        ->whereRaw($request->user_id ? 'user_id = '.$request->user_id : 1)->get();
+        // dd($cashier);
+        if($request->print){
+            return view('reports.cashiers.cashiers-print', compact('cashier'));
+        }else{
+            return view('reports.cashiers.cashiers-list', compact('cashier'));
+        }
+    }
+
+    public function cashier_payments_index(){
+        return view('reports.cashiers.payments-browse');
+    }
+
+    public function cashier_payments_list(Request $request){
+        $user_id = $request->user_id;
+        // dd($user_id);
+        if($user_id){
+            $payments = CashiersPayment::with(['deletes', 'cashier.user'])
+                            ->whereHas('cashier.user', function($query) use ($user_id){
+                                $query->where('id', $user_id);
+                            })
+                            ->whereDate('created_at', '>=', date('Y-m-d', strtotime($request->start)))
+                            ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->finish)))->get();
+        }else{
+            $payments = CashiersPayment::with(['deletes', 'cashier.user'])
+                            ->whereDate('created_at', '>=', date('Y-m-d', strtotime($request->start)))
+                            ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->finish)))->get();
+        }
+        // dd($payments);
+        if($request->print){
+            return view('reports.cashiers.payments-print', compact('payments'));
+        }else{
+            return view('reports.cashiers.payments-list', compact('payments'));
+        }
     }
 }

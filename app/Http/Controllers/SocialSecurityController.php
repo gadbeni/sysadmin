@@ -123,44 +123,7 @@ class SocialSecurityController extends Controller
 
     public function checks_store(Request $request){
         try {
-            // $beneficiary = ChecksBeneficiary::findOrFail($request->checks_beneficiary_id);
-            // Verificar que el pago sea de una planilla centralizada o no centralizada
-            // $amount = 0;
-            // $aporte_patronal = 0;
-            // $sip = 0;
-            // $aporte_solidario = 0;
-            // $aporte_vivienda = 0;
-            // Planilla no centralizada
             if($request->planilla_haber_id || $request->spreadsheet_id){
-                // Si el porcentaje es 0 se calcula el SIP
-                // if($beneficiary->type->percentage == 0){
-                //     $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $request->planilla_haber_id)->first();
-                //     $planilla = DB::connection('mysqlgobe')->table('planillahaberes')
-                //                             ->where('Afp', $planillahaberes->Afp)->where('idPlanillaprocesada', $planillahaberes->idPlanillaprocesada)
-                //                             ->groupBy('Afp', 'idPlanillaprocesada')
-                //                             ->selectRaw('SUM(Total_Ganado) as total_ganado, SUM(Total_Aportes_Afp) as total_aportes_afp, SUM(Riesgo_Comun) as riesgo_comun, SUM(Aporte_Solidario) as aporte_solidario')
-                //                             ->first();
-                    
-                //     $aporte_patronal = ($planilla->total_ganado * 0.05) + $planilla->riesgo_comun;
-                //     $sip = $planilla->total_aportes_afp + $aporte_patronal - ($planilla->total_ganado * (5.5 / 100));
-                //     $aporte_solidario = $planilla->total_ganado * 0.035;
-                //     $aporte_vivienda = $planilla->total_ganado * 0.02;
-
-                //     switch ($beneficiary->type->id) {
-                //         case '4':
-                //             $amount = $sip + $aporte_solidario;
-                //             break;
-                //         case '5':
-                //             $amount = $sip;
-                //             break;
-                //         case '6':
-                //             $amount = $sip + $aporte_solidario + $aporte_vivienda;
-                //             break;
-                //     }
-                // }else{
-                //     $amount = $request->amount;
-                // }
-
                 ChecksPayment::create([
                     'user_id' => Auth::user()->id,
                     'planilla_haber_id' => $request->planilla_haber_id,

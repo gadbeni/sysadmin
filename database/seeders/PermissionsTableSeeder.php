@@ -88,5 +88,18 @@ class PermissionsTableSeeder extends Seeder
                 'table_name' => 'reports_social_security',
             ]);
         }
+
+        // Reports cashier
+        $keys = [
+            'browse_reportscashier_cashiers_index',
+            'browse_reportscashier_payments_index',
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'reports_cachiers',
+            ]);
+        }
     }
 }

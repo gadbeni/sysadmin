@@ -16,7 +16,7 @@
         }
         #watermark {
             position: absolute;
-            opacity: 0.2;
+            opacity: 0.1;
             z-index:  -1000;
         }
         #watermark img{

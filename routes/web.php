@@ -124,6 +124,11 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('reports/social-security/payments-group', [ReportsController::class, 'social_security_payments_group_index'])->name('social-security.payments.group.index');
     Route::post('reports/social-security/payments-group', [ReportsController::class, 'social_security_payments_group_list'])->name('social-security.payments.group.list');
 
+    // Cashier
+    Route::get('reports/cashier/cashiers', [ReportsController::class, 'cashier_cashiers_index'])->name('reports.cashier.cashiers.index');
+    Route::post('reports/cashier/cashiers/list', [ReportsController::class, 'cashier_cashiers_list'])->name('reports.cashier.cashiers.list');
+    Route::get('reports/cashier/payments', [ReportsController::class, 'cashier_payments_index'])->name('reports.cashier.payments.index');
+    Route::post('reports/cashier/list', [ReportsController::class, 'cashier_payments_list'])->name('reports.cashier.payments.list');
 
     // Testing
     Route::get('/test/{year}', [SocialSecurityController::class, 'test']);

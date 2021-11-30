@@ -563,6 +563,38 @@ class MenuItemsTableSeeder extends Seeder
                 'route' => 'reports.social_security.spreadsheets',
                 'parameters' => NULL,
             ),
+            34 => 
+            array (
+                'id' => 35,
+                'menu_id' => 1,
+                'title' => 'Cajas',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => 'voyager-dollar',
+                'color' => '#000000',
+                'parent_id' => 18,
+                'order' => 7,
+                'created_at' => '2021-11-30 09:42:43',
+                'updated_at' => '2021-11-30 13:18:20',
+                'route' => 'reports.cashier.cashiers.index',
+                'parameters' => 'null',
+            ),
+            35 => 
+            array (
+                'id' => 36,
+                'menu_id' => 1,
+                'title' => 'Pagos realizados',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => 'voyager-certificate',
+                'color' => '#000000',
+                'parent_id' => 18,
+                'order' => 8,
+                'created_at' => '2021-11-30 13:22:57',
+                'updated_at' => '2021-11-30 13:23:48',
+                'route' => 'reports.cashier.payments.index',
+                'parameters' => NULL,
+            ),
         ));
         
         

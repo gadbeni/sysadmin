@@ -21,7 +21,7 @@
         #watermark {
             margin-top: 200px;
             position: absolute;
-            opacity: 0.2;
+            opacity: 0.1;
             z-index:  -1000;
         }
         #watermark img{
@@ -93,7 +93,7 @@
                     @php
                         $data = DB::connection('mysqlgobe')->table('planillahaberes')->where('id', $payment->planilla_haber_id)->first();
                         $cont++;
-                        if(!$payment->deletes){
+                        if(!$payment->deleted_at){
                             $total += $payment->amount;
                         }
                         $months = [
@@ -112,7 +112,7 @@
                         ];
                         // dd($data);
                     @endphp
-                    <tr @if($payment->deletes) style="text-decoration:line-through;" @endif>
+                    <tr @if($payment->deleted_at) style="text-decoration:line-through;color: red" @endif>
                         <td>{{ $cont }}</td>
                         <td style="font-size: 11px">{{ $data->Nombre_Empleado }} <br> <small>{{ $data->Direccion_Administrativa }}</small> </td>
                         <td>{{ $data->CedulaIdentidad }}</td>

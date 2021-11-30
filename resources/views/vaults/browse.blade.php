@@ -18,7 +18,7 @@
                             </div> --}}
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
-                            <a href="{{ route('vaults.print.status', ['vault' => $vault ? $vault->id : 0]) }}" class="btn btn-default">
+                            <a href="{{ route('vaults.print.status', ['vault' => $vault ? $vault->id : 0]) }}" target="_blank" class="btn btn-default">
                                 <i class="glyphicon glyphicon-print"></i> <span>Imprimir</span>
                             </a>
                             @if ($vault)

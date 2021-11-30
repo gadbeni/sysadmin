@@ -16,7 +16,7 @@
         }
         #watermark {
             position: absolute;
-            opacity: 0.2;
+            opacity: 0.1;
             z-index:  -1000;
         }
         #watermark img{
@@ -57,7 +57,7 @@
             <tr>
                 <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="80px"></td>
                 <td style="text-align: right">
-                    <h3 style="margin-bottom: 0px; margin-top: 5px">CAJAS - GOBERNACIÓN<br> <small>RECIBO DE PAGO N&deg; {{ str_pad($planilla->ID, 6, "0", STR_PAD_LEFT) }} </small> </h3>
+                    <h3 style="margin-bottom: 0px; margin-top: 5px">BOLETA DE PAGO<br> <small>RECIBO DE PAGO N&deg; {{ str_pad($planilla->ID, 6, "0", STR_PAD_LEFT) }} </small> </h3>
                 </td>
             </tr>
         </table>
@@ -101,13 +101,13 @@
         <hr style="margin: 0px">
         <table width="100%" cellpadding="10" style="font-size: 12px">
             <tr>
-                <td width="70%">
+                <td>
                     <table width="100%" cellpadding="5">
                         <tr>
-                            <td width="120px"><b>GESTIÓN</b></td>
+                            <td width="150px"><b>GESTIÓN</b></td>
                             <td style="border: 1px solid #ddd">{{ $planilla->Anio }}</td>
                             <td style="text-align: right"><b>MES</b></td>
-                            <td style="border: 1px solid #ddd">
+                            <td style="border: 1px solid #ddd; text-align: right">
                                 @php
                                     $meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                                 @endphp
@@ -115,15 +115,25 @@
                             </td>
                         </tr>
                         <tr>
-                            <td width="100px"><b>SUELDO MENSUAL</b></td>
-                            <td style="border: 1px solid #ddd">{{ number_format($planilla->Sueldo_Mensual, 2, ',', '.') }}</td>
-                            <td style="text-align: right; width: 120px"><b>DÍAS TRABAJADOS</b></td>
+                            <td style="width: 120px"><b>DÍAS TRABAJADOS</b></td>
                             <td style="border: 1px solid #ddd">{{ $planilla->Dias_Trabajado }}</td>
+                            <td width="150px" style="text-align: right"><b>HABER BÁSICO</b></td>
+                            <td style="border: 1px solid #ddd; text-align: right">{{ number_format($planilla->Sueldo_Mensual, 2, ',', '.') }}</td>
                         </tr>
                         <tr>
-                            <td width="100px"><b>APORTE AFP</b></td>
-                            <td style="border: 1px solid #ddd">{{ number_format($planilla->Total_Aportes_Afp, 2, ',', '.') }}</td>
                             <td colspan="2"></td>
+                            <td width="150px" style="text-align: right"><b>BONO ANTIGÜEDAD</b></td>
+                            <td style="border: 1px solid #ddd; text-align: right">{{ number_format($planilla->Bono_Antiguedad, 2, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td width="150px" style="text-align: right"><b>APORTE AFP</b></td>
+                            <td style="border: 1px solid #ddd; text-align: right">{{ number_format($planilla->Total_Aportes_Afp, 2, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td width="150px" style="text-align: right"><b>DESCUENTOS O MULTAS</b></td>
+                            <td style="border: 1px solid #ddd; text-align: right">{{ number_format($planilla->Total_Descuento, 2, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td colspan="4" style="text-align: right"><h2 style="margin: 0px; margin-top: 20px"> <small style="font-size: 12px">LÍQUIDO PAGABLE </small> &nbsp; {{ number_format($planilla->Liquido_Pagable, 2, ',', '.') }}</h2></td>
@@ -134,18 +144,6 @@
                             </td>
                         </tr>
                     </table>
-                </td>
-                <td width="30%" style="padding: 0px 10px">
-                    <div>
-                        <p style="text-align: center; margin-top: 0px"><b><small>RECIBIDO POR</small></b></p>
-                        <br>
-                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($planilla->Nombre_Empleado) }}</small> <br> <small>{{ $planilla->CedulaIdentidad }} {{ $planilla->Expedido }}</small> <br> <b>{{ strtoupper($planilla->Cargo) }}</b> </p>
-                    </div>
-                    <div>
-                        <p style="text-align: center; margin-top: 0px"><b><small>ENTREGADO POR</small></b></p>
-                        <br>
-                        <p style="text-align: center">.............................................. <br> <small>{{ strtoupper($payment->cashier->user->name) }}</small> <br> <small>{{ $payment->cashier->user->ci }}</small> <br> <b>{{ strtoupper($payment->cashier->user->role->display_name) }}</b> </p>
-                    </div>
                 </td>
             </tr>
         </table>

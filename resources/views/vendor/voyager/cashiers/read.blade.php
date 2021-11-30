@@ -156,7 +156,7 @@
                                         @php
                                             $data = DB::connection('mysqlgobe')->table('planillahaberes')->where('id', $payment->planilla_haber_id)->first();
                                             $cont++;
-                                            if(!$payment->deletes){
+                                            if(!$payment->deleted_at){
                                                 $total += $payment->amount;
                                             }
                                             $months = [
@@ -180,7 +180,7 @@
                                             <td>
                                                 {{ $data->Nombre_Empleado }} <br> <small>{{ $data->Direccion_Administrativa }}</small>
                                                 <br>
-                                                @if ($payment->deletes)
+                                                @if ($payment->deleted_at)
                                                     <label class="label label-danger">Anulado</label>
                                                 @endif
                                             </td>
@@ -189,11 +189,15 @@
                                             <td>{{ $payment->created_at->format('d/m/Y H:i') }}</td>
                                             <td style="text-align: right">{{ number_format($payment->amount, 2, ',', '.') }}</td>
                                             <td class="text-right">
-                                                @if (!$payment->deletes)
+                                                @if (!$payment->deleted_at)
                                                     <button type="button" onclick="print_recipe({{ $payment->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
                                                     <button type="button" data-toggle="modal" data-target="#delete_payment-modal" data-id="{{ $data->ID }}" class="btn btn-danger btn-delete"><i class="voyager-trash"></i> Anular</button>
                                                 @else
-                                                    <button type="button" onclick="print_recipe_delete({{ $payment->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Informe de anulación</button>
+                                                    @if ($payment->deletes)
+                                                        <button type="button" onclick="print_recipe_delete({{ $payment->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Informe de anulación</button>
+                                                    @else
+                                                        <label class="label label-danger">Eliminado manualmente</label>
+                                                    @endif
                                                 @endif
                                             </td>
                                         </tr>
