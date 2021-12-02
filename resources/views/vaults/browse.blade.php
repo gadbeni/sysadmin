@@ -8,7 +8,7 @@
             <div class="col-md-12">
                 <div class="panel panel-bordered">
                     <div class="panel-body" style="padding: 0px">
-                        <div class="col-md-8" style="padding: 0px">
+                        <div class="col-md-6" style="padding: 0px">
                             <h1 class="page-title">
                                 <i class="voyager-treasure"></i> Bóveda
                             </h1>
@@ -17,7 +17,7 @@
                                 <p>Puede obtener el valor de cada parámetro en cualquier lugar de su sitio llamando <code>setting('group.key')</code></p>
                             </div> --}}
                         </div>
-                        <div class="col-md-4 text-right" style="margin-top: 30px">
+                        <div class="col-md-6 text-right" style="margin-top: 30px">
                             <a href="{{ route('vaults.print.status', ['vault' => $vault ? $vault->id : 0]) }}" target="_blank" class="btn btn-default">
                                 <i class="glyphicon glyphicon-print"></i> <span>Imprimir</span>
                             </a>

@@ -122,6 +122,7 @@ class SocialSecurityController extends Controller
     }
 
     public function checks_store(Request $request){
+        DB::beginTransaction();
         try {
             if($request->planilla_haber_id || $request->spreadsheet_id){
                 ChecksPayment::create([
@@ -186,9 +187,12 @@ class SocialSecurityController extends Controller
                     ]);
                 }
             }
+
+            DB::commit();
             // return redirect()->route($request->redirect ?? 'payments.index')->with(['message' => 'Pago agregado correctamente.', 'alert-type' => 'success']);
             return response()->json(['data' => 'success']);
         } catch (\Throwable $th) {
+            DB::rollback();
             env('APP_DEBUG') ? dd($th) : null;
             // return redirect()->route($request->redirect ?? 'payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
             return response()->json(['data' => 'error']);
@@ -222,8 +226,7 @@ class SocialSecurityController extends Controller
 
     public function checks_delete($id, Request $request){
         try {
-            ChecksPayment::where('id', $id)
-            ->update([
+            ChecksPayment::where('id', $id)->update([
                 'deleted_at' => Carbon::now()
             ]);
             return redirect()->route('checks.index')->with(['message' => 'Cheque eliminado correctamente.', 'alert-type' => 'success']);
@@ -260,18 +263,21 @@ class SocialSecurityController extends Controller
         return
             Datatables::of($data)
             ->addColumn('checkbox', function($row){
-                return '<div><input type="checkbox" name="id[]" onclick="checkId()" value="'.$row->id.'" /></div>';
+                return '<div><input type="checkbox" name="id[]" onclick="checkId()" value="'.$row->id.'" '.($row->spreadsheet_id ? 'disabled' : '').' /></div>';
             })
             ->addColumn('planilla_id', function($row){
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
                                 ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
                                 ->where('ph.ID', $row->planilla_haber_id)
-                                ->select('ph.*', 'tp.Nombre as tipo_planilla')->first();
+                                ->select('ph.*', 'pp.Monto as monto', 'tp.Nombre as tipo_planilla')->first();
                 if($planilla){
-                    return $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión').'<br><b>'.$planilla->tipo_planilla.' - '.$planilla->Periodo.'</b>';
-                }else{
-                    return '';
+                    return  '<b>'.$planilla->tipo_planilla.' - '.$planilla->Periodo.'</b> <br><small>Planilla: </small>'.$planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($planilla->monto, 2, ',', '.');
+                }elseif($row->spreadsheet_id){
+                    $spreadsheet = Spreadsheet::find($row->spreadsheet_id);
+                    return '<label class="label label-danger">Planilla manual</label> <br> <b>'.($spreadsheet->tipo_planilla_id == 1 ? 'Funcionamiento' : 'Inversión').' - '.$spreadsheet->year.str_pad($spreadsheet->month, 2, "0", STR_PAD_LEFT).'</b> <br> '.$spreadsheet->codigo_planilla.' - '.($spreadsheet->afp_id == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($spreadsheet->total, 2, ',', '.');
                 }
+                return '';
             })
             ->addColumn('fpc_number', function($row){
                 if($row->fpc_number){
@@ -316,6 +322,10 @@ class SocialSecurityController extends Controller
 
     public function payments_show($id){
         $payment = PayrollPayment::where('id', $id)->where('deleted_at', NULL)->first();
+        if(request('ajax')){
+            return response()->json(['payment' => $payment]);
+        }
+
         return view('social-security.payments-read', compact('payment'));        
     }
 
@@ -325,11 +335,13 @@ class SocialSecurityController extends Controller
     }
 
     public function payments_store(Request $request){
+        DB::beginTransaction();
         try {
-            if($request->planilla_haber_id){
+            if($request->planilla_haber_id || $request->spreadsheet_id){
                 PayrollPayment::create([
                     'user_id' => Auth::user()->id,
                     'planilla_haber_id' => $request->planilla_haber_id,
+                    'spreadsheet_id' => $request->spreadsheet_id,
                     'date_payment_afp' => $request->date_payment_afp,
                     'payment_id' => $request->payment_id,
                     'penalty_payment' => $request->penalty_payment,
@@ -371,9 +383,12 @@ class SocialSecurityController extends Controller
                 }
             }
 
+            DB::commit();
+
             // return redirect()->route($request->redirect ?? 'payments.index')->with(['message' => 'Pago agregado correctamente.', 'alert-type' => 'success']);
             return response()->json(['data' => 'success']);
         } catch (\Throwable $th) {
+            DB::rollback();
             // env('APP_DEBUG') ? dd($th) : null;
             // return redirect()->route($request->redirect ?? 'payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
             return response()->json(['data' => 'error']);
@@ -390,8 +405,7 @@ class SocialSecurityController extends Controller
     public function payments_update($id, Request $request){
         // dd($request);
         try {
-            PayrollPayment::where('id', $id)
-            ->update([
+            PayrollPayment::where('id', $id)->update([
                 // 'planilla_haber_id' => $request->planilla_haber_id,
                 'date_payment_afp' => $request->date_payment_afp,
                 'fpc_number' => $request->fpc_number,
@@ -413,12 +427,49 @@ class SocialSecurityController extends Controller
 
     public function payments_delete($id, Request $request){
         try {
-            PayrollPayment::where('id', $id)
-            ->update([
+            PayrollPayment::where('id', $id)->update([
                 'deleted_at' => Carbon::now()
             ]);
             return redirect()->route('payments.index')->with(['message' => 'Pago eliminado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
+            env('APP_DEBUG') ? dd($th) : null;
+            return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function payments_update_multiple(Request $request){
+        $payroll_payments = PayrollPayment::whereIn('id', $request->id)->get();
+        $planillas_ids = $payroll_payments->pluck('planilla_haber_id')->toArray();
+        $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                        ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                        ->whereIn('ph.ID', $planillas_ids)
+                        ->select('pp.Monto', 'ph.id as id_planilla_haber')->orderBy('ph.ID', 'DESC')->get();
+        $total_pago = $planillas->sum('Monto');
+        
+        DB::beginTransaction();
+
+        try {
+            $cont = 0;
+            foreach ($request->id as $id) {
+                $porcentaje = ($planillas[$cont]->Monto * 100) / $total_pago;
+                $payroll_payment = PayrollPayment::findOrFail($id);
+                $payroll_payment->date_payment_afp = $request->date_payment_afp;
+                $payroll_payment->fpc_number = $request->fpc_number;
+                $payroll_payment->payment_id = $request->payment_id;
+                $payroll_payment->penalty_payment = $request->rate_penalty_payment ? $request->penalty_payment * ($porcentaje/100) : $payroll_payment->penalty_payment;
+                $payroll_payment->date_payment_cc = $request->date_payment_cc;
+                $payroll_payment->gtc_number = $request->gtc_number;
+                $payroll_payment->recipe_number = $request->recipe_number;
+                $payroll_payment->deposit_number = $request->deposit_number;
+                $payroll_payment->check_id = $request->check_id;
+                $payroll_payment->penalty_check = $request->rate_penalty_check ? $request->penalty_check * ($porcentaje/100) : $payroll_payment->penalty_check;
+                $payroll_payment->save();
+                $cont++;
+            }
+            DB::commit();
+            return redirect()->route('payments.index')->with(['message' => 'Pagos editados correctamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollback();
             env('APP_DEBUG') ? dd($th) : null;
             return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }

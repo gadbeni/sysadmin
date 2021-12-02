@@ -38,6 +38,15 @@
                         </div>
                         <div class="col-md-6">
                             <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">ID pago AFP</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>{{ $payment->payment_id ?? 'No definido' }}</p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
                                 <h3 class="panel-title">N&deg; de FPC</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
@@ -51,6 +60,15 @@
                             </div>
                             <div class="panel-body" style="padding-top:0;">
                                 <p>{{ $payment->date_payment_cc ? date('d/m/Y', strtotime($payment->date_payment_afp)) : 'No definida' }}</p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Multa AFP</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>{{ $payment->penalty_payment ?? 0 }}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>
@@ -87,6 +105,24 @@
                             </div>
                             <div class="panel-body" style="padding-top:0;">
                                 <p>{{ $payment->deposit_number ?? 'No definido' }}</p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">ID pago caja de salud</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>{{ $payment->check_id ?? 'No definido' }}</p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Multa caja de salud</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>{{ $payment->penalty_check ?? 0 }}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>

@@ -26,6 +26,7 @@
                                 <div class="col-md-12" style="{{ $type == 'create' ? '' : 'display: none' }}">
                                     <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="1" checked>No centralizadas</label>
                                     <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="2">Centralizadas</label>
+                                    <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="3">Manual</label>
                                 </div>
                                 <div class="form-group col-md-12 div-no-centralizada">
                                     <label for="planilla_haber_id">Planilla</label>
@@ -49,6 +50,15 @@
                                         {{-- <option value="">Todas las AFP</option> --}}
                                         <option value="1">Futuro</option>
                                         <option value="2">Previsión</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-12 div-manual">
+                                    <label for="planilla_haber_id">Planilla manual</label>
+                                    <select name="spreadsheet_id" id="select-planilla_haber_id_manual" class="form-control select2">
+                                    <option value="">Seleccione la planilla manual</option>
+                                    @foreach (App\Models\Spreadsheet::where('deleted_at', NULL)->get() as $item)
+                                    <option value="{{ $item->id }}" data-total="{{ $item->total }}" data-total_afp="{{ $item->total_afp }}">{{ $item->codigo_planilla }} | {{ $item->afp_id == 1 ? 'Futuro' : 'Previsión' }} Bs. {{ number_format($item->total, 2, ',', '.') }}</option>
+                                    @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-12" style="margin: 0px">
@@ -194,22 +204,46 @@
 
             $('.radio-type').click(function(){
                 let type = $(".radio-type:checked").val();
-                if(type == 1){
-                    $('.div-no-centralizada').fadeIn('fast', () => {
-                        $('.div-centralizada').fadeOut('fast');
-                        $('#select-planilla_haber_id').attr('required', 'required')
-                        $('#input-periodo').removeAttr('required');
-                        $('#select-checks_beneficiary_id').val('').trigger('change');
-                    });
-                }else{
-                    $('.div-centralizada').fadeIn('fast', () => {
-                        $('.div-no-centralizada').fadeOut('fast');
-                        $('#select-checks_beneficiary_id').val('').trigger('change');
-                        $('#select-planilla_haber_id').val('').trigger('change');
-                        $('#select-planilla_haber_id').removeAttr('required');
-                        $('#input-periodo').val('');
-                    });
+                switch (type) {
+                    case '1':
+                        $('.div-no-centralizada').fadeIn('fast', () => {
+                            $('.div-centralizada').fadeOut('fast');
+                            $('.div-manual').fadeOut('fast');
+                            $('#select-planilla_haber_id').attr('required', 'required')
+                            $('#input-periodo').removeAttr('required');
+                            $('#select-planilla_haber_id_manual').removeAttr('required');
+                            $('#select-checks_beneficiary_id').val('').trigger('change');
+                            $('#select-planilla_haber_id_manual').val('').trigger('change');
+                            $('#select-planilla_haber_id').val('').trigger('change');
+                        });
+                        break;
+                    case '2':
+                        $('.div-centralizada').fadeIn('fast', () => {
+                            $('.div-no-centralizada').fadeOut('fast');
+                            $('.div-manual').fadeOut('fast');
+                            $('#input-periodo').attr('required', 'required')
+                            $('#select-planilla_haber_id').removeAttr('required');
+                            $('#select-planilla_haber_id_manual').removeAttr('required');
+                            $('#select-checks_beneficiary_id').val('').trigger('change');
+                            $('#select-planilla_haber_id').val('').trigger('change');
+                            $('#select-planilla_haber_id_manual').val('').trigger('change');
+                            $('#input-periodo').val('');
+                        });
+                        break;
+                    case '3':
+                        $('.div-manual').fadeIn('fast', () => {
+                            $('.div-centralizada').fadeOut('fast');
+                            $('.div-no-centralizada').fadeOut('fast');
+                            $('#select-planilla_haber_id_manual').attr('required', 'required');
+                            $('#select-planilla_haber_id').removeAttr('required');
+                            $('#input-periodo').removeAttr('required');
+                            $('#select-checks_beneficiary_id').val('').trigger('change');
+                            $('#select-planilla_haber_id').val('').trigger('change');
+                            $('#select-planilla_haber_id_manual').val('').trigger('change');
+                        });
+                        break;
                 }
+
                 $('#alert-details').fadeOut();
                 planillaSelect = null;
             });

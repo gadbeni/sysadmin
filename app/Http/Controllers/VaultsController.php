@@ -44,7 +44,6 @@ class VaultsController extends Controller
 
     public function list($id){
         $data = VaultsDetail::with(['cash', 'user'])->where('vault_id', $id)->where('deleted_at', NULL)->get();
-        // return $data;
 
         return
             Datatables::of($data)
@@ -63,11 +62,23 @@ class VaultsController extends Controller
                 return date('d-m-Y H:i:s', strtotime($row->created_at)).'<br><small>'.\Carbon\Carbon::parse($row->created_at)->diffForHumans().'</small>';
             })
             ->addColumn('actions', function($row){
+                $btn_print = '';
+                if($row->type == 'ingreso'){
+                    $btn_print =    '<a href="'.route('vaults.print.income', ['vault' => $row->id]).'" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
+                                        <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
+                                    </a>';
+                }elseif($row->type == 'egreso' && $row->cashier_id){
+                    $btn_print =    '<a href="'.route('print.open', ['cashier' => $row->cashier_id]).'" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
+                                        <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
+                                    </a>';
+                }
+                
                 $actions = '
                     <div class="no-sort no-click bread-actions text-right">
                         <a href="'.route('view.details.show', ['id' => $row->id]).'" title="Ver" class="btn btn-sm btn-warning view">
                             <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                         </a>
+                        '.$btn_print.'
                     </div>
                 ';
                 return $actions;
@@ -264,5 +275,10 @@ class VaultsController extends Controller
             $q->where('deleted_at', NULL);
         }])->where('id', $id)->where('deleted_at', NULL)->first();
         return view('vaults.print.print-vaults', compact('vault'));
-    } 
+    }
+
+    public function print_income($id){
+        $detail = VaultsDetail::with(['cash', 'user'])->where('id', $id)->where('deleted_at', NULL)->first();
+        return view('vaults.print.print-income', compact('detail'));
+    }
 }

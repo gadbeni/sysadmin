@@ -193,8 +193,8 @@ class CashiersController extends Controller
 
                 $message = 'Caja rechazada exitosamente.';
                 Cashier::where('id', $id)->update([
-                    'status' => $request->status,
-                    // 'deleted_at' => Carbon::now()
+                    'status' => 'Rechazada',
+                    'deleted_at' => Carbon::now()
                 ]);
 
                 $vault_detail = VaultsDetail::create([

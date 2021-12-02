@@ -19,7 +19,7 @@
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
                             {{-- button delete multiple --}}
-                            <a href="#" id="btn-delete-multiple" style="display: none" class="btn btn-danger" data-toggle="modal" data-target="#delete_multiple">
+                            <a href="#" id="btn-delete-multiple" style="display: none" class="btn btn-danger btn-multiple" data-toggle="modal" data-target="#delete_multiple">
                                 <i class="voyager-trash"></i> <span>Eliminar seleccionados</span>
                             </a>
                             <a href="{{ route('spreadsheets.create') }}" class="btn btn-success btn-add-new">
@@ -38,7 +38,7 @@
         @include('voyager::alerts')
         <div class="row">
             <div class="col-md-12">
-                <form action="{{ route('spreadsheets.delete_multiple') }}" id="form_delete_multiple" method="POST">
+                <form action="{{ route('spreadsheets.delete_multiple') }}" id="form-selection-multiple" method="POST">
                     <div class="panel panel-bordered">
                         <div class="panel-body">
                             <div class="table-responsive">

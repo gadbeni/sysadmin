@@ -9,6 +9,15 @@
             <span class="glyphicon glyphicon-list"></span>&nbsp;
             Volver a la lista
         </a>
+        @if($details->type == 'ingreso')
+            <a href="{{ route('vaults.print.income', ['vault' => $details->id]) }}" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
+                <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
+            </a>
+        @elseif($details->type == 'egreso' && $details->cashier_id)
+            <a href="{{ route('print.open', ['cashier' => $details->cashier_id]) }}" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
+                <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
+            </a>
+        @endif
     </h1>
 @stop
 
@@ -21,7 +30,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="panel-heading" style="border-bottom:0;">
-                                <h3 class="panel-title">Usuario</h3>
+                                <h3 class="panel-title">Registrado por</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
                                 <p>{{ $details->user->name }}</p>
@@ -74,7 +83,7 @@
                                         <tr>
                                             <th>Corte</th>
                                             <th>Cantidad</th>
-                                            <th>Subtotal</th>
+                                            <th class="text-right">Subtotal</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -88,7 +97,7 @@
                                             <tr>
                                                 <td><img src="{{ asset('images/cash/'.number_format($item->cash_value, $item->cash_value < 1 ? 1 : 0, '.', '.').'.jpg') }}" alt="{{ $item->cash_value }} Bs." width="70px"> {{ $item->cash_value }} Bs.</td>
                                                 <td>{{ number_format($item->quantity, 0) }}</td>
-                                                <td class="text-right">Bs.{{ number_format($item->cash_value * $item->quantity, 2, ',', '.') }}</td>
+                                                <td class="text-right">{{ number_format($item->cash_value * $item->quantity, 2, ',', '.') }}</td>
                                             </tr>
                                         @endforeach
                                         <tr>

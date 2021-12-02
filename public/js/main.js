@@ -75,12 +75,12 @@ function getPlanillas(url){
 
 function checkId(){
     let ids = [];
-    $('#form_delete_multiple input[name="id[]"]:checked').each(function() {
+    $('#form-selection-multiple input[name="id[]"]:checked').each(function() {
         ids.push($(this).val());
     });
     if (ids.length > 0) {
-        $('#btn-delete-multiple').fadeIn();
+        $('.btn-multiple').fadeIn();
     } else {
-        $('#btn-delete-multiple').fadeOut();
+        $('.btn-multiple').fadeOut();
     }
 }

@@ -45,7 +45,7 @@
                                     <select name="spreadsheet_id" id="select-planilla_haber_id_manual" class="form-control select2">
                                     <option value="">Seleccione la planilla manual</option>
                                     @foreach (App\Models\Spreadsheet::where('deleted_at', NULL)->get() as $item)
-                                    <option value="{{ $item->id }}" data-total="{{ $item->total }}" data-total_afp="{{ $item->total_afp }}">{{ $item->codigo_planilla }} | {{ $item->afp ? 'Futuro' : 'Previsión' }} Bs. {{ number_format($item->total, 2, ',', '.') }}</option>
+                                    <option value="{{ $item->id }}" data-total="{{ $item->total }}" data-total_afp="{{ $item->total_afp }}">{{ $item->codigo_planilla }} | {{ $item->afp_id == 1 ? 'Futuro' : 'Previsión' }} Bs. {{ number_format($item->total, 2, ',', '.') }}</option>
                                     @endforeach
                                     </select>
                                 </div>

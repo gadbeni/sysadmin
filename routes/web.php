@@ -55,6 +55,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('vaults/{id}/open', [VaultsController::class, 'open'])->name('vaults.open');
     Route::get('vaults/{id}/close', [VaultsController::class, 'close'])->name('vaults.close');
     Route::post('vaults/{id}/close/store', [VaultsController::class, 'close_store'])->name('vaults.close.store');
+    Route::get('vaults/{vault}/print/income', [VaultsController::class, 'print_income'])->name('vaults.print.income');
     Route::get('vaults/{vault}/print/status', [VaultsController::class, 'print_status'])->name('vaults.print.status');
 
     Route::get('planillas', [PlanillasController::class, 'planilla_index'])->name('planillas.index');
@@ -91,6 +92,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('social-security/payments/{payment}/edit', [SocialSecurityController::class, 'payments_edit'])->name('payments.edit');
     Route::put('social-security/payments/{payment}/update', [SocialSecurityController::class, 'payments_update'])->name('payments.update');
     Route::delete('social-security/payments/{payment}/delete', [SocialSecurityController::class, 'payments_delete'])->name('payments.delete');
+    Route::post('social-security/payments/update/multiple', [SocialSecurityController::class, 'payments_update_multiple'])->name('payments.update_multiple');
     Route::post('social-security/payments/delete/multiple', [SocialSecurityController::class, 'payments_delete_multiple'])->name('payments.delete_multiple');
 
     // *Formularios de impresión

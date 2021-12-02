@@ -1,6 +1,6 @@
 @extends('voyager::master')
 
-@section('page_title', 'Reporte de aniversarios')
+@section('page_title', 'Reporte de pagos realizados')
 
 @section('page_header')
     <div class="container-fluid">
