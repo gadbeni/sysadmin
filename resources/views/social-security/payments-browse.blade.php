@@ -99,8 +99,8 @@
                                         <label for="penalty_payment">Multa</label>
                                         <input type="number" step="0.01" min="0" name="penalty_payment" class="form-control" >
                                         <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" name="rate_penalty_payment" id="check-1" checked>
-                                            <label class="form-check-label" for="check-1">prorrateo de monto</label>
+                                            <input type="checkbox" class="form-check-input" name="rate_penalty_payment" id="check-rate_penalty_payment">
+                                            <label class="form-check-label" for="check-rate_penalty_payment">prorrateo de monto</label>
                                         </div>
                                     </div>
                                     <div class="col-md-12" style="margin: 0px">
@@ -131,8 +131,8 @@
                                         <label for="penalty_check">Multa</label>
                                         <input type="number" step="0.01" min="0" name="penalty_check" class="form-control" >
                                         <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" name="rate_penalty_check" id="check-2" checked>
-                                            <label class="form-check-label" for="check-2">prorrateo de monto</label>
+                                            <input type="checkbox" class="form-check-input" name="rate_penalty_check" id="check-rate_penalty_check">
+                                            <label class="form-check-label" for="check-rate_penalty_check">prorrateo de monto</label>
                                         </div>
                                     </div>
                                 </div>
@@ -189,9 +189,7 @@
                 $("#form-selection-multiple input[name='id[]']:checked").each(function() {
                     id = $(this).val();
                 });
-                console.log("{{ url('admin/social-security/payments') }}/"+id+'?ajax=1');
                 $.get("{{ url('admin/social-security/payments') }}/"+id+'?ajax=1', function(data){
-                    console.log(data);
                     $('#form-selection-multiple input[name="payment_id"]').val(data.payment.payment_id);
                     $('#form-selection-multiple input[name="fpc_number"]').val(data.payment.fpc_number);
                     $('#form-selection-multiple input[name="date_payment_afp"]').val(data.payment.date_payment_afp);
@@ -202,6 +200,14 @@
                     $('#form-selection-multiple input[name="recipe_number"]').val(data.payment.recipe_number);
                     $('#form-selection-multiple input[name="check_id"]').val(data.payment.check_id);
                     $('#form-selection-multiple input[name="penalty_check"]').val(data.payment.penalty_check);
+                });
+
+                $('#form-selection-multiple input[name="penalty_payment"]').keypress(function(){
+                    $('#check-rate_penalty_payment').attr('checked', 'checked');
+                });
+                
+                $('#form-selection-multiple input[name="penalty_check"]').keypress(function(){
+                    $('#check-rate_penalty_check').attr('checked', 'checked');
                 });
             });
         });

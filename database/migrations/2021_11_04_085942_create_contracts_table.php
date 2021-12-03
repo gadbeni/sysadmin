@@ -16,11 +16,10 @@ class CreateContractsTable extends Migration
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('person_id')->nullable()->constrained('people');
-            $table->foreignId('job_id')->nullable()->constrained('jobs');
-            $table->foreignId('dependency_id')->nullable()->constrained('dependencies');
+            $table->integer('cargo_id')->nullable();
+            $table->integer('unidad_adminstrativa_id')->nullable();
             $table->foreignId('program_id')->nullable()->constrained('programs');
             $table->foreignId('user_id')->nullable()->constrained('users');
-            $table->decimal('total_amount', 10, 2)->nullable();
             $table->decimal('salary', 10, 2)->nullable();
             $table->date('start')->nullable();
             $table->date('finish')->nullable();
@@ -29,11 +28,16 @@ class CreateContractsTable extends Migration
             $table->date('date_response')->nullable();
             $table->date('date_statement')->nullable();
             $table->date('date_memo')->nullable();
+            $table->string('workers_memo')->nullable();
             $table->date('date_memo_res')->nullable();
+            $table->date('date_note')->nullable();
+            $table->date('date_report')->nullable();
+            $table->text('table_report')->nullable();
+            $table->text('details_report')->nullable();
             $table->date('date_autorization')->nullable();
             $table->string('certification_poa')->nullable();
             $table->string('certification_pac')->nullable();
-            $table->decimal('price_ref', 10, 2)->nullable();
+            $table->smallInteger('status')->nullable()->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

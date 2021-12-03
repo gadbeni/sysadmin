@@ -72,17 +72,17 @@
                 <th>AFP</th>
                 <th style="text-align: right">TOTAL GANADO</th>
                 <th style="text-align: right">APORTE AFP</th>
-                <th>FECHA DE PAGO AFP</th>
                 <th>N&deg; FCP</th>
+                <th>FECHA DE PAGO AFP</th>
                 <th>ID PAGO</th>
                 <th>MULTA AFP</th>
                 <th style="text-align: right">APORTE CC</th>
+                <th>N&deg; DE CHEQUE</th>
+                <th>N&deg; DE DEPOSITO</th>
                 <th>FECHA DE PAGO CC</th>
                 <th>F GTC-11</th>
-                <th>N&deg; DE CHEQUE</th>
-                <th>N&deg; DE RECIBO</th>
-                <th>N&deg; DE DEPOSITO</th>
                 <th>ID PAGO</th>
+                <th>N&deg; DE RECIBO</th>
                 <th>MULTA CC</th>
             </tr>
         </thead>
@@ -115,12 +115,12 @@
                     <td style="text-align: right">{{ number_format($item->Total_Aportes_Afp + $aporte_patronal, 2, ',', '.') }}</td>
                     <td>
                         @foreach ($item->detalle_pago as $pago)
-                            {{ $pago->date_payment_afp ? date('d/m/Y', strtotime($pago->date_payment_afp)) : '' }}<br>
+                            {{ $pago->fpc_number }}<br>
                         @endforeach
                     </td>
                     <td>
                         @foreach ($item->detalle_pago as $pago)
-                            {{ $pago->fpc_number }}<br>
+                            {{ $pago->date_payment_afp ? date('d/m/Y', strtotime($pago->date_payment_afp)) : '' }}<br>
                         @endforeach
                     </td>
                     <td>
@@ -135,11 +135,6 @@
                     </td>
                     <td style="text-align: right">{{ number_format($aporte_caja_cordes, 2, ',', '.') }}</td>
                     <td>
-                        @foreach ($item->detalle_pago as $pago)
-                            {{ $pago->date_payment_cc ? date('d/m/Y', strtotime($pago->date_payment_cc)) : '' }}<br>
-                        @endforeach
-                    </td>
-                    <td>
                         @foreach ($item->detalle_cheque as $cheque)
                             {{ $cheque->number }}<br>        
                         @endforeach
@@ -147,6 +142,11 @@
                     <td>
                         @foreach ($item->detalle_pago as $pago)
                             {{ $pago->deposit_number }}<br>
+                        @endforeach
+                    </td>
+                    <td>
+                        @foreach ($item->detalle_pago as $pago)
+                            {{ $pago->date_payment_cc ? date('d/m/Y', strtotime($pago->date_payment_cc)) : '' }}<br>
                         @endforeach
                     </td>
                     <td>

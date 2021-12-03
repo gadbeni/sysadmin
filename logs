@@ -1,8 +1,1 @@
-- Se agregó planillas manuales a registro de pagos
-- Modal de edición multiple de pagos con prorrateo de monto de multas.
-- Impresión de registros a bóveda.
-
-Ejecutar las siguientes migraciones:
-    php artisan migrate --path=database/migrations/2021_12_01_104519_update_payroll_payments_alt_table.php
-
-Quitar opciones de editar y eliminar a técnicos de previsión social y solo reporte de pagos
+Quitar opciones de editar y eliminar a técnicos de previsión social y solo reporte de pagos (si se ejecuta el seeder UpdatePermissionsSeeder).
