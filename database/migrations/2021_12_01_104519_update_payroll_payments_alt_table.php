@@ -14,7 +14,7 @@ class UpdatePayrollPaymentsAltTable extends Migration
     public function up()
     {
         Schema::table('payroll_payments', function(Blueprint $table){
-            $table->foreignId('spreadsheet_id')->nullable()->constrained('spreadsheets')->after('planilla_haber_id');
+            $table->smallInteger('manual')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class UpdatePayrollPaymentsAltTable extends Migration
     public function down()
     {
         Schema::table('payroll_payments', function (Blueprint $table) {
-            $table->dropColumn(['spreadsheet_id']);
+            $table->dropColumn(['manual']);
         });
     }
 }

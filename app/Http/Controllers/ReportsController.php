@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 // Models
@@ -302,7 +303,7 @@ class ReportsController extends Controller
                                         ->selectRaw('p.Fecha_deposito AS fecha_pago, p.N_Comprobante AS nro_deposito, p.Form_GTC11 AS gtc11, p.ID AS pago_id')
                                         ->first();
                     $data->push([
-                        'planilla' => $item->planilla,
+                        'planilla' => str_replace(' ', '', $item->planilla),
                         'pago_id' => $item->pago_id,
                         'fpc_number' => str_replace('-', '', $fpc[0]),
                         'afp' => count($fpc) > 1 ? $fpc[1] : '',
@@ -312,6 +313,35 @@ class ReportsController extends Controller
                         'nro_deposito_cc' => $pagos_cc ? $pagos_cc->nro_deposito : null,
                         'gtc11' => $pagos_cc ? $pagos_cc->gtc11 :  null,
                     ]);
+
+                    $pagos_manuales = PayrollPayment::where('manual', 1)->first();
+                    if(!$pagos_manuales){
+                        DB::beginTransaction();
+                        try {
+                            $planillas_procesadas = explode(',', str_replace(' ', '', $item->planilla));
+                            foreach ($planillas_procesadas as $planilla) {
+                                $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $planilla)->first();
+                                if($planillahaberes){
+                                    PayrollPayment::create([
+                                        'user_id' => Auth::user()->id,
+                                        'planilla_haber_id' => $planillahaberes->ID,
+                                        'date_payment_afp' => $item->fecha_pago,
+                                        'fpc_number' => str_replace('-', '', $fpc[0]),
+                                        'payment_id' => $item->pago_id,
+                                        'date_payment_cc' => $pagos_cc ? $pagos_cc->fecha_pago : null,
+                                        'gtc_number' => $pagos_cc ? $pagos_cc->gtc11 :  null,
+                                        'deposit_number' => $pagos_cc ? $pagos_cc->nro_deposito : null,
+                                        'check_id' => $pagos_cc ? $pagos_cc->pago_id : null,
+                                        'manual' => 1
+                                    ]);
+                                }
+                            }
+                            DB::commit();
+                        } catch (\Throwable $th) {
+                            DB::rollback();
+                            dd($th);
+                        }
+                    }
                 }
             }
         }
