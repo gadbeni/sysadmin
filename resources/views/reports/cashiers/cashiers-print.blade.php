@@ -55,7 +55,7 @@
                 <th>CAJERO</th>
                 <th>ESTADO</th>
                 <th>FECHA DE <br> APERTURA</th>
-                <th>CIERRE DE <br> CIERRE </th>
+                <th>FECHA DE <br> CIERRE </th>
                 <th style="text-align: right">APERTURA (Bs.)</th>
                 <th style="text-align: right">INGRESOS (Bs.)</th>
                 <th style="text-align: right">PAGOS (Bs.)</th>

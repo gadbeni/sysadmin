@@ -16,4 +16,8 @@ class VaultsClosure extends Model
     public function details(){
         return $this->hasMany(VaultsClosuresDetail::class);
     }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

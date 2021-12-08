@@ -71,7 +71,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"name","order_display_column":"name","order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2021-06-02 17:55:31',
-                'updated_at' => '2021-09-23 09:28:28',
+                'updated_at' => '2021-12-08 13:07:44',
             ),
             3 => 
             array (
@@ -162,6 +162,42 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2021-10-14 10:46:30',
                 'updated_at' => '2021-10-14 10:51:07',
+            ),
+            8 => 
+            array (
+                'id' => 9,
+                'name' => 'programs',
+                'slug' => 'programs',
+                'display_name_singular' => 'Programa',
+                'display_name_plural' => 'Programas',
+                'icon' => 'voyager-window-list',
+                'model_name' => 'App\\Models\\Program',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":"name","order_display_column":"name","order_direction":"asc","default_search_key":null}',
+                'created_at' => '2021-12-07 10:48:49',
+                'updated_at' => '2021-12-07 10:48:49',
+            ),
+            9 => 
+            array (
+                'id' => 10,
+                'name' => 'people',
+                'slug' => 'people',
+                'display_name_singular' => 'Persona',
+                'display_name_plural' => 'Personas',
+                'icon' => 'voyager-people',
+                'model_name' => 'App\\Models\\Person',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":"last_name","order_display_column":"last_name","order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2021-12-07 11:04:28',
+                'updated_at' => '2021-12-07 11:47:55',
             ),
         ));
         

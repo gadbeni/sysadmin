@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Recibo de pago</title>
+    <title>Boleta de pago</title>
     <link rel="shortcut icon" href="{{ asset('images/icon.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
@@ -19,11 +19,23 @@
             opacity: 0.1;
             z-index:  -1000;
         }
+        #watermark-stamp {
+            position: absolute;
+            /* opacity: 0.9; */
+            z-index:  -1000;
+        }
         #watermark img{
             position: relative;
             width: 300px;
             height: 300px;
             left: 205px;
+        }
+        #watermark-stamp img{
+            position: relative;
+            width: 4cm;
+            height: 4cm;
+            left: 50px;
+            top: 70px;
         }
         .show-print{
             display: none;
@@ -58,6 +70,8 @@
                 <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="80px"></td>
                 <td style="text-align: right">
                     <h3 style="margin-bottom: 0px; margin-top: 5px">BOLETA DE PAGO<br> <small>RECIBO DE PAGO N&deg; {{ str_pad($planilla->ID, 6, "0", STR_PAD_LEFT) }} </small> </h3>
+                    <small>Impreso por {{ Auth::user()->name }} - {{ date('d/m/Y H:i:s') }}</small>
+                    <br>
                 </td>
             </tr>
         </table>
@@ -99,6 +113,9 @@
             </tr>
         </table>
         <hr style="margin: 0px">
+        <div id="watermark-stamp">
+            <img src="{{ asset('images/stamp.png') }}" height="100%" width="100%" /> 
+        </div>
         <table width="100%" cellpadding="10" style="font-size: 12px">
             <tr>
                 <td>

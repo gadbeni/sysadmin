@@ -281,4 +281,9 @@ class VaultsController extends Controller
         $detail = VaultsDetail::with(['cash', 'user'])->where('id', $id)->where('deleted_at', NULL)->first();
         return view('vaults.print.print-income', compact('detail'));
     }
+
+    public function print_closure($id){
+        $closure = VaultsClosure::with(['details', 'user'])->where('id', $id)->where('deleted_at', NULL)->first();
+        return view('vaults.print.print-closure', compact('closure'));
+    }
 }

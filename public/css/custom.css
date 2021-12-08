@@ -7,9 +7,23 @@
 }
 .container-fluid, .app-container{
     /* background-image: linear-gradient(#D5D8DC, #FFF) !important; */
-    background-color: #f0f0f0;
+    background-color: #F4F6F9;
 }
 
+.panel-bordered{
+    box-shadow: 0 0 1px rgb(0 0 0 / 13%), 0 1px 3px rgb(0 0 0 / 20%) !important;
+    margin-bottom: 1rem !important;
+}
+.btn-success{
+    background-color: #5EAF4A !important;
+    border-color: #3c9625 !important;
+}
+
+th{
+    font-weight: bold !important;
+    color: #fff !important;
+    background-color: #5EAF4A !important;
+}
 td{
     color: #555555 !important
 }

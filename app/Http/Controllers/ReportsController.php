@@ -12,6 +12,7 @@ use App\Models\PayrollPayment;
 use App\Models\ChecksPayment;
 use App\Models\Cashier;
 use App\Models\CashiersPayment;
+use App\Models\VaultsClosure;
 
 // Exports
 use App\Exports\PaymentsExport;
@@ -285,6 +286,7 @@ class ReportsController extends Controller
     }
 
     public function social_security_payments_group_list(Request $request){
+        $pagos_manuales = PayrollPayment::where('manual', 1)->first();
         $pagos_afp = DB::connection('mysqlgobe')->table('pagoafp as p')
                             ->join('certiplanilla as c', 'c.ID', 'p.IDCertiPlanilla')
                             ->where("c.Gestion", $request->year)
@@ -314,7 +316,6 @@ class ReportsController extends Controller
                         'gtc11' => $pagos_cc ? $pagos_cc->gtc11 :  null,
                     ]);
 
-                    $pagos_manuales = PayrollPayment::where('manual', 1)->first();
                     if(!$pagos_manuales){
                         DB::beginTransaction();
                         try {
@@ -433,6 +434,23 @@ class ReportsController extends Controller
             return view('reports.cashiers.payments-print', compact('payments'));
         }else{
             return view('reports.cashiers.payments-list', compact('payments'));
+        }
+    }
+
+    public function cashier_vaults_index(){
+        return view('reports.cashiers.vaults-browse');
+    }
+
+    public function cashier_vaults_list(Request $request){
+        $closure = VaultsClosure::with(['details', 'user'])
+                        ->whereDate('created_at', '>=', date('Y-m-d', strtotime($request->start)))
+                        ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->finish)))
+                        ->whereRaw($request->user_id ? 'user_id = '.$request->user_id : 1)->get();
+        // dd($closure);
+        if($request->print){
+            return view('reports.cashiers.vaults-print', compact('closure'));
+        }else{
+            return view('reports.cashiers.vaults-list', compact('closure'));
         }
     }
 }

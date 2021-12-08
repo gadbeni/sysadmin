@@ -367,6 +367,12 @@
         });
     </script>
 
+    {{-- Snowfall --}}
+    @if (setting('plantillas.navidad'))
+      <div id="flake">&#10052;</div>
+      <link rel="stylesheet" href="{{ asset('css/snowfall.css') }}">
+      <script src="{{ asset('js/snowfall.js') }}"></script>
+    @endif
 </body>
 
 </html>

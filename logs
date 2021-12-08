@@ -1,9 +1,5 @@
-Importación de pagos al seguro social realizados en el otro sistema.
+Menú
+    - crear opción de menú Cierres de bóveda (vaults.print.closure) | icono voyager-bar-chart.
 
-*Base de datos
-    - Eliminar registro 2021_12_01_104519_update_payroll_payments_alt_table de a tabla migrations.
-
-Migraciones
-    - ejecutar migración 2021_12_01_104519_update_payroll_payments_alt_table
-
-Quitar opciones de editar y eliminar a técnicos de previsión social y solo reporte de pagos (si se ejecuta el seeder UpdatePermissionsSeeder).
+Settings
+    - Agregar plantillas.navidad de tipo casilla de verificación.

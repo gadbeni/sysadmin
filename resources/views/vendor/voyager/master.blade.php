@@ -168,5 +168,11 @@ if (\Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'http://') || \Ill
     @foreach(config('voyager.additional_js') as $js)<script type="text/javascript" src="{{ asset($js) }}"></script>@endforeach
 @endif
 
+{{-- Snowfall --}}
+@if (setting('plantillas.navidad'))
+    <div id="flake">&#10052;</div>
+    <link rel="stylesheet" href="{{ asset('css/snowfall.css') }}">
+    <script src="{{ asset('js/snowfall.js') }}"></script>
+@endif
 </body>
 </html>

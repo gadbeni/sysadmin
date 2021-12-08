@@ -56,6 +56,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('vaults/{id}/close', [VaultsController::class, 'close'])->name('vaults.close');
     Route::post('vaults/{id}/close/store', [VaultsController::class, 'close_store'])->name('vaults.close.store');
     Route::get('vaults/{vault}/print/income', [VaultsController::class, 'print_income'])->name('vaults.print.income');
+    Route::get('vaults/{vault}/print/closure', [VaultsController::class, 'print_closure'])->name('vaults.print.closure');
     Route::get('vaults/{vault}/print/status', [VaultsController::class, 'print_status'])->name('vaults.print.status');
 
     Route::get('planillas', [PlanillasController::class, 'planilla_index'])->name('planillas.index');
@@ -117,8 +118,6 @@ Route::group(['prefix' => 'admin'], function () {
     // *Previsión social
     Route::get('reports/social-security/payments', [ReportsController::class, 'social_security_payments_index'])->name('reports.social_security.payments');
     Route::post('reports/social-security/payments/list', [ReportsController::class, 'social_security_payments_list'])->name('reports.social_security.payments.list');
-
-  
     Route::get('reports/social-security/spreadsheets', [ReportsController::class, 'social_security_spreadsheets_index'])->name('reports.social_security.spreadsheets');
     Route::post('reports/social-security/spreadsheets/list', [ReportsController::class, 'social_security_spreadsheets_list'])->name('reports.social_security.spreadsheets.list');
     Route::get('reports/social-security/contracts', [ReportsController::class, 'social_security_contracts_index'])->name('reports.social_security.contracts');
@@ -130,7 +129,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('reports/cashier/cashiers', [ReportsController::class, 'cashier_cashiers_index'])->name('reports.cashier.cashiers.index');
     Route::post('reports/cashier/cashiers/list', [ReportsController::class, 'cashier_cashiers_list'])->name('reports.cashier.cashiers.list');
     Route::get('reports/cashier/payments', [ReportsController::class, 'cashier_payments_index'])->name('reports.cashier.payments.index');
-    Route::post('reports/cashier/list', [ReportsController::class, 'cashier_payments_list'])->name('reports.cashier.payments.list');
+    Route::post('reports/cashier/payments/list', [ReportsController::class, 'cashier_payments_list'])->name('reports.cashier.payments.list');
+    Route::get('reports/cashier/vaults', [ReportsController::class, 'cashier_vaults_index'])->name('reports.cashier.vaults.index');
+    Route::post('reports/cashier/vaults/list', [ReportsController::class, 'cashier_vaults_list'])->name('reports.cashier.vaults.list');
 
     // Testing
     Route::get('/test/{year}', [SocialSecurityController::class, 'test']);

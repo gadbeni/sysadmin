@@ -17,6 +17,7 @@ class CreateCashiersMovementsTable extends Migration
             $table->id();
             $table->foreignId('cashier_id')->nullable()->constrained('cashiers');
             $table->foreignId('cashier_id_from')->nullable()->constrained('cashiers');
+            $table->foreignId('cashier_id_to')->nullable()->constrained('cashiers');
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->decimal('amount', 10, 2)->nullable();
             $table->text('description')->nullable();

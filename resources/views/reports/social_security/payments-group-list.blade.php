@@ -13,8 +13,8 @@
                     <thead>
                         <tr>
                             <th style="text-align: center" colspan="9">DATOS GENERALES</th>
-                            <th style="text-align: center; background-color: #2980B9; color: #fff" colspan="5">ADMINISTRADORES DE FONDOS DE PENSIONES</th>
-                            <th style="text-align: center; background-color: #16A085; color: #fff" colspan="8">CAJA DE SALUD CORDES</th>
+                            <th style="text-align: center; background-color: #2980B9 !important; color: #fff" colspan="5">ADMINISTRADORES DE FONDOS DE PENSIONES</th>
+                            <th style="text-align: center; background-color: #16A085!important; color: #fff" colspan="8">CAJA DE SALUD CORDES</th>
                         </tr>
                         <tr>
                             <th>N&deg;</th>

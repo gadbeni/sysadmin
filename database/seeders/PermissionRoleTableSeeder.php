@@ -28,7 +28,10 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'caja_tecnico_boveda')->firstOrFail();
-        $permissions = Permission::whereRaw('table_name = "admin" or table_name = "cashiers" or table_name = "vaults"')->get();
+        $permissions = Permission::whereRaw('   table_name = "admin" or
+                                                table_name = "cashiers" or
+                                                table_name = "vaults" or
+                                                `key` = "browse_reportscashiervaults"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'caja_responsable_valores')->firstOrFail();
@@ -59,10 +62,16 @@ class PermissionRoleTableSeeder extends Seeder
         $role = Role::where('name', 'prevision_tecnico')->firstOrFail();
         $permissions = Permission::whereRaw('   table_name = "admin" or
                                                 table_name = "social-security" or
-                                                table_name = "social-securitypayments" or
-                                                table_name = "social-securitychecks" or
-                                                table_name = "spreadsheets" or
-                                                table_name = "reports_social_security"')->get();
+                                                `key` = "browse_reportssocial-securitypayments" or
+                                                `key` = "browse_social-securitypayments" or
+                                                `key` = "read_social-securitypayments" or 
+                                                `key` = "add_social-securitypayments" or
+                                                `key` = "browse_social-securitychecks" or
+                                                `key` = "read_social-securitychecks" or
+                                                `key` = "add_social-securitychecks" or
+                                                `key` = "browse_spreadsheets" or
+                                                `key` = "read_spreadsheets" or
+                                                `key` = "add_spreadsheets"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de recursos humanos

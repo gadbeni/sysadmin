@@ -49,6 +49,8 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('social-securitypayments');
         Permission::generateFor('social-securitychecks');
         Permission::generateFor('spreadsheets');
+        Permission::generateFor('programs');
+        Permission::generateFor('people');
 
         $keys = [
             'browse_social-securityprint'
@@ -91,8 +93,9 @@ class PermissionsTableSeeder extends Seeder
 
         // Reports cashier
         $keys = [
-            'browse_reportscashier_cashiers_index',
-            'browse_reportscashier_payments_index',
+            'browse_reportscashiercashiers',
+            'browse_reportscashierpayments',
+            'browse_reportscashiervaults'
         ];
 
         foreach ($keys as $key) {

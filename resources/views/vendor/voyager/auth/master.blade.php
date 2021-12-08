@@ -19,6 +19,7 @@
     @else
         <link rel="shortcut icon" href="{{ Voyager::image($admin_favicon) }}" type="image/png">
     @endif
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     {{-- SEO --}}
     <meta property="og:title"         content="{{ Voyager::setting('admin.title') }}" />
@@ -84,5 +85,13 @@
     </div> <!-- .row -->
 </div> <!-- .container-fluid -->
 @yield('post_js')
+
+{{-- Snowfall --}}
+@if (setting('plantillas.navidad'))
+    <script type="text/javascript" src="{{ voyager_asset('js/app.js') }}"></script>
+    <div id="flake">&#10052;</div>
+    <link rel="stylesheet" href="{{ asset('css/snowfall.css') }}">
+    <script src="{{ asset('js/snowfall.js') }}"></script>
+@endif
 </body>
 </html>
