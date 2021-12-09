@@ -20,4 +20,7 @@ class ChecksPayment extends Model
     public function check_beneficiary(){
         return $this->belongsTo(ChecksBeneficiary::class, 'checks_beneficiary_id');
     }
+    public function spreadsheet(){
+        return $this->belongsTo(Spreadsheet::class);
+    }
 }

@@ -69,9 +69,9 @@
                                     <label for="beneficiary">Beneficiario</label>
                                     {{-- <input type="text" class="form-control" name="beneficiary" value="{{ $type == 'edit' ? $data->beneficiary : '' }}" required /> --}}
                                     <select name="checks_beneficiary_id" id="select-checks_beneficiary_id" class="form-control" required>
-                                        <option value="">-- Seleccione al beneficiario --</option>
+                                        <option value="" @isset($data) disabled @endisset>-- Seleccione al beneficiario --</option>
                                         @foreach (\App\Models\ChecksBeneficiary::with('type')->where('deleted_at', NULL)->get() as $item)
-                                        <option value="{{ $item->id }}" data-type='{{ json_encode($item->type) }}'>{{ $item->full_name }} - {{ $item->type->name }}</option>
+                                        <option value="{{ $item->id }}" @if(isset($data) && $data->checks_beneficiary_id != $item->id) disabled @endif data-type='{{ json_encode($item->type) }}'>{{ $item->full_name }} - {{ $item->type->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -125,8 +125,8 @@
     <script>
         var planillaSelect = null;
         $(document).ready(function(){
-            $('#select-checks_beneficiary_id').select2();
             @if($type == 'create')
+                $('#select-checks_beneficiary_id').select2();
                 $("#select-planilla_haber_id").select2({
                     ajax: {
                         url: "{{ url('admin/planillas/search/id') }}",
@@ -181,9 +181,14 @@
             @else
                 let data = @json($data);
                 let planilla = @json($planilla);
-                $("#select-planilla_haber_id").append(`<option value="${planilla.idPlanillaprocesada}">${planilla.idPlanillaprocesada} - ${planilla.Afp == 1 ? 'Futuro' : 'Previsión'}</option>`)
-                $('#select-checks_beneficiary_id').val(data.check_beneficiary.id).trigger('change');
+                if(planilla !== null){
+                    $("#select-planilla_haber_id").append(`<option value="${planilla.idPlanillaprocesada}">${planilla.idPlanillaprocesada} - ${planilla.Afp == 1 ? 'Futuro' : 'Previsión'}</option>`);
+                }else if(data){
+                    $("#select-planilla_haber_id").append(`<option value="${data.spreadsheet.id}">${data.spreadsheet.codigo_planilla} - ${data.spreadsheet.afp_id == 1 ? 'Futuro' : 'Previsión'}</option>`);
+                }
+
                 $('#select-status').val(data.status);
+                $('#select-checks_beneficiary_id').val(data.checks_beneficiary_id).trigger('change');
             @endif
 
             @if($type == 'create')

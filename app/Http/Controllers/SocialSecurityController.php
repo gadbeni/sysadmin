@@ -201,7 +201,7 @@ class SocialSecurityController extends Controller
 
     public function checks_edit($id){
         $type = 'edit';
-        $data = ChecksPayment::with('check_beneficiary.type')->where('id', $id)->where('deleted_at', NULL)->first();
+        $data = ChecksPayment::with('spreadsheet')->where('id', $id)->where('deleted_at', NULL)->first();
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $data->planilla_haber_id)->first();
         return view('social-security.checks-edit-add', compact('type', 'id', 'data', 'planilla'));
     }
@@ -266,13 +266,22 @@ class SocialSecurityController extends Controller
                 return '<div><input type="checkbox" name="id[]" onclick="checkId()" value="'.$row->id.'" '.($row->spreadsheet_id ? 'disabled' : '').' /></div>';
             })
             ->addColumn('planilla_id', function($row){
-                $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
-                                ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
-                                ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
-                                ->where('ph.ID', $row->planilla_haber_id)
-                                ->select('ph.*', 'pp.Monto as monto', 'tp.Nombre as tipo_planilla')->first();
-                if($planilla){
-                    return  '<b>'.$planilla->tipo_planilla.' - '.$planilla->Periodo.'</b> <br><small>Planilla: </small>'.$planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($planilla->monto, 2, ',', '.');
+                $planilla_procesada = DB::connection('mysqlgobe')->table('planillahaberes')
+                                            ->where('ID', $row->planilla_haber_id)
+                                            ->select('idPlanillaprocesada', 'Afp')->first();
+
+                $planilla_haberes = null;
+                if($planilla_procesada){
+                    $planilla_haberes = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                                            ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                            ->where('ph.idPlanillaprocesada', $planilla_procesada->idPlanillaprocesada)
+                                            ->where('ph.Afp', $planilla_procesada->Afp)
+                                            ->groupBy('ph.idPlanillaprocesada')
+                                            ->selectRaw('ph.*, SUM(ph.Total_Ganado) as monto, tp.Nombre as tipo_planilla')->first();
+                }
+                    
+                if($planilla_haberes){
+                    return  '<b>'.$planilla_haberes->tipo_planilla.' - '.$planilla_haberes->Periodo.'</b> <br><small>Planilla: </small>'.$planilla_haberes->idPlanillaprocesada.' - '.($planilla_haberes->Afp == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($planilla_haberes->monto, 2, ',', '.');
                 }elseif($row->spreadsheet_id){
                     $spreadsheet = Spreadsheet::find($row->spreadsheet_id);
                     return '<label class="label label-danger">Planilla manual</label> <br> <b>'.($spreadsheet->tipo_planilla_id == 1 ? 'Funcionamiento' : 'Inversión').' - '.$spreadsheet->year.str_pad($spreadsheet->month, 2, "0", STR_PAD_LEFT).'</b> <br> '.$spreadsheet->codigo_planilla.' - '.($spreadsheet->afp_id == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($spreadsheet->total, 2, ',', '.');
@@ -397,7 +406,7 @@ class SocialSecurityController extends Controller
 
     public function payments_edit($id){
         $type = 'edit';
-        $data = PayrollPayment::where('id', $id)->where('deleted_at', NULL)->first();
+        $data = PayrollPayment::with('spreadsheet')->where('id', $id)->where('deleted_at', NULL)->first();
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $data->planilla_haber_id)->first();
         return view('social-security.payments-edit-add', compact('type', 'id', 'data', 'planilla'));
     }

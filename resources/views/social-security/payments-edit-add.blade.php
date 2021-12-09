@@ -52,15 +52,17 @@
                                         <option value="2">Previsión</option>
                                     </select>
                                 </div>
+                                @if ($type == 'create')
                                 <div class="form-group col-md-12 div-manual">
                                     <label for="planilla_haber_id">Planilla manual</label>
                                     <select name="spreadsheet_id" id="select-planilla_haber_id_manual" class="form-control select2">
                                     <option value="">Seleccione la planilla manual</option>
                                     @foreach (App\Models\Spreadsheet::where('deleted_at', NULL)->get() as $item)
-                                    <option value="{{ $item->id }}" data-total="{{ $item->total }}" data-total_afp="{{ $item->total_afp }}">{{ $item->codigo_planilla }} | {{ $item->afp_id == 1 ? 'Futuro' : 'Previsión' }} Bs. {{ number_format($item->total, 2, ',', '.') }}</option>
+                                    <option value="{{ $item->id }}" data-total="{{ $item->total }}" data-total_afp="{{ $item->total_afp }}">{{ $item->codigo_planilla }} | {{ $item->afp_id == 1 ? 'Futuro' : 'Previsión' }} Bs. {{ number_format($item->total, 2, ',', '.') }} - {{ $item->people }} Personas</option>
                                     @endforeach
                                     </select>
                                 </div>
+                                @endif
                                 <div class="col-md-12" style="margin: 0px">
                                     <br>
                                     <h4>AFP's  <hr> </h4>
@@ -183,7 +185,11 @@
             @else
                 let data = @json($data);
                 let planilla = @json($planilla);
-                $("#select-planilla_haber_id").append(`<option value="${planilla.idPlanillaprocesada}">${planilla.idPlanillaprocesada} - ${planilla.Afp == 1 ? 'Futuro' : 'Previsión'}</option>`)
+                if(planilla !== null){
+                    $("#select-planilla_haber_id").append(`<option value="${planilla.idPlanillaprocesada}">${planilla.idPlanillaprocesada} - ${planilla.Afp == 1 ? 'Futuro' : 'Previsión'}</option>`);
+                }else if(data){
+                    $("#select-planilla_haber_id").append(`<option value="${data.spreadsheet.id}">${data.spreadsheet.codigo_planilla} - ${data.spreadsheet.afp_id == 1 ? 'Futuro' : 'Previsión'}</option>`);
+                }
             @endif
 
             @if($type == 'create')
