@@ -13,6 +13,7 @@ use App\Models\ChecksPayment;
 use App\Models\Cashier;
 use App\Models\CashiersPayment;
 use App\Models\VaultsClosure;
+use App\Models\Spreadsheet;
 
 // Exports
 use App\Exports\PaymentsExport;
@@ -321,7 +322,7 @@ class ReportsController extends Controller
                         try {
                             $planillas_procesadas = explode(',', str_replace(' ', '', $item->planilla));
                             foreach ($planillas_procesadas as $planilla) {
-                                $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $planilla)->first();
+                                $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $planilla)->where('Afp', count($fpc) > 1 ? ($fpc[1] == 'F' ? 1 : 2) : 0)->first();
                                 if($planillahaberes){
                                     PayrollPayment::create([
                                         'user_id' => Auth::user()->id,
@@ -392,6 +393,40 @@ class ReportsController extends Controller
         }
 
     }
+
+    public function social_security_spreadsheets_payments_index(){
+        $direcciones_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
+        return view('reports.social_security.spreadsheets_payments-browse', compact('direcciones_administrativa'));
+    }
+
+    public function social_security_spreadsheets_payments_list(Request $request){
+        // dd($request->all());
+        $direcciones_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
+        $periodo = $request->periodo;
+        $query_range = 1;
+        if(strpos($periodo, '-') != false){
+            $periodos = explode('-', $periodo);
+            $start = substr($periodos[0], 0, 4).substr($periodos[0], 4, 6);
+            $end = substr($periodos[1], 0, 4).substr($periodos[1], 4, 6);
+            $query_range = "CONCAT(year,month) >= '$start' AND CONCAT(year,month) <= '$end'";
+        }else if($periodo){
+            $year = substr($periodo, 0, 4);
+            $month = substr($periodo, 4, 6);
+            $query_range = 'year = "'.$year.'" and month = "'.$month.'"';
+        }
+        $payments = Spreadsheet::with(['payments', 'checks'])
+                        ->whereRaw($request->t_planilla ? 'tipo_planilla_id = '.$request->t_planilla : 1)
+                        ->whereRaw($request->afp ? 'afp_id = '.$request->afp : 1)
+                        ->whereRaw($request->id_da ? 'direccion_administrativa_id = '.$request->id_da : 1)
+                        ->whereRaw($query_range)
+                        ->whereRaw($request->codigo_planilla ? 'codigo_planilla = '.$request->codigo_planilla : 1)
+                        ->get();
+        // dd($direcciones_administrativa->where('ID', 16)->first()->NOMBRE);
+
+        return view('reports.social_security.spreadsheets_payments-list', compact('payments', 'direcciones_administrativa'));
+    }
+
+    //  ===== Cashiers =====
 
     public function cashier_cashiers_index(){
         return view('reports.cashiers.cashiers-browse');

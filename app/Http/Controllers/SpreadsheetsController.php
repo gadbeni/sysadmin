@@ -45,7 +45,7 @@ class SpreadsheetsController extends Controller
             })
             ->addColumn('period', function($row){
                 $monts = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-                return $monts[$row->month].'/'.$row->year;
+                return $monts[intval($row->month)].'/'.$row->year;
             })
             ->addColumn('total', function($row){
                 return number_format($row->total, 2, ',', '.');
@@ -105,7 +105,7 @@ class SpreadsheetsController extends Controller
                 'tipo_planilla_id'  => $request->tipo_planilla_id,
                 'codigo_planilla'  => $request->codigo_planilla,
                 'year'  => $request->year,
-                'month' => $request->month,
+                'month' => str_pad($request->month, 2, "0", STR_PAD_LEFT),
                 'people' => $request->people,
                 'afp_id' => $request->afp_id,
                 'total' => $request->total,
