@@ -1,5 +1,3 @@
-Menú
-    - crear opción de menú Cierres de bóveda (vaults.print.closure) | icono voyager-bar-chart.
+Reporte de pagos de planillas manuales
 
-Settings
-    - Agregar plantillas.navidad de tipo casilla de verificación.
+Ejecutar seeder MenuItemsTableSeeder y PermissionsTableSeeder

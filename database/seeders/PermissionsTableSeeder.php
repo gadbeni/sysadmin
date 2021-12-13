@@ -81,7 +81,8 @@ class PermissionsTableSeeder extends Seeder
             'browse_reportssocial-securitypayments',
             'browse_reportssocial-securityspreadsheets',
             'browse_reportssocial-securitycontracts',
-            'browse_reportssocial-securitypayments-group'
+            'browse_reportssocial-securitypayments-group',
+            'browse_reportssocial-securityspreadsheetspayments',
         ];
 
         foreach ($keys as $key) {
