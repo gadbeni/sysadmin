@@ -421,9 +421,12 @@ class ReportsController extends Controller
                         ->whereRaw($query_range)
                         ->whereRaw($request->codigo_planilla ? 'codigo_planilla = '.$request->codigo_planilla : 1)
                         ->get();
-        // dd($direcciones_administrativa->where('ID', 16)->first()->NOMBRE);
 
-        return view('reports.social_security.spreadsheets_payments-list', compact('payments', 'direcciones_administrativa'));
+        if($request->type == 'print'){
+            return view('reports.social_security.spreadsheets_payments-print', compact('payments', 'direcciones_administrativa'));
+        }else{
+            return view('reports.social_security.spreadsheets_payments-list', compact('payments', 'direcciones_administrativa'));
+        }
     }
 
     //  ===== Cashiers =====
