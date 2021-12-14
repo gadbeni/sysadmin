@@ -1,10 +1,10 @@
 @extends('voyager::master')
 
-@section('page_title', 'Detalles de Bóveda')
+@section('page_title', 'Detalles de Movimiento de Bóveda')
 
 @section('page_header')
     <h1 class="page-title">
-        <i class="voyager-treasure"></i> Detalles de Bóveda
+        <i class="voyager-treasure"></i> Detalles de Movimiento de Bóveda
         <a href="{{ route('vaults.index') }}" class="btn btn-warning">
             <span class="glyphicon glyphicon-list"></span>&nbsp;
             Volver a la lista
@@ -14,9 +14,9 @@
                 <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
             </a>
         @elseif($details->type == 'egreso' && $details->cashier_id)
-            <a href="{{ route('print.open', ['cashier' => $details->cashier_id]) }}" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
+            {{-- <a href="{{ route('print.open', ['cashier' => $details->cashier_id]) }}" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
                 <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
-            </a>
+            </a> --}}
         @endif
     </h1>
 @stop

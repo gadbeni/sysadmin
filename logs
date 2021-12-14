@@ -1,3 +1,6 @@
-Reporte de pagos de planillas manuales
+Se agregó la opción de pagos de aguinaldo y un seeder con todos los pagos.
 
-Ejecutar seeder MenuItemsTableSeeder y PermissionsTableSeeder
+Migraciones
+    - Ejecutar migración 2021_12_14_092354_create_aguinaldos_table y 2021_12_14_131348_update_cashiers_payments_table
+Seeders
+    - Ejecutar seeder AguinaldosTableSeeder

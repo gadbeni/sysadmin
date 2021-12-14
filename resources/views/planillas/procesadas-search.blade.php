@@ -75,30 +75,92 @@
             </div>
         </div>
         @endif
+
+
+        {{-- Formulario de pago de aguinaldo --}}
+        @if (count($aguinaldo) > 0)
+        <form action="" method="post">
+            @csrf
+            <div class="panel-body" style="margin-bottom: 50px">
+                <div class="table-responsive">
+                    <h3 class="text-center">PAGO DE AGUINALDO</h3>
+                    <table id="dataTable-aguinaldo" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ITEM</th>
+                                <th>FUNCIONARIO</th>
+                                <th>CI</th>
+                                <th>DÍAS TRAB.</th>
+                                <th>SUELDO PROMEDIO</th>
+                                <th>LÍQUIDO PAGABLE</th>
+                                <th>ESTADO</th>
+                                @if ($cashier || Auth::user()->role_id == 1)
+                                <th>ACCIONES</th>
+                                @endif
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($aguinaldo as $item)
+                                <tr>
+                                    <td>{{ $item->item }}</td>
+                                    <td>{{ $item->funcionario }}</td>
+                                    <td>{{ $item->ci }}</td>
+                                    <td>{{ $item->nro_dias }}</td>
+                                    <td>{{ $item->sueldo_promedio }}</td>
+                                    <td>{{ $item->liquido_pagable }}</td>
+                                    <td>
+                                        @if ($item->estado == 'pendiente')
+                                            <label class="label label-danger">Pendiente</label>
+                                        @else
+                                            <label class="label label-success">Pagada</label>
+                                            @if ($item->payment)
+                                                <br>
+                                                <small>Por {{ $item->payment->cashier->user->name }} <br> {{ date('d-m-Y', strtotime($item->payment->created_at)) }} <br> {{ date('H:i:s', strtotime($item->payment->created_at)) }} </small>
+                                            @endif
+                                        @endif
+                                    </td>
+                                    @if ($cashier || Auth::user()->role_id == 1)
+                                    <td>
+                                        @if ($item->estado == 'pendiente')
+                                        <button type="button" data-toggle="modal" data-target="#pagar-aguinaldo-modal" onclick='setValuePayBonus(@json($item), @json($cashier))' class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
+                                        @endif
+                                    </td>
+                                    @endif
+                                </tr>
+                            @empty
+                                
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+        @endif
+
         <form id="form-pago-multiple" action="{{ route('planillas.details.payment.multiple') }}" method="post">
             @csrf
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table id="dataTable" class="table table-bordered">
+                    <table class="table table-bordered">
                         <thead>
                             <tr>
                                 @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5)
                                 <th style="width: 50px" class="text-center"><input type="checkbox" id="check-all" style="transform: scale(1.5);" @if ($tipo_planilla == 2 || $planilla->where('pagada', 0)->count() == $planilla->count()) disabled @endif></th>
                                 @endif
-                                <th>Item</th>
-                                <th>Secretaría</th>
-                                <th>código</th>
-                                <th>Tipo de contrato</th>
+                                <th>ITEM</th>
+                                <th>SECRETARÍA</th>
+                                <th>CÓDIGO</th>
+                                <th>TIPO DE CONTRATO</th>
                                 <th>AFP</th>
-                                <th>Mes</th>
-                                <th>Gestión</th>
-                                <th>Apellidos y Nombre(s)</th>
+                                <th>MES</th>
+                                <th>GESTIÓN</th>
+                                <th>APELLIDOS Y NOMBRE(S)</th>
                                 <th>C.I.</th>
-                                <th>Días trab.</th>
-                                <th>Líquido</th>
-                                <th style="width: 100px">Estado</th>
+                                <th style="width: 80px">DÍAS TRAB.</th>
+                                <th>LÍQUIDO</th>
+                                <th style="width: 100px">ESTADO</th>
                                 @if ($cashier || Auth::user()->role_id == 1)
-                                <th>Acciones</th>
+                                <th>ACCIONES</th>
                                 @endif
                             </tr>
                         </thead>
@@ -208,6 +270,13 @@
     .text-selected-copy{
         color: green !important;
         text-decoration: underline !important;
+    }
+
+    #dataTable-aguinaldo th{
+        background-color: #E74C3C !important;
+    }
+    th{
+        font-size: 11px !important;
     }
 </style>
 

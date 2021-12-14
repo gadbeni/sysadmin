@@ -6,7 +6,7 @@
     $url = $_SERVER['REQUEST_URI'];
     $url_array = explode('/', $url);
     $id = $url_array[count($url_array)-1];
-    $cashier = \App\Models\Cashier::with(['user', 'payments.deletes' => function($q){
+    $cashier = \App\Models\Cashier::with(['payments.aguinaldo', 'user', 'payments.deletes' => function($q){
         $q->where('deleted_at', NULL);
     }, 'movements' => function($q){
         $q->where('deleted_at', NULL);
@@ -178,18 +178,19 @@
                                         <tr>
                                             <td>{{ $cont }}</td>
                                             <td>
-                                                {{ $data->Nombre_Empleado }} <br> <small>{{ $data->Direccion_Administrativa }}</small>
+                                                {{ $data ? $data->Nombre_Empleado : $payment->aguinaldo->funcionario  }} <br> <small>{{ $data ? $data->Direccion_Administrativa : '' }}</small>
                                                 <br>
                                                 @if ($payment->deleted_at)
                                                     <label class="label label-danger">Anulado</label>
                                                 @endif
                                             </td>
-                                            <td>{{ $data->CedulaIdentidad }}</td>
-                                            <td>{{ $months[$data->Mes] }}/{{ $data->Anio }}</td>
+                                            <td>{{ $data ? $data->CedulaIdentidad : $payment->aguinaldo->ci }}</td>
+                                            <td>{{ $data ? $months[$data->Mes].'/'.$data->Anio : 'Aguinaldo' }}</td>
                                             <td>{{ $payment->created_at->format('d/m/Y H:i') }}</td>
                                             <td style="text-align: right">{{ number_format($payment->amount, 2, ',', '.') }}</td>
                                             <td class="text-right">
-                                                @if (!$payment->deleted_at)
+                                                @if ($data)
+                                                    @if (!$payment->deleted_at)
                                                     <button type="button" onclick="print_recipe({{ $payment->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
                                                     <button type="button" data-toggle="modal" data-target="#delete_payment-modal" data-id="{{ $data->ID }}" class="btn btn-danger btn-delete"><i class="voyager-trash"></i> Anular</button>
                                                 @else
@@ -198,6 +199,7 @@
                                                     @else
                                                         <label class="label label-danger">Eliminado manualmente</label>
                                                     @endif
+                                                @endif
                                                 @endif
                                             </td>
                                         </tr>

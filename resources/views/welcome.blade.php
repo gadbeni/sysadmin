@@ -53,6 +53,7 @@
             <li><a class="nav-link scrollto active" href="#hero">Inicio</a></li>
             <li><a class="nav-link scrollto" href="#about">Acerca de</a></li>
             <li><a class="nav-link scrollto" href="#services">Servicios</a></li>
+            <li><a class="nav-link scrollto" href="{{ url('admin') }}">Administración</a></li>
             </ul>
             <i class="bi bi-list mobile-nav-toggle"></i>
         </nav><!-- .navbar -->

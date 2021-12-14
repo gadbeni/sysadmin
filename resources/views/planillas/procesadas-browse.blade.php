@@ -187,6 +187,67 @@
         </div>
     </form>
 
+    {{-- Pagar aguinaldo modal --}}
+    <form id="form-pagar-aguinaldo" action="{{ route('planillas.details.payment') }}" method="post">
+        @csrf
+        <input type="hidden" name="cashier_id">
+        <input type="hidden" name="aguinaldo_id">
+        <input type="hidden" name="name">
+        <input type="hidden" name="amount">
+        <div class="modal modal-success fade" tabindex="-1" id="pagar-aguinaldo-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-dollar"></i> Realizar pago de aguinaldo</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted">Desea realizar el pago de aguinaldo del siguiente funcionario?</p> <br>
+                        <table width="100%">
+                            <tr>
+                                <td style="width: 150px"><small>Item</small></td>
+                                <td><h4 id="label-item-bonus"></h4></td>
+                            </tr>
+                            <tr>
+                                <td><small>Nombre Completo</small></td>
+                                <td><h4 id="label-name-bonus"></h4></td>
+                            </tr>
+                            <tr>
+                                <td><small>Días Trabajados</small></td>
+                                <td><h4 id="label-days-bonus"></h4></td>
+                            </tr>
+                            <tr>
+                                <td><small>Sueldo promedio</small></td>
+                                <td><h4 id="label-amount-avg-bonus"></h4></td>
+                            </tr>
+                            <tr>
+                                <td><b>Liquido Pagable</b></td>
+                                <td><h1 class="text-right" id="label-amount-bonus"></h1></td>
+                            </tr>
+                            {{-- <tr>
+                                <td colspan="2">
+                                    <div class="form-group text-right" style="margin-top: 20px">
+                                        <label class="checkbox-inline"><input type="checkbox" id="check-print" value="1" required>Imprimir recibo</label>
+                                    </div>
+                                </td>
+                            </tr> --}}
+                        </table>
+                        <div class="row">
+                            <div class="col-md-12" style="margin: 0px">
+                                <textarea name="observations" class="form-control" rows="3" placeholder="Observaciones..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        {{-- <button type="submit" class="btn btn-default">test</button> --}}
+                        <button type="button" class="btn btn-success btn-submit" onclick="sendForm('form-pagar-aguinaldo', 'Pago realizado exitosamente.')">Sí, pagar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
     <form id="form-cerrar-planilla" action="{{ route('planillas.update.status') }}" method="post">
         @csrf
         <input type="hidden" name="status" value="3">
@@ -298,6 +359,18 @@
             $('#form-pagar input[name="name"]').val(data.Nombre_Empleado);
             $('#form-pagar input[name="amount"]').val(data.Tplanilla == 3 ? data.Total_Ganado : data.Liquido_Pagable);
             $('#form-pagar input[name="cashier_id"]').val(cashier.id);
+        }
+
+        function setValuePayBonus(data, cashier){
+            $('#label-item-bonus').html(`N&deg; ${data.item}`);
+            $('#label-name-bonus').text(data.funcionario);
+            $('#label-days-bonus').html(`${data.nro_dias} <small>Días</small>`);
+            $('#label-amount-avg-bonus').html(`${data.sueldo_promedio} <small>Bs.</small>`);
+            $('#label-amount-bonus').html(`${data.liquido_pagable} <small>Bs.</small>`);
+            $('#form-pagar-aguinaldo input[name="aguinaldo_id"]').val(data.id);
+            $('#form-pagar-aguinaldo input[name="name"]').val(data.funcionario);
+            $('#form-pagar-aguinaldo input[name="amount"]').val(data.liquido_pagable);
+            $('#form-pagar-aguinaldo input[name="cashier_id"]').val(cashier ? cashier.id : '');
         }
 
         function setValueOpen(id){

@@ -114,9 +114,9 @@
                     @endphp
                     <tr @if($payment->deleted_at) style="text-decoration:line-through;color: red" @endif>
                         <td>{{ $cont }}</td>
-                        <td style="font-size: 11px">{{ $data->Nombre_Empleado }} <br> <small>{{ $data->Direccion_Administrativa }}</small> </td>
-                        <td>{{ $data->CedulaIdentidad }}</td>
-                        <td>{{ $months[$data->Mes] }}/{{ $data->Anio }}</td>
+                        <td style="font-size: 11px">{{ $data ? $data->Nombre_Empleado : $payment->aguinaldo->funcionario  }} <br> <small>{{ $data ? $data->Direccion_Administrativa : '' }}</small> </td>
+                        <td>{{ $data ? $data->CedulaIdentidad : $payment->aguinaldo->ci }}</td>
+                        <td>{{ $data ? $months[$data->Mes].'/'.$data->Anio : 'Aguinaldo' }}</td>
                         <td>{{ $payment->created_at->format('d/m/Y H:i') }}</td>
                         <td style="text-align: right">{{ number_format($payment->amount, 2, ',', '.') }}</td>
                     </tr>

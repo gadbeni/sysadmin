@@ -40,7 +40,6 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    {{-- <h3>Detalles de Bóveda</h3> --}}
                                     @php
                                         $vault_close = [
                                             '200.00' => [
@@ -189,7 +188,7 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <h3>Detalles de Bóveda</h3>
+                                <h3>Movimientos de Bóveda</h3>
                                 <div class="row">
                                     @forelse ($vault->details as $detail)
                                         <div class="col-md-12" style="padding: 0px 20px">

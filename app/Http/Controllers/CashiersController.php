@@ -406,7 +406,7 @@ class CashiersController extends Controller
     }
 
     public function print_payments($id){
-        $cashier = Cashier::with(['user', 'payments.deletes' => function($q){
+        $cashier = Cashier::with(['user', 'payments.aguinaldo', 'payments.deletes' => function($q){
             $q->where('deleted_at', NULL);
         }])->where('id', $id)->first();
         return view('vendor.voyager.cashiers.print-payments', compact('cashier'));

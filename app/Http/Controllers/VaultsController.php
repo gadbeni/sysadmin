@@ -68,9 +68,9 @@ class VaultsController extends Controller
                                         <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
                                     </a>';
                 }elseif($row->type == 'egreso' && $row->cashier_id){
-                    $btn_print =    '<a href="'.route('print.open', ['cashier' => $row->cashier_id]).'" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
-                                        <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
-                                    </a>';
+                    // $btn_print =    '<a href="'.route('print.open', ['cashier' => $row->cashier_id]).'" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
+                    //                     <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
+                    //                 </a>';
                 }
                 
                 $actions = '

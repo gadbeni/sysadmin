@@ -13,6 +13,7 @@ use App\Models\Cashier;
 use App\Models\CashiersPayment;
 use App\Models\CashiersPaymentsDelete;
 use App\Models\PlanillasHistory;
+use App\Models\Aguinaldo;
 
 class PlanillasController extends Controller
 {
@@ -28,6 +29,7 @@ class PlanillasController extends Controller
     public function planilla_search(Request $request){
         $tipo_planilla = $request->tipo_planilla;
         $title = '';
+        $aguinaldo = [];
         switch ($tipo_planilla) {
             case '0':
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
@@ -56,19 +58,20 @@ class PlanillasController extends Controller
                 $title = ($request->t_planilla ? ($request->t_planilla == 1 ? 'Funcionamiento ' : 'Inversión ') : '').($request->periodo ?? ' ').' '.($request->afp ? ($request->afp == 1 ? ' - Futuro' : ' - Previsión') : '');
                 break;
             case '2':
-                    $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                                    ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
-                                    ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
-                                    ->where('p.CedulaIdentidad', $request->ci)
-                                    ->whereRaw($request->pagada ? 'p.pagada = '.$request->pagada : 1)
-                                    ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
-                                    ->orderBy("p.Periodo", "DESC")
-                                    ->get();
+                $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                                ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
+                                ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
+                                ->where('p.CedulaIdentidad', $request->ci)
+                                ->whereRaw($request->pagada ? 'p.pagada = '.$request->pagada : 1)
+                                ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
+                                ->orderBy("p.Periodo", "DESC")
+                                ->get();
+                $aguinaldo = Aguinaldo::with('payment.cashier.user')->where('ci', $request->ci)->where('deleted_at', NULL)->get();
                 $title = '';
                 break;
         }
-        
-        return view('planillas.procesadas-search', compact('planilla', 'tipo_planilla', 'title'));
+        // 10838067
+        return view('planillas.procesadas-search', compact('planilla', 'tipo_planilla', 'title', 'aguinaldo'));
     }
 
     public function planilla_search_by_id(){
@@ -120,31 +123,49 @@ class PlanillasController extends Controller
         }, 'payments' => function($q){
             $q->where('deleted_at', NULL);
         }])->where('id', $request->cashier_id)->first();
+        if(!$cashier){
+            return response()->json(['error' => 1, 'message' => 'No tiene una caja aperturada.']);
+        }
         $payments = $cashier->payments->where('deleted_at', NULL)->sum('amount');
         $movements = $cashier->movements->where('type', 'ingreso')->where('deleted_at', NULL)->sum('amount') - $cashier->movements->where('type', 'egreso')->where('deleted_at', NULL)->sum('amount');
         $total = $movements - $payments;
-        // dd($total);
         if($total - $request->amount < 0){
             return response()->json(['error' => 1, 'message' => 'No tiene suficiente dinero en caja.']);
         }
 
         DB::beginTransaction();
         try {
-            $pago = DB::connection('mysqlgobe')->table('planillahaberes')->where('id', $request->id)->first();
-            if($pago->pagada == 1){
-                DB::connection('mysqlgobe')->table('planillahaberes')
-                    ->where('id', $request->id)
-                    ->update(['pagada' => 2]);
+            // Pago de sueldo
+            if($request->id){
+                $pago = DB::connection('mysqlgobe')->table('planillahaberes')->where('id', $request->id)->first();
+                if($pago->pagada == 1){
+                    DB::connection('mysqlgobe')->table('planillahaberes')
+                        ->where('id', $request->id)
+                        ->update(['pagada' => 2]);
 
+                    $payment = CashiersPayment::create([
+                        'cashier_id' => $request->cashier_id,
+                        'planilla_haber_id' => $request->id,
+                        'amount' => $request->amount,
+                        'description' => 'Pago a '.$request->name.'.',
+                        'observations' => $request->observations
+                    ]);
+                }else{
+                    return response()->json(['error' => 1]);
+                }
+            }
+            
+            // Pago de aguinaldo
+            if($request->aguinaldo_id){
+                Aguinaldo::where('id', $request->aguinaldo_id)->update(['estado' => 'pagado']);
+                $name = explode('/', $request->name);
                 $payment = CashiersPayment::create([
                     'cashier_id' => $request->cashier_id,
-                    'planilla_haber_id' => $request->id,
+                    'aguinaldo_id' => $request->aguinaldo_id,
                     'amount' => $request->amount,
-                    'description' => 'Pago a '.$request->name.'.',
+                    'description' => 'Pago de aguinaldo a '.trim($name[0]).'.',
                     'observations' => $request->observations
                 ]);
-            }else{
-                return response()->json(['error' => 1]);
             }
 
             DB::commit();
