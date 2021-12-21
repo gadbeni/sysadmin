@@ -385,7 +385,18 @@
                     });
                 });
             });
+
+            getTickest();
+            setInterval(() => {
+              getTickest();
+            }, 5000);
         });
+
+        function getTickest(){
+          $.get("{{ url('admin/plugins/cashiers/tickets/get') }}", function(res){
+            console.log(res);
+          });
+        }
     </script>
 
     {{-- Snowfall --}}

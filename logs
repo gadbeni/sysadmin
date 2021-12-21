@@ -1,12 +1,9 @@
-Pantalla de tickets (Falta el sonido o voz sintetizada)
+Mejoras en la pantalla de ticket.
 
 Migraciones
 
 Seeders
-    - Ejecutar seeder MenuItemsTableSeeder y UpdatePermissionsSeeder
+    
 
 Comandos
-    - composer dump-autoload
-
-Otros
-    crear setting auxiliares.numero_ticket y auxiliares.fondo_tickets
+   

@@ -143,7 +143,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('plugins/cashiers/tickets', [PluginsController::class, 'cashiers_tickets'])->name('cashiers.tickets');
     Route::post('plugins/cashiers/tickets/set', function(){
         set_setting('auxiliares.numero_ticket', setting('auxiliares.numero_ticket') + 1);
-        return 1;
+        return response()->json(['ticket' => setting('auxiliares.numero_ticket')]);
     });
     Route::get('plugins/cashiers/tickets/get', function(){
         return response()->json(['ticket' => setting('auxiliares.numero_ticket')]);

@@ -41,7 +41,7 @@
             top:0px;
             bottom: 0px;
             left:0px;
-            background-color:rgba(0, 0, 0, 0.8);
+            background-color:rgba(0, 0, 0, 0.5);
             width: 100%;
             height: 100 hv;
             z-index: 1;
@@ -70,12 +70,30 @@
             <div class="col-md-4">
                 <div class="row">
                     <div class="col-md-12" style="z-index: 2">
-                        <img src="{{ asset('images/icon-alt.png') }}" alt="GADBENI" class="img-fluid" width="250px">
+                        <img src="{{ asset('images/icon.png') }}" alt="GADBENI" class="img-fluid" width="150px">
                     </div>
                 </div>
                 <div class="row" id="data-posts">
-                    <div class="col-md-12 text-center" style="z-index: 1">
+                    {{-- <div class="col-md-12 text-center" style="z-index: 1">
                         <iframe src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fgobernacionbeni2021%2Fposts%2F238809501721979&show_text=true&width=500" width="500" height="793" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                    </div> --}}
+                    <div class="col-md-12 mt-5">
+                        <div class="wrapper">
+                            <div class="slider" id="slider">
+                              <ul class="slides">
+                                <li class="slide" id="slide1">
+                                  <a href="#">
+                                    <img src="{{ asset('images/slider/1.jpeg') }}" alt="photo 1">
+                                  </a>
+                                </li>
+                                <li class="slide" id="slide2">
+                                  <a href="#">
+                                    <img src="{{ asset('images/slider/2.jpeg') }}" alt="photo 2">
+                                  </a>
+                                </li>
+                              </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -118,6 +136,107 @@
             25%   {border: 10px solid {{ env('APP_COLOR') }};}
             75%  {border: 10px solid rgba(0, 0, 0, 0.7);}
         }
+
+
+        /* Slider */
+        @keyframes slide {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(0); }
+
+            55% { transform: translateX(-100%); }
+            100% { transform: translateX(-100%); }
+
+            /* 35% { transform: translateX(-200%); }
+            50% { transform: translateX(-200%); }
+
+            55% { transform: translateX(-300%); }
+            70% { transform: translateX(-300%); }
+
+            75% { transform: translateX(-400%); }
+            90% { transform: translateX(-400%); }
+
+            95% { transform: translateX(-500%); }
+            100% { transform: translateX(-500%); } */
+        }
+
+        .wrapper {
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .slider {
+            width: 100%;
+            position: relative;
+        }
+
+        .slides {
+            width: 100%;
+            position: relative;
+            display: flex;
+            overflow: hidden;
+            padding: 0px
+        }
+
+        .slide {
+            width: 100%;
+            flex-shrink: 0;
+            animation-name: slide;
+            animation-duration: 60s;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+            list-style: none
+        }
+
+        .slides:hover .slide {
+            animation-play-state: paused;
+        }
+
+        .slide img {
+            width: 100%;
+            vertical-align: top;
+        }
+
+        .slide a {
+            width: 100%;
+            display: inline-block;
+            position: relative;
+        }
+
+        .slide:target {
+            animation-name: none;
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 50;
+        }
+
+        .slider-controler {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            text-align: center;
+            /* padding: 5px; */
+            background-color: rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+
+        .slider-controler li {
+            margin: 0 0.5rem;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .slider-controler a {
+            display: inline-block;
+            vertical-align: top;
+            text-decoration: none;
+            color: white;
+            font-size: 1.5rem;
+        }
     </style>
 
     <script>
@@ -128,7 +247,7 @@
             array_tickest();
             setInterval(() => {
                 array_tickest();
-            }, 10000);
+            }, 5000);
         });
 
         function array_tickest(){
