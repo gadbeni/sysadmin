@@ -10,6 +10,7 @@ use App\Http\Controllers\VaultsController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SocialSecurityController;
 use App\Http\Controllers\SpreadsheetsController;
+use App\Http\Controllers\PluginsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -137,6 +138,16 @@ Route::group(['prefix' => 'admin'], function () {
 
     // Testing
     Route::get('/test/{year}', [SocialSecurityController::class, 'test']);
+
+    // Complementos
+    Route::get('plugins/cashiers/tickets', [PluginsController::class, 'cashiers_tickets'])->name('cashiers.tickets');
+    Route::post('plugins/cashiers/tickets/set', function(){
+        set_setting('auxiliares.numero_ticket', setting('auxiliares.numero_ticket') + 1);
+        return 1;
+    });
+    Route::get('plugins/cashiers/tickets/get', function(){
+        return response()->json(['ticket' => setting('auxiliares.numero_ticket')]);
+    });
 });
 
 // Clear cache

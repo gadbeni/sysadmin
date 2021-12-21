@@ -133,12 +133,23 @@ class SettingsTableSeeder extends Seeder
             array (
                 'id' => 11,
                 'key' => 'plantillas.navidad',
-                'display_name' => 'navidad',
+                'display_name' => 'Navidad',
                 'value' => '1',
                 'details' => NULL,
                 'type' => 'checkbox',
                 'order' => 6,
                 'group' => 'Plantillas',
+            ),
+            11 => 
+            array (
+                'id' => 12,
+                'key' => 'auxiliares.numero_ticket',
+                'display_name' => 'Número de tickets',
+                'value' => '1',
+                'details' => NULL,
+                'type' => 'text',
+                'order' => 7,
+                'group' => 'Auxiliares',
             ),
         ));
         

@@ -123,6 +123,18 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Variables auxiliares
+    |--------------------------------------------------------------------------
+    |
+    | Son datos que se usan en la aplicación, pero que no se guardan en la base de datos
+    |
+    */
+
+    'ticket_number' => 1,
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

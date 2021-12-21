@@ -74,7 +74,7 @@
             <h2>SISTEMA DE GESTIÓN DE PAGOS</h2>
             <div class="input-group mb-3 mt-5 input-group-lg">
                 @csrf
-                <input type="search" name="search" class="form-control" placeholder="Número de CI" aria-label="" aria-describedby="basic-addon1" required>
+                <input type="number" name="search" class="form-control" placeholder="Número de CI" aria-label="" aria-describedby="basic-addon1" required>
                 <div class="input-group-prepend">
                     <button class="btn btn-secondary" type="submit" style="height: 50px"><i class="bi bi-search"></i></button>
                 </div>
@@ -343,6 +343,17 @@
                         });
                         return;
                     }
+
+                    if(res.aguinaldo){
+                      Swal.fire({
+                        title: 'Cobro de aguinaldo',
+                        text: 'Puede realizar el cobro de aguinaldo en caja!',
+                        icon: 'success',
+                        confirmButtonText: 'Entendido'
+                      });
+                      return;
+                    }
+
                     let months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                     if(res.search.length > 0){
                       let data = '';
@@ -363,6 +374,15 @@
                         confirmButtonText: 'Entendido'
                       });
                     }
+                })
+                .catch(function(err){
+                    $('body').loading('toggle');
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrio un error al realizar la busqueda',
+                        icon: 'error',
+                        confirmButtonText: 'Entendido'
+                    });
                 });
             });
         });

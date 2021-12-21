@@ -1,5 +1,5 @@
 
-<div class="col-md-12">
+<div class="col-md-12" style="margin-bottom: 100px">
     <div style="z-index: -10;position: fixed;bottom:0">
         <input type="text" id="text-copy">
     </div>

@@ -105,5 +105,17 @@ class PermissionsTableSeeder extends Seeder
                 'table_name' => 'reports_cachiers',
             ]);
         }
+
+        // Plugins
+        $keys = [
+            'browse_pluginscashierstickets'
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'plugins',
+            ]);
+        }
     }
 }

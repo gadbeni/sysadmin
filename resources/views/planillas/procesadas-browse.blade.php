@@ -83,6 +83,9 @@
                 </div>
             </div>
         </div>
+        <div style="position: fixed; bottom: 50px; right: 20px">
+            <button class="btn btn-success btn-lg btn-increment-ticket" ><h4>{{ setting('auxiliares.numero_ticket') == 0  ? 'Iniciar' : 'Siguiente' }} <span class="voyager-double-right"></span></h4></button>
+        </div>
     </div>
 @stop
 
@@ -305,6 +308,15 @@
                         break;
                 }
             });
+
+            $('.btn-increment-ticket').click(function(){
+                $.post("{{ url('admin/plugins/cashiers/tickets/set') }}", {
+                    _token: '{{ csrf_token() }}',
+                }, function(data){
+                    $('.btn-increment-ticket').html('<h4>Siguiente <span class="voyager-double-right"></span></h4>');
+                    toastr.info('Ticket solicitado', 'Información');
+                });
+            })
         });
 
         function getData(){

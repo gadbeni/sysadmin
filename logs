@@ -1,6 +1,12 @@
-Se agregó la opción de pagos de aguinaldo y un seeder con todos los pagos.
+Pantalla de tickets (Falta el sonido o voz sintetizada)
 
 Migraciones
-    - Ejecutar migración 2021_12_14_092354_create_aguinaldos_table y 2021_12_14_131348_update_cashiers_payments_table
+
 Seeders
-    - Ejecutar seeder AguinaldosTableSeeder
+    - Ejecutar seeder MenuItemsTableSeeder y UpdatePermissionsSeeder
+
+Comandos
+    - composer dump-autoload
+
+Otros
+    crear setting auxiliares.numero_ticket y auxiliares.fondo_tickets

@@ -66,7 +66,7 @@ class PlanillasController extends Controller
                                 ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
                                 ->orderBy("p.Periodo", "DESC")
                                 ->get();
-                $aguinaldo = Aguinaldo::with('payment.cashier.user')->where('ci', $request->ci)->where('deleted_at', NULL)->get();
+                $aguinaldo = Aguinaldo::with('payment.cashier.user')->where('ci', 'like', '%'. $request->ci.'%')->where('deleted_at', NULL)->get();
                 $title = '';
                 break;
         }
@@ -158,21 +158,24 @@ class PlanillasController extends Controller
             // Pago de aguinaldo
             if($request->aguinaldo_id){
                 Aguinaldo::where('id', $request->aguinaldo_id)->update(['estado' => 'pagado']);
-                $name = explode('/', $request->name);
-                $payment = CashiersPayment::create([
-                    'cashier_id' => $request->cashier_id,
-                    'aguinaldo_id' => $request->aguinaldo_id,
-                    'amount' => $request->amount,
-                    'description' => 'Pago de aguinaldo a '.trim($name[0]).'.',
-                    'observations' => $request->observations
-                ]);
+                $payment = CashiersPayment::where('aguinaldo_id', $request->aguinaldo_id)->where('deleted_at', NULL)->first();
+                if(!$payment){
+                    $name = explode('/', $request->name);
+                    $payment = CashiersPayment::create([
+                        'cashier_id' => $request->cashier_id,
+                        'aguinaldo_id' => $request->aguinaldo_id,
+                        'amount' => $request->amount,
+                        'description' => 'Pago de aguinaldo a '.trim($name[0]).'.',
+                        'observations' => $request->observations
+                    ]);
+                }
             }
 
             DB::commit();
             return response()->json(['success' => 1, 'payment_id' => $payment->id]);
         } catch (\Throwable $th) {
             DB::rollback();
-            // dd($th);
+            dd($th);
             return response()->json(['error' => 1]);
         }
     }
