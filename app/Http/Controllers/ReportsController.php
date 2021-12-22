@@ -358,32 +358,29 @@ class ReportsController extends Controller
         $year = $request->year;
         $month = $request->month;
         $funcionarios_ingreso = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                            ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
                             ->join('contratos as c', 'c.idContribuyente', 'p.CedulaIdentidad')
                             ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
-                            // ->where('p.Estado', 1)
                             ->whereRaw($request->t_planilla ? 'p.Tplanilla = '.$request->t_planilla : 1)
-                            ->whereYear('p.Fecha_Ingreso', $request->year)
-                            ->whereMonth('p.Fecha_Ingreso', $request->month)
+                            ->whereYear('c.Fecha_Inicio', $request->year)
+                            ->whereMonth('c.Fecha_Inicio', $request->month)
+                            ->where('p.Anio', $request->year)
+                            ->where('p.Mes', $request->month)
                             ->whereRaw('(p.idGda=1 or p.idGda=2)')
-                            ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada', 'c.Fecha_Inicio')
+                            ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'c.Fecha_Inicio')
                             ->orderBy('p.Apaterno')
-                            ->groupBy('c.idContribuyente')
                             ->get();
-        // dd($funcionarios_ingreso);
 
         $funcionarios_egreso = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                            ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
                             ->join('contratos as c', 'c.idContribuyente', 'p.CedulaIdentidad')
                             ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
-                            // ->where('p.Estado', 1)
                             ->whereRaw($request->t_planilla ? 'p.Tplanilla = '.$request->t_planilla : 1)
                             ->whereYear('c.Fecha_Conclusion', $request->year)
                             ->whereMonth('c.Fecha_Conclusion', $request->month)
+                            ->where('p.Anio', $request->year)
+                            ->where('p.Mes', $request->month)
                             ->whereRaw('(p.idGda=1 or p.idGda=2)')
-                            ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada', 'c.Fecha_Conclusion')
+                            ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'c.Fecha_Conclusion')
                             ->orderBy('p.Apaterno')
-                            ->groupBy('c.idContribuyente')
                             ->get();
         
         if($request->print){

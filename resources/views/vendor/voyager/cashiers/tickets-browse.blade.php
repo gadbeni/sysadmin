@@ -247,7 +247,7 @@
             array_tickest();
             setInterval(() => {
                 array_tickest();
-            }, 5000);
+            }, 3000);
         });
 
         function array_tickest(){

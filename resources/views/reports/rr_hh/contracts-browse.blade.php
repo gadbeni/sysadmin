@@ -23,8 +23,8 @@
                                 <input type="hidden" name="print">
                                 <div class="form-group">
                                     {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
-                                    <select name="t_planilla" class="form-control select2">
-                                        <option selected>Todas las planillas</option>
+                                    <select name="t_planilla" class="form-control select2" required>
+                                        <option selected value="">Todas las planillas</option>
                                         <option value="1">Funcionamiento</option>
                                         <option value="2">Inversión</option>
                                     </select>
