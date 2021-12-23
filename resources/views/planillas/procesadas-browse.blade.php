@@ -281,6 +281,13 @@
 @stop
 
 @section('javascript')
+
+    {{-- Socket.io --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const socket = io("http://localhost:3001");
+    </script>
+
     <script>
         $(document).ready(function() {
             $('#form-search').on('submit', function(e){
@@ -315,6 +322,7 @@
                 }, function(data){
                     $('.btn-increment-ticket').html('<h4>Siguiente <span class="voyager-double-right"></span></h4>');
                     toastr.info('Ticket solicitado #'+data.ticket, 'Información');
+                    socket.emit(`set new ticket`, data);
                 });
             })
         });

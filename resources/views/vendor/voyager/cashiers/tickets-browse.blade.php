@@ -245,9 +245,6 @@
         $(document).ready(function(){
             $('#data').css('height', ventana_alto-30);
             array_tickest();
-            setInterval(() => {
-                array_tickest();
-            }, 3000);
         });
 
         function array_tickest(){
@@ -272,6 +269,26 @@
                 </div>`);
         }
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const socket = io("http://localhost:3001");
+        socket.on('get new ticket', data => {
+            array_tickest();
+            let textoAEscuchar = 'Ticket número '+data.ticket;
+            let mensaje = new SpeechSynthesisUtterance();
+            // mensaje.voice = vocesDisponibles[$voces.value];
+            mensaje.volume = 1;
+            mensaje.rate = 0.7;
+            mensaje.text = textoAEscuchar;
+            mensaje.pitch = 1;
+            speechSynthesis.speak(mensaje);
+            setTimeout(() => {
+                speechSynthesis.speak(mensaje);
+            }, 4000);
+        });
+    </script>
+
     {{-- Snowfall --}}
     @if (setting('plantillas.navidad'))
     <div id="flake" style="z-index: 100">&#10052;</div>

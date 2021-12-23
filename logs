@@ -1,9 +1,11 @@
-Se agregó el reporte de pagos al seguro social por funcionario.
+Mejoras en el reporte de aportes individuales y socket.io en la pantalla de tickets con voz.
 
 Migraciones
 
 Seeders
-    - Ejecutar seeder MenuItemsTableSeeder y PermissionsTableSeeder
+
+Paquetes
+    - npm i socket.io fs
 
 Comandos
    

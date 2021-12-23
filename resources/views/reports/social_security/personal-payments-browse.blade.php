@@ -16,6 +16,7 @@
                         <div class="col-md-4" style="margin-top: 30px">
                             <form name="form_search" id="form-search" action="{{ route('reports.social_security.personal.payments.list') }}" method="post">
                                 @csrf
+                                <input type="hidden" name="type">
                                 <div class="input-group">
                                     <input type="number" name="ci" class="form-control" placeholder="Carnet de identidad" required>
                                     <span class="input-group-btn">
@@ -65,5 +66,14 @@
                 });
             });
         });
+
+        function report_export(type){
+            console.log(type)
+            $('#form-search').attr('target', '_blank');
+            $('#form-search input[name="type"]').val(type);
+            window.form_search.submit();
+            $('#form-search').removeAttr('target');
+            $('#form-search input[name="type"]').val('');
+        }
     </script>
 @stop

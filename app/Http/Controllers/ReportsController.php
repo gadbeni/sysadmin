@@ -432,21 +432,36 @@ class ReportsController extends Controller
 
     public function social_security_personal_payments_list(Request $request){
         // dd($request->all());
-        $payments = DB::connection('mysqlgobe')->table('planillahaberes as p')
+        $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->join('contribuyente as c', 'c.N_Carnet', 'p.CedulaIdentidad')
                         ->join('direccionadministrativa as da', 'da.ID', 'p.idDa')
                         ->where('c.N_Carnet', $request->ci)
                         ->select(
+                            'p.ID as id',
                             DB::raw('REPLACE(p.Nombre_Empleado, "  ", " ") as empleado'),
                             'da.NOMBRE as direccion_administrativa',
                             'p.CedulaIdentidad as ci',
+                            'p.idPlanillaprocesada as planilla_procesada',
+                            'p.Afp as afp',
                             'p.Num_Nua as nua_cua',
                             'p.Periodo as periodo',
                             'p.Total_Ganado as total',
                             'p.Total_Aportes_Afp as total_afp'
                         )->get();
-        // dd($payments);
-        return view('reports.social_security.personal-payments-list', compact('payments'));
+        $cont = 0;
+        foreach ($planillas as $item) {
+            // Obtener detalle de pago
+            $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('Afp', $item->afp)->where('idPlanillaprocesada', $item->planilla_procesada)->get();
+            $payments = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
+            $planillas[$cont]->payments = $payments;
+            $cont++;
+        }
+        // dd($request->all());
+        if($request->type == 'print'){
+            return view('reports.social_security.personal-payments-print', compact('planillas'));
+        }else{
+            return view('reports.social_security.personal-payments-list', compact('planillas'));
+        }
     }
 
     //  ===== Cashiers =====
