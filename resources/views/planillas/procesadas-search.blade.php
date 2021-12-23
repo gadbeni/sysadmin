@@ -229,7 +229,7 @@
                             @endforelse
                             <tr>
                                 <td @if (Auth::user()->role_id == 1) colspan="11" @else colspan="10" @endif><h5>TOTAL</h5></td>
-                                <td><h5 class="text-right">{{ number_format($total, 2, ',', '') }}</h3></td>
+                                <td><h5 class="text-right">{{ number_format($total, 2, ',', '.') }}</h3></td>
                                 <td colspan="2"></td>
                             </tr>
                         </tbody>
