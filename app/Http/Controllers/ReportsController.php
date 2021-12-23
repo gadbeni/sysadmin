@@ -283,7 +283,7 @@ class ReportsController extends Controller
         return view('reports.social_security.spreadsheets-list', compact('planillas'));
     }
     public function social_security_payments_group_index(){
-        return view('social-security.testing.payments-browse');
+        return view('reports.social_security.payments-annual-browse');
     }
 
     public function social_security_payments_group_list(Request $request){
@@ -347,7 +347,7 @@ class ReportsController extends Controller
                 }
             }
         }
-        return view('social-security.testing.payments-list', compact('data'));
+        return view('reports.social_security.payments-annual-list', compact('data'));
     }
 
     public function social_security_contracts_index(){
@@ -424,6 +424,29 @@ class ReportsController extends Controller
         }else{
             return view('reports.social_security.spreadsheets_payments-list', compact('payments', 'direcciones_administrativa'));
         }
+    }
+
+    public function social_security_personal_payments_index(){
+        return view('reports.social_security.personal-payments-browse');
+    }
+
+    public function social_security_personal_payments_list(Request $request){
+        // dd($request->all());
+        $payments = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                        ->join('contribuyente as c', 'c.N_Carnet', 'p.CedulaIdentidad')
+                        ->join('direccionadministrativa as da', 'da.ID', 'p.idDa')
+                        ->where('c.N_Carnet', $request->ci)
+                        ->select(
+                            DB::raw('REPLACE(p.Nombre_Empleado, "  ", " ") as empleado'),
+                            'da.NOMBRE as direccion_administrativa',
+                            'p.CedulaIdentidad as ci',
+                            'p.Num_Nua as nua_cua',
+                            'p.Periodo as periodo',
+                            'p.Total_Ganado as total',
+                            'p.Total_Aportes_Afp as total_afp'
+                        )->get();
+        // dd($payments);
+        return view('reports.social_security.personal-payments-list', compact('payments'));
     }
 
     //  ===== Cashiers =====

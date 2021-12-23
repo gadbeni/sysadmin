@@ -127,6 +127,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('reports/social-security/payments-group', [ReportsController::class, 'social_security_payments_group_list'])->name('social-security.payments.group.list');
     Route::get('reports/social-security/spreadsheets/payments', [ReportsController::class, 'social_security_spreadsheets_payments_index'])->name('reports.social_security.spreadsheets.payments.index');
     Route::post('reports/social-security/spreadsheets/payments/list', [ReportsController::class, 'social_security_spreadsheets_payments_list'])->name('reports.social_security.spreadsheets.payments.list');
+    Route::get('reports/social-security/personal/payments', [ReportsController::class, 'social_security_personal_payments_index'])->name('reports.social_security.personal.payments.index');
+    Route::post('reports/social-security/personal/payments/list', [ReportsController::class, 'social_security_personal_payments_list'])->name('reports.social_security.personal.payments.list');
 
     // Cashier
     Route::get('reports/cashier/cashiers', [ReportsController::class, 'cashier_cashiers_index'])->name('reports.cashier.cashiers.index');
@@ -137,6 +139,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('reports/cashier/vaults/list', [ReportsController::class, 'cashier_vaults_list'])->name('reports.cashier.vaults.list');
 
     // Testing
+    // Obtener los cheques segun el año
     Route::get('/test/{year}', [SocialSecurityController::class, 'test']);
 
     // Complementos

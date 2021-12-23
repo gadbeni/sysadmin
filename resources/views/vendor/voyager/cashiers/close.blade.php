@@ -76,7 +76,7 @@
                                     <p style="margin-top: 20px">Ingresos</p>
                                 </div>
                                 <div class="col-md-6">
-                                    <h3 class="text-right" style="padding-right: 20px">{{ number_format($cashier_in, 2, ',', '') }}</h3>
+                                    <h3 class="text-right" style="padding-right: 20px">{{ number_format($cashier_in, 2, ',', '.') }}</h3>
                                 </div>
                             </div>
                             <div class="row">
@@ -84,7 +84,7 @@
                                     <p style="margin-top: 20px">Egresos</p>
                                 </div>
                                 <div class="col-md-6">
-                                <h3 class="text-right" style="padding-right: 20px">{{ number_format($cashier_out, 2, ',', '') }}</h3>
+                                <h3 class="text-right" style="padding-right: 20px">{{ number_format($cashier_out, 2, ',', '.') }}</h3>
                                 </div>
                             </div>
                             <div class="row">
@@ -93,7 +93,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="panel-heading" style="border-bottom:0;">
-                                        <h3 class="text-right" style="padding-right: 20px">{{ number_format($payments, 2, ',', '') }}</h3>
+                                        <h3 class="text-right" style="padding-right: 20px">{{ number_format($payments, 2, ',', '.') }}</h3>
                                     </div>
                                 </div>
                             </div>
@@ -103,7 +103,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="panel-heading" style="border-bottom:0;">
-                                        <h3 class="text-right" style="padding-right: 20px">{{ number_format($total, 2, ',', '') }}</h3>
+                                        <h3 class="text-right" style="padding-right: 20px">{{ number_format($total, 2, ',', '.') }}</h3>
                                     </div>
                                 </div>
                             </div>

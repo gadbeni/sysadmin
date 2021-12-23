@@ -1,9 +1,9 @@
-Mejoras en la pantalla de ticket.
+Se agregó el reporte de pagos al seguro social por funcionario.
 
 Migraciones
 
 Seeders
-    
+    - Ejecutar seeder MenuItemsTableSeeder y PermissionsTableSeeder
 
 Comandos
    
