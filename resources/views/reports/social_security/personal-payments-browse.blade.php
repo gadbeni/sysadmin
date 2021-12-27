@@ -17,14 +17,33 @@
                             <form name="form_search" id="form-search" action="{{ route('reports.social_security.personal.payments.list') }}" method="post">
                                 @csrf
                                 <input type="hidden" name="type">
-                                <div class="input-group">
-                                    <input type="number" name="ci" class="form-control" placeholder="Carnet de identidad" required>
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="submit" style="margin-top: 0px">
-                                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span> 
-                                            Buscar
-                                        </button>
-                                    </span>
+                                <div class="form-group col-md-12">
+                                    <select name="contribuyente_id" class="form-control select2" required>
+                                        <option value="">--Seleccione a un funcionario--</option>
+                                        @foreach($contribuyentes as $contribuyente)
+                                            <option value="{{ $contribuyente->ID }}">{{ str_replace('  ', ' ', $contribuyente->NombreCompleto) }} - {{ $contribuyente->N_Carnet }}</option>
+                                        @endforeach
+                                    </select>
+                                    {{-- <input type="number" name="ci" class="form-control" placeholder="Carnet de identidad" required> --}}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control input-picker" name="start" required/>
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control input-picker" name="end" required/>
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-12 text-right">
+                                    <button type="submit" class="btn btn-primary">Generar <i class="voyager-settings"></i></button>
                                 </div>
                             </form>
                         </div>
@@ -45,12 +64,21 @@
 @stop
 
 @section('css')
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
 @stop
 
 @section('javascript')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.es.min.js" integrity="sha512-5pjEAV8mgR98bRTcqwZ3An0MYSOleV04mwwYj2yw+7PBhFVf/0KcE+NEox0XrFiU5+x5t5qidmo5MgBkDD9hEw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $(document).ready(function() {
+            $(".input-picker").datepicker( {
+                format: "mm-yyyy",
+                startView: "months", 
+                minViewMode: "months",
+                language: 'es'
+            });
+            
             $('#form-search').submit(function(e) {
                 e.preventDefault();
                 $('#div-results').empty();

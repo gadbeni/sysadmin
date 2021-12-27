@@ -16,7 +16,7 @@
         "postcss": "^8.1.14"
     },
     "dependencies": {
-        "fs": "^0.0.1-security",
+        "fs": "0.0.1-security",
         "socket.io": "^4.4.0"
     }
 }

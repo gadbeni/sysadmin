@@ -427,15 +427,20 @@ class ReportsController extends Controller
     }
 
     public function social_security_personal_payments_index(){
-        return view('reports.social_security.personal-payments-browse');
+        $contribuyentes = DB::connection('mysqlgobe')->table('contribuyente')->get();
+        // dd($contribuyentes);
+        return view('reports.social_security.personal-payments-browse', compact('contribuyentes'));
     }
 
     public function social_security_personal_payments_list(Request $request){
-        // dd($request->all());
+        $start = '01-'.$request->start;
+        $end = '01-'.$request->end;
         $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->join('contribuyente as c', 'c.N_Carnet', 'p.CedulaIdentidad')
                         ->join('direccionadministrativa as da', 'da.ID', 'p.idDa')
-                        ->where('c.N_Carnet', $request->ci)
+                        ->where('c.ID', $request->contribuyente_id)
+                        ->where('p.Periodo', '>=', date('Ym', strtotime($start)))
+                        ->where('p.Periodo', '<=', date('Ym', strtotime($end)))
                         ->select(
                             'p.ID as id',
                             DB::raw('REPLACE(p.Nombre_Empleado, "  ", " ") as empleado'),

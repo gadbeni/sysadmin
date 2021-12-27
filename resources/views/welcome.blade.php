@@ -36,35 +36,41 @@
 
 <body>
 
-    <!-- ======= Header ======= -->
-    <header id="header" class="fixed-top d-flex align-items-center">
-        <div class="container d-flex justify-content-between">
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top d-flex align-items-center">
+      <div class="container d-flex justify-content-between">
 
-        <div class="logo">
-            <!-- Uncomment below if you prefer to use an text logo -->
-            <!-- <h1><a href="index.html">NewBiz</a></h1> -->
-            <a href="#">
-                <img src="{{ asset('images/icon-alt.png') }}" alt="GADBENI" class="img-fluid">
-            </a>
-        </div>
+      <div class="logo">
+          <!-- Uncomment below if you prefer to use an text logo -->
+          <!-- <h1><a href="index.html">NewBiz</a></h1> -->
+          <a href="#">
+              <img src="{{ asset('images/icon-alt.png') }}" alt="GADBENI" class="img-fluid">
+          </a>
+      </div>
 
-        <nav id="navbar" class="navbar">
-            <ul>
-            <li><a class="nav-link scrollto active" href="#hero">Inicio</a></li>
-            <li><a class="nav-link scrollto" href="#about">Acerca de</a></li>
-            <li><a class="nav-link scrollto" href="#services">Servicios</a></li>
-            <li><a class="nav-link scrollto" href="{{ url('admin') }}">Administración</a></li>
-            </ul>
-            <i class="bi bi-list mobile-nav-toggle"></i>
-        </nav><!-- .navbar -->
+      <nav id="navbar" class="navbar">
+          <ul>
+          <li><a class="nav-link scrollto active" href="#hero">Inicio</a></li>
+          <li><a class="nav-link scrollto" href="#about">Acerca de</a></li>
+          <li><a class="nav-link scrollto" href="#services">Servicios</a></li>
+          <li><a class="nav-link scrollto" href="{{ url('admin') }}">Administración</a></li>
+          </ul>
+          <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
 
-        </div>
-    </header><!-- #header -->
+      </div>
+  </header><!-- #header -->
+
+  @if (setting('auxiliares.numero_ticket') != null)
+    <div style="position: absolute; top: 100px; right: 20px; text-align: center; z-index: 1000">
+      <b style="color: white">Ticket N&deg;</b> <br>
+      <div id="odometer" class="odometer">{{ setting('auxiliares.numero_ticket') }}</div>
+    </div>
+  @endif
 
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="clearfix">
     <div class="container" data-aos="fade-up">
-
       <div class="hero-img" data-aos="zoom-out" data-aos-delay="200">
         <img src="{{ asset('vendor/landingpage/img/hero-img.png') }}" alt="" class="img-fluid">
       </div>
@@ -385,18 +391,7 @@
                     });
                 });
             });
-
-            getTickest();
-            setInterval(() => {
-              getTickest();
-            }, 5000);
         });
-
-        function getTickest(){
-          $.get("{{ url('admin/plugins/cashiers/tickets/get') }}", function(res){
-            console.log(res);
-          });
-        }
     </script>
 
     {{-- Snowfall --}}
@@ -405,6 +400,29 @@
       <link rel="stylesheet" href="{{ asset('css/snowfall.css') }}">
       <script src="{{ asset('js/snowfall.js') }}"></script>
     @endif
+
+    {{-- Socket.io --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const socket = io("{{ env('APP_URL') }}"+":3001");
+    </script>
+    <style>
+      #odometer{
+        background: white;
+        border-radius: 7px;
+        border: 3px solid #3f3f3f;
+        font-size: 30px;
+        padding: 0px 10px
+      }
+    </style>
+    <!-- Odometr includes -->
+    <link rel="stylesheet" href="{{ asset('vendor/odometer/odometer-theme-default.css') }}" />
+    <script src="{{ asset('vendor/odometer/odometer.js') }}"></script>
+    <script>
+      socket.on('get new ticket', data => {
+        odometer.innerHTML = data.ticket;
+      });
+    </script>
 </body>
 
 </html>
