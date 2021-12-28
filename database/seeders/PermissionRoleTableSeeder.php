@@ -24,13 +24,20 @@ class PermissionRoleTableSeeder extends Seeder
 
         // Roles de caja
         $role = Role::where('name', 'caja_jefe_seccion')->firstOrFail();
-        $permissions = Permission::whereRaw('table_name = "admin" or table_name = "reports_cachiers"')->get();
+        $permissions = Permission::whereRaw('   table_name = "admin" or
+                                                table_name = "cashiers" or
+                                                table_name = "vaults" or
+                                                table_name = "planillas" or
+                                                table_name = "plugins" or
+                                                table_name = "reports_cachiers"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'caja_tecnico_boveda')->firstOrFail();
         $permissions = Permission::whereRaw('   table_name = "admin" or
                                                 table_name = "cashiers" or
                                                 table_name = "vaults" or
+                                                table_name = "planillas" or
+                                                table_name = "plugins" or
                                                 `key` = "browse_reportscashiervaults"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
@@ -39,7 +46,9 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'caja_cajero')->firstOrFail();
-        $permissions = Permission::whereRaw('table_name = "admin" or table_name = "planillas"')->get();
+        $permissions = Permission::whereRaw('   table_name = "admin" or
+                                                table_name = "planillas" or
+                                                table_name = "plugins" or')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de previsión social

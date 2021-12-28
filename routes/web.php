@@ -129,6 +129,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('reports/social-security/spreadsheets/payments/list', [ReportsController::class, 'social_security_spreadsheets_payments_list'])->name('reports.social_security.spreadsheets.payments.list');
     Route::get('reports/social-security/personal/payments', [ReportsController::class, 'social_security_personal_payments_index'])->name('reports.social_security.personal.payments.index');
     Route::post('reports/social-security/personal/payments/list', [ReportsController::class, 'social_security_personal_payments_list'])->name('reports.social_security.personal.payments.list');
+    Route::get('reports/social-security/caratula', [ReportsController::class, 'social_security_personal_caratula_index'])->name('reports.social_security.personal.caratula.index');
+    Route::post('reports/social-security/caratula/list', [ReportsController::class, 'social_security_personal_caratula_list'])->name('reports.social_security.personal.caratula.list');
 
     // Cashier
     Route::get('reports/cashier/cashiers', [ReportsController::class, 'cashier_cashiers_index'])->name('reports.cashier.cashiers.index');
@@ -144,6 +146,9 @@ Route::group(['prefix' => 'admin'], function () {
 
     // Complementos
     Route::get('plugins/cashiers/tickets', [PluginsController::class, 'cashiers_tickets'])->name('cashiers.tickets');
+    Route::get('plugins/cashiers/tickets/generate', [PluginsController::class, 'cashiers_tickets_generate'])->name('cashiers.tickets.generate');
+    Route::post('plugins/cashiers/tickets/print', [PluginsController::class, 'cashiers_tickets_print'])->name('cashiers.tickets.print');
+
     Route::post('plugins/cashiers/tickets/set', function(){
         set_setting('auxiliares.numero_ticket', setting('auxiliares.numero_ticket') +1);
         return response()->json(['ticket' => setting('auxiliares.numero_ticket') +1]);

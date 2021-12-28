@@ -84,6 +84,7 @@ class PermissionsTableSeeder extends Seeder
             'browse_reportssocial-securitypayments-group',
             'browse_reportssocial-securityspreadsheetspayments',
             'browse_reportssocial-securitypersonalpayments',
+            'browse_reportssocial-securitycaratula',
         ];
 
         foreach ($keys as $key) {
@@ -109,7 +110,8 @@ class PermissionsTableSeeder extends Seeder
 
         // Plugins
         $keys = [
-            'browse_pluginscashierstickets'
+            'browse_pluginscashierstickets',
+            'browse_pluginscashiersticketsgenerate'
         ];
 
         foreach ($keys as $key) {

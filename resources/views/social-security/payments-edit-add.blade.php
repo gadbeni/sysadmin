@@ -53,7 +53,7 @@
                                     </select>
                                 </div>
                                 @if ($type == 'create')
-                                <div class="form-group col-md-12 div-manual">
+                                <div class="form-group col-md-12 div-manual" style="display: none">
                                     <label for="planilla_haber_id">Planilla manual</label>
                                     <select name="spreadsheet_id" id="select-planilla_haber_id_manual" class="form-control select2">
                                     <option value="">Seleccione la planilla manual</option>
@@ -77,7 +77,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="date_payment_afp">Fecha de pago a AFP</label>
-                                    <input type="date" class="form-control" name="date_payment_afp" value="{{ $type == 'edit' ? $data->date_payment_afp : '' }}" >
+                                    <input type="date" class="form-control" name="date_payment_afp" max="{{ date('Y-m-d') }}" value="{{ $type == 'edit' ? $data->date_payment_afp : '' }}" >
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="penalty_payment">Multa</label>
@@ -89,7 +89,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="date_payment_cc">Fecha de pago a Caja Cordes</label>
-                                    <input type="date" class="form-control" name="date_payment_cc" value="{{ $type == 'edit' ? $data->date_payment_cc : '' }}">
+                                    <input type="date" class="form-control" name="date_payment_cc" max="{{ date('Y-m-d') }}" value="{{ $type == 'edit' ? $data->date_payment_cc : '' }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="deposit_number">N&deg; de deposito</label>

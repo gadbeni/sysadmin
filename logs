@@ -1,11 +1,10 @@
-Mejoras en el reporte de aportes individuales y socket.io en la pantalla de tickets con voz.
+Generar carátula de pagos al seguro social y caja de salud, impresión de tickets para caja.
 
 Migraciones
 
 Seeders
-
+    - MenuItemsTableSeeder y UpdatePermissionsSeeder
 Paquetes
-    - npm i socket.io fs
 
 Comandos
    

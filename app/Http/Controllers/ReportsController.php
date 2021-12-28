@@ -469,6 +469,36 @@ class ReportsController extends Controller
         }
     }
 
+    public function social_security_personal_caratula_index(){
+        return view('reports.social_security.caratula-browse');
+    }
+
+    public function social_security_personal_caratula_list(Request $request){
+        $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                        ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
+                        ->where('p.idPlanillaprocesada', $request->planilla)
+                        ->selectRaw('p.Direccion_Administrativa as direccion_administrativa, p.Afp  as afp, SUM(p.Total_Ganado) as total_ganado, COUNT(*) as n_personas, p.Periodo as periodo, tp.Nombre as tipo_planilla')
+                        ->groupBy('p.Afp')->get();
+
+        // Obtener detalle de pago
+        $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $request->planilla)->get();
+        
+        $pagos = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
+        
+        // Obtener detalle de cheques de afp
+        $cheques_afp = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary.type', function($q){
+            $q->where('name', 'not like', '%salud%');
+        })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
+
+        // Obtener detalle de cheques de caja de salud
+        $cheques_salud = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary.type', function($q){
+            $q->where('name', 'like', '%salud%');
+        })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
+
+        return view('reports.social_security.caratula-list', compact('planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes'));
+        dd($planilla, $pagos, $cheques_afp, $cheques_salud);
+    }
+
     //  ===== Cashiers =====
 
     public function cashier_cashiers_index(){

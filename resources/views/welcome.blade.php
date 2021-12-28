@@ -62,7 +62,7 @@
   </header><!-- #header -->
 
   @if (setting('auxiliares.numero_ticket') != null)
-    <div style="position: absolute; top: 100px; right: 20px; text-align: center; z-index: 1000">
+    <div style="position: absolute; top: 100px; right: 20px; text-align: center; z-index: 1">
       <b style="color: white">Ticket N&deg;</b> <br>
       <div id="odometer" class="odometer">{{ setting('auxiliares.numero_ticket') }}</div>
     </div>
@@ -412,7 +412,7 @@
         border-radius: 7px;
         border: 3px solid #3f3f3f;
         font-size: 30px;
-        padding: 0px 10px
+        padding: 0px 20px
       }
     </style>
     <!-- Odometr includes -->
