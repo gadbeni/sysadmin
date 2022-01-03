@@ -163,3 +163,7 @@ Route::get('/admin/clear-cache', function() {
     Artisan::call('optimize:clear');
     return redirect('/admin/profile')->with(['message' => 'Cache eliminada.', 'alert-type' => 'success']);
 })->name('clear.cache');
+
+Route::get('/plantilla', function() {
+    return view('management.docs.autorization');
+});

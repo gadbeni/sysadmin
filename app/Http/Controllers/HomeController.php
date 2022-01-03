@@ -22,7 +22,7 @@ class HomeController extends Controller
                         ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
                         ->where('p.pagada', 1)
                         ->where('p.CedulaIdentidad', $search)
-                        ->where('p.Anio', date('Y'))
+                        ->where('p.Periodo', '>=', '202105')
                         ->select('p.*', 'p.ITEM as item', 'pp.Estado as estado_planilla_procesada')
                         ->orderBy('p.ID', 'DESC')->limit(3)->get();
             $aguinaldo = Aguinaldo::with('payment.cashier.user')->where('ci', $search)->where('deleted_at', NULL)->where('estado', 'pendiente')->first();

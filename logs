@@ -1,4 +1,4 @@
-Generar carátula de pagos al seguro social y caja de salud, impresión de tickets para caja.
+
 
 Migraciones
 
@@ -7,4 +7,6 @@ Seeders
 Paquetes
 
 Comandos
-   
+
+Otros
+    - Cambiar nombre del registro de la tabla migration de spreadsheets a 2021_09_17_110819_create_spreadsheets_table (cuando se quiera ejecutar php artisan migrate)

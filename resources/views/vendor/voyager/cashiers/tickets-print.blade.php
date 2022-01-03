@@ -47,6 +47,7 @@
     @endphp
     @for ($i = $start; $i <= $finish; $i++)
         <div class="card" @if($cont % 14 == 0) style="margin-bottom: 20px" @endif>
+            <i style="position: relative; bottom: -55px">{{ date('d/m/Y') }}</i>
             <span><small style="font-size: 15px">N&deg;</small> {{ str_pad($i, 3, "0", STR_PAD_LEFT) }}</span>
         </div>
         @php

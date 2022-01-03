@@ -51,12 +51,13 @@
             bottom:0px;
             left:0px;
             width: 100%;
-            background-color:rgba(0, 0, 0, 0.8);
-            z-index: 100;
+            background-color:rgba(0, 0, 0, 0.7);
+            z-index: 10000;
         }
         .footer-content{
             margin: 10px 20px;
-            color: white
+            color: white;
+            font-size: 20px;
         }
         iframe{
             background-color: white
@@ -65,6 +66,13 @@
 </head>
 <body>
     <div class="container-fluid">
+        @if (!setting('auxiliares.numero_ticket'))
+            <div class="multimedia">
+                <video width="100%">
+                    <source src="{{ asset('videos/test.mp4') }}" type="video/mp4">
+                </video>
+            </div>
+        @endif
         <div class="row">
             <div class="dark-mask"></div>
             <div class="col-md-4">
@@ -74,9 +82,6 @@
                     </div>
                 </div>
                 <div class="row" id="data-posts">
-                    {{-- <div class="col-md-12 text-center" style="z-index: 1">
-                        <iframe src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fgobernacionbeni2021%2Fposts%2F238809501721979&show_text=true&width=500" width="500" height="793" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
-                    </div> --}}
                     <div class="col-md-12 mt-5">
                         <div class="wrapper">
                             <div class="slider" id="slider">
@@ -102,8 +107,24 @@
             </div>
         </div>
         <div class="footer">
+            @if (setting('auxiliares.marquesina'))
+            <marquee><h1 class="text-white" style="padding-top: 10px">{{ setting('auxiliares.marquesina') }}</h1></marquee>
+            @endif
             <div class="footer-content">
                 Desarrollado por <span style="color: {{ env('APP_COLOR') }}">Unidad de Desarrollo de Sistemas</span>
+            </div>
+        </div>
+
+        <div class="modal fade" id="activateModal" tabindex="-1" role="dialog" aria-labelledby="activateModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="activateModalLabel">Activar voz?</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Da click en cualquier parte de la pantalla para activar voz.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -124,6 +145,17 @@
              /* you could also use milliseconds (ms) or something like 2.5s */
             -webkit-animation: colorchange 3s infinite; /* Chrome and Safari */
         }
+        .multimedia{
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100vh;
+            z-index: 10000;
+            background-color: black
+        }
+
+
         @keyframes colorchange
         {
             0%  {border: 10px solid rgba(0, 0, 0, 0.7);}
@@ -143,7 +175,7 @@
             0% { transform: translateX(0); }
             50% { transform: translateX(0); }
 
-            55% { transform: translateX(-100%); }
+            51% { transform: translateX(-100%); }
             100% { transform: translateX(-100%); }
 
             /* 35% { transform: translateX(-200%); }
@@ -241,10 +273,23 @@
 
     <script>
         var ventana_alto = $(window).height();
+        const array_video = @json($videos);
 
         $(document).ready(function(){
+            $('video').click(function(){
+                $('video').trigger('play');
+                $('#activateModal').modal('hide');
+            });
             $('#data').css('height', ventana_alto-30);
             array_tickest();
+            $('#activateModal').modal('show');
+
+            $("video").bind("ended", function(){
+                if(array_video.length > 0){
+                    $('video').attr('src', "{{ asset('storage') }}/"+array_video[Math.floor(Math.random() * array_video.length)]);
+                    $('video').trigger('play');
+                }
+            });
         });
 
         function array_tickest(){
@@ -274,6 +319,7 @@
     <script>
         const socket = io("{{ env('APP_URL') }}"+":3001");
         socket.on('get new ticket', data => {
+            $('.multimedia').remove()
             array_tickest();
             let textoAEscuchar = 'Ticket número '+data.ticket;
             let mensaje = new SpeechSynthesisUtterance();

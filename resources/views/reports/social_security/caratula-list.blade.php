@@ -142,14 +142,14 @@
             <br>
             <table class="table table-bordered" style="text-align: center">
                 <tr>
-                    <td colspan="6"><b>DETALLES DE FROMULARIOS GTC-11</b></td>
+                    <td colspan="6"><b>DETALLES DE PAGOS DE CAJA DE SALUD</b></td>
                 </tr>
                 <tr>
                     <td><b>N&deg;</b></td>
-                    <td><b>Formulario</b></td>
                     <td><b>N&deg; de deposito</b></td>
-                    <td><b>N&deg: de recibo</b></td>
                     <td><b>Fecha de pago</b></td>
+                    <td><b>GTC-11</b></td>
+                    <td><b>N&deg: de recibo</b></td>
                     <td><b>Pertenece</b></td>
                 </tr>
                 @php
@@ -161,10 +161,10 @@
                     @endphp
                     <tr>
                         <td>{{ $cont }}</td>
-                        <td>{{ $item->gtc_number }}</td>
                         <td>{{ $item->deposit_number }}</td>
-                        <td>{{ $item->recipe_number }}</td>
                         <td>{{ $item->date_payment_cc ? date('d/m/Y', strtotime($item->date_payment_cc)) : '' }}</td>
+                        <td>{{ $item->gtc_number }}</td>
+                        <td>{{ $item->recipe_number }}</td>
                         <td>
                             @php
                                 $planilla_haber = $planillahaberes->where('ID', $item->planilla_haber_id)->first()
