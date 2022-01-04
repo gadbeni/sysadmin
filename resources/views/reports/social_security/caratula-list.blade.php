@@ -1,3 +1,6 @@
+<div class="col-md-12 text-right">
+    <button type="button" onclick="report_export('print')" class="btn btn-danger"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+</div>
 <div class="col-md-12">
     <div class="panel panel-bordered">
         <div class="panel-body">

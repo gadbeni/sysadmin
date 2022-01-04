@@ -96,7 +96,6 @@
         });
 
         function report_export(type){
-            console.log(type)
             $('#form-search').attr('target', '_blank');
             $('#form-search input[name="type"]').val(type);
             window.form_search.submit();

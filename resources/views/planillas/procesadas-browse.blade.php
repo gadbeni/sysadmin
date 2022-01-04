@@ -317,6 +317,7 @@
             });
 
             $('.btn-increment-ticket').click(function(){
+                $('.btn-increment-ticket').attr('disabled', true);
                 $.post("{{ url('admin/plugins/cashiers/tickets/set') }}", {
                     _token: '{{ csrf_token() }}',
                 }, function(data){
@@ -324,6 +325,9 @@
                     toastr.info('Ticket solicitado #'+data.ticket, 'Información');
                     socket.emit(`set new ticket`, data);
                 });
+                setTimeout(() => {
+                    $('.btn-increment-ticket').attr('disabled', false);
+                }, 5000);
             })
         });
 

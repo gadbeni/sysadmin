@@ -179,7 +179,25 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"last_name","order_display_column":"first_name","order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2021-12-29 16:09:12',
-                'updated_at' => '2021-12-29 16:11:55',
+                'updated_at' => '2022-01-04 11:08:23',
+            ),
+            9 => 
+            array (
+                'id' => 10,
+                'name' => 'programs',
+                'slug' => 'programs',
+                'display_name_singular' => 'Programa',
+                'display_name_plural' => 'Programas',
+                'icon' => 'voyager-documentation',
+                'model_name' => 'App\\Models\\Program',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":"name","order_display_column":"name","order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2022-01-04 10:56:30',
+                'updated_at' => '2022-01-04 10:57:05',
             ),
         ));
         

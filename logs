@@ -3,10 +3,11 @@
 Migraciones
 
 Seeders
-    - MenuItemsTableSeeder y UpdatePermissionsSeeder
+    - UpdateBreadSeeder y UpdatePermissionsSeeder
+    
 Paquetes
 
 Comandos
 
 Otros
-    - Cambiar nombre del registro de la tabla migration de spreadsheets a 2021_09_17_110819_create_spreadsheets_table (cuando se quiera ejecutar php artisan migrate)
+    

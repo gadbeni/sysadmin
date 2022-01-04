@@ -474,14 +474,15 @@ class ReportsController extends Controller
     }
 
     public function social_security_personal_caratula_list(Request $request){
+        $planilla_id = $request->planilla;
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
-                        ->where('p.idPlanillaprocesada', $request->planilla)
+                        ->where('p.idPlanillaprocesada', $planilla_id)
                         ->selectRaw('p.Direccion_Administrativa as direccion_administrativa, p.Afp  as afp, SUM(p.Total_Ganado) as total_ganado, COUNT(*) as n_personas, p.Periodo as periodo, tp.Nombre as tipo_planilla')
                         ->groupBy('p.Afp')->get();
 
         // Obtener detalle de pago
-        $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $request->planilla)->get();
+        $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $planilla_id)->get();
         
         $pagos = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
         
@@ -495,8 +496,11 @@ class ReportsController extends Controller
             $q->where('name', 'like', '%salud%');
         })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
 
-        return view('reports.social_security.caratula-list', compact('planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes'));
-        dd($planilla, $pagos, $cheques_afp, $cheques_salud);
+        if($request->type == 'print'){
+            return view('reports.social_security.caratula-list-print', compact('planilla_id', 'planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes'));
+        }else{
+            return view('reports.social_security.caratula-list', compact('planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes'));
+        }
     }
 
     //  ===== Cashiers =====
