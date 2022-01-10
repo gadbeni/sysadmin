@@ -11,6 +11,7 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\SocialSecurityController;
 use App\Http\Controllers\SpreadsheetsController;
 use App\Http\Controllers\PluginsController;
+use App\Http\Controllers\ContractsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,6 +107,11 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('spreadsheets/ajax/list', [SpreadsheetsController::class, 'list']);
     Route::post('spreadsheets/delete/multiple', [SpreadsheetsController::class, 'destroy_multiple'])->name('spreadsheets.delete_multiple');
 
+    // Administrativo
+
+    // *Contratos
+    Route::resource('contracts', ContractsController::class);
+    
     // Reportes
 
     // *Recursos humanos

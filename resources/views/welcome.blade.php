@@ -6,8 +6,13 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
   <title>GADBENI - Bienvenido</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
+  <title>{{setting('admin.title')}}</title>
+  <meta property="og:url"           content="{{url('')}}" />
+  {{-- <meta property="og:type"          content="" /> --}}
+  <meta property="og:title"         content="{{setting('site.title')}}" />
+  <meta property="og:description"   content="{{setting('site.description')}}" />
+  <meta property="og:image"         content="{{ asset('images/icon.png') }}" />
+  <meta name="keywords" content="beni, mamore, pagos, gadbeni, gobernacion">
 
   <!-- Favicons -->
   <link href="{{ asset('images/icon.png') }}" rel="icon">
