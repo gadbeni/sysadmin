@@ -277,7 +277,7 @@
                 { data: 'id', title: 'id' },
                 { data: 'user', title: 'Registrado por' },
                 { data: 'type', title: 'Tipo' },
-                { data: 'bill_number', title: 'N&deg; de Cheque' },
+                { data: 'bill_number', title: 'N&deg; de Cheque', width: "250px" },
                 { data: 'name_sender', title: 'Nombre' },
                 { data: 'amount', title: 'Monto' },
                 { data: 'description', title: 'Descripción' },
