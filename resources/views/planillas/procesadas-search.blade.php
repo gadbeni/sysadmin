@@ -78,7 +78,7 @@
 
 
         {{-- Formulario de pago de aguinaldo --}}
-        @if (count($aguinaldo) > 0)
+        {{-- @if (count($aguinaldo) > 0) --}}
         <form action="" method="post">
             @csrf
             <div class="panel-body" style="margin-bottom: 50px">
@@ -124,6 +124,10 @@
                                         @if ($item->estado == 'pendiente')
                                         <button type="button" data-toggle="modal" data-target="#pagar-aguinaldo-modal" onclick='setValuePayBonus(@json($item), @json($cashier))' class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
                                         @endif
+
+                                        @if ($item->estado == 'pagada')
+                                        <button type="button" onclick="print_recipe({{ $item->id }}, 'aguinaldo')" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+                                        @endif
                                     </td>
                                     @endif
                                 </tr>
@@ -135,7 +139,7 @@
                 </div>
             </div>
         </form>
-        @endif
+        {{-- @endif --}}
 
         <form id="form-pago-multiple" action="{{ route('planillas.details.payment.multiple') }}" method="post">
             @csrf
@@ -212,7 +216,7 @@
                                         <button type="button" data-toggle="modal" data-target="#pagar-modal" onclick='setValuePay(@json($item), @json($cashier))' class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
                                         @endif
                                         @if($item->pagada == 2 && $detalle_pago)
-                                            <button type="button" onclick="print_recipe({{ $detalle_pago->id }})" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+                                            <button type="button" onclick="print_recipe({{ $detalle_pago->id }}, 'sueldo')" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
                                         @endif
                                     </div>
                                 </td>
@@ -325,7 +329,16 @@
         });
     });
 
-    function print_recipe(id){
-        window.open("{{ url('admin/planillas/pago/print') }}/"+id, "Recibo", `width=700, height=500`)
+    function print_recipe(id, type){
+        switch (type) {
+            case 'sueldo':
+                window.open("{{ url('admin/planillas/pago/print') }}/"+id, "Recibo", `width=700, height=500`);
+                break;
+            case 'aguinaldo':
+                window.open("{{ url('admin/aguinaldos/pago/print') }}/"+id, "Recibo", `width=700, height=500`);
+                break;
+            default:
+                break;
+        }
     }
 </script>

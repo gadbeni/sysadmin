@@ -5,10 +5,14 @@
 @section('content')
     <div class="content">
         <div class="page-head">
+            @php
+                $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+                $code = $contract->number.'/'.date('Y', strtotime($contract->start));
+            @endphp
             <h2 style="text-align: center">DECLARACIÓN JURADA DE NO INCOMPATIBILIDAD LEGAL</h2>
             <br>
             <p>
-                Santísima Trinidad, 20 de Septiembre de 2021
+                Santísima Trinidad, {{ date('d', strtotime($contract->date_statement)) }} de {{ $months[intval(date('m', strtotime($contract->date_statement)))] }} de {{ date('Y', strtotime($contract->date_statement)) }}
             </p>
             <br>
             <p style="text-align: left">
@@ -30,8 +34,8 @@
 
             <div style="margin-top: 70px">
                 <p style="text-align: center; width: 100%">
-                    Lourdes Nicol Muñoz Humalla <br>
-                    C.I. 12815663-BN <br>
+                    {{ $contract->person->first_name }} {{ $contract->person->last_name }} <br>
+                    C.I. {{ $contract->person->ci }} <br>
                     <b>POSTULANTE</b>
                 </p>
             </div>

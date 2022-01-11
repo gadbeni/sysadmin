@@ -5,8 +5,12 @@
 @section('content')
     <div class="content">
         <div class="page-head">
+            @php
+                $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+                $code = $contract->number.'/'.date('Y', strtotime($contract->start));
+            @endphp
             <p>
-                Santísima Trinidad, 20 de Septiembre de 2021 <br>
+                Santísima Trinidad, {{ date('d', strtotime($contract->date_presentation)) }} de {{ $months[intval(date('m', strtotime($contract->date_presentation)))] }} de {{ date('Y', strtotime($contract->date_presentation)) }} <br>
             </p>
             <br>
             <p style="text-align: left">
@@ -22,7 +26,7 @@
         <div class="page-body">
             <p>
                 De mi consideración: <br> <br>
-                En respuesta a nota NOT_CI/GAD BENI/MC N° 190/2021 de 20 de septiembre de 2021 tengo a bien manifestar mi predisposición para el trabajo de Consultoría Individual de Línea para el cargo de <b>TECNICO IV PARA LA DIRECCION DE INTERACCION SOCIAL</b>, del Proceso de Contratación <b>GAD-BENI/MC N° 190/2021</b>. <br> <br>
+                En respuesta a nota NOT_CI/GAD BENI/MC N° {{ $code }} de {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }} tengo a bien manifestar mi predisposición para el trabajo de Consultoría Individual de Línea para el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b>, del Proceso de Contratación <b>GAD-BENI/MC N° {{ $code }}</b>. <br> <br>
                 Por lo que adjunto la siguiente documentación para la suscripción de contrato:
             </p>
 
@@ -44,8 +48,8 @@
 
             <div style="margin-top: 120px">
                 <p style="text-align: center; width: 100%;">
-                    Lourdes Nicol Muñoz Humalla <br>
-                    C.I. 12815663-BN
+                    {{ $contract->person->first_name }} {{ $contract->person->last_name }} <br>
+                    C.I. {{ $contract->person->ci }}
                 </p>
             </div>
         </div>

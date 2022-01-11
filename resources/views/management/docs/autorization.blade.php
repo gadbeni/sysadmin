@@ -4,6 +4,10 @@
 
 @section('content')
     <div class="content">
+        @php
+            $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+            $code = $contract->number.'/'.date('Y', strtotime($contract->start));
+        @endphp
         <div class="page-title">
             <h2>AUTORIZACIÓN DE INICIO DE PROCESO DE CONTRATACIÓN</h2>
         </div>
@@ -17,35 +21,35 @@
                     <td width="30px">1.</td>
                     <td width="270px">Objeto de la contratación:</td>
                     <td style="border: 1px solid black; padding: 5px">
-                        <b>CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO TÉCNICO IV PARA LA DIRECCIÓN DE INTERACCIÓN SOCIAL</b>
+                        <b>CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}</b>
                     </td>
                 </tr>
                 <tr>
                     <td>2.</td>
                     <td>Código interno del proceso de contratación:</td>
                     <td style="border: 1px solid black; padding: 5px">
-                        <b>GAD-BENI/MCD N&deg; 190/2021</b>
+                        <b>GAD-BENI/MCD N&deg; {{ $code }}</b>
                     </td>
                 </tr>
                 <tr>
                     <td>3.</td>
                     <td>Fecha de invitación:</td>
                     <td style="border: 1px solid black; padding: 5px">
-                        <b>Lunes, 20 de Septiembre de 2021</b>
+                        <b>Lunes, {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }}</b>
                     </td>
                 </tr>
                 <tr>
                     <td>4.</td>
                     <td>Certificación POA:</td>
                     <td style="border: 1px solid black; padding: 5px">
-                        <b>N/C</b>
+                        <b>{{ $contract->certification_poa }}</b>
                     </td>
                 </tr>
                 <tr>
                     <td>5.</td>
                     <td>Certificación PAC:</td>
                     <td style="border: 1px solid black; padding: 5px">
-                        <b>N/C</b>
+                        <b>{{ $contract->certification_pac }}</b>
                     </td>
                 </tr>
                 <tr>
@@ -55,11 +59,23 @@
                         <b>&#10003;</b>
                     </td>
                 </tr>
+                @php
+                    $start = Carbon\Carbon::parse($contract->start);
+                    $finish = Carbon\Carbon::parse($contract->finish);
+                    $count_months = 0;
+                    while ($start <= $finish) {
+                        $count_months++;
+                        $start->addMonth();
+                    }
+                    $count_months--;
+                    $count_days = $start->subMonth()->diffInDays($finish);
+                    $total = ($contract->salary *$count_months) + (($contract->salary /30) *$count_days);
+                @endphp
                 <tr>
                     <td>7.</td>
                     <td>Precio Referencial en Bs.:</td>
                     <td style="border: 1px solid black; padding: 5px">
-                        <b>Bs. 13.200,00 (Trece mil doscientos 00/100 Bolivianos)</b>
+                        <b>Bs. {{ NumerosEnLetras::convertir($total, 'Bolivianos', true) }}</b>
                     </td>
                 </tr>
             </table>
@@ -79,7 +95,7 @@
             </div>
 
             <p style="margin-top: 80px">
-                Santísima Trinidad, 20 de septiembre de 2021 <br>
+                Santísima Trinidad, {{ date('d', strtotime($contract->date_autorization)) }} de {{ $months[intval(date('m', strtotime($contract->date_autorization)))] }} de {{ date('Y', strtotime($contract->date_autorization)) }} <br>
                 <small><i>Cc/arch.</i></small>
             </p>
         </div>

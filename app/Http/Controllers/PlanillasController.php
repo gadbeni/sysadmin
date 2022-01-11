@@ -263,8 +263,13 @@ class PlanillasController extends Controller
                         ->where('p.id', $payment->planilla_haber_id)
                         ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
                         ->first();
-        // dd($payment, $planilla);
         return view('planillas.payment-recipe', compact('payment', 'planilla'));
+    }
+
+    public function aguinaldos_pago_print($id){
+        $payment = Aguinaldo::with(['payment'])->where('id', $id)->first();
+        // dd($payment);
+        return view('planillas.payment-aguinaldo-recipe', compact('payment'));
     }
 
     public function planillas_pago_delete_print($id){

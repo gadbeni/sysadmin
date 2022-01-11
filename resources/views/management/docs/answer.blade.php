@@ -5,8 +5,12 @@
 @section('content')
     <div class="content">
         <div class="page-head">
+            @php
+                $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+                $code = $contract->number.'/'.date('Y', strtotime($contract->start));
+            @endphp
             <p style="font-size: 13px">
-                Santísima Trinidad, 20 de Septiembre de 2021
+                Santísima Trinidad, {{ date('d', strtotime($contract->date_response)) }} de {{ $months[intval(date('m', strtotime($contract->date_response)))] }} de {{ date('Y', strtotime($contract->date_response)) }}
             </p>
             <br>
             <p style="text-align: left; font-size: 13px">
@@ -22,15 +26,15 @@
         <div class="page-body">
             <p>
                 De mi consideración: <br> <br>
-                Dando respuesta a su oficio <b>INV/CI/GAD-BENI/MC N° 190/2021</b> del 20 de septiembre de 2021, donde su autoridad me invita a presentar Currículum Vitae, para optar al servicio de un Consultor Individual de línea cargo de <b>TÉCNICO IV PARA LA DIRECCIÓN DE INTERACCIÓN SOCIAL</b>, con cargo al Programa: <b>“IMPLEMENTACION DEL SISTEMA DE INTERACCIÓN SOCIAL”</b>. En tal sentido, hago llegar a su Autoridad mi correspondiente Currículum Vitae debidamente respaldado y Declaración Jurada de No Incompatibilidad, mismo que remito dentro del plazo establecido para tal efecto. <br> <br>
+                Dando respuesta a su oficio <b>INV/CI/GAD-BENI/MC N° {{ $code }}</b> del {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }}, donde su autoridad me invita a presentar Currículum Vitae, para optar al servicio de un Consultor Individual de línea cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b>, con cargo al Programa: <b>“{{ Str::upper($contract->program->name) }}”</b>. En tal sentido, hago llegar a su Autoridad mi correspondiente Currículum Vitae debidamente respaldado y Declaración Jurada de No Incompatibilidad, mismo que remito dentro del plazo establecido para tal efecto. <br> <br>
                 No dudando de su gentil deferencia, saludo a usted con las mayores consideraciones de respeto. <br> <br>
                 Fraternalmente,
             </p>
 
             <div style="margin-top: 120px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
-                    Lourdes Nicol Muñoz Humalla <br>
-                    C.I. 12815663-BN <br>
+                    {{ $contract->person->first_name }} {{ $contract->person->last_name }} <br>
+                    C.I. {{ $contract->person->ci }} <br>
                     <b>POSTULANTE</b>
                 </p>
             </div>

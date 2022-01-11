@@ -40,7 +40,7 @@
                             <table id="dataTable" class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>N&deg;</th>
                                         <th>Persona</th>
                                         <th>Cargo</th>
                                         <th>Unidad administrativa</th>
@@ -52,7 +52,7 @@
                                 <tbody>
                                     @forelse ($contracts as $item)
                                     <tr>
-                                        <td>{{ $item->id }}</td>
+                                        <td>{{ $item->number }}/{{ date('Y', strtotime($item->start)) }}</td>
                                         <td>{{ $item->person->first_name }} {{ $item->person->last_name }}</td>
                                         <td>{{ $item->cargo->Descripcion }}</td>
                                         <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
@@ -80,17 +80,21 @@
                                                 </button>
                                               
                                                 <ul class="dropdown-menu" role="menu">
-                                                  <li><a href="#">Acción #1</a></li>
-                                                  <li><a href="#">Acción #2</a></li>
-                                                  <li><a href="#">Acción #3</a></li>
-                                                  <li class="divider"></li>
-                                                  <li><a href="#">Acción #4</a></li>
+                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'autorization']) }}" target="_blank">Autorización</a></li>
+                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'invitation']) }}" target="_blank">Invitación</a></li>
+                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'answer']) }}" target="_blank">Respuesta</a></li>
+                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'declaration']) }}" target="_blank">Declaración</a></li>
+                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'memorandum']) }}" target="_blank">Memorandum</a></li>
+                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'report']) }}" target="_blank">Informe</a></li>
+                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
+                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'presentation']) }}" target="_blank">Presentación de documentos</a></li>
+                                                    {{-- <li class="divider"></li> --}}
                                                 </ul>
                                             </div>
                                             <a href="#" title="Ver" class="btn btn-sm btn-warning view">
                                                 <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                                             </a>
-                                            <a href="#" title="Editar" class="btn btn-sm btn-primary edit">
+                                            <a href="{{ route('contracts.edit', ['contract' => $item->id]) }}" title="Editar" class="btn btn-sm btn-primary edit">
                                                 <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
                                             </a>
                                             <a href="javascript:;" title="Borrar" class="btn btn-sm btn-danger delete">
@@ -99,8 +103,8 @@
                                         </td>
                                     </tr>
                                     @empty
-                                        <tr>
-                                            <td><h4>No hay registros</h4></td>
+                                        <tr class="odd">
+                                            <td valign="top" colspan="7" class="dataTables_empty">No hay datos disponibles en la tabla</td>
                                         </tr>
                                     @endforelse
                                 </tbody>

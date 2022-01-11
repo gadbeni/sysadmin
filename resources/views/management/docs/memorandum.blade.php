@@ -4,16 +4,20 @@
 
 @section('content')
     <div class="content">
+        @php
+            $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+            $code = $contract->number.'/'.date('Y', strtotime($contract->start));
+        @endphp
         <div class="page-title">
             <h2>
                 <span style="color: #009A2F">MEMORANDUM</span> <br>
-                S.D.A.F./R.E.C. N° 190/2021
+                S.D.A.F./R.E.C. N° {{ $code }}
             </h2>
         </div>
         <div class="page-body">
             <div class="page-head" style="width: 100%">
                 <div class="border-right">
-                    <p style="position:absolute; bottom: 10px">Santísima Trinidad, 21 de septiembre de 2021</p>
+                    <p style="position:absolute; bottom: 10px">Santísima Trinidad, {{ date('d', strtotime($contract->date_memo)) }} de {{ $months[intval(date('m', strtotime($contract->date_memo)))] }} de {{ date('Y', strtotime($contract->date_memo)) }}</p>
                 </div>
                 <div class="border-left">
                     <b>DE:</b> Lic. Geisel Marcelo Oliva Ruiz <br>
@@ -41,10 +45,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>GAD - BENI / MC N° 190/2021</td>
+                            <td>GAD - BENI / MC N° {{ $code }}</td>
                             <td>CONTRATACIÓN MENOR</td>
-                            <td>CONTRATACION DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO TÉCNICO IV PARA LA DIRECCIÓN DE INTERACCIÓN SOCIAL</td>
-                            <td>IMPLEMENTACIÓN DEL SISTEMA DE INTERACCIÓN SOCIAL</td>
+                            <td>CONTRATACION DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}</td>
+                            <td>{{ Str::upper($contract->program->name) }}</td>
                         </tr>
                     </tbody>
                 </table>

@@ -42,9 +42,10 @@ class ContractsController extends Controller
     {
         $people = Person::where('deleted_at', NULL)->get();
         $direccion_administrativas = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
+        $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $programs = Program::where('deleted_at', NULL)->get();
         $cargos = DB::connection('mysqlgobe')->table('cargo')->where('idPlanilla', 3)->get();
-        return view('management.contracts.edit-add', compact('people', 'direccion_administrativas', 'programs', 'cargos'));
+        return view('management.contracts.edit-add', compact('people', 'direccion_administrativas', 'funcionarios', 'programs', 'cargos'));
     }
 
     /**
@@ -57,12 +58,15 @@ class ContractsController extends Controller
     {
         // dd($request->all());
         try {
+            $number = Contract::whereYear('start', date('Y', strtotime($request->start)))->count() + 1;
+
             $contract = Contract::create([
                 'person_id' => $request->person_id,
                 'program_id' => $request->program_id,
                 'cargo_id' => $request->cargo_id,
                 'unidad_adminstrativa_id' => $request->unidad_adminstrativa_id,
                 'user_id' => Auth::user()->id,
+                'number' => $number,
                 'salary' => $request->salary,
                 'start' => $request->start,
                 'finish' => $request->finish,
@@ -71,7 +75,7 @@ class ContractsController extends Controller
                 'date_response' => $request->date_response,
                 'date_statement' => $request->date_statement,
                 'date_memo' => $request->date_memo,
-                'workers_memo' => $request->workers_memo,
+                'workers_memo' => json_encode($request->workers_memo),
                 'date_memo_res' => $request->date_memo_res,
                 'date_note' => $request->date_note,
                 'date_report' => $request->date_report,
@@ -80,11 +84,13 @@ class ContractsController extends Controller
                 'date_autorization' => $request->date_autorization,
                 'certification_poa' => $request->certification_poa,
                 'certification_pac' => $request->certification_pac,
+                'date_presentation' => $request->date_presentation,
             ]);
 
-            return redirect()->route('contracts.index')->with('success', 'Contrato creado correctamente');
+            return redirect()->route('contracts.index')->with(['message' => 'Contrato guardado exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             //throw $th;
+            return redirect()->route('contracts.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
 
@@ -107,7 +113,13 @@ class ContractsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $contract = Contract::with(['user', 'person', 'program'])->where('id', $id)->first();
+        $people = Person::where('deleted_at', NULL)->get();
+        $direccion_administrativas = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
+        $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
+        $programs = Program::where('deleted_at', NULL)->get();
+        $cargos = DB::connection('mysqlgobe')->table('cargo')->where('idPlanilla', 3)->get();
+        return view('management.contracts.edit-add', compact('contract', 'people', 'direccion_administrativas', 'funcionarios', 'programs', 'cargos'));
     }
 
     /**
@@ -119,7 +131,37 @@ class ContractsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $contract = Contract::where('id', $id)->update([
+                'person_id' => $request->person_id,
+                'program_id' => $request->program_id,
+                'cargo_id' => $request->cargo_id,
+                'unidad_adminstrativa_id' => $request->unidad_adminstrativa_id,
+                'salary' => $request->salary,
+                'start' => $request->start,
+                'finish' => $request->finish,
+                'date_invitation' => $request->date_invitation,
+                'date_limit_invitation' => $request->date_limit_invitation,
+                'date_response' => $request->date_response,
+                'date_statement' => $request->date_statement,
+                'date_memo' => $request->date_memo,
+                'workers_memo' => json_encode($request->workers_memo),
+                'date_memo_res' => $request->date_memo_res,
+                'date_note' => $request->date_note,
+                'date_report' => $request->date_report,
+                'table_report' => $request->table_report,
+                'details_report' => $request->details_report,
+                'date_autorization' => $request->date_autorization,
+                'certification_poa' => $request->certification_poa,
+                'certification_pac' => $request->certification_pac,
+                'date_presentation' => $request->date_presentation,
+            ]);
+
+            return redirect()->route('contracts.index')->with(['message' => 'Contrato editado exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('contracts.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
     }
 
     /**
@@ -131,5 +173,14 @@ class ContractsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    // ================================
+    
+    public function print($id, $document){
+        $contract = Contract::with(['user', 'person', 'program'])->where('id', $id)->first();
+        $contract->cargo = DB::connection('mysqlgobe')->table('cargo')->where('ID', $contract->cargo_id)->first();
+        $contract->unidad_adminstrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->where('ID', $contract->unidad_adminstrativa_id)->first();
+        return view('management.docs.'.$document, compact('contract'));
     }
 }

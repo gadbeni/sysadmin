@@ -1,34 +1,38 @@
 @extends('layouts.template-print')
 
 @section('page_title', 'Invitación')
-
+{{-- {{ $contract }} --}}
 @section('content')
     <div class="content">
         <div class="page-head">
+            @php
+                $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+                $code = $contract->number.'/'.date('Y', strtotime($contract->start));
+            @endphp
             <p style="font-size: 13px">
-                Santísima Trinidad, 20 de Septiembre de 2021 <br>
-                <b>INV/CI/GAD BENI/MCD N° 190/2021</b>
+                Santísima Trinidad, {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }} <br>
+                <b>INV/CI/GAD BENI/MCD N° {{ $code }}</b>
             </p>
             <br>
             <p style="text-align: left">
-                Señor(a): <br>
-                xxxxxxxxxxxxxxxx <br>
-                Cel. xxxxxxxxx <br>
-                Presente. –
+                {{ $contract->person->gender == 'masculino' ? 'Señor' : 'Señora' }}: <br>
+                {{ $contract->person->first_name }} {{ $contract->person->last_name }} <br>
+                Cel. {{ $contract->person->phone }} <br>
+                Presente .–
             </p>
         </div>
         <div class="page-title">
-            <h3><u>REF.: INVITACIÓN A PRESENTAR PROPUESTA - PROCESO DE CONTRATACIÓN GAD-BENI/MC N° 190/2021 “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO TÉCNICO IV PARA LA DIRECCION DE INTERACCIÓN SOCIAL”</u></h3>
+            <h3><u>REF.: INVITACIÓN A PRESENTAR PROPUESTA - PROCESO DE CONTRATACIÓN GAD-BENI/MC N° {{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}”</u></h3>
         </div>
         <div class="page-body">
             <p>
                 De mi consideración: <br>
-                El Gobierno Autónomo Departamental del Beni, a través de la Secretaria Departamental de Administración y Finanzas, requiere contratar los servicios de un Consultor Individual de línea para el cargo de <b>TÉCNICO IV PARA LA DIRECCION DE INTERACCIÓN SOCIAL</b> cargado al programa <b>“IMPLEMENTACION DEL SISTEMA DE INTERACCIÓN SOCIAL”</b>. <br>
-                <b>PRECIO REFERENCIAL:</b> monto mensual de Bs.- 4000.00 (cuatro mil 00/100 bolivianos) <br>
-                <b>PLAZO DE PRESTACIÓN DE SERVICIO:</b> El consultor prestará el servicio a partir del siguiente día hábil de la firma de contrato hasta el 31 de diciembre de 2021. <br>
-                <b>DEPENDENCIA DEL CONSULTOR:</b> el consultor estará bajo la dependencia directa de la DIRECCIÓN DE INTERACCIÓN SOCIAL. <br>
+                El Gobierno Autónomo Departamental del Beni, a través de la Secretaria Departamental de Administración y Finanzas, requiere contratar los servicios de un Consultor Individual de línea para el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b> cargado al programa <b>“{{ Str::upper($contract->program->name) }}”</b>. <br>
+                <b>PRECIO REFERENCIAL:</b> monto mensual de Bs.- {{ NumerosEnLetras::convertir($contract->salary, 'Bolivianos', true) }} <br>
+                <b>PLAZO DE PRESTACIÓN DE SERVICIO:</b> El consultor prestará el servicio a partir del siguiente día hábil de la firma de contrato hasta el {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}. <br>
+                <b>DEPENDENCIA DEL CONSULTOR:</b> el consultor estará bajo la dependencia directa de el/la {{ Str::upper($contract->unidad_adminstrativa->NOMBRE) }}. <br>
                 <b>FORMA DE PAGO:</b> la cancelación se realizará en pagos mensuales, en moneda nacional, previa presentación de informes, solicitud de pago por parte del adjudicatario y debidamente aprobado por la unidad solicitante. <br>
-                En tal sentido, <b><u>le invito</u></b> presentar su Currículum Vitae debidamente documentado y Declaración Jurada de No Incompatibilidad, a ser presentado en la oficina de la Dirección Administrativa, dependiente de la Secretaria Dptal de Administración Finanzas, ubicada en el Edificio Central, Plaza Principal “Mcal. José Ballivián” Acera Sur, hasta el día 21 de septiembre de 2021. <br><br>
+                En tal sentido, <b><u>le invito</u></b> presentar su Currículum Vitae debidamente documentado y Declaración Jurada de No Incompatibilidad, a ser presentado en la oficina de la Dirección Administrativa, dependiente de la Secretaria Dptal de Administración Finanzas, ubicada en el Edificio Central, Plaza Principal “Mcal. José Ballivián” Acera Sur, hasta el día {{ date('d', strtotime($contract->date_limit_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_limit_invitation)))] }} de {{ date('Y', strtotime($contract->date_limit_invitation)) }}. <br><br>
                 Adjunto Términos de Referencia y Formato de Declaración Jurada de No Incompatibilidad <br><br>
                 Sin otro particular, lo saludo a usted con toda atención.
             </p>

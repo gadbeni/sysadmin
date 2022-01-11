@@ -15,6 +15,7 @@ class Contract extends Model
         'cargo_id',
         'unidad_adminstrativa_id',
         'user_id',
+        'number',
         'salary',
         'start',
         'finish',
@@ -32,6 +33,7 @@ class Contract extends Model
         'date_autorization',
         'certification_poa',
         'certification_pac',
+        'date_presentation',
         'status',
     ];
 

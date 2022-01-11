@@ -84,7 +84,7 @@
             </div>
         </div>
         <div style="position: fixed; bottom: 40px; right: 20px; z-index: 10;padding: 10px 20px; background-color: white; box-shadow: 0px 0px 15px 10px white; border-radius: 5px">
-            <button class="btn btn-success btn-lg btn-increment-ticket" ><h4>{{ setting('auxiliares.numero_ticket') == 0  ? 'Iniciar' : 'Siguiente' }} <span class="voyager-double-right"></span></h4></button>
+            <button class="btn btn-warning btn-lg btn-increment-ticket" ><h4>{{ setting('auxiliares.numero_ticket') == 0  ? 'Iniciar' : 'Siguiente' }} <span class="voyager-double-right"></span></h4></button>
         </div>
     </div>
 @stop

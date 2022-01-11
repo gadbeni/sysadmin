@@ -5,48 +5,78 @@
 @section('content')
     <div class="content">
         <div class="page-head">
+            @php
+                $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+                $code = $contract->number.'/'.date('Y', strtotime($contract->start));
+            @endphp
             <p>
-                Santísima Trinidad, 20 de Septiembre de 2021 <br>
+                Santísima Trinidad, {{ date('d', strtotime($contract->date_note)) }} de {{ $months[intval(date('m', strtotime($contract->date_note)))] }} de {{ date('Y', strtotime($contract->date_note)) }} <br>
                 <b>INV/CI/GAD BENI/MCD N° 190/2021</b>
             </p>
             <br>
             <p style="text-align: left">
-                Señor(a): <br>
-                xxxxxxxxxxxxxxxx <br>
-                Cel. xxxxxxxxx <br>
-                Presente. –
+                {{ $contract->person->gender == 'masculino' ? 'Señor' : 'Señora' }}: <br>
+                {{ $contract->person->first_name }} {{ $contract->person->last_name }} <br>
+                Cel. {{ $contract->person->phone }} <br>
+                Presente .–
             </p>
         </div>
         <div class="page-title">
             <h3><u>REF: NOTA DE ADJUDICACIÓN</u></h3>
         </div>
         <div class="page-body">
+            @php
+                $start = Carbon\Carbon::parse($contract->start);
+                $finish = Carbon\Carbon::parse($contract->finish);
+                $count_months = 0;
+                while ($start <= $finish) {
+                    $count_months++;
+                    $start->addMonth();
+                }
+                $count_months--;
+                $count_days = $start->subMonth()->diffInDays($finish);
+                $periodo = '';
+                if($count_months > 0){
+                    if($count_months == 1){
+                        $periodo .= NumerosEnLetras::convertir($count_months).' mes';
+                    }else{
+                        $periodo .= NumerosEnLetras::convertir($count_months).' meses';
+                    }
+                }
+                if($count_days > 0){
+                    if($count_days == 1){
+                        $periodo .= ' y '.NumerosEnLetras::convertir($count_days).' día';
+                    }else{
+                        $periodo .= ' y '.NumerosEnLetras::convertir($count_days).' días';
+                    }
+                }
+            @endphp
             <p>
                 De mi consideración: <br> <br>
-                En el marco del D.S. 0181 del 28 de junio de 2009  y sus decretos modificatorios, comunico a usted que una vez concluido el proceso de Evaluación a su postulación y conformidad a los Términos de Referencia, en base a la recomendación por el Responsable de Evaluación, se ha resuelto <b>ADJUDICAR</b> a su persona para que preste los servicios de Consultor en Línea del Proceso <b>GAD-BENI/MC N° 190/2021 “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO TECNICO IV PARA LA DIRECCIÓN DE INTERACCIÓN SOCIAL”, con cargo al Programa: “IMPLEMENTACIÓN DEL SISTEMA DE INTERACCIÓN SOCIAL”</b>. por  un plazo de tres meses y nueve (09) días, de acuerdo al siguiente detalle: <br>
+                En el marco del D.S. 0181 del 28 de junio de 2009  y sus decretos modificatorios, comunico a usted que una vez concluido el proceso de Evaluación a su postulación y conformidad a los Términos de Referencia, en base a la recomendación por el Responsable de Evaluación, se ha resuelto <b>ADJUDICAR</b> a su persona para que preste los servicios de Consultor en Línea del Proceso <b>GAD-BENI/MC N° {{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}”</b>, con cargo al Programa: <b>“{{ Str::upper($contract->program->name) }}”</b>. por  un plazo de {{ $periodo }}, de acuerdo al siguiente detalle: <br>
             </p>
 
             <table align="center">
                 <tr>
-                    <td style="width: 350px;">&#9679; &nbsp; Monto mensual</td>
-                    <td style="width: 150px; text-align: right">Bs.- &nbsp;&nbsp; 4.000.00</td>
+                    <td style="width: 320px;">&#9679; &nbsp; Monto mensual</td>
+                    <td style="width: 180px; text-align: right">Bs.- &nbsp;&nbsp; {{ number_format($contract->salary, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td>&#9679; &nbsp; Monto total adjudicado</td>
-                    <td style="text-align: right">Bs.- &nbsp;&nbsp; 13.200.00</td>
+                    <td style="text-align: right">Bs.- &nbsp;&nbsp; {{ number_format(($contract->salary *$count_months) + (($contract->salary /30) *$count_days), 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td>&#9679; &nbsp; Fecha de inicio de contrato</td>
-                    <td style="text-align: right">22 de septiembre de 2021</td>
+                    <td style="text-align: right">{{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}</td>
                 </tr>
                 <tr>
                     <td>&#9679; &nbsp; Fecha de conclusión de contrato</td>
-                    <td style="text-align: right">31 de diciembre de 2021</td>
+                    <td style="text-align: right">{{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}</td>
                 </tr>
             </table>
 
             <p>
-                Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la Dirección Administrativa dependiente de la Secretaría Dptal. de Administración y Finanzas, ubicada en la Plaza Principal, hasta el día 21 de septiembre de 2021, deberá presentar la siguiente documentación:
+                Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la Dirección Administrativa dependiente de la Secretaría Dptal. de Administración y Finanzas, ubicada en la Plaza Principal, hasta el día {{ date('d', strtotime($contract->date_limit_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_limit_invitation)))] }} de {{ date('Y', strtotime($contract->date_limit_invitation)) }} , deberá presentar la siguiente documentación:
             </p>
 
             <table align="center">

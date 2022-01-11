@@ -69,6 +69,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('planillas/details/payment/multiple', [PlanillasController::class, 'planilla_details_payment_multiple'])->name('planillas.details.payment.multiple');
     Route::post('planillas/update/status', [PlanillasController::class, 'planilla_update_status'])->name('planillas.update.status');
     Route::get('planillas/pago/print/{id}', [PlanillasController::class, 'planillas_pago_print']);
+    Route::get('aguinaldos/pago/print/{id}', [PlanillasController::class, 'aguinaldos_pago_print']);
     Route::post('planillas/pago/delete', [PlanillasController::class, 'planilla_payment_delete'])->name('planilla.payment.delete');
     Route::get('planillas/pago/delete/print/{id}', [PlanillasController::class, 'planillas_pago_delete_print']);
 
@@ -111,6 +112,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     // *Contratos
     Route::resource('contracts', ContractsController::class);
+    Route::get('/contracts/{id}/print/{document}', [ContractsController::class, 'print'])->name('contracts.print');
     
     // Reportes
 
@@ -169,7 +171,3 @@ Route::get('/admin/clear-cache', function() {
     Artisan::call('optimize:clear');
     return redirect('/admin/profile')->with(['message' => 'Cache eliminada.', 'alert-type' => 'success']);
 })->name('clear.cache');
-
-Route::get('/plantilla', function() {
-    return view('management.docs.autorization');
-});

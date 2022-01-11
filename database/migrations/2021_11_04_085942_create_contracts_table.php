@@ -20,6 +20,7 @@ class CreateContractsTable extends Migration
             $table->integer('unidad_adminstrativa_id')->nullable();
             $table->foreignId('program_id')->nullable()->constrained('programs');
             $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->smallInteger('number')->nullable();
             $table->decimal('salary', 10, 2)->nullable();
             $table->date('start')->nullable();
             $table->date('finish')->nullable();
