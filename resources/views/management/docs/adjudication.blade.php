@@ -11,7 +11,7 @@
             @endphp
             <p>
                 Santísima Trinidad, {{ date('d', strtotime($contract->date_note)) }} de {{ $months[intval(date('m', strtotime($contract->date_note)))] }} de {{ date('Y', strtotime($contract->date_note)) }} <br>
-                <b>INV/CI/GAD BENI/MCD N° 190/2021</b>
+                <b>INV/CI/GAD BENI/MCD N° {{ $code }}</b>
             </p>
             <br>
             <p style="text-align: left">

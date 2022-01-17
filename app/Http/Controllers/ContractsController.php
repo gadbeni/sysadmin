@@ -181,6 +181,8 @@ class ContractsController extends Controller
         $contract = Contract::with(['user', 'person', 'program'])->where('id', $id)->first();
         $contract->cargo = DB::connection('mysqlgobe')->table('cargo')->where('ID', $contract->cargo_id)->first();
         $contract->unidad_adminstrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->where('ID', $contract->unidad_adminstrativa_id)->first();
+        $contract->workers = DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get();
+        // dd($contract);
         return view('management.docs.'.$document, compact('contract'));
     }
 }

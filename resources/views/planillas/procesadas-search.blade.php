@@ -125,7 +125,7 @@
                                         <button type="button" data-toggle="modal" data-target="#pagar-aguinaldo-modal" onclick='setValuePayBonus(@json($item), @json($cashier))' class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
                                         @endif
 
-                                        @if ($item->estado == 'pagada')
+                                        @if ($item->estado == 'pagado')
                                         <button type="button" onclick="print_recipe({{ $item->id }}, 'aguinaldo')" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
                                         @endif
                                     </td>

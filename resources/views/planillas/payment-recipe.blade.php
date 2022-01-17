@@ -103,8 +103,9 @@
                 <td style="border: 1px solid #ddd">
                     @php
                         $dias = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+                        $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                     @endphp
-                    {{ $dias[date('N', strtotime($payment->created_at))].', '.date('d', strtotime($payment->created_at)).' de '.date('m', strtotime($payment->created_at)).' de '.date('Y', strtotime($payment->created_at)) }}
+                    {{ $dias[date('N', strtotime($payment->created_at))].', '.date('d', strtotime($payment->created_at)).' de '.$months[date('m', strtotime($payment->created_at))].' de '.date('Y', strtotime($payment->created_at)) }}
                 </td>
                 <td><b>HORA</b></td>
                 <td style="border: 1px solid #ddd">

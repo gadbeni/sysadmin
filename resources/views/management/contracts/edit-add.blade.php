@@ -185,6 +185,124 @@
             </div>
 
             <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-bordered">
+                        <div class="panel-heading"><h6 class="panel-title">Cuadro de nivel de consultoría</h6></div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    {{-- <label for="table_report"></label> --}}
+                                    <textarea class="form-control richTextBox" name="table_report">
+                                        {{
+                                            isset($contract) ?
+                                            $contract->table_report :
+                                            '<p>&nbsp;</p>
+                                            <table style="color: #000000; font-family: Arial, sans-serif; width: 612px; font-size: 11px;" border="1" cellspacing="0" cellpadding="3">
+                                            <tbody>
+                                            <tr>
+                                            <th rowspan="2">NIVEL DE CONSULTOR&Iacute;A</th>
+                                            <th colspan="2">REQUISITOS</th>
+                                            </tr>
+                                            <tr>
+                                            <th>FORMACI&Oacute;N ACAD&Eacute;MICA</th>
+                                            <th>MEDIOS DE VERIFICACI&Oacute;N</th>
+                                            </tr>
+                                            <tr>
+                                            <td rowspan="3"><strong>TECNICO IV PARA LA DIRECCI&Oacute;N DE INTERACCI&Oacute;N SOCIAL</strong></td>
+                                            <td>
+                                            <ul style="padding-left: 20px;">
+                                            <li>Descripci&oacute;n</li>
+                                            </ul>
+                                            </td>
+                                            <td>
+                                            <ul style="padding-left: 20px;">
+                                            <li>Descripción</li>
+                                            </ul>
+                                            </td>
+                                            </tr>
+                                            <tr>
+                                            <td><strong>EXPERIENCIA LABORAL REQUERIDA</strong></td>
+                                            <td><strong>MEDIOS DE VERIFICACI&Oacute;N</strong></td>
+                                            </tr>
+                                            <tr>
+                                            <td>
+                                            <ul style="padding-left: 20px;">
+                                            <li>No aplica</li>
+                                            </ul>
+                                            </td>
+                                            <td>
+                                            <ul style="padding-left: 20px;">
+                                            <li>No aplica</li>
+                                            </ul>
+                                            </td>
+                                            </tr>
+                                            </tbody>
+                                            </table>
+                                            <p>&nbsp;</p>
+                                            <p style="text-align: justify; color: #000000; font-family: Arial, sans-serif; font-size: 13px;">As&iacute; mismo se procedi&oacute; a la Evaluaci&oacute;n mediante la metodolog&iacute;a CUMPLE y NO CUMPLE, tal como se detalla en el siguiente cuadro:</p>
+                                            <p>&nbsp;</p>
+                                            <table style="color: #000000; font-family: Arial, sans-serif; width: 612px; font-size: 11px;" border="1" cellspacing="0" cellpadding="3">
+                                            <tbody>
+                                            <tr>
+                                            <th rowspan="2">NIVEL DE CONSULTOR&Iacute;A</th>
+                                            <th colspan="2">VERIFICACI&Oacute;N</th>
+                                            </tr>
+                                            <tr>
+                                            <th>FORMACI&Oacute;N ACAD&Eacute;MICA</th>
+                                            <th>MEDIOS DE VERIFICACI&Oacute;N</th>
+                                            </tr>
+                                            <tr>
+                                            <td rowspan="3"><strong>TECNICO IV PARA LA DIRECCI&Oacute;N DE INTERACCI&Oacute;N SOCIAL</strong></td>
+                                            <td>
+                                            <ul style="padding-left: 20px;">
+                                            <li>Cumple</li>
+                                            </ul>
+                                            </td>
+                                            <td>
+                                            <ul style="padding-left: 20px;">
+                                            <li>Cumple</li>
+                                            </ul>
+                                            </td>
+                                            </tr>
+                                            <tr>
+                                            <td><strong>EXPERIENCIA LABORAL REQUERIDA</strong></td>
+                                            <td><strong>MEDIOS DE VERIFICACI&Oacute;N</strong></td>
+                                            </tr>
+                                            <tr>
+                                            <td>
+                                            <ul style="padding-left: 20px;">
+                                            <li>No aplica</li>
+                                            </ul>
+                                            </td>
+                                            <td>
+                                            <ul style="padding-left: 20px;">
+                                            <li>No aplica</li>
+                                            <li>&nbsp;</li>
+                                            </ul>
+                                            </td>
+                                            </tr>
+                                            </tbody>
+                                            </table>'
+                                        }}
+                                    </textarea>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    {{-- <label for="table_report"></label> --}}
+                                    <textarea class="form-control richTextBox" name="details_report">
+                                        {{
+                                            isset($contract) ?
+                                            $contract->details_report :
+                                            '<p><strong style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">3. MONTO Y FORMA DE PAGO</strong><br style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;" /><span style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">El monto total a cancelar ser&aacute; de&nbsp;</span><strong style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">Bs.- 11.550,00 (Once mil quinientos cincuenta 00/100 Bolivianos)</strong><span style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">, mismos que ser&aacute;n cancelados en cuatro (04) cuotas mensuales: la primera correspondiente a nueve (09) d&iacute;as del mes de septiembre por&nbsp;</span><strong style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">Bs.- 1.200.00</strong><span style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">&nbsp;(Un mil doscientos 00/100 bolivianos), la segunda, tercera y cuarta cuota correspondiente a los meses de octubre, noviembre y diciembre por un monto mensual de&nbsp;</span><strong style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">Bs.- 4.000.00</strong><span style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">&nbsp;(cuatro mil 00/100 bolivianos), mismas que ser&aacute;n canceladas previa presentaci&oacute;n y aprobaci&oacute;n de informe de actividades.</span></p>'
+                                        }}
+                                    </textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col-md-12 text-right">
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
@@ -196,6 +314,14 @@
 @section('javascript')
     <script>
         $(document).ready(function(){
+            var additionalConfig = {
+                selector: '.richTextBox',
+            }
+
+            $.extend(additionalConfig, {})
+
+            tinymce.init(window.voyagerTinyMCE.getConfig(additionalConfig));
+            
             @isset($contract)
                 let workers_memo = '{!! $contract->workers_memo !!}' ? JSON.parse('{!! $contract->workers_memo !!}') : [];
                 $('#select-workers_memo').val(workers_memo);

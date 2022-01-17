@@ -25,6 +25,10 @@
                                         </button>
                                     </span>
                                 </div>
+                                <div class="form-group" style="margin-top: 10px">
+                                    <label class="radio-inline"><input type="radio" name="type" value="1" checked>Todos</label>
+                                    <label class="radio-inline"><input type="radio" name="type" value="2">Agrupado por mes</label>
+                                </div>
                             </form>
                         </div>
                     </div>
