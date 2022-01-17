@@ -76,7 +76,7 @@
                                         </tr>
                                     @empty
                                         <tr class="odd">
-                                            <td valign="top" colspan="7" class="dataTables_empty">No hay datos disponibles en la tabla</td>
+                                            <td valign="top" colspan="11" class="dataTables_empty">No hay datos disponibles en la tabla</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
