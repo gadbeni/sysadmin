@@ -199,6 +199,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2022-01-04 10:56:30',
                 'updated_at' => '2022-01-04 10:57:05',
             ),
+            10 => 
+            array (
+                'id' => 11,
+                'name' => 'stipends',
+                'slug' => 'stipends',
+                'display_name_singular' => 'Planilla Adicional',
+                'display_name_plural' => 'Planillas Adicionales',
+                'icon' => NULL,
+                'model_name' => 'App\\Models\\Stipend',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null}',
+                'created_at' => '2022-01-17 00:29:10',
+                'updated_at' => '2022-01-17 00:29:10',
+            ),
         ));
         
         

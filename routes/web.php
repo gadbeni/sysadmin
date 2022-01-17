@@ -12,6 +12,7 @@ use App\Http\Controllers\SocialSecurityController;
 use App\Http\Controllers\SpreadsheetsController;
 use App\Http\Controllers\PluginsController;
 use App\Http\Controllers\ContractsController;
+use App\Http\Controllers\StipendController;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,6 +108,12 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('spreadsheets', SpreadsheetsController::class);
     Route::get('spreadsheets/ajax/list', [SpreadsheetsController::class, 'list']);
     Route::post('spreadsheets/delete/multiple', [SpreadsheetsController::class, 'destroy_multiple'])->name('spreadsheets.delete_multiple');
+
+
+
+    // PLANILLAS ADICIONALES            ignacio 
+    Route::resource('planillas_adicionales', StipendController::class);
+    Route::delete('planillas_adicionales/delete', [StipendController::class, 'destroy'])->name('planillas.adicional.delete');
 
     // Administrativo
 
