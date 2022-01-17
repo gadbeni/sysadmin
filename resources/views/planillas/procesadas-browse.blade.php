@@ -338,7 +338,7 @@
                 $('#div-results').html(res);
             })
             .fail(function() {
-                toastr.error('Ocurrió un error!', 'Oops!');
+                toastr.error('Ocurrió un error.!', 'Oops!');
             })
             .always(function() {
                 $('#div-results').loading('toggle');
