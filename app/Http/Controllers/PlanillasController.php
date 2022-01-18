@@ -14,6 +14,7 @@ use App\Models\CashiersPayment;
 use App\Models\CashiersPaymentsDelete;
 use App\Models\PlanillasHistory;
 use App\Models\Aguinaldo;
+use App\Models\Stipend;
 
 class PlanillasController extends Controller
 {
@@ -67,11 +68,14 @@ class PlanillasController extends Controller
                                 ->orderBy("p.Periodo", "DESC")
                                 ->get();
                 $aguinaldo = Aguinaldo::with('payment.cashier.user')->where('ci', 'like', '%'. $request->ci.'%')->where('deleted_at', NULL)->get();
+                $stipend = Stipend::with('payment.cashier.user')->where('ci', 'like', '%'. $request->ci.'%')->where('deleted_at', NULL)->get();
+                
+                // return Stipend::where('ci',$request->ci)->get();
                 $title = '';
                 break;
         }
         // 10838067
-        return view('planillas.procesadas-search', compact('planilla', 'tipo_planilla', 'title', 'aguinaldo'));
+        return view('planillas.procesadas-search', compact('planilla', 'tipo_planilla', 'title', 'aguinaldo', 'stipend'));
     }
 
     public function planilla_search_by_id(){
@@ -171,6 +175,21 @@ class PlanillasController extends Controller
                 }
             }
 
+            // Pago de estipendio
+            if($request->stipend_id){
+                Stipend::where('id', $request->stipend_id)->update(['estado' => 'pagado']);
+                $payment = CashiersPayment::where('stipend_id', $request->stipend_id)->where('deleted_at', NULL)->first();
+                if(!$payment){
+                    $payment = CashiersPayment::create([
+                        'cashier_id' => $request->cashier_id,
+                        'stipend_id' => $request->stipend_id,
+                        'amount' => $request->amount,
+                        'description' => 'Pago de estipendio a '.$request->name.'.',
+                        'observations' => $request->observations
+                    ]);
+                }
+            }
+
             DB::commit();
             return response()->json(['success' => 1, 'payment_id' => $payment->id]);
         } catch (\Throwable $th) {
@@ -179,6 +198,7 @@ class PlanillasController extends Controller
             return response()->json(['error' => 1]);
         }
     }
+
 
     // Realizar pagos de planilla haberes múltiple
     public function planilla_details_payment_multiple(Request $request){

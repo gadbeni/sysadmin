@@ -14,7 +14,7 @@ class UpdateCashiersPaymentsTable extends Migration
     public function up()
     {
         Schema::table('cashiers_payments', function(Blueprint $table){
-            $table->foreignId('aguinaldo_id')->nullable()->constrained('aguinaldos')->after('cashier_id');
+            $table->foreignId('stipend_id')->nullable()->constrained('stipends')->after('cashier_id');
 		});
     }
 
@@ -26,7 +26,7 @@ class UpdateCashiersPaymentsTable extends Migration
     public function down()
     {
         Schema::table('cashiers_payments', function (Blueprint $table) {
-            $table->dropColumn(['aguinaldo_id']);
+            $table->dropColumn(['stipend_id']);
         });
     }
 }

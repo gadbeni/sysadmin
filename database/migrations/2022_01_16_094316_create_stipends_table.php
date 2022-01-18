@@ -24,6 +24,7 @@ class CreateStipendsTable extends Migration
             $table->decimal('rciva',8,2);
             $table->decimal('total',8,2);
             $table->decimal('liqpagable',8,2);
+            $table->string('estado')->nullable()->default('pendiente');
             $table->timestamps();
             $table->softDeletes();
         });

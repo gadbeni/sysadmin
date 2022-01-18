@@ -141,6 +141,79 @@
         </form>
         {{-- @endif --}}
 
+        {{-- AdditionalSteddts --}}
+        <form action="" method="post">
+            @csrf
+            <div class="panel-body" style="margin-bottom: 50px">
+                <div class="table-responsive">
+                    <h3 class="text-center">PAGO DE PLANILLAS ADICIONALES</h3>
+                    <table id="dataTable-aguinaldo" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ITEM</th>
+                                <th>CARGO</th>
+                                <th>FUNCIONARIO</th>
+                                <th>CI</th>
+                                <th>DÍAS TRAB.</th>
+                                <th>SUELDO PROMEDIO</th>
+                                <th>MONTO FACTURA.</th>
+                                <th>RC-IVA.</th>
+                                <th>TOTAL</th>
+                                <th>LÍQUIDO PAGABLE</th>
+                                <th>ESTADO</th>
+                                @if ($cashier || Auth::user()->role_id == 1)
+                                <th>ACCIONES</th>
+                                @endif
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($stipend as $item)
+                                <tr>
+                                    <td>{{ $item->id }}</td>
+                                    <td>{{ $item->cargo }}</td>
+                                    <td>{{ $item->funcionario }}</td>
+                                    <td>{{ $item->ci }}</td>
+                                    <td>{{ $item->dia }}</td>
+                                    <td>{{ $item->sueldo }}</td>
+                                    <td>{{ $item->montofactura }}</td>
+                                    <td>{{ $item->rciva }}</td>
+                                    <td>{{ $item->total }}</td>
+                                    <td>{{ $item->liqpagable }}</td>
+                                    <td>
+                                        @if ($item->estado == 'pendiente')
+                                            <label class="label label-danger">Pendiente</label>
+                                        @else
+                                            <label class="label label-success">Pagada</label>
+                                            @if ($item->payment)
+                                                <br>
+                                                <small>Por {{ $item->payment->cashier->user->name }} <br> {{ date('d-m-Y', strtotime($item->payment->created_at)) }} <br> {{ date('H:i:s', strtotime($item->payment->created_at)) }} </small>
+                                            @endif
+                                        @endif
+                                    </td>
+                                    @if ($cashier || Auth::user()->role_id == 1)
+                                    <td>
+                                        @if ($item->estado == 'pendiente')
+                                            <button type="button" data-toggle="modal" data-target="#pagar-planilla-adicional-modal" onclick='planillasetValuePayBonus(@json($item), @json($cashier))' class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
+                                        @endif
+
+                                        {{-- @if ($item->estado == 'pagada')
+                                        <button type="button" onclick="print_recipe({{ $item->id }}, 'aguinaldo')" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+                                        @endif --}}
+                                    </td>
+                                    @endif
+                                    
+                                </tr>
+                            @empty
+                                
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+
+
+
         <form id="form-pago-multiple" action="{{ route('planillas.details.payment.multiple') }}" method="post">
             @csrf
             <div class="panel-body">
