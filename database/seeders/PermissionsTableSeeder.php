@@ -52,6 +52,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('programs');
         Permission::generateFor('people');
         Permission::generateFor('stipends');
+        Permission::generateFor('procedure_types');
 
         $keys = [
             'browse_social-securityprint'

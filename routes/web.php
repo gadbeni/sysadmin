@@ -111,7 +111,7 @@ Route::group(['prefix' => 'admin'], function () {
 
 
 
-    // PLANILLAS ADICIONALES            ignacio 
+    // PLANILLAS ADICIONALES
     Route::resource('planillas_adicionales', StipendController::class);
     Route::delete('planillas_adicionales/delete', [StipendController::class, 'destroy'])->name('planillas.adicional.delete');
 

@@ -20,6 +20,7 @@
             @isset($contract)
                 @method('PUT')
             @endisset
+            <input type="hidden" name="procedure_type_id" value="1">
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-bordered">

@@ -1,13 +1,11 @@
 
 
 Migraciones
-
+    ejecutar todas las migraciones
 Seeders
-    - UpdateBreadSeeder y UpdatePermissionsSeeder
-    
+    - UpdateBreadSeeder, UpdatePermissionsSeeder y ProcedureTypesTableSeeder
 Paquetes
 
 Comandos
 
 Otros
-    

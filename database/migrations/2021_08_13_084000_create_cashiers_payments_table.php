@@ -17,6 +17,7 @@ class CreateCashiersPaymentsTable extends Migration
             $table->id();
             $table->foreignId('cashier_id')->nullable()->constrained('cashiers');
             // Hace referencia a planillahaberes.id
+            $table->foreignId('aguinaldo_id')->nullable()->constrained('aguinaldos');
             $table->integer('planilla_haber_id')->nullable();
             // Hace referencia a planillahaberes.Liquido_Pagable
             $table->decimal('amount', 10, 2)->nullable();

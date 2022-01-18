@@ -42,7 +42,7 @@
                                     <div class="form-group col-md-6">
                                         {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
                                         <select name="t_planilla" class="form-control select2">
-                                            <option selected disabled>Todos los tipos de planilla</option>
+                                            <option selected>Todos los tipos de planilla</option>
                                             <option value="1">Funcionamiento</option>
                                             <option value="2">Inversión</option>
                                         </select>
@@ -68,7 +68,7 @@
                                     <div class="form-group col-md-12">
                                         {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
                                         <select name="t_planilla_alt" class="form-control select2">
-                                            <option selected disabled>Tipo de planilla</option>
+                                            <option selected>Tipo de planilla</option>
                                             <option value="1">Funcionamiento</option>
                                             <option value="2">Inversión</option>
                                         </select>
