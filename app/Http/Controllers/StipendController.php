@@ -16,6 +16,7 @@ class StipendController extends Controller
 
     public function store(Request $request)
     {
+
         try {
             Stipend::create($request->all());
             
