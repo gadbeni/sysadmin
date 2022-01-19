@@ -20,10 +20,13 @@
                                 <div class="form-group col-md-12">
                                     <input type="number" name="planilla" class="form-control" required>
                                 </div>
-                                {{-- <div class="form-group col-md-12 text-right">
-                                    <label class="checkbox-inline"><input type="checkbox" name="afp[]" value="1">Futuro</label>
-                                    <label class="checkbox-inline"><input type="checkbox" name="afp[]" value="2">Previsión</label>
-                                </div> --}}
+                                <div class="form-group col-md-12">
+                                    <select name="afp" class="form-control">
+                                        <option value="">Todas las AFP</option>
+                                        <option value="1">Futuro</option>
+                                        <option value="2">Previsión</option>
+                                    </select>
+                                </div>
                                 <div class="form-group col-md-12 text-right">
                                     <button type="submit" class="btn btn-primary">Generar <i class="voyager-settings"></i></button>
                                 </div>

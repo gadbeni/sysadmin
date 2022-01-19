@@ -283,7 +283,8 @@ class ReportsController extends Controller
         return view('reports.social_security.spreadsheets-list', compact('planillas'));
     }
     public function social_security_payments_group_index(){
-        return view('reports.social_security.payments-annual-browse');
+        $direcciones_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
+        return view('reports.social_security.payments-annual-browse', compact('direcciones_administrativa'));
     }
 
     public function social_security_payments_group_list(Request $request){
@@ -342,7 +343,7 @@ class ReportsController extends Controller
                                     DB::commit();
                                 } catch (\Throwable $th) {
                                     DB::rollback();
-                                    dd($th);
+                                    // dd($th);
                                 }
                             }
                         }
@@ -356,6 +357,7 @@ class ReportsController extends Controller
                                     ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
                                     ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
                                     ->whereRaw('(tp.ID = 1 or tp.ID = 2)')
+                                    ->whereRaw($request->id_da ? 'pp.idDa = '.$request->id_da : 1)
                                     ->select('ph.Mes as month', DB::raw('SUM(ph.Total_Ganado) as total_ganado'), DB::raw('SUM(((ph.Total_Ganado * 0.05) + ph.Riesgo_Comun) + Total_Aportes_Afp) as total_afp'), DB::raw('SUM(ph.Total_Ganado * 0.1) as total_cc'))
                                     ->groupBy('ph.Mes')
                                     ->where('ph.Anio', $year)->get();
@@ -504,15 +506,18 @@ class ReportsController extends Controller
     }
 
     public function social_security_personal_caratula_list(Request $request){
+        // dd($request->all());
         $planilla_id = $request->planilla;
+        $afp = $request->afp;
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
                         ->where('p.idPlanillaprocesada', $planilla_id)
+                        ->whereRaw($afp ? 'p.Afp = '.$afp : 1)
                         ->selectRaw('p.Direccion_Administrativa as direccion_administrativa, p.Afp  as afp, SUM(p.Total_Ganado) as total_ganado, COUNT(*) as n_personas, p.Periodo as periodo, tp.Nombre as tipo_planilla')
                         ->groupBy('p.Afp')->get();
 
         // Obtener detalle de pago
-        $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $planilla_id)->get();
+        $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $planilla_id)->whereRaw($afp ? 'Afp = '.$afp : 1)->get();
         
         $pagos = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
         

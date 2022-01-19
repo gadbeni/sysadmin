@@ -25,6 +25,14 @@
                                         </button>
                                     </span>
                                 </div>
+                                <div class="form-group">
+                                    <select name="id_da" class="form-control select2">
+                                        <option value="">Todas las direcciones administrativas</option>
+                                        @foreach($direcciones_administrativa as $direccion)
+                                            <option value="{{ $direccion->ID }}">{{ $direccion->NOMBRE }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 <div class="form-group" style="margin-top: 10px">
                                     <label class="radio-inline"><input type="radio" name="type" value="1" checked>Todos</label>
                                     <label class="radio-inline"><input type="radio" name="type" value="2">Agrupado por mes</label>

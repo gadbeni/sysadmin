@@ -3,7 +3,7 @@
 Migraciones
     ejecutar todas las migraciones
 Seeders
-    - UpdateBreadSeeder, UpdatePermissionsSeeder y ProcedureTypesTableSeeder
+    - UpdatePermissionsSeeder
 Paquetes
 
 Comandos

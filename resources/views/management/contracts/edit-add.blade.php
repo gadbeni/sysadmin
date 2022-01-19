@@ -148,8 +148,8 @@
                                     <input type="date" name="date_memo_res" value="{{ isset($contract) ? $contract->date_memo_res : '' }}" class="form-control">
                                 </div>
                                 <div class="form-group col-md-12">
-                                    <label for="workers_memo">Funcionarios encargados</label>
-                                    <select name="workers_memo[]" id="select-workers_memo" class="form-control" multiple>
+                                    <label for="workers_memo">Comisión de contratación</label>
+                                    <select name="workers_memo[]" id="select-workers_memo" class="form-control" multiple required>
                                         @foreach ($funcionarios as $item)
                                         <option @if(isset($contract) && $contract->cargo_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ str_replace('  ', ' ', $item->NombreCompleto) }} - {{ $item->Cargo }}</option>
                                         @endforeach
@@ -278,7 +278,6 @@
                                             <td>
                                             <ul style="padding-left: 20px;">
                                             <li>No aplica</li>
-                                            <li>&nbsp;</li>
                                             </ul>
                                             </td>
                                             </tr>
