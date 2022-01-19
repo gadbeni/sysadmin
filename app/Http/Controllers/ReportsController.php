@@ -283,71 +283,103 @@ class ReportsController extends Controller
         return view('reports.social_security.spreadsheets-list', compact('planillas'));
     }
     public function social_security_payments_group_index(){
-        return view('reports.social_security.payments-annual-browse');
+        $direcciones_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
+        return view('reports.social_security.payments-annual-browse', compact('direcciones_administrativa'));
     }
 
     public function social_security_payments_group_list(Request $request){
-        $pagos_manuales = PayrollPayment::where('manual', 1)->first();
-        $pagos_afp = DB::connection('mysqlgobe')->table('pagoafp as p')
-                            ->join('certiplanilla as c', 'c.ID', 'p.IDCertiPlanilla')
-                            ->where("c.Gestion", $request->year)
-                            // ->select('c.*')
-                            ->selectRaw('c.Num_planilla AS planilla, p.ID AS pago_id, p.Fecha_Pago AS fecha_pago, c.Formularios AS fpc')
-                            ->get();
-        $data = Collect();
-        foreach ($pagos_afp as $item) {
-            $array = explode(' ', $item->fpc);
-            foreach ($array as $value) {
-                if($value){
-                    $fpc = explode(';', $value);
-                    $pagos_cc = DB::connection('mysqlgobe')->table('pagocajasalud as p')
-                                        ->join('certiplanilla as c', 'c.ID', 'p.IDcerti')
-                                        ->where("c.Num_planilla", 'like', '%'.$item->planilla.'%')
-                                        ->selectRaw('p.Fecha_deposito AS fecha_pago, p.N_Comprobante AS nro_deposito, p.Form_GTC11 AS gtc11, p.ID AS pago_id')
-                                        ->first();
-                    $data->push([
-                        'planilla' => str_replace(' ', '', $item->planilla),
-                        'pago_id' => $item->pago_id,
-                        'fpc_number' => str_replace('-', '', $fpc[0]),
-                        'afp' => count($fpc) > 1 ? $fpc[1] : '',
-                        'fecha_pago' => $item->fecha_pago,
-                        'pago_id_cc' => $pagos_cc ? $pagos_cc->pago_id : null,
-                        'fecha_pago_cc' => $pagos_cc ? $pagos_cc->fecha_pago : null,
-                        'nro_deposito_cc' => $pagos_cc ? $pagos_cc->nro_deposito : null,
-                        'gtc11' => $pagos_cc ? $pagos_cc->gtc11 :  null,
-                    ]);
+        switch ($request->type) {
+            case '1':
+                $pagos_manuales = PayrollPayment::where('manual', 1)->first();
+                $pagos_afp = DB::connection('mysqlgobe')->table('pagoafp as p')
+                                    ->join('certiplanilla as c', 'c.ID', 'p.IDCertiPlanilla')
+                                    ->where("c.Gestion", $request->year)
+                                    ->selectRaw('c.Num_planilla AS planilla, p.ID AS pago_id, p.Fecha_Pago AS fecha_pago, c.Formularios AS fpc')
+                                    ->get();
+                $data = Collect();
+                foreach ($pagos_afp as $item) {
+                    $array = explode(' ', $item->fpc);
+                    foreach ($array as $value) {
+                        if($value){
+                            $fpc = explode(';', $value);
+                            $pagos_cc = DB::connection('mysqlgobe')->table('pagocajasalud as p')
+                                                ->join('certiplanilla as c', 'c.ID', 'p.IDcerti')
+                                                ->where("c.Num_planilla", 'like', '%'.$item->planilla.'%')
+                                                ->selectRaw('p.Fecha_deposito AS fecha_pago, p.N_Comprobante AS nro_deposito, p.Form_GTC11 AS gtc11, p.ID AS pago_id')
+                                                ->first();
+                            $data->push([
+                                'planilla' => str_replace(' ', '', $item->planilla),
+                                'pago_id' => $item->pago_id,
+                                'fpc_number' => str_replace('-', '', $fpc[0]),
+                                'afp' => count($fpc) > 1 ? $fpc[1] : '',
+                                'fecha_pago' => $item->fecha_pago,
+                                'pago_id_cc' => $pagos_cc ? $pagos_cc->pago_id : null,
+                                'fecha_pago_cc' => $pagos_cc ? $pagos_cc->fecha_pago : null,
+                                'nro_deposito_cc' => $pagos_cc ? $pagos_cc->nro_deposito : null,
+                                'gtc11' => $pagos_cc ? $pagos_cc->gtc11 :  null,
+                            ]);
 
-                    if(!$pagos_manuales){
-                        DB::beginTransaction();
-                        try {
-                            $planillas_procesadas = explode(',', str_replace(' ', '', $item->planilla));
-                            foreach ($planillas_procesadas as $planilla) {
-                                $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $planilla)->where('Afp', count($fpc) > 1 ? ($fpc[1] == 'F' ? 1 : 2) : 0)->first();
-                                if($planillahaberes){
-                                    PayrollPayment::create([
-                                        'user_id' => Auth::user()->id,
-                                        'planilla_haber_id' => $planillahaberes->ID,
-                                        'date_payment_afp' => $item->fecha_pago,
-                                        'fpc_number' => str_replace('-', '', $fpc[0]),
-                                        'payment_id' => $item->pago_id,
-                                        'date_payment_cc' => $pagos_cc ? $pagos_cc->fecha_pago : null,
-                                        'gtc_number' => $pagos_cc ? $pagos_cc->gtc11 :  null,
-                                        'deposit_number' => $pagos_cc ? $pagos_cc->nro_deposito : null,
-                                        'check_id' => $pagos_cc ? $pagos_cc->pago_id : null,
-                                        'manual' => 1
-                                    ]);
+                            if(!$pagos_manuales){
+                                DB::beginTransaction();
+                                try {
+                                    $planillas_procesadas = explode(',', str_replace(' ', '', $item->planilla));
+                                    foreach ($planillas_procesadas as $planilla) {
+                                        $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $planilla)->where('Afp', count($fpc) > 1 ? ($fpc[1] == 'F' ? 1 : 2) : 0)->first();
+                                        if($planillahaberes){
+                                            PayrollPayment::create([
+                                                'user_id' => Auth::user()->id,
+                                                'planilla_haber_id' => $planillahaberes->ID,
+                                                'date_payment_afp' => $item->fecha_pago,
+                                                'fpc_number' => str_replace('-', '', $fpc[0]),
+                                                'payment_id' => $item->pago_id,
+                                                'date_payment_cc' => $pagos_cc ? $pagos_cc->fecha_pago : null,
+                                                'gtc_number' => $pagos_cc ? $pagos_cc->gtc11 :  null,
+                                                'deposit_number' => $pagos_cc ? $pagos_cc->nro_deposito : null,
+                                                'check_id' => $pagos_cc ? $pagos_cc->pago_id : null,
+                                                'manual' => 1
+                                            ]);
+                                        }
+                                    }
+                                    DB::commit();
+                                } catch (\Throwable $th) {
+                                    DB::rollback();
+                                    // dd($th);
                                 }
                             }
-                            DB::commit();
-                        } catch (\Throwable $th) {
-                            DB::rollback();
-                            dd($th);
                         }
                     }
                 }
-            }
+                return view('reports.social_security.payments-annual-list', compact('data'));
+                break;
+            case '2':
+                $year = $request->year;
+                $data = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                                    ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                                    ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                    ->whereRaw('(tp.ID = 1 or tp.ID = 2)')
+                                    ->whereRaw($request->id_da ? 'pp.idDa = '.$request->id_da : 1)
+                                    ->select('ph.Mes as month', DB::raw('SUM(ph.Total_Ganado) as total_ganado'), DB::raw('SUM(((ph.Total_Ganado * 0.05) + ph.Riesgo_Comun) + Total_Aportes_Afp) as total_afp'), DB::raw('SUM(ph.Total_Ganado * 0.1) as total_cc'))
+                                    ->groupBy('ph.Mes')
+                                    ->where('ph.Anio', $year)->get();
+                $payroll_payment = ChecksPayment::where('deleted_at', NULL)->select('planilla_haber_id')->get();
+                $cont = 0;
+                foreach ($data as $item) {
+                    $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')->where('Periodo', $year.$item->month)->whereIn('ID', $payroll_payment)->select('ID')->get();
+                    $ids = [];
+                    foreach ($planillas as $planilla) {
+                        array_push($ids, $planilla->ID);
+                    }
+                    $data[$cont]->planillas = ChecksPayment::with(['check_beneficiary'])->where('deleted_at', NULL)->whereIn('planilla_haber_id', $ids)->get();
+                    $cont++;
+                }
+                // dd($data);
+                return view('reports.social_security.payments-annual-group-month-list', compact('data'));
+                break;
+
+            default:
+                # code...
+                break;
         }
-        return view('reports.social_security.payments-annual-list', compact('data'));
     }
 
     public function social_security_contracts_index(){
@@ -474,15 +506,18 @@ class ReportsController extends Controller
     }
 
     public function social_security_personal_caratula_list(Request $request){
+        // dd($request->all());
         $planilla_id = $request->planilla;
+        $afp = $request->afp;
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
                         ->where('p.idPlanillaprocesada', $planilla_id)
+                        ->whereRaw($afp ? 'p.Afp = '.$afp : 1)
                         ->selectRaw('p.Direccion_Administrativa as direccion_administrativa, p.Afp  as afp, SUM(p.Total_Ganado) as total_ganado, COUNT(*) as n_personas, p.Periodo as periodo, tp.Nombre as tipo_planilla')
                         ->groupBy('p.Afp')->get();
 
         // Obtener detalle de pago
-        $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $planilla_id)->get();
+        $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $planilla_id)->whereRaw($afp ? 'Afp = '.$afp : 1)->get();
         
         $pagos = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
         

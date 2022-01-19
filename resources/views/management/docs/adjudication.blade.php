@@ -1,6 +1,6 @@
 @extends('layouts.template-print')
 
-@section('page_title', 'Invitación')
+@section('page_title', 'Nota de adjudicación')
 
 @section('content')
     <div class="content">
@@ -11,7 +11,7 @@
             @endphp
             <p>
                 Santísima Trinidad, {{ date('d', strtotime($contract->date_note)) }} de {{ $months[intval(date('m', strtotime($contract->date_note)))] }} de {{ date('Y', strtotime($contract->date_note)) }} <br>
-                <b>INV/CI/GAD BENI/MCD N° 190/2021</b>
+                <b>INV/CI/GAD BENI/MCD N° {{ $code }}</b>
             </p>
             <br>
             <p style="text-align: left">
@@ -29,12 +29,30 @@
                 $start = Carbon\Carbon::parse($contract->start);
                 $finish = Carbon\Carbon::parse($contract->finish);
                 $count_months = 0;
-                while ($start <= $finish) {
-                    $count_months++;
-                    $start->addMonth();
+                $dia_fin = 31;
+
+                if($start->format('Y-m') == $finish->format('Y-m')){
+                    $count_months = 0;
+                    if($finish->format('d') < 30){
+                        $dia_fin = $finish->format('d') +1;
+                    }
+                    $count_days = $dia_fin - $start->format('d');
+                }else{
+                    $count_months = 0;
+                    $count_days = 31 - $start->format('d');
+                    $start = Carbon\Carbon::parse($start->addMonth()->format('Y-m').'-01');
+                    while ($start <= $finish) {
+                        $count_months++;
+                        $start->addMonth();
+                    }
+                    $count_months--;
+                    $count_days += $start->subMonth()->diffInDays($finish) +1;
+                    if($count_days > 30){
+                        $count_days -= 30;
+                        $count_months++;
+                    }
                 }
-                $count_months--;
-                $count_days = $start->subMonth()->diffInDays($finish);
+
                 $periodo = '';
                 if($count_months > 0){
                     if($count_months == 1){

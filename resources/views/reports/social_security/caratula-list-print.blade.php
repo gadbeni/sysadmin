@@ -226,9 +226,17 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="4">No hay resultados</td>
+                    <td colspan="6">No hay resultados</td>
                 </tr>
             @endforelse
+        </table>
+        <br>
+        <table width="100%" border="1" cellpadding="5" cellspacing="0" style="height: 100px">
+            <tr>
+                <td valign=bottom><b style="font-size: 11px">RECIBIDO POR:________________________________________</b></td>
+                <td valign=bottom><b style="font-size: 11px">FIRMA:________________________________________</b></td>
+                <td valign=bottom><b style="font-size: 11px">FECHA:____________/_____________/____________</b></td>
+            </tr>
         </table>
     </div>
 

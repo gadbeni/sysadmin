@@ -287,7 +287,7 @@ class PlanillasController extends Controller
     }
 
     public function aguinaldos_pago_print($id){
-        $payment = Aguinaldo::with(['payment'])->where('id', $id)->first();
+        $payment = Aguinaldo::with(['payment.cashier.user',])->where('id', $id)->first();
         // dd($payment);
         return view('planillas.payment-aguinaldo-recipe', compact('payment'));
     }

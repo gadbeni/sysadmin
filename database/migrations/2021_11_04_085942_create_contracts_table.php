@@ -19,8 +19,11 @@ class CreateContractsTable extends Migration
             $table->integer('cargo_id')->nullable();
             $table->integer('unidad_adminstrativa_id')->nullable();
             $table->foreignId('program_id')->nullable()->constrained('programs');
+            $table->foreignId('procedure_type_id')->nullable()->constrained('procedure_types');
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->smallInteger('number')->nullable();
+            $table->string('preventive_number')->nullable();
+            $table->string('organizational_source')->nullable();
             $table->decimal('salary', 10, 2)->nullable();
             $table->date('start')->nullable();
             $table->date('finish')->nullable();
@@ -28,6 +31,7 @@ class CreateContractsTable extends Migration
             $table->date('date_limit_invitation')->nullable();
             $table->date('date_response')->nullable();
             $table->date('date_statement')->nullable();
+            $table->date('date_presentation')->nullable();
             $table->date('date_memo')->nullable();
             $table->string('workers_memo')->nullable();
             $table->date('date_memo_res')->nullable();

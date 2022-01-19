@@ -1,13 +1,11 @@
 
 
 Migraciones
-
+    ejecutar todas las migraciones
 Seeders
-    - UpdateBreadSeeder y UpdatePermissionsSeeder
-    
+    - UpdatePermissionsSeeder
 Paquetes
 
 Comandos
 
 Otros
-    

@@ -177,7 +177,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4">No hay resultados</td>
+                        <td colspan="6">No hay resultados</td>
                     </tr>
                 @endforelse
             </table>

@@ -91,13 +91,19 @@
                 <td style="border: 1px solid #ddd">
                     @php
                         $dias = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+                        $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                     @endphp
-                    {{ $dias[date('N', strtotime($payment->created_at))].', '.date('d', strtotime($payment->created_at)).' de '.date('m', strtotime($payment->created_at)).' de '.date('Y', strtotime($payment->created_at)) }}
+                    {{ $dias[date('N', strtotime($payment->payment->created_at))].', '.date('d', strtotime($payment->payment->created_at)).' de '.$months[date('m', strtotime($payment->payment->created_at))].' de '.date('Y', strtotime($payment->payment->created_at)) }}
                 </td>
                 <td><b>HORA</b></td>
                 <td style="border: 1px solid #ddd">
-                    {{ date('H:i:s', strtotime($payment->created_at)) }}
+                    {{ date('H:i:s', strtotime($payment->payment->created_at)) }}
                 </td>
+            </tr>
+            <tr>
+                <td><b>PAGADA POR</b></td>
+                <td style="border: 1px solid #ddd">{{ $payment->payment->cashier->user->name }}</td>
+                <td colspan="2"></td>
             </tr>
         </table>
         <hr style="margin: 0px">

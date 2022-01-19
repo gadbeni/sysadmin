@@ -23,7 +23,8 @@ class SocialSecurityController extends Controller
     }
 
     public function checks_index(){
-        return view('social-security.checks-browse');
+        $data = ChecksPayment::with(['user', 'check_beneficiary.type'])->where('deleted_at', NULL)->get();
+        return view('social-security.checks-browse', compact('data'));
     }
 
     public function checks_list(){
@@ -362,6 +363,21 @@ class SocialSecurityController extends Controller
                     'check_id' => $request->check_id,
                     'penalty_check' => $request->penalty_check
                 ]);
+
+                // Actualizar estados de cheques de afp
+                if($request->date_payment_afp){
+                    ChecksPayment::whereHas('check_beneficiary.type', function($q){
+                        $q->where('name', 'not like', '%salud%');
+                    })->where('planilla_haber_id', $request->planilla_haber_id)->where('deleted_at', NULL)->update(['status' => 2]);
+                }
+
+                // Actualizar estados de cheques de caja de salud
+                if($request->date_payment_cc){
+                    ChecksPayment::whereHas('check_beneficiary.type', function($q){
+                        $q->where('name', 'like', '%salud%');
+                    })->where('planilla_haber_id', $request->planilla_haber_id)->where('deleted_at', NULL)->update(['status' => 2]);
+                }
+
             }else{
                 $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->where('p.Estado', 1)
@@ -389,6 +405,20 @@ class SocialSecurityController extends Controller
                         'check_id' => $request->check_id,
                         'penalty_check' => $request->penalty_check / count($planillas)
                     ]);
+
+                    // Actualizar estados de cheques de afp
+                    if($request->date_payment_afp){
+                        ChecksPayment::whereHas('check_beneficiary.type', function($q){
+                            $q->where('name', 'not like', '%salud%');
+                        })->where('planilla_haber_id', $item->ID)->where('deleted_at', NULL)->update(['status' => 2]);
+                    }
+
+                    // Actualizar estados de cheques de caja de salud
+                    if($request->date_payment_cc){
+                        ChecksPayment::whereHas('check_beneficiary.type', function($q){
+                            $q->where('name', 'like', '%salud%');
+                        })->where('planilla_haber_id', $item->ID)->where('deleted_at', NULL)->update(['status' => 2]);
+                    }
                 }
             }
 
@@ -412,10 +442,9 @@ class SocialSecurityController extends Controller
     }
 
     public function payments_update($id, Request $request){
-        // dd($request);
+        // dd($request->all());
         try {
             PayrollPayment::where('id', $id)->update([
-                // 'planilla_haber_id' => $request->planilla_haber_id,
                 'date_payment_afp' => $request->date_payment_afp,
                 'fpc_number' => $request->fpc_number,
                 'payment_id' => $request->payment_id,
@@ -427,7 +456,23 @@ class SocialSecurityController extends Controller
                 'check_id' => $request->check_id,
                 'penalty_check' => $request->penalty_check
             ]);
-            return redirect()->route('payments.index')->with(['message' => 'Pago agregado correctamente.', 'alert-type' => 'success']);
+
+            $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $request->planilla_haber_id)->where('Afp', $request->afp_edit)->first();
+            // Actualizar estados de cheques de afp
+            if($request->date_payment_afp){
+                ChecksPayment::whereHas('check_beneficiary.type', function($q){
+                    $q->where('name', 'not like', '%salud%');
+                })->where('planilla_haber_id', $planilla->ID)->where('deleted_at', NULL)->update(['status' => 2]);
+            }
+
+            // Actualizar estados de cheques de caja de salud
+            if($request->date_payment_cc){
+                ChecksPayment::whereHas('check_beneficiary.type', function($q){
+                    $q->where('name', 'like', '%salud%');
+                })->where('planilla_haber_id', $planilla->ID)->where('deleted_at', NULL)->update(['status' => 2]);
+            }
+
+            return redirect()->route('payments.index')->with(['message' => 'Pago editado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
             return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);

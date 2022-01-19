@@ -43,7 +43,99 @@
                         <div class="panel panel-bordered">
                             <div class="panel-body">
                                 <div class="table-responsive">
-                                    <table id="dataTable" class="table table-hover"></table>
+                                    {{-- <table id="dataTable" class="table table-hover"></table> --}}
+                                    <table id="dataTable" class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>ID</th>
+                                                <th>Detalles de cheque</th>
+                                                <th>Beneficiario</th>
+                                                <th>Impresión</th>
+                                                <th>Vencimiento</th>
+                                                <th>Registrado por</th>
+                                                <th>Registrado el</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($data as $row)
+                                                <tr>
+                                                    <td><div><input type="checkbox" name="id[]" onclick="checkId()" value="{{ $row->id }}" /></div></td>
+                                                    <td>{{ $row->id }}</td>
+                                                    <td>
+                                                        @php
+                                                            $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                                                                            ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                                                            ->where('ph.ID', $row->planilla_haber_id)
+                                                                            ->select('ph.*', 'tp.Nombre as tipo_planilla')->first();
+                                                            $status = '';
+                                                            switch ($row->status) {
+                                                                case '0':
+                                                                    $status = '<label class="label label-danger">anulado</label>';
+                                                                    break;
+                                                                case '1':
+                                                                    $status = '<label class="label label-info">Pendiente</label>';
+                                                                    break;
+                                                                case '2':
+                                                                    $status = '<label class="label label-success">Pagado</label>';
+                                                                    break;
+                                                                case '3':
+                                                                    $status = '<label class="label label-warning">Vencido</label>';
+                                                                    break;
+                                                                default:
+                                                                    # code...
+                                                                    break;
+                                                            }
+                                                        @endphp
+                                                        @if ($planilla)
+                                                            <p>
+                                                                <b><small>N&deg;:</small></b> {{ $row->number }} <br>
+                                                                <b>{{ $planilla->tipo_planilla.' - '.$planilla->Periodo }}</b><br>
+                                                                <b><small>Planilla:</small></b> {{ ($planilla ? $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión') : 'No encontrada') }} <br>
+                                                                <b><small>Monto:</small></b> {{ number_format($row->amount, 2, ',', '.') }} <br>
+                                                                {!! $status !!}
+                                                            </p>
+                                                        @elseif($row->spreadsheet_id)
+                                                            @php
+                                                                $spreadsheet = App\Models\Spreadsheet::find($row->spreadsheet_id);
+                                                            @endphp
+                                                            <p>
+                                                                <label class="label label-danger">Planilla manual</label> <br>
+                                                                <b>{{ ($spreadsheet->tipo_planilla_id == 1 ? 'Funcionamiento' : 'Inversión').' - '.$spreadsheet->year.str_pad($spreadsheet->month, 2, "0", STR_PAD_LEFT)  }}</b><br>
+                                                                <b><small>Planilla:</small></b> {{ ($spreadsheet->codigo_planilla.' - '.($spreadsheet->afp_id == 1 ? 'Futuro' : 'Previsión')) }} <br>
+                                                                <b><small>Monto:</small></b> {{ number_format($row->amount, 2, ',', '.') }} <br>
+                                                                {!! $status !!}
+                                                            </p>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $row->check_beneficiary->full_name }}<br><small> {{ $row->check_beneficiary->type->name }}</small></td>
+                                                    <td>{{ $row->user->name }}</td>
+                                                    <td>{{ date('d/m/Y', strtotime($row->date_print)) }}<br><small>{{ \Carbon\Carbon::parse($row->date_print)->diffForHumans() }}</small></td>
+                                                    <td>
+                                                        @php
+                                                            $date_expire = date('Y-m-d', strtotime($row->date_print.' +29 days'));
+                                                        @endphp
+                                                        <span style="{{ ($date_expire <= date('Y-m-d') && $row->status == 1 ? 'color: red' : '') }}">{{ date('d/m/Y', strtotime($date_expire)) }}<br><small>{{ \Carbon\Carbon::parse($date_expire)->diffForHumans() }}</small></span>
+                                                    </td>
+                                                    <td>{{ date('d/m/Y H:i', strtotime($row->created_at)) }}<br><small>{{ \Carbon\Carbon::parse($row->created_at)->diffForHumans() }}</small></td>
+                                                    <td>
+                                                        <div class="no-sort no-click bread-actions text-right">
+                                                            <a href="{{ route('checks.show', ['check' => $row->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
+                                                                <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
+                                                            </a>
+                                                            <a href="{{ route('checks.edit', ['check' => $row->id]) }}" title="Editar" class="btn btn-sm btn-info edit">
+                                                                <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
+                                                            </a>
+                                                            <button type="button" onclick="deleteItem('{{ route('checks.delete', ['check' => $row->id]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
+                                                                <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -83,18 +175,11 @@
         <script src="{{ url('js/main.js') }}"></script>
         <script>
             $(document).ready(function() {
-                let columns = [
-                    { data: 'checkbox', title: '', orderable: false, searchable: false },
-                    { data: 'id', title: 'id' },
-                    { data: 'details', title: 'Detalles del cheque' },
-                    { data: 'beneficiary', title: 'Beneficiario' },
-                    { data: 'date_print', title: 'Impresión' },
-                    { data: 'date_expire', title: 'Vencimiento' },
-                    { data: 'user', title: 'Registrado por' },
-                    { data: 'created_at', title: 'Registrado el' },
-                    { data: 'actions', title: 'Acciones', orderable: false, searchable: false },
-                ];
-                customDataTable("{{ url('admin/social-security/checks/list') }}", columns, 1);
+                $('#dataTable').DataTable({
+                    order: [[ 1, 'desc' ]],
+                    language
+                });
+
             });
         </script>
     @stop

@@ -82,12 +82,12 @@
                                                 <ul class="dropdown-menu" role="menu">
                                                     <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'autorization']) }}" target="_blank">Autorización</a></li>
                                                     <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'invitation']) }}" target="_blank">Invitación</a></li>
-                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'answer']) }}" target="_blank">Respuesta</a></li>
+                                                    {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'answer']) }}" target="_blank">Respuesta</a></li> --}}
                                                     <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'declaration']) }}" target="_blank">Declaración</a></li>
                                                     <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'memorandum']) }}" target="_blank">Memorandum</a></li>
                                                     <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'report']) }}" target="_blank">Informe</a></li>
                                                     <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
-                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'presentation']) }}" target="_blank">Presentación de documentos</a></li>
+                                                    {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'presentation']) }}" target="_blank">Presentación de documentos</a></li> --}}
                                                     {{-- <li class="divider"></li> --}}
                                                 </ul>
                                             </div>

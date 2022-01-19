@@ -65,6 +65,7 @@ class ContractsController extends Controller
                 'program_id' => $request->program_id,
                 'cargo_id' => $request->cargo_id,
                 'unidad_adminstrativa_id' => $request->unidad_adminstrativa_id,
+                'procedure_type_id' => $request->procedure_type_id,
                 'user_id' => Auth::user()->id,
                 'number' => $number,
                 'salary' => $request->salary,
@@ -136,6 +137,7 @@ class ContractsController extends Controller
                 'person_id' => $request->person_id,
                 'program_id' => $request->program_id,
                 'cargo_id' => $request->cargo_id,
+                'procedure_type_id' => $request->procedure_type_id,
                 'unidad_adminstrativa_id' => $request->unidad_adminstrativa_id,
                 'salary' => $request->salary,
                 'start' => $request->start,
@@ -181,6 +183,7 @@ class ContractsController extends Controller
         $contract = Contract::with(['user', 'person', 'program'])->where('id', $id)->first();
         $contract->cargo = DB::connection('mysqlgobe')->table('cargo')->where('ID', $contract->cargo_id)->first();
         $contract->unidad_adminstrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->where('ID', $contract->unidad_adminstrativa_id)->first();
+        $contract->workers = DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get();
         return view('management.docs.'.$document, compact('contract'));
     }
 }

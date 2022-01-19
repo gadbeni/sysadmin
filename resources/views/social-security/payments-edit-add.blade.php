@@ -31,6 +31,7 @@
                                 <div class="form-group col-md-12 div-no-centralizada">
                                     <label for="planilla_haber_id">Planilla</label>
                                     <select name="planilla_haber_id" id="select-planilla_haber_id" class="form-control" required></select>
+                                    <input type="hidden" name="afp_edit" id="input-afp_edit">
                                 </div>
                                 <div class="form-group col-md-4 div-centralizada">
                                     {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
@@ -187,6 +188,7 @@
                 let planilla = @json($planilla);
                 if(planilla !== null){
                     $("#select-planilla_haber_id").append(`<option value="${planilla.idPlanillaprocesada}">${planilla.idPlanillaprocesada} - ${planilla.Afp == 1 ? 'Futuro' : 'Previsión'}</option>`);
+                    $('#input-afp_edit').val(planilla.Afp)
                 }else if(data){
                     $("#select-planilla_haber_id").append(`<option value="${data.spreadsheet.id}">${data.spreadsheet.codigo_planilla} - ${data.spreadsheet.afp_id == 1 ? 'Futuro' : 'Previsión'}</option>`);
                 }

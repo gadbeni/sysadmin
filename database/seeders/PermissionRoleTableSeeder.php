@@ -71,7 +71,10 @@ class PermissionRoleTableSeeder extends Seeder
         $role = Role::where('name', 'prevision_tecnico')->firstOrFail();
         $permissions = Permission::whereRaw('   table_name = "admin" or
                                                 table_name = "social-security" or
+                                                table_name = "dependences" or
                                                 `key` = "browse_reportssocial-securitypayments" or
+                                                `key` = "browse_reportssocial-securityspreadsheetspayments" or
+                                                `key` = "browse_reportssocial-securitycaratula" or
                                                 `key` = "browse_social-securitypayments" or
                                                 `key` = "read_social-securitypayments" or 
                                                 `key` = "add_social-securitypayments" or
@@ -98,6 +101,28 @@ class PermissionRoleTableSeeder extends Seeder
 
         $role = Role::where('name', 'rrhh_tecnico')->firstOrFail();
         $permissions = Permission::whereRaw('table_name = "admin"')->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        // Roles de administrativo
+        $role = Role::where('name', 'administrativo_director')->firstOrFail();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            table_name = "programs" or
+                                            table_name = "people" or
+                                            table_name = "contracts"')->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        $role = Role::where('name', 'administrativo_jefe_seccion')->firstOrFail();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            table_name = "programs" or
+                                            table_name = "people" or
+                                            table_name = "contracts"')->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        $role = Role::where('name', 'administrativo_tecnico')->firstOrFail();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            table_name = "programs" or
+                                            table_name = "people" or
+                                            table_name = "contracts"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
     }
 }

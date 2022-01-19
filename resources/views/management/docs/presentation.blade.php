@@ -1,6 +1,6 @@
 @extends('layouts.template-print')
 
-@section('page_title', 'Invitación')
+@section('page_title', 'Presentaciòn de documentos')
 
 @section('content')
     <div class="content">

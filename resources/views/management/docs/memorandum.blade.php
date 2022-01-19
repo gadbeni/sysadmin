@@ -22,10 +22,10 @@
                 <div class="border-left">
                     <b>DE:</b> Lic. Geisel Marcelo Oliva Ruiz <br>
                     <b>RESP. DE PROCESO DE CONTRATACION APOYO NACIONAL A LA PRODUCCION Y EMPLEO – RPA</b> <br> <br>
-                    <b>A:</b> Oscar Lola Saavedra <br>
-                    <b>ASESOR TÉCNICO V SDAF - GAD BENI</b> <br> <br>
-                    <b>A:</b> Ing. Juan Carlos Añez Ybañez <br>
-                    <b>DIRECTOR DE INTERACCIÓN SOCIAL</b> <br> <br>
+                    @foreach ($contract->workers as $item)
+                        <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
+                        <b>{{ $item->Cargo }}</b> <br> <br>
+                    @endforeach
                     <b>REF.:</b> Designación Responsable de Evaluación
                 </div>
             </div>
