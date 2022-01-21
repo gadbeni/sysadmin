@@ -29,12 +29,12 @@ class SocialSecurityController extends Controller
 
     public function checks_list($search = null){
         $paginate = request('paginate') ?? 10;
-        $data = ChecksPayment::with(['user', 'check_beneficiary.type', 'planilla_haber.tipo', 'spreadsheet'])
+        $data = ChecksPayment::with(['user', 'beneficiary.type', 'planilla_haber.tipo', 'spreadsheet'])
                     ->whereRaw($search ? '(number like "'.$search.'%" or REPLACE(amount, ".", ",") like "'.$search.'%")' : 1)
                     ->OrWhereHas('user', function($query) use($search){
                         $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
                     })
-                    ->OrWhereHas('check_beneficiary', function($query) use($search){
+                    ->OrWhereHas('beneficiary', function($query) use($search){
                         $query->whereRaw($search ? 'full_name like "%'.$search.'%"' : 1);
                     })
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
@@ -42,7 +42,7 @@ class SocialSecurityController extends Controller
     }
 
     public function checks_show($id){
-        $check = ChecksPayment::with(['user', 'check_beneficiary.type'])->where('id', $id)->where('deleted_at', NULL)->first();
+        $check = ChecksPayment::with(['user', 'beneficiary.type'])->where('id', $id)->where('deleted_at', NULL)->first();
         return view('social-security.checks-read', compact('check'));        
     }
 
@@ -280,14 +280,14 @@ class SocialSecurityController extends Controller
 
                 // Actualizar estados de cheques de afp
                 if($request->date_payment_afp){
-                    ChecksPayment::whereHas('check_beneficiary.type', function($q){
+                    ChecksPayment::whereHas('beneficiary.type', function($q){
                         $q->where('name', 'not like', '%salud%');
                     })->where('planilla_haber_id', $request->planilla_haber_id)->where('deleted_at', NULL)->update(['status' => 2]);
                 }
 
                 // Actualizar estados de cheques de caja de salud
                 if($request->date_payment_cc){
-                    ChecksPayment::whereHas('check_beneficiary.type', function($q){
+                    ChecksPayment::whereHas('beneficiary.type', function($q){
                         $q->where('name', 'like', '%salud%');
                     })->where('planilla_haber_id', $request->planilla_haber_id)->where('deleted_at', NULL)->update(['status' => 2]);
                 }
@@ -325,14 +325,14 @@ class SocialSecurityController extends Controller
 
                     // Actualizar estados de cheques de afp
                     if($request->date_payment_afp){
-                        ChecksPayment::whereHas('check_beneficiary.type', function($q){
+                        ChecksPayment::whereHas('beneficiary.type', function($q){
                             $q->where('name', 'not like', '%salud%');
                         })->where('planilla_haber_id', $item->ID)->where('deleted_at', NULL)->update(['status' => 2]);
                     }
 
                     // Actualizar estados de cheques de caja de salud
                     if($request->date_payment_cc){
-                        ChecksPayment::whereHas('check_beneficiary.type', function($q){
+                        ChecksPayment::whereHas('beneficiary.type', function($q){
                             $q->where('name', 'like', '%salud%');
                         })->where('planilla_haber_id', $item->ID)->where('deleted_at', NULL)->update(['status' => 2]);
                     }
@@ -377,14 +377,14 @@ class SocialSecurityController extends Controller
             $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $request->planilla_haber_id)->where('Afp', $request->afp_edit)->first();
             // Actualizar estados de cheques de afp
             if($request->date_payment_afp){
-                ChecksPayment::whereHas('check_beneficiary.type', function($q){
+                ChecksPayment::whereHas('beneficiary.type', function($q){
                     $q->where('name', 'not like', '%salud%');
                 })->where('planilla_haber_id', $planilla->ID)->where('deleted_at', NULL)->update(['status' => 2]);
             }
 
             // Actualizar estados de cheques de caja de salud
             if($request->date_payment_cc){
-                ChecksPayment::whereHas('check_beneficiary.type', function($q){
+                ChecksPayment::whereHas('beneficiary.type', function($q){
                     $q->where('name', 'like', '%salud%');
                 })->where('planilla_haber_id', $planilla->ID)->where('deleted_at', NULL)->update(['status' => 2]);
             }

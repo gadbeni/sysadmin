@@ -196,11 +196,11 @@ class ReportsController extends Controller
                         $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
                         $planillas[$index]->detalle_pago = $pago;
                         // Obtener detalle de cheques afp
-                        $cheques = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary.type', function($q){
+                        $cheques = ChecksPayment::with('beneficiary')->whereHas('beneficiary.type', function($q){
                             $q->where('name', 'not like', '%salud%');
                         })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
                         $planillas[$index]->detalle_cheque_afp = $cheques;
-                        $cheques = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary.type', function($q){
+                        $cheques = ChecksPayment::with('beneficiary')->whereHas('beneficiary.type', function($q){
                             $q->where('name', 'like', '%salud%');
                         })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
                         $planillas[$index]->detalle_cheque_cc = $cheques;
@@ -233,7 +233,7 @@ class ReportsController extends Controller
                 $pago = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
                 $planillas[$cont]->detalle_pago = $pago;
                 // Obtener detalle de cheques
-                $cheque = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary.type', function($q){
+                $cheque = ChecksPayment::with('beneficiary')->whereHas('beneficiary.type', function($q){
                     $q->where('name', 'like', '%salud%');
                 })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
                 $planillas[$cont]->detalle_cheque = $cheque;
@@ -370,7 +370,7 @@ class ReportsController extends Controller
                     foreach ($planillas as $planilla) {
                         array_push($ids, $planilla->ID);
                     }
-                    $data[$cont]->planillas = ChecksPayment::with(['check_beneficiary'])->where('deleted_at', NULL)->whereIn('planilla_haber_id', $ids)->get();
+                    $data[$cont]->planillas = ChecksPayment::with(['beneficiary'])->where('deleted_at', NULL)->whereIn('planilla_haber_id', $ids)->get();
                     $cont++;
                 }
                 // dd($data);
@@ -523,12 +523,12 @@ class ReportsController extends Controller
         $pagos = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
         
         // Obtener detalle de cheques de afp
-        $cheques_afp = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary.type', function($q){
+        $cheques_afp = ChecksPayment::with('beneficiary')->whereHas('beneficiary.type', function($q){
             $q->where('name', 'not like', '%salud%');
         })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
 
         // Obtener detalle de cheques de caja de salud
-        $cheques_salud = ChecksPayment::with('check_beneficiary')->whereHas('check_beneficiary.type', function($q){
+        $cheques_salud = ChecksPayment::with('beneficiary')->whereHas('beneficiary.type', function($q){
             $q->where('name', 'like', '%salud%');
         })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
 
@@ -545,7 +545,7 @@ class ReportsController extends Controller
     }
 
     public function social_security_personal_checks_list(Request $request){
-        $checks = ChecksPayment::with(['check_beneficiary.type'])
+        $checks = ChecksPayment::with(['beneficiary'])
                     ->whereRaw($request->start ? 'DATE(date_print) >= "'.$request->start.'"' : 1)
                     ->whereRaw($request->finish ? 'DATE(date_print) <= "'.$request->finish.'"' : 1)
                     ->whereRaw($request->status ? 'status = '.$request->status : 1)
@@ -560,7 +560,8 @@ class ReportsController extends Controller
                                 ->whereRaw($request->d_a ? 'ph.idDa = '.$request->d_a : 1)
                                 ->whereRaw($request->periodo ? 'ph.Periodo = '.$request->periodo : 1)
                                 ->whereRaw($request->planilla_id ? 'ph.idPlanillaprocesada = '.$request->planilla_id : 1)
-                                ->select('ph.*', 'pp.NumPersonas', 'pp.Monto', 'tp.Nombre as tipo_planilla')->first();
+                                ->select('ph.*', 'pp.NumPersonas', 'pp.Monto', 'tp.Nombre as tipo_planilla')
+                                ->orderBy('ph.Direccion_Administrativa', 'ASC')->orderBy('ph.Periodo', 'ASC')->first();
             if($planilla){
                 $checks[$cont]->planilla = $planilla;
                 $data->push($checks[$cont]);

@@ -41,7 +41,7 @@
                                 <h3 class="panel-title">Beneficiario</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $check->check_beneficiary->full_name }}<br><small>{{ $check->check_beneficiary->type->name }}</small></p>
+                                <p>{{ $check->beneficiary->full_name }}<br><small>{{ $check->beneficiary->type->name }}</small></p>
                             </div>
                             <hr style="margin:0;">
                         </div>

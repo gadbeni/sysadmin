@@ -35,8 +35,9 @@
                 <th>Total ganado</th>
                 <th>Nro Cheque</th>
                 <th>Fecha de impresión</th>
-                <th>Monto</th>
+                <th>Beneficiario</th>
                 <th>Estado</th>
+                <th>Monto</th>
             </tr>
         </thead>
         <tbody>
@@ -57,6 +58,7 @@
                         <td style="text-align: right">{{ number_format($item->planilla->Monto, 2, ',', '.') }}</td>
                         <td>{{ $item->number }}</td>
                         <td>{{ date('d/M/Y', strtotime($item->date_print)) }}</td>
+                        <td>{{ $item->beneficiary->full_name }}</td>
                         <td>
                             @switch($item->status)
                                 @case(1)
@@ -81,15 +83,14 @@
                 @endif
             @empty
                 <tr>
-                    <td colspan="12"><h5 class="text-center">No se encontraron registros</h5></td>
+                    <td colspan="13"><h5 class="text-center">No se encontraron registros</h5></td>
                 </tr>
             @endforelse
             <tr>
-                <td colspan="11"><b>TOTAL</b></td>
+                <td colspan="12"><b>TOTAL</b></td>
                 <td style="text-align: right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
             </tr>
         </tbody>
     </table>
 
 @endsection
-

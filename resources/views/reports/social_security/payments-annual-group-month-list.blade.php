@@ -36,7 +36,7 @@
                                 $total_afp = 0;
                                 $total_cc = 0;
                                 foreach($item->planillas as $planilla) {
-                                    if(strpos($planilla->check_beneficiary->full_name, 'Caja de Salud') === false) {
+                                    if(strpos($planilla->beneficiary->full_name, 'Caja de Salud') === false) {
                                         $total_afp += $planilla->amount;
                                     }else{
                                         $total_cc += $planilla->amount;

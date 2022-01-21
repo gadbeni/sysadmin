@@ -59,7 +59,7 @@
                                     </p>
                                 @endif
                             </td>
-                            <td>{{ $row->check_beneficiary->full_name }}<br><small> {{ $row->check_beneficiary->type->name }}</small></td>
+                            <td>{{ $row->beneficiary->full_name }}<br><small> {{ $row->beneficiary->type->name }}</small></td>
                             <td>{{ date('d/m/Y', strtotime($row->date_print)) }}<br><small>{{ \Carbon\Carbon::parse($row->date_print)->diffForHumans() }}</small></td>
                             <td>
                                 @php
