@@ -14,6 +14,7 @@ use App\Models\ChecksPayment;
 use App\Models\Dependence;
 use App\Models\ChecksBeneficiary;
 use App\Models\Spreadsheet;
+use App\Models\Planillahaber;
 
 class SocialSecurityController extends Controller
 {
@@ -23,93 +24,21 @@ class SocialSecurityController extends Controller
     }
 
     public function checks_index(){
-        $data = ChecksPayment::with(['user', 'check_beneficiary.type'])->where('deleted_at', NULL)->get();
-        return view('social-security.checks-browse', compact('data'));
+        return view('social-security.checks-browse');
     }
 
-    public function checks_list(){
-        $data = ChecksPayment::with(['user', 'check_beneficiary.type'])->where('deleted_at', NULL)->get();
-        return
-            DataTables::of($data)
-            ->addColumn('checkbox', function($row){
-                return '<div><input type="checkbox" name="id[]" onclick="checkId()" value="'.$row->id.'" /></div>';
-            })
-            ->addColumn('details', function($row){
-                $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
-                                ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
-                                ->where('ph.ID', $row->planilla_haber_id)
-                                ->select('ph.*', 'tp.Nombre as tipo_planilla')->first();
-                $status = '';
-                switch ($row->status) {
-                    case '0':
-                        $status = '<label class="label label-danger">anulado</label>';
-                        break;
-                    case '1':
-                        $status = '<label class="label label-info">Pendiente</label>';
-                        break;
-                    case '2':
-                        $status = '<label class="label label-success">Pagado</label>';
-                        break;
-                    case '3':
-                        $status = '<label class="label label-warning">Vencido</label>';
-                        break;
-                    default:
-                        # code...
-                        break;
-                }
-                if($planilla){
-                    return '<p>
-                                <b><small>N&deg;:</small></b> '.$row->number.' <br>
-                                <b>'.$planilla->tipo_planilla.' - '.$planilla->Periodo.'</b><br>
-                                <b><small>Planilla:</small></b> '.($planilla ? $planilla->idPlanillaprocesada.' - '.($planilla->Afp == 1 ? 'Futuro' : 'Previsión') : 'No encontrada').' <br>
-                                <b><small>Monto:</small></b> '.number_format($row->amount, 2, ',', '.').' <br>
-                                '.$status.'
-                            </p>';
-                }elseif($row->spreadsheet_id){
-                    $spreadsheet = Spreadsheet::find($row->spreadsheet_id);
-                    return '<p>
-                            <label class="label label-danger">Planilla manual</label> <br>
-                            <b>'.($spreadsheet->tipo_planilla_id == 1 ? 'Funcionamiento' : 'Inversión').' - '.$spreadsheet->year.str_pad($spreadsheet->month, 2, "0", STR_PAD_LEFT).'</b><br>
-                            <b><small>Planilla:</small></b> '.($spreadsheet->codigo_planilla.' - '.($spreadsheet->afp_id == 1 ? 'Futuro' : 'Previsión')).' <br>
-                            <b><small>Monto:</small></b> '.number_format($row->amount, 2, ',', '.').' <br>
-                            '.$status.'
-                        </p>';
-                }
-                return '';
-            })
-            ->addColumn('beneficiary', function($row){
-                return $row->check_beneficiary->full_name.'<br><small>'.$row->check_beneficiary->type->name.'</small>';
-            })
-            ->addColumn('user', function($row){
-                return $row->user->name;
-            })
-            ->addColumn('date_print', function($row){
-                return date('d/m/Y', strtotime($row->date_print)).'<br><small>'.Carbon::parse($row->date_print)->diffForHumans().'</small>';
-            })
-            ->addColumn('date_expire', function($row){
-                $date_expire = date('Y-m-d', strtotime($row->date_print.' +29 days'));
-                return '<span style="'.($date_expire <= date('Y-m-d') && $row->status == 1 ? 'color: red' : '').'">'.date('d/m/Y', strtotime($date_expire)).'<br><small>'.Carbon::parse($date_expire)->diffForHumans().'</small></span>';
-            })
-            ->addColumn('created_at', function($row){
-                return date('d/m/Y H:i', strtotime($row->created_at)).'<br><small>'.Carbon::parse($row->created_at)->diffForHumans().'</small>';
-            })
-            ->addColumn('actions', function($row){
-                $actions = '
-                    <div class="no-sort no-click bread-actions text-right">
-                        <a href="'.route('checks.show', ['check' => $row->id]).'" title="Ver" class="btn btn-sm btn-warning view">
-                            <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
-                        </a>
-                        <a href="'.route('checks.edit', ['check' => $row->id]).'" title="Editar" class="btn btn-sm btn-info edit">
-                            <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
-                        </a>
-                        <button type="button" onclick="deleteItem('."'".route('checks.delete', ['check' => $row->id])."'".')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
-                            <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
-                        </button>
-                    </div>';
-                return $actions;
-            })
-            ->rawColumns(['checkbox', 'details', 'beneficiary', 'user', 'date_print', 'date_expire', 'created_at', 'actions'])
-            ->make(true);
+    public function checks_list($search = null){
+        $paginate = request('paginate') ?? 10;
+        $data = ChecksPayment::with(['user', 'check_beneficiary.type', 'planilla_haber.tipo', 'spreadsheet'])
+                    ->whereRaw($search ? '(number like "'.$search.'%" or REPLACE(amount, ".", ",") like "'.$search.'%")' : 1)
+                    ->OrWhereHas('user', function($query) use($search){
+                        $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                    })
+                    ->OrWhereHas('check_beneficiary', function($query) use($search){
+                        $query->whereRaw($search ? 'full_name like "%'.$search.'%"' : 1);
+                    })
+                    ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
+        return view('social-security.checks-list', compact('data', 'search'));
     }
 
     public function checks_show($id){
@@ -258,7 +187,7 @@ class SocialSecurityController extends Controller
     }
 
     public function payments_list(){
-        $data = PayrollPayment::where('deleted_at', NULL)->get();
+        $data = PayrollPayment::with(['planilla_haber', 'planilla_haber.tipo', 'planilla_haber.planilla_procesada', 'spreadsheet'])->where('deleted_at', NULL)->get();
         // return $data;
 
         return
@@ -266,26 +195,11 @@ class SocialSecurityController extends Controller
             ->addColumn('checkbox', function($row){
                 return '<div><input type="checkbox" name="id[]" onclick="checkId()" value="'.$row->id.'" '.($row->spreadsheet_id ? 'disabled' : '').' /></div>';
             })
-            ->addColumn('planilla_id', function($row){
-                $planilla_procesada = DB::connection('mysqlgobe')->table('planillahaberes')
-                                            ->where('ID', $row->planilla_haber_id)
-                                            ->select('idPlanillaprocesada', 'Afp')->first();
-
-                $planilla_haberes = null;
-                if($planilla_procesada){
-                    $planilla_haberes = DB::connection('mysqlgobe')->table('planillahaberes as ph')
-                                            ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
-                                            ->where('ph.idPlanillaprocesada', $planilla_procesada->idPlanillaprocesada)
-                                            ->where('ph.Afp', $planilla_procesada->Afp)
-                                            ->groupBy('ph.idPlanillaprocesada')
-                                            ->selectRaw('ph.*, SUM(ph.Total_Ganado) as monto, tp.Nombre as tipo_planilla')->first();
-                }
-                    
-                if($planilla_haberes){
-                    return  '<b>'.$planilla_haberes->tipo_planilla.' - '.$planilla_haberes->Periodo.'</b> <br><small>Planilla: </small>'.$planilla_haberes->idPlanillaprocesada.' - '.($planilla_haberes->Afp == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($planilla_haberes->monto, 2, ',', '.');
-                }elseif($row->spreadsheet_id){
-                    $spreadsheet = Spreadsheet::find($row->spreadsheet_id);
-                    return '<label class="label label-danger">Planilla manual</label> <br> <b>'.($spreadsheet->tipo_planilla_id == 1 ? 'Funcionamiento' : 'Inversión').' - '.$spreadsheet->year.str_pad($spreadsheet->month, 2, "0", STR_PAD_LEFT).'</b> <br> '.$spreadsheet->codigo_planilla.' - '.($spreadsheet->afp_id == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($spreadsheet->total, 2, ',', '.');
+            ->addColumn('planilla_id', function($row){                    
+                if($row->planilla_haber){
+                    return  '<b>'.($row->planilla_haber->tipo ? $row->planilla_haber->tipo->Nombre : 'No definido').' - '.$row->planilla_haber->Periodo.'</b> <br><small>Planilla: </small>'.$row->planilla_haber->idPlanillaprocesada.' - '.($row->planilla_haber->Afp == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($row->planilla_haber->planilla_procesada ? $row->planilla_haber->planilla_procesada->Monto : 0, 2, ',', '.');
+                }elseif($row->spreadsheet){
+                    return '<label class="label label-danger">Planilla manual</label> <br> <b>'.($row->spreadsheet->tipo_planilla_id == 1 ? 'Funcionamiento' : 'Inversión').' - '.$row->spreadsheet->year.str_pad($row->spreadsheet->month, 2, "0", STR_PAD_LEFT).'</b> <br> '.$row->spreadsheet->codigo_planilla.' - '.($row->spreadsheet->afp_id == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($row->spreadsheet->total, 2, ',', '.');
                 }
                 return '';
             })
@@ -380,30 +294,33 @@ class SocialSecurityController extends Controller
 
             }else{
                 $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                        ->where('p.Estado', 1)
-                        ->where('p.Tplanilla', $request->t_planilla ?? 0)
-                        ->whereRaw('(p.idGda=1 or p.idGda=2)')
-                        ->where('p.Periodo', $request->periodo ?? 0)
-                        ->where('p.Centralizado', 'SI')
-                        ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
-                        ->groupBy('p.Afp', 'p.idPlanillaprocesada')
-                        ->selectRaw('p.ID')
-                        ->get();
-                // dd($planillas);
+                                    ->join('planillaprocesada as pp', 'pp.ID', 'p.idPlanillaprocesada')
+                                    ->where('p.Estado', 1)
+                                    ->where('p.Tplanilla', $request->t_planilla ?? 0)
+                                    ->whereRaw('(p.idGda=1 or p.idGda=2)')
+                                    ->where('p.Periodo', $request->periodo ?? 0)
+                                    ->where('p.Centralizado', 'SI')
+                                    ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
+                                    ->groupBy('p.Afp', 'p.idPlanillaprocesada')
+                                    ->selectRaw('p.ID, pp.Monto as monto')
+                                    ->get();
+                $total_pago = $planillas->sum('monto');
+                // dd($planillas, $total_pago);
                 foreach ($planillas as $item) {
+                    $porcentaje = ($item->monto * 100) / $total_pago;
                     PayrollPayment::create([
                         'user_id' => Auth::user()->id,
                         'planilla_haber_id' => $item->ID,
                         'date_payment_afp' => $request->date_payment_afp,
                         'payment_id' => $request->payment_id,
-                        'penalty_payment' => $request->penalty_payment/count($planillas),
+                        'penalty_payment' => $request->penalty_payment * ($porcentaje/100),
                         'fpc_number' => $request->fpc_number,
                         'date_payment_cc' => $request->date_payment_cc,
                         'gtc_number' => $request->gtc_number,
                         'recipe_number' => $request->recipe_number,
                         'deposit_number' => $request->deposit_number,
                         'check_id' => $request->check_id,
-                        'penalty_check' => $request->penalty_check / count($planillas)
+                        'penalty_check' => $request->penalty_check * ($porcentaje/100)
                     ]);
 
                     // Actualizar estados de cheques de afp
@@ -559,23 +476,5 @@ class SocialSecurityController extends Controller
                         ->select('p.Total_Ganado', 'tp.Nombre as tipo_planilla', 'p.Anio as year', 'p.Mes as month')
                         ->get();
         return view('social-security.print.form-gtc', compact('dependence', 'planillas'));
-    }
-
-    public function test($year){
-        $data = ChecksPayment::with(['check_beneficiary.type'])
-                    ->whereYear('date_print', date('Y'))
-                    ->where('deleted_at', NULL)->get();
-        $cont = 0;
-        foreach ($data as $value) {
-            $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
-                                ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
-                                ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
-                                ->where('ph.ID', $value->planilla_haber_id)
-                                ->where('ph.Anio', $year)
-                                ->select('ph.*', 'pp.NumPersonas', 'pp.Monto', 'tp.Nombre as tipo_planilla')->first();
-            $data[$cont]->planilla = $planilla;
-            $cont++;
-        }
-        return view('social-security.testing.checks-list', compact('data', 'year'));
     }
 }

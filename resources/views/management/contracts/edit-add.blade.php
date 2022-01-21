@@ -27,7 +27,16 @@
                         <div class="panel-heading"><h6 class="panel-title">Datos principales</h6></div>
                         <div class="panel-body">
                             <div class="row">
-                                <div class="form-group col-md-12">
+                                <div class="form-group col-md-6">
+                                    <label for="person_id">Tipo de trámite</label>
+                                    <select name="procedure_type_id" class="form-control select2" required>
+                                        <option value="">-- Selecciona el tipo de trámite --</option>
+                                        @foreach (App\Models\ProcedureType::where('deleted_at', NULL)->get() as $item)
+                                        <option @if(isset($contract) && $contract->procedure_type_id == $item->id) selected @endif value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
                                     <label for="person_id">Persona</label>
                                     <select name="person_id" class="form-control select2" required>
                                         <option value="">-- Selecciona a la persona --</option>
@@ -74,6 +83,26 @@
                                 <div class="form-group col-md-6">
                                     <label for="finish">Fin de contrato</label>
                                     <input type="date" name="finish" value="{{ isset($contract) ? $contract->finish : '' }}" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-bordered">
+                        <div class="panel-heading"><h6 class="panel-title">Datos de complementarios</h6></div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="preventive_number">N&deg; de preventivo</label>
+                                    <input type="text" name="preventive_number" value="{{ isset($contract) ? $contract->preventive_number : '' }}" class="form-control">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="organizational_source">Fuente organizacional</label>
+                                    <input type="text" name="organizational_source" value="{{ isset($contract) ? $contract->organizational_source : '' }}" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -176,7 +205,7 @@
                                     <input type="date" name="date_report" value="{{ isset($contract) ? $contract->date_report : '' }}" class="form-control">
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="date_presentation">Fecha de Presentación</label>
+                                    <label for="date_presentation">Fecha de Presentación de documentos</label>
                                     <input type="date" name="date_presentation" value="{{ isset($contract) ? $contract->date_presentation : '' }}" class="form-control">
                                 </div>
                             </div>

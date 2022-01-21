@@ -60,7 +60,7 @@
     <div style="height: 45vh">
         <table width="100%">
             <tr>
-                <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="80px"></td>
+                <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="120px"></td>
                 <td style="text-align: right">
                     <h3 style="margin-bottom: 0px; margin-top: 5px">CAJAS - GOBERNACIÓN<br> <small>PAGOS REALIZADOS {{ $cashier->created_at->format('d/m/Y') }}</small> </h3>
                     <br>

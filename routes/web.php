@@ -79,7 +79,7 @@ Route::group(['prefix' => 'admin'], function () {
     // Previsión social
     // * Cheques
     Route::get('social-security/checks', [SocialSecurityController::class, 'checks_index'])->name('checks.index');
-    Route::get('social-security/checks/list', [SocialSecurityController::class, 'checks_list'])->name('checks.list');
+    Route::get('social-security/checks/list/{search?}', [SocialSecurityController::class, 'checks_list'])->name('checks.list');
     Route::get('social-security/checks/create', [SocialSecurityController::class, 'checks_create'])->name('checks.create');
     Route::post('social-security/checks/store', [SocialSecurityController::class, 'checks_store'])->name('checks.store');
     Route::get('social-security/checks/{check}', [SocialSecurityController::class, 'checks_show'])->name('checks.show');
@@ -147,6 +147,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('reports/social-security/personal/payments/list', [ReportsController::class, 'social_security_personal_payments_list'])->name('reports.social_security.personal.payments.list');
     Route::get('reports/social-security/caratula', [ReportsController::class, 'social_security_personal_caratula_index'])->name('reports.social_security.personal.caratula.index');
     Route::post('reports/social-security/caratula/list', [ReportsController::class, 'social_security_personal_caratula_list'])->name('reports.social_security.personal.caratula.list');
+    Route::get('reports/social-security/checks', [ReportsController::class, 'social_security_personal_checks_index'])->name('reports.social_security.personal.checks.index');
+    Route::post('reports/social-security/checks/list', [ReportsController::class, 'social_security_personal_checks_list'])->name('reports.social_security.personal.checks.list');
 
     // Cashier
     Route::get('reports/cashier/cashiers', [ReportsController::class, 'cashier_cashiers_index'])->name('reports.cashier.cashiers.index');

@@ -31,7 +31,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <input type="number" min="0" name="periodo" class="form-control" value="{{ date('Y') }}{{ str_pad(date('m')-1, 2, '0',STR_PAD_LEFT) }}" placeholder="Periodo"  />
+                                        <input type="number" min="0" name="periodo" class="form-control" value="{{ date('Y') }}{{ str_pad(date('m'), 2, '0',STR_PAD_LEFT) }}" placeholder="Periodo"  />
                                     </div>
                                     <div class="form-group col-md-6">
                                         <select name="afp" class="form-control select2">

@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 // use Illuminate\Events\Dispatcher;
 use TCG\Voyager\Facades\Voyager;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,5 +31,7 @@ class AppServiceProvider extends ServiceProvider
         Voyager::addAction(\App\Actions\CashiersClose::class);
         Voyager::addAction(\App\Actions\CashiersPrintOpen::class);
         Voyager::addAction(\App\Actions\CashiersPrintClose::class);
+
+        Paginator::useBootstrap();
     }
 }

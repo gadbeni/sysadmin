@@ -24,6 +24,7 @@
                     <tbody>
                         @php
                             $cont = 1;
+                            $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                         @endphp
                         @forelse ($funcionarios as $item)
                             <tr>

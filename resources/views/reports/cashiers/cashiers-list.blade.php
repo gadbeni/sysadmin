@@ -109,6 +109,9 @@
                                 <td class="text-right"><b>{{ number_format($amount_diff < 0 ? abs($amount_diff) : 0, 2, ',', '.') }}</b></td>
                                 <td class="text-right"><b>{{ number_format($amount_diff > 0 ? abs($amount_diff) : 0, 2, ',', '.') }}</b></td>
                             </tr>
+                            @php
+                                $cont++;
+                            @endphp
                         @empty
                             <tr>
                                 <td colspan="13"><h4 class="text-center">No hay resultados</h4></td>

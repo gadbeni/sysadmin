@@ -55,7 +55,7 @@
     <div style="height: 45vh" @if ($i == 1) class="show-print" @else class="border-bottom" @endif>
         <table width="100%">
             <tr>
-                <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="80px"></td>
+                <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="120px"></td>
                 <td style="text-align: right">
                     <h3 style="margin-bottom: 0px; margin-top: 5px">CAJAS - GOBERNACIÓN<br> <small>CIERRE DE CAJA</small> </h3>
                 </td>

@@ -52,7 +52,6 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('programs');
         Permission::generateFor('people');
         Permission::generateFor('planillas_adicionales');
-        Permission::generateFor('stipends');
         Permission::generateFor('procedure_types');
         Permission::generateFor('contracts');
 
@@ -89,6 +88,7 @@ class PermissionsTableSeeder extends Seeder
             'browse_reportssocial-securityspreadsheetspayments',
             'browse_reportssocial-securitypersonalpayments',
             'browse_reportssocial-securitycaratula',
+            'browse_reportssocial-securitychecks',
         ];
 
         foreach ($keys as $key) {

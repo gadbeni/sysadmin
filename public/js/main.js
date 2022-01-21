@@ -29,6 +29,7 @@ function customDataTable(url, columns = [], order = 0, orderBy = 'desc'){
     $('#dataTable').DataTable({
         processing: true,
         serverSide: true,
+        searchDelay : 1000,
         ajax: url,
         columns,
         order: [[ order, orderBy ]],

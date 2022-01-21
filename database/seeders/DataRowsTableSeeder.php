@@ -1216,8 +1216,8 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{}',
-                'order' => 9,
+                'details' => '{"display":{"width":6}}',
+                'order' => 10,
             ),
             75 => 
             array (
@@ -1249,7 +1249,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 10,
+                'order' => 11,
             ),
             77 => 
             array (
@@ -1265,7 +1265,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 11,
+                'order' => 12,
             ),
             78 => 
             array (
@@ -1281,7 +1281,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 12,
+                'order' => 13,
             ),
             79 => 
             array (
@@ -1381,214 +1381,6 @@ class DataRowsTableSeeder extends Seeder
             ),
             85 => 
             array (
-                'id' => 86,
-                'data_type_id' => 11,
-                'field' => 'id',
-                'type' => 'text',
-                'display_name' => 'Id',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 0,
-                'add' => 0,
-                'delete' => 0,
-                'details' => '{}',
-                'order' => 1,
-            ),
-            86 => 
-            array (
-                'id' => 87,
-                'data_type_id' => 11,
-                'field' => 'funcionario',
-                'type' => 'text',
-                'display_name' => 'Funcionario',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{}',
-                'order' => 2,
-            ),
-            87 => 
-            array (
-                'id' => 88,
-                'data_type_id' => 11,
-                'field' => 'ci',
-                'type' => 'text',
-                'display_name' => 'Ci',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{}',
-                'order' => 3,
-            ),
-            88 => 
-            array (
-                'id' => 89,
-                'data_type_id' => 11,
-                'field' => 'cargo',
-                'type' => 'text',
-                'display_name' => 'Cargo',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{}',
-                'order' => 4,
-            ),
-            89 => 
-            array (
-                'id' => 90,
-                'data_type_id' => 11,
-                'field' => 'sueldo',
-                'type' => 'text',
-                'display_name' => 'Sueldo',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{}',
-                'order' => 5,
-            ),
-            90 => 
-            array (
-                'id' => 91,
-                'data_type_id' => 11,
-                'field' => 'dia',
-                'type' => 'text',
-                'display_name' => 'Dia',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{}',
-                'order' => 6,
-            ),
-            91 => 
-            array (
-                'id' => 92,
-                'data_type_id' => 11,
-                'field' => 'montofactura',
-                'type' => 'text',
-                'display_name' => 'Montofactura',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{}',
-                'order' => 7,
-            ),
-            92 => 
-            array (
-                'id' => 93,
-                'data_type_id' => 11,
-                'field' => 'rciva',
-                'type' => 'text',
-                'display_name' => 'Rciva',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{}',
-                'order' => 8,
-            ),
-            93 => 
-            array (
-                'id' => 94,
-                'data_type_id' => 11,
-                'field' => 'total',
-                'type' => 'text',
-                'display_name' => 'Total',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{}',
-                'order' => 9,
-            ),
-            94 => 
-            array (
-                'id' => 95,
-                'data_type_id' => 11,
-                'field' => 'liqpagable',
-                'type' => 'text',
-                'display_name' => 'Liqpagable',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{}',
-                'order' => 10,
-            ),
-            95 => 
-            array (
-                'id' => 96,
-                'data_type_id' => 11,
-                'field' => 'created_at',
-                'type' => 'timestamp',
-                'display_name' => 'Created At',
-                'required' => 0,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 0,
-                'delete' => 1,
-                'details' => '{}',
-                'order' => 11,
-            ),
-            96 => 
-            array (
-                'id' => 97,
-                'data_type_id' => 11,
-                'field' => 'updated_at',
-                'type' => 'timestamp',
-                'display_name' => 'Updated At',
-                'required' => 0,
-                'browse' => 0,
-                'read' => 0,
-                'edit' => 0,
-                'add' => 0,
-                'delete' => 0,
-                'details' => '{}',
-                'order' => 12,
-            ),
-            97 => 
-            array (
-                'id' => 98,
-                'data_type_id' => 11,
-                'field' => 'deleted_at',
-                'type' => 'timestamp',
-                'display_name' => 'Deleted At',
-                'required' => 0,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{}',
-                'order' => 13,
-            ),
-            98 => 
-            array (
                 'id' => 99,
                 'data_type_id' => 9,
                 'field' => 'profession',
@@ -1603,7 +1395,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{"display":{"width":6}}',
                 'order' => 6,
             ),
-            99 => 
+            86 => 
             array (
                 'id' => 100,
                 'data_type_id' => 12,
@@ -1619,7 +1411,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{}',
                 'order' => 1,
             ),
-            100 => 
+            87 => 
             array (
                 'id' => 101,
                 'data_type_id' => 12,
@@ -1635,7 +1427,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{"validation":{"rule":"required|max:191"}}',
                 'order' => 2,
             ),
-            101 => 
+            88 => 
             array (
                 'id' => 102,
                 'data_type_id' => 12,
@@ -1651,7 +1443,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{}',
                 'order' => 3,
             ),
-            102 => 
+            89 => 
             array (
                 'id' => 103,
                 'data_type_id' => 12,
@@ -1667,7 +1459,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{}',
                 'order' => 4,
             ),
-            103 => 
+            90 => 
             array (
                 'id' => 104,
                 'data_type_id' => 12,
@@ -1683,7 +1475,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{}',
                 'order' => 5,
             ),
-            104 => 
+            91 => 
             array (
                 'id' => 105,
                 'data_type_id' => 12,
@@ -1698,6 +1490,22 @@ class DataRowsTableSeeder extends Seeder
                 'delete' => 0,
                 'details' => '{}',
                 'order' => 6,
+            ),
+            92 => 
+            array (
+                'id' => 106,
+                'data_type_id' => 9,
+                'field' => 'email',
+                'type' => 'text',
+                'display_name' => 'Email',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
+                'order' => 9,
             ),
         ));
         

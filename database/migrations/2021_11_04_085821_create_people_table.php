@@ -22,6 +22,7 @@ class CreatePeopleTable extends Migration
             $table->string('issued')->nullable();
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
+            $table->string('email')->nullable();
             $table->string('gender')->nullable();
             $table->timestamps();
             $table->softDeletes();

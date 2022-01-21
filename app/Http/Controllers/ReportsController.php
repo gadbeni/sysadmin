@@ -14,6 +14,7 @@ use App\Models\Cashier;
 use App\Models\CashiersPayment;
 use App\Models\VaultsClosure;
 use App\Models\Spreadsheet;
+use App\Models\DireccionAdministrativa;
 
 // Exports
 use App\Exports\PaymentsExport;
@@ -536,6 +537,43 @@ class ReportsController extends Controller
         }else{
             return view('reports.social_security.caratula-list', compact('planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes'));
         }
+    }
+
+    public function social_security_personal_checks_index(){
+        $direcciones_administrativa = DireccionAdministrativa::all();
+        return view('reports.social_security.checks-browse', compact('direcciones_administrativa'));
+    }
+
+    public function social_security_personal_checks_list(Request $request){
+        $checks = ChecksPayment::with(['check_beneficiary.type'])
+                    ->whereRaw($request->start ? 'DATE(date_print) >= "'.$request->start.'"' : 1)
+                    ->whereRaw($request->finish ? 'DATE(date_print) <= "'.$request->finish.'"' : 1)
+                    ->whereRaw($request->status ? 'status = '.$request->status : 1)
+                    ->where('deleted_at', NULL)->get();
+        $data = collect();
+        $cont = 0;
+        foreach ($checks as $value) {
+            $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                                ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                                ->where('ph.ID', $value->planilla_haber_id)
+                                ->whereRaw($request->d_a ? 'ph.idDa = '.$request->d_a : 1)
+                                ->whereRaw($request->periodo ? 'ph.Periodo = '.$request->periodo : 1)
+                                ->whereRaw($request->planilla_id ? 'ph.idPlanillaprocesada = '.$request->planilla_id : 1)
+                                ->select('ph.*', 'pp.NumPersonas', 'pp.Monto', 'tp.Nombre as tipo_planilla')->first();
+            if($planilla){
+                $checks[$cont]->planilla = $planilla;
+                $data->push($checks[$cont]);
+            }
+            $cont++;
+        }
+        // dd($data);
+        if($request->type == 'print'){
+            return view('reports.social_security.checks-list-print', compact('data'));
+        }else{
+            return view('reports.social_security.checks-list', compact('data'));
+        }
+        
     }
 
     //  ===== Cashiers =====

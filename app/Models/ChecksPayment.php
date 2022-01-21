@@ -23,4 +23,8 @@ class ChecksPayment extends Model
     public function spreadsheet(){
         return $this->belongsTo(Spreadsheet::class);
     }
+
+    public function planilla_haber(){
+        return $this->belongsTo(Planillahaber::class, 'planilla_haber_id', 'ID');
+    }
 }

@@ -179,7 +179,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"last_name","order_display_column":"first_name","order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2021-12-29 16:09:12',
-                'updated_at' => '2022-01-17 15:53:34',
+                'updated_at' => '2022-01-21 10:40:45',
             ),
             9 => 
             array (
@@ -200,24 +200,6 @@ class DataTypesTableSeeder extends Seeder
                 'updated_at' => '2022-01-04 10:57:05',
             ),
             10 => 
-            array (
-                'id' => 11,
-                'name' => 'stipends',
-                'slug' => 'stipends',
-                'display_name_singular' => 'Planilla Adicional',
-                'display_name_plural' => 'Planillas Adicionales',
-                'icon' => NULL,
-                'model_name' => 'App\\Models\\Stipend',
-                'policy_name' => NULL,
-                'controller' => NULL,
-                'description' => NULL,
-                'generate_permissions' => 1,
-                'server_side' => 0,
-                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null}',
-                'created_at' => '2022-01-17 00:29:10',
-                'updated_at' => '2022-01-17 00:29:10',
-            ),
-            11 => 
             array (
                 'id' => 12,
                 'name' => 'procedure_types',
