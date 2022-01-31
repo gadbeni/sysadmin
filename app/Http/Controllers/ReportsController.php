@@ -444,7 +444,7 @@ class ReportsController extends Controller
             $month = substr($periodo, 4, 6);
             $query_range = 'year = "'.$year.'" and month = "'.$month.'"';
         }
-        $payments = Spreadsheet::with(['payments', 'checks'])
+        $payments = Spreadsheet::with(['payments', 'checks.beneficiary.type'])
                         ->whereRaw($request->t_planilla ? 'tipo_planilla_id = '.$request->t_planilla : 1)
                         ->whereRaw($request->afp ? 'afp_id = '.$request->afp : 1)
                         ->whereRaw($request->id_da ? 'direccion_administrativa_id = '.$request->id_da : 1)
@@ -545,7 +545,7 @@ class ReportsController extends Controller
     }
 
     public function social_security_personal_checks_list(Request $request){
-        $checks = ChecksPayment::with(['beneficiary'])
+        $checks = ChecksPayment::with(['beneficiary.type'])
                     ->whereRaw($request->start ? 'DATE(date_print) >= "'.$request->start.'"' : 1)
                     ->whereRaw($request->finish ? 'DATE(date_print) <= "'.$request->finish.'"' : 1)
                     ->whereRaw($request->status ? 'status = '.$request->status : 1)
@@ -553,18 +553,22 @@ class ReportsController extends Controller
         $data = collect();
         $cont = 0;
         foreach ($checks as $value) {
-            $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
-                                ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
-                                ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
-                                ->where('ph.ID', $value->planilla_haber_id)
-                                ->whereRaw($request->d_a ? 'ph.idDa = '.$request->d_a : 1)
-                                ->whereRaw($request->periodo ? 'ph.Periodo = '.$request->periodo : 1)
-                                ->whereRaw($request->planilla_id ? 'ph.idPlanillaprocesada = '.$request->planilla_id : 1)
-                                ->select('ph.*', 'pp.NumPersonas', 'pp.Monto', 'tp.Nombre as tipo_planilla')
-                                ->orderBy('ph.Direccion_Administrativa', 'ASC')->orderBy('ph.Periodo', 'ASC')->first();
-            if($planilla){
-                $checks[$cont]->planilla = $planilla;
-                $data->push($checks[$cont]);
+            $planilla_haber = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $value->planilla_haber_id)->first();
+            if($planilla_haber){
+                $planilla = DB::connection('mysqlgobe')->table('planillahaberes as ph')
+                                    ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
+                                    ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
+                                    ->where('pp.ID', $planilla_haber->idPlanillaprocesada)
+                                    ->where('ph.Afp', $planilla_haber->Afp)
+                                    ->whereRaw($request->d_a ? 'ph.idDa = '.$request->d_a : 1)
+                                    ->whereRaw($request->periodo ? 'ph.Periodo = '.$request->periodo : 1)
+                                    ->whereRaw($request->planilla_id ? 'ph.idPlanillaprocesada = '.$request->planilla_id : 1)
+                                    ->select('ph.*', DB::raw('COUNT(ph.ID) as NumPersonas'), DB::raw('SUM(ph.Total_Ganado) as Monto'), 'tp.Nombre as tipo_planilla')
+                                    ->orderBy('ph.Direccion_Administrativa', 'ASC')->orderBy('ph.Periodo', 'ASC')->groupBy('ph.idPlanillaprocesada')->first();
+                if($planilla){
+                    $checks[$cont]->planilla = $planilla;
+                    $data->push($checks[$cont]);
+                }
             }
             $cont++;
         }

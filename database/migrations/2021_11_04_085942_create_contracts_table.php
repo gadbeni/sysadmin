@@ -17,11 +17,12 @@ class CreateContractsTable extends Migration
             $table->id();
             $table->foreignId('person_id')->nullable()->constrained('people');
             $table->integer('cargo_id')->nullable();
+            $table->integer('direccion_adminstrativa_id')->nullable();
             $table->integer('unidad_adminstrativa_id')->nullable();
             $table->foreignId('program_id')->nullable()->constrained('programs');
             $table->foreignId('procedure_type_id')->nullable()->constrained('procedure_types');
             $table->foreignId('user_id')->nullable()->constrained('users');
-            $table->smallInteger('number')->nullable();
+            $table->string('code')->nullable();
             $table->string('preventive_number')->nullable();
             $table->string('organizational_source')->nullable();
             $table->decimal('salary', 10, 2)->nullable();

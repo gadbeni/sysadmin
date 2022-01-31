@@ -6,7 +6,7 @@
     <div class="content">
         @php
             $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-            $code = $contract->number.'/'.date('Y', strtotime($contract->start));
+            $code = str_pad($contract->code, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($contract->start));
         @endphp
         <div class="page-title">
             <h2>
@@ -22,10 +22,13 @@
                 <div class="border-left">
                     <b>DE:</b> Lic. Geisel Marcelo Oliva Ruiz <br>
                     <b>RESP. DE PROCESO DE CONTRATACION APOYO NACIONAL A LA PRODUCCION Y EMPLEO – RPA</b> <br> <br>
-                    @foreach ($contract->workers as $item)
+                    @forelse ($contract->workers as $item)
                         <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
                         <b>{{ $item->Cargo }}</b> <br> <br>
-                    @endforeach
+                    @empty
+                        <b style="color: red">Debes Seleccionar a la comisión evaluadora</b>
+                        <br> <br>
+                    @endforelse
                     <b>REF.:</b> Designación Responsable de Evaluación
                 </div>
             </div>

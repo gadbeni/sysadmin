@@ -54,6 +54,10 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('planillas_adicionales');
         Permission::generateFor('procedure_types');
         Permission::generateFor('contracts');
+        Permission::generateFor('countries');
+        Permission::generateFor('states');
+        Permission::generateFor('cities');
+        Permission::generateFor('offices');
 
         $keys = [
             'browse_social-securityprint'

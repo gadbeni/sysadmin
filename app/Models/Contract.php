@@ -13,10 +13,11 @@ class Contract extends Model
         'person_id',
         'program_id',
         'cargo_id',
+        'direccion_adminstrativa_id',
         'unidad_adminstrativa_id',
         'procedure_type_id',
         'user_id',
-        'number',
+        'code',
         'preventive_number',
         'organizational_source',
         'salary',
@@ -40,33 +41,26 @@ class Contract extends Model
         'status',
     ];
 
-    /**
-     * Get the user that owns the Contract
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the user that owns the Contract
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function person()
     {
         return $this->belongsTo(Person::class);
     }
 
-    /**
-     * Get the user that owns the Contract
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function program()
     {
         return $this->belongsTo(Program::class);
+    }
+
+    public function direcciona_administrativa(){
+        return $this->belongsTo(DireccionAdministrativa::class, 'direccion_adminstrativa_id', 'ID');
+    }
+
+    public function unidad_administrativa(){
+        return $this->belongsTo(UnidadAdministrativa::class, 'unidad_adminstrativa_id', 'ID');
     }
 }

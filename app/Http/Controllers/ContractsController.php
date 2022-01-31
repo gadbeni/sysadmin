@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use App\Models\Person;
 use App\Models\Program;
 use App\Models\Contract;
+use App\Models\DireccionAdministrativa;
+use App\Models\UnidadAdministrativa;
 
 class ContractsController extends Controller
 {
@@ -40,12 +42,15 @@ class ContractsController extends Controller
      */
     public function create()
     {
-        $people = Person::where('deleted_at', NULL)->get();
-        $direccion_administrativas = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
+        $people = Person::with(['contracts' => function($q){
+            $q->where('status', 1)->where('deleted_at', NULL);
+        }])->where('deleted_at', NULL)->get();
+        $direccion_administrativas = DireccionAdministrativa::get();
+        $unidad_administrativas = UnidadAdministrativa::get();
         $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $programs = Program::where('deleted_at', NULL)->get();
         $cargos = DB::connection('mysqlgobe')->table('cargo')->where('idPlanilla', 3)->get();
-        return view('management.contracts.edit-add', compact('people', 'direccion_administrativas', 'funcionarios', 'programs', 'cargos'));
+        return view('management.contracts.edit-add', compact('people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos'));
     }
 
     /**
@@ -58,16 +63,18 @@ class ContractsController extends Controller
     {
         // dd($request->all());
         try {
-            $number = Contract::whereYear('start', date('Y', strtotime($request->start)))->count() + 1;
+            $code = Contract::whereYear('start', date('Y', strtotime($request->start)))
+                        ->where('procedure_type_id', $request->procedure_type_id,)->count() + 1;
 
             $contract = Contract::create([
                 'person_id' => $request->person_id,
                 'program_id' => $request->program_id,
                 'cargo_id' => $request->cargo_id,
+                'direccion_adminstrativa_id' => $request->direccion_adminstrativa_id,
                 'unidad_adminstrativa_id' => $request->unidad_adminstrativa_id,
                 'procedure_type_id' => $request->procedure_type_id,
                 'user_id' => Auth::user()->id,
-                'number' => $number,
+                'code' => $code,
                 'salary' => $request->salary,
                 'start' => $request->start,
                 'finish' => $request->finish,
@@ -183,7 +190,7 @@ class ContractsController extends Controller
         $contract = Contract::with(['user', 'person', 'program'])->where('id', $id)->first();
         $contract->cargo = DB::connection('mysqlgobe')->table('cargo')->where('ID', $contract->cargo_id)->first();
         $contract->unidad_adminstrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->where('ID', $contract->unidad_adminstrativa_id)->first();
-        $contract->workers = DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get();
+        $contract->workers = $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
         return view('management.docs.'.$document, compact('contract'));
     }
 }

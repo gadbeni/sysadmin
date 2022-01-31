@@ -23,6 +23,7 @@ class User extends \TCG\Voyager\Models\User
         'email',
         'ci',
         'password',
+        'direccion_administrativa_id'
     ];
 
     /**

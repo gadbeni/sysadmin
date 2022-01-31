@@ -77,7 +77,7 @@
                                     @endphp
                                     @include('voyager::formfields.relationship')
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" style="display: none">
                                     <label for="additional_roles">{{ __('voyager::profile.roles_additional') }}</label>
                                     @php
                                         $row     = $dataTypeRows->where('field', 'user_belongstomany_role_relationship')->first();
@@ -86,6 +86,17 @@
                                     @include('voyager::formfields.relationship')
                                 </div>
                             @endcan
+
+                            <div class="form-group">
+                                <label for="direccion_administrativa_id">Dirección Administrativa</label>
+                                <select name="direccion_administrativa_id" class="form-control select2">
+                                    <option value="">No definida</option>
+                                    @foreach(\App\Models\DireccionAdministrativa::all() as $direccion)
+                                        <option @if($dataTypeContent->direccion_administrativa_id == $direccion->ID) selected @endif value="{{ $direccion->ID }}">{{ $direccion->NOMBRE }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             @php
                             if (isset($dataTypeContent->locale)) {
                                 $selected_locale = $dataTypeContent->locale;
@@ -94,7 +105,7 @@
                             }
 
                             @endphp
-                            <div class="form-group">
+                            <div class="form-group" style="display: none">
                                 <label for="locale">{{ __('voyager::generic.locale') }}</label>
                                 <select class="form-control select2" id="locale" name="locale">
                                     @foreach (Voyager::getLocales() as $locale)

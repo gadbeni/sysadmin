@@ -7,7 +7,7 @@
         <div class="page-head">
             @php
                 $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-                $code = $contract->number.'/'.date('Y', strtotime($contract->start));
+                $code = str_pad($contract->code, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($contract->start));
             @endphp
             <p style="font-size: 13px">
                 Santísima Trinidad, {{ date('d', strtotime($contract->date_response)) }} de {{ $months[intval(date('m', strtotime($contract->date_response)))] }} de {{ date('Y', strtotime($contract->date_response)) }}

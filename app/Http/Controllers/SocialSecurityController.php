@@ -30,14 +30,21 @@ class SocialSecurityController extends Controller
     public function checks_list($search = null){
         $paginate = request('paginate') ?? 10;
         $data = ChecksPayment::with(['user', 'beneficiary.type', 'planilla_haber.tipo', 'spreadsheet'])
-                    ->whereRaw($search ? '(number like "'.$search.'%" or REPLACE(amount, ".", ",") like "'.$search.'%")' : 1)
-                    ->OrWhereHas('user', function($query) use($search){
-                        $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                    ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
+                    ->where('deleted_at', NULL)->orderBy('id', 'DESC')
+                    ->where(function($query) use ($search){
+                        if($search){
+                            $query->OrwhereHas('beneficiary', function($query) use($search){
+                                $query->whereRaw($search ? 'full_name like "%'.$search.'%"' : 1);
+                            })
+                            ->OrWhereHas('user', function($query) use($search){
+                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                            })
+                            ->OrWhereRaw($search ? '(number like "'.$search.'%" or REPLACE(amount, ".", ",") like "'.$search.'%")' : 1);
+                        }
                     })
-                    ->OrWhereHas('beneficiary', function($query) use($search){
-                        $query->whereRaw($search ? 'full_name like "%'.$search.'%"' : 1);
-                    })
-                    ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
+                    ->paginate($paginate);
+        // dd($data);
         return view('social-security.checks-list', compact('data', 'search'));
     }
 
@@ -187,7 +194,9 @@ class SocialSecurityController extends Controller
     }
 
     public function payments_list(){
-        $data = PayrollPayment::with(['planilla_haber', 'planilla_haber.tipo', 'planilla_haber.planilla_procesada', 'spreadsheet'])->where('deleted_at', NULL)->get();
+        $data = PayrollPayment::with(['planilla_haber', 'planilla_haber.tipo', 'planilla_haber.planilla_procesada', 'spreadsheet'])
+                    ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
+                    ->where('deleted_at', NULL)->get();
         // return $data;
 
         return

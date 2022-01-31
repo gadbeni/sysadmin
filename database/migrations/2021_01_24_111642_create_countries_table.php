@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateCashiersPaymentsTable extends Migration
+class CreateCountriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class UpdateCashiersPaymentsTable extends Migration
      */
     public function up()
     {
-        Schema::table('cashiers_payments', function (Blueprint $table) {
-            $table->foreignId('stipend_id')->nullable()->constrained('stipends');
+        Schema::create('countries', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->nullable();
+            $table->string('initials')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,8 +29,6 @@ class UpdateCashiersPaymentsTable extends Migration
      */
     public function down()
     {
-        Schema::table('cashiers_payments', function (Blueprint $table) {
-            $table->dropColumn('stipend_id');
-        });
+        Schema::dropIfExists('countries');
     }
 }

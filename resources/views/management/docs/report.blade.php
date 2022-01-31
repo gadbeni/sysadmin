@@ -7,7 +7,7 @@
         <div class="page-head">
             @php
                 $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-                $code = $contract->number.'/'.date('Y', strtotime($contract->start));
+                $code = str_pad($contract->code, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($contract->start));
             @endphp
             <h4 style="text-align: center">
                 INFORME <br>
@@ -32,10 +32,14 @@
                         <td style="width: 100px">De</td>
                         <td style="width: 100px">:</td>
                         <td>
-                            @foreach ($contract->workers as $item)
+                            @forelse ($contract->workers as $item)
                                 {{ str_replace('  ', ' ', Str::upper($item->NombreCompleto)) }} <br>
                                 <b>{{ Str::upper($item->Cargo) }}</b> <br> <br>
-                            @endforeach
+                            @empty
+                                <br> <br>
+                                <b style="color: red">Debes Seleccionar a la comisión evaluadora</b>
+                                <br> <br>
+                            @endforelse
                         </td>
                     </tr>
                     <tr>
@@ -71,125 +75,15 @@
 
                 {!! $contract->table_report !!}
 
-                {{-- <table border="1" cellpadding="3" cellspacing="0" style="width: 100%; font-size: 11px">
-                    <tr>
-                        <th rowspan="2">NIVEL DE CONSULTORÍA</th>
-                        <th colspan="2">REQUISITOS</th>
-                    </tr>
-                    <tr>
-                        <th>FORMACIÓN ACADÉMICA</th>
-                        <th>MEDIOS DE VERIFICACIÓN</th>
-                    </tr>
-                    <tr>
-                        <td rowspan="3"><b>TECNICO IV PARA LA DIRECCIÓN DE INTERACCIÓN SOCIAL</b></td>
-                        <td>
-                            <ul>
-                                <li>Estudiante de carrera universitaria que tenga vencida todas las asignaturas correspondientes a su 2do año o 4to semestre (acreditado por certificado emitido por autoridad de la carrera universitaria correspondiente).</li>
-                            </ul>
-                        </td>
-                        <td>
-                            <ul>
-                                <li>Certificado de estudio</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><b>EXPERIENCIA LABORAL REQUERIDA</b></td>
-                        <td><b>MEDIOS DE VERIFICACIÓN</b></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <ul>
-                                <li>No aplica</li>
-                            </ul>
-                        </td>
-                        <td>
-                            <ul>
-                                <li>No aplica</li>
-                            </ul>
-                        </td>
-                    </tr>
-                </table>
-                
                 <br>
-                <p>Así mismo se procedió a la Evaluación mediante la metodología CUMPLE y NO CUMPLE, tal como se detalla en el siguiente cuadro:</p>
-                <br>
-
-                <table border="1" cellpadding="3" cellspacing="0" style="width: 100%; font-size: 11px">
-                    <tr>
-                        <th rowspan="2">NIVEL DE CONSULTORÍA</th>
-                        <th colspan="2">VERIFICACIÓN</th>
-                    </tr>
-                    <tr>
-                        <th>FORMACIÓN ACADÉMICA</th>
-                        <th>MEDIOS DE VERIFICACIÓN</th>
-                    </tr>
-                    <tr>
-                        <td rowspan="3"><b>TECNICO IV PARA LA DIRECCIÓN DE INTERACCIÓN SOCIAL</b></td>
-                        <td>
-                            <ul>
-                                <li>Cumple</li>
-                            </ul>
-                        </td>
-                        <td>
-                            <ul>
-                                <li>Cumple</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><b>EXPERIENCIA LABORAL REQUERIDA</b></td>
-                        <td><b>MEDIOS DE VERIFICACIÓN</b></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <ul>
-                                <li>No aplica</li>
-                            </ul>
-                        </td>
-                        <td>
-                            <ul>
-                                <li>No aplica</li>
-                            </ul>
-                        </td>
-                    </tr>
-                </table> --}}
-
-                <br>
-
                 <p>
                     Por lo anteriormente expuesto y en cumplimiento a lo establecido en el D.S. N° 0181 Art. 38, Parágrafo III, Inciso e), <u><i>se recomienda</i></u> al Lic. Geisel Marcelo Oliva Ruiz – Responsable del Proceso de Contratación de Apoyo Nacional a la Producción y Empleo, <b>adjudicar</b> el Proceso de Contratación <b>GAD-BENI/MC N° 190/2021 “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}”</b>, bajo el siguiente detalle:
                 </p>
                 <br>
 
                 @php
-                    $start = Carbon\Carbon::parse($contract->start);
-                    $finish = Carbon\Carbon::parse($contract->finish);
-                    $count_months = 0;
-                    $dia_fin = 31;
-
-                    if($start->format('Y-m') == $finish->format('Y-m')){
-                        $count_months = 0;
-                        if($finish->format('d') < 30){
-                            $dia_fin = $finish->format('d') +1;
-                        }
-                        $count_days = $dia_fin - $start->format('d');
-                    }else{
-                        $count_months = 0;
-                        $count_days = 31 - $start->format('d');
-                        $start = Carbon\Carbon::parse($start->addMonth()->format('Y-m').'-01');
-                        while ($start <= $finish) {
-                            $count_months++;
-                            $start->addMonth();
-                        }
-                        $count_months--;
-                        $count_days += $start->subMonth()->diffInDays($finish) +1;
-                        if($count_days > 30){
-                            $count_days -= 30;
-                            $count_months++;
-                        }
-                    }
-                    $total = ($contract->salary *$count_months) + (($contract->salary /30) *$count_days);
+                    $contract_duration = contract_duration_calculate($contract->start, $contract->finish);
+                    $total = ($contract->salary *$contract_duration->months) + (($contract->salary /30) *$contract_duration->days);
                 @endphp
                 <table class="table-th" border="1" cellpadding="10" cellspacing="0" style="width: 100%; font-size: 11px">
                     <tr>
@@ -224,13 +118,18 @@
 
                 <table width="100%" style="text-align: center; margin: 80px 0px; margin-bottom: 50px">
                     <tr>
-                        @foreach ($contract->workers as $item)
+                        @forelse ($contract->workers as $item)
                             <td style="width: 50%">
                                 ....................................................... <br>
                                 {{ str_replace('  ', ' ', Str::upper($item->NombreCompleto)) }} <br>
                                 <b>{{ Str::upper($item->Cargo) }}</b>
                             </td>
-                        @endforeach
+                        @empty
+                            <td style="width: 50%">
+                                <b style="color: red">Debes Seleccionar a la comisión evaluadora</b>
+                                <br> <br>
+                            </td>
+                        @endforelse
                     </tr>
                 </table>
                 <hr>

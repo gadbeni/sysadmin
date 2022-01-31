@@ -58,7 +58,12 @@
                         <td style="text-align: right">{{ number_format($item->planilla->Monto, 2, ',', '.') }}</td>
                         <td>{{ $item->number }}</td>
                         <td>{{ date('d/M/Y', strtotime($item->date_print)) }}</td>
-                        <td>{{ $item->beneficiary->full_name }}</td>
+                        <td>
+                            @if ($item->beneficiary)
+                                {{ $item->beneficiary->full_name }} <br>
+                                <small>{{ $item->beneficiary->type->name }}</small>
+                            @endif
+                        </td>
                         <td>
                             @switch($item->status)
                                 @case(1)

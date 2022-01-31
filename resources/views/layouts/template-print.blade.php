@@ -64,10 +64,10 @@
                 bottom: 3px;
                 background: rgb(24,155,85);
                 background: linear-gradient(90deg, rgba(24,155,85,1) 0%, rgba(3,180,85,1) 100%);
-                height: 50px;
+                height: 45px;
                 text-align: center;
                 color: white;
-                padding-top: 15px
+                padding-top: 10px
             }
         }
     </style>

@@ -31,6 +31,7 @@ class PlanillasController extends Controller
         $tipo_planilla = $request->tipo_planilla;
         $title = '';
         $aguinaldo = [];
+        $stipend = [];
         switch ($tipo_planilla) {
             case '0':
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
@@ -86,6 +87,7 @@ class PlanillasController extends Controller
                         ->join('planilla as p', 'p.ID', 'pp.idPlanilla')
                         ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
                         ->whereRaw('ph.idPlanillaprocesada like "%'.$search.'%"')
+                        ->whereRaw(Auth::user()->direccion_administrativa_id ? 'ph.idDa = '.Auth::user()->direccion_administrativa_id : 1)
                         ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
                         ->orderBy('ph.idPlanillaprocesada')
                         ->selectRaw('ph.ID as id, ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, sum(ph.Total_Aportes_Afp) as total_aportes_afp, count(ph.Total_Aportes_Afp) as cantidad_personas, ph.pagada as certificacion, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp, SUM(ph.Riesgo_Comun) as total_riesgo_comun')

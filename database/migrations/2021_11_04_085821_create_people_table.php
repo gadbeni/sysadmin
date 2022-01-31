@@ -15,6 +15,7 @@ class CreatePeopleTable extends Migration
     {
         Schema::create('people', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('city_id')->nullable()->constrained('cities');
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('ci')->nullable();
@@ -23,7 +24,12 @@ class CreatePeopleTable extends Migration
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
             $table->string('email')->nullable();
+            $table->smallInteger('afp')->nullable();
+            $table->smallInteger('afp_status')->nullable();
             $table->string('gender')->nullable();
+            $table->date('birthday')->nullable();
+            $table->string('civil_status')->nullable();
+            $table->string('nua_cua')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

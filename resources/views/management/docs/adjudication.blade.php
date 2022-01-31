@@ -7,7 +7,7 @@
         <div class="page-head">
             @php
                 $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-                $code = $contract->number.'/'.date('Y', strtotime($contract->start));
+                $code = str_pad($contract->code, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($contract->start));
             @endphp
             <p>
                 Santísima Trinidad, {{ date('d', strtotime($contract->date_note)) }} de {{ $months[intval(date('m', strtotime($contract->date_note)))] }} de {{ date('Y', strtotime($contract->date_note)) }} <br>
@@ -26,46 +26,21 @@
         </div>
         <div class="page-body">
             @php
-                $start = Carbon\Carbon::parse($contract->start);
-                $finish = Carbon\Carbon::parse($contract->finish);
-                $count_months = 0;
-                $dia_fin = 31;
-
-                if($start->format('Y-m') == $finish->format('Y-m')){
-                    $count_months = 0;
-                    if($finish->format('d') < 30){
-                        $dia_fin = $finish->format('d') +1;
-                    }
-                    $count_days = $dia_fin - $start->format('d');
-                }else{
-                    $count_months = 0;
-                    $count_days = 31 - $start->format('d');
-                    $start = Carbon\Carbon::parse($start->addMonth()->format('Y-m').'-01');
-                    while ($start <= $finish) {
-                        $count_months++;
-                        $start->addMonth();
-                    }
-                    $count_months--;
-                    $count_days += $start->subMonth()->diffInDays($finish) +1;
-                    if($count_days > 30){
-                        $count_days -= 30;
-                        $count_months++;
-                    }
-                }
-
+                $contract_duration = contract_duration_calculate($contract->start, $contract->finish);
+                $total = ($contract->salary *$contract_duration->months) + (($contract->salary /30) *$contract_duration->days);
                 $periodo = '';
-                if($count_months > 0){
-                    if($count_months == 1){
-                        $periodo .= NumerosEnLetras::convertir($count_months).' mes';
+                if($contract_duration->months > 0){
+                    if($contract_duration->months == 1){
+                        $periodo .= NumerosEnLetras::convertir($contract_duration->months).' mes';
                     }else{
-                        $periodo .= NumerosEnLetras::convertir($count_months).' meses';
+                        $periodo .= NumerosEnLetras::convertir($contract_duration->months).' meses';
                     }
                 }
-                if($count_days > 0){
-                    if($count_days == 1){
-                        $periodo .= ' y '.NumerosEnLetras::convertir($count_days).' día';
+                if($contract_duration->days > 0){
+                    if($contract_duration->days == 1){
+                        $periodo .= ' y '.NumerosEnLetras::convertir($contract_duration->days).' día';
                     }else{
-                        $periodo .= ' y '.NumerosEnLetras::convertir($count_days).' días';
+                        $periodo .= ' y '.NumerosEnLetras::convertir($contract_duration->days).' días';
                     }
                 }
             @endphp
@@ -81,7 +56,7 @@
                 </tr>
                 <tr>
                     <td>&#9679; &nbsp; Monto total adjudicado</td>
-                    <td style="text-align: right">Bs.- &nbsp;&nbsp; {{ number_format(($contract->salary *$count_months) + (($contract->salary /30) *$count_days), 2, ',', '.') }}</td>
+                    <td style="text-align: right">Bs.- &nbsp;&nbsp; {{ number_format($total, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td>&#9679; &nbsp; Fecha de inicio de contrato</td>

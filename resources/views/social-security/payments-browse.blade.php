@@ -172,7 +172,7 @@
                 { data: 'fpc_number', title: 'Nro de FPC' },
                 { data: 'gtc_number', title: 'Nro de GTC-11' },
                 { data: 'deposit_number', title: 'Nro de deposito' },
-                { data: 'user', title: 'Resgistrado por' },
+                { data: 'user', title: 'Registrado por' },
                 { data: 'created_at', title: 'Registrado el' },
                 { data: 'actions', title: 'Acciones', orderable: false, searchable: false },
             ];

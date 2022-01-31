@@ -52,6 +52,7 @@
                                 @elseif($row->spreadsheet)
                                     <p>
                                         <label class="label label-danger">Planilla manual</label> <br>
+                                        <b><small>N&deg;:</small></b> {{ $row->number }} <br>
                                         <b>{{ ($row->spreadsheet->tipo_planilla_id == 1 ? 'Funcionamiento' : 'Inversión').' - '.$row->spreadsheet->year.str_pad($row->spreadsheet->month, 2, "0", STR_PAD_LEFT)  }}</b><br>
                                         <b><small>Planilla:</small></b> {{ ($row->spreadsheet->codigo_planilla.' - '.($row->spreadsheet->afp_id == 1 ? 'Futuro' : 'Previsión')) }} <br>
                                         <b><small>Monto:</small></b> {{ number_format($row->amount, 2, ',', '.') }} <br>

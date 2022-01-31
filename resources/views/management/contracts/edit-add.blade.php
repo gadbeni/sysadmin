@@ -28,8 +28,8 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label for="person_id">Tipo de trámite</label>
-                                    <select name="procedure_type_id" class="form-control select2" required>
+                                    <label for="procedure_type_id">Tipo de trámite</label>
+                                    <select name="procedure_type_id" id="select-procedure_type_id" class="form-control select2" required>
                                         <option value="">-- Selecciona el tipo de trámite --</option>
                                         @foreach (App\Models\ProcedureType::where('deleted_at', NULL)->get() as $item)
                                         <option @if(isset($contract) && $contract->procedure_type_id == $item->id) selected @endif value="{{ $item->id }}">{{ $item->name }}</option>
@@ -41,16 +41,27 @@
                                     <select name="person_id" class="form-control select2" required>
                                         <option value="">-- Selecciona a la persona --</option>
                                         @foreach ($people as $item)
-                                        <option @if(isset($contract) && $contract->person->id == $item->id) selected @endif value="{{ $item->id }}">{{ $item->first_name }} {{ $item->last_name }} - {{ $item->ci }}</option>
+                                        @if ($item->contracts->count() == 0)
+                                        <option @if(isset($contract) && $contract->person->id == $item->id) selected @endif value="{{ $item->id }}">{{ $item->first_name }} {{ $item->last_name }} - {{ $item->ci }}</option>                                            
+                                        @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="direccion_adminstrativa_id">Dirección administrativa</label>
+                                    <select name="direccion_adminstrativa_id" class="form-control select2" required>
+                                        <option value="">-- Selecciona la dirección administrativa --</option>
+                                        @foreach ($direccion_administrativas as $item)
+                                        <option @if(isset($contract) && $contract->direccion_adminstrativa_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="unidad_adminstrativa_id">Unidad administrativa</label>
                                     <select name="unidad_adminstrativa_id" class="form-control select2" required>
-                                        <option value="">-- Selecciona la dirección administrativa --</option>
-                                        @foreach ($direccion_administrativas as $item)
-                                        <option @if(isset($contract) && $contract->unidad_adminstrativa_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
+                                        <option value="">-- Selecciona la unidad administrativa --</option>
+                                        @foreach ($unidad_administrativas as $item)
+                                        <option @if(isset($contract) && $contract->unidad_adminstrativa_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ $item->Nombre }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -91,7 +102,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 div-hidden">
                     <div class="panel panel-bordered">
                         <div class="panel-heading"><h6 class="panel-title">Datos de complementarios</h6></div>
                         <div class="panel-body">
@@ -110,7 +121,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row div-hidden div-1">
                 <div class="col-md-12">
                     <div class="panel panel-bordered">
                         <div class="panel-heading"><h6 class="panel-title">Datos de autorización</h6></div>
@@ -134,7 +145,7 @@
                 </div>
             </div>
             
-            <div class="row">
+            <div class="row div-hidden div-1">
                 <div class="col-md-12">
                     <div class="panel panel-bordered">
                         <div class="panel-heading"><h6 class="panel-title">Datos de invitación</h6></div>
@@ -158,7 +169,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row div-hidden div-1">
                 <div class="col-md-12">
                     <div class="panel panel-bordered">
                         <div class="panel-heading"><h6 class="panel-title">Datos de memorandum</h6></div>
@@ -178,7 +189,7 @@
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label for="workers_memo">Comisión de contratación</label>
-                                    <select name="workers_memo[]" id="select-workers_memo" class="form-control" multiple required>
+                                    <select name="workers_memo[]" id="select-workers_memo" class="form-control" multiple>
                                         @foreach ($funcionarios as $item)
                                         <option @if(isset($contract) && $contract->cargo_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ str_replace('  ', ' ', $item->NombreCompleto) }} - {{ $item->Cargo }}</option>
                                         @endforeach
@@ -190,7 +201,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row div-hidden div-1">
                 <div class="col-md-12">
                     <div class="panel panel-bordered">
                         <div class="panel-heading"><h6 class="panel-title">Datos complementarios</h6></div>
@@ -214,7 +225,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row div-hidden div-1">
                 <div class="col-md-12">
                     <div class="panel panel-bordered">
                         <div class="panel-heading"><h6 class="panel-title">Cuadro de nivel de consultoría</h6></div>
@@ -343,6 +354,7 @@
 @section('javascript')
     <script>
         $(document).ready(function(){
+            $('.div-hidden').fadeOut('fast');
             var additionalConfig = {
                 selector: '.richTextBox',
             }
@@ -354,8 +366,16 @@
             @isset($contract)
                 let workers_memo = '{!! $contract->workers_memo !!}' ? JSON.parse('{!! $contract->workers_memo !!}') : [];
                 $('#select-workers_memo').val(workers_memo);
+                $('.div-{{ $contract->procedure_type_id }}').fadeIn('fast');
             @endisset
             $('#select-workers_memo').select2();
+
+            $('#select-procedure_type_id').change(function(){
+                let id = $('#select-procedure_type_id').val();
+                $('.div-hidden').fadeOut('fast', () => {
+                    $(`.div-${id}`).fadeIn('fast');
+                });
+            });
         });
     </script>
 @stop

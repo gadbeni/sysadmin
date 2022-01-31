@@ -25,8 +25,10 @@
                                 <div class="alert alert-info" role="alert" id="alert-details" style="display: none; margin-bottom: 20px"></div>
                                 <div class="col-md-12" style="{{ $type == 'create' ? '' : 'display: none' }}">
                                     <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="1" checked>No centralizadas</label>
+                                    @if (!Auth::user()->direccion_administrativa_id)
                                     <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="2">Centralizadas</label>
                                     <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="3">Manual</label>
+                                    @endif
                                 </div>
                                 <div class="form-group col-md-12 div-no-centralizada">
                                     <label for="planilla_haber_id">Planilla</label>

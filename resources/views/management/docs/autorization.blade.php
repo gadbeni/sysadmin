@@ -6,7 +6,7 @@
     <div class="content">
         @php
             $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-            $code = $contract->number.'/'.date('Y', strtotime($contract->start));
+            $code = str_pad($contract->code, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($contract->start));
         @endphp
         <div class="page-title">
             <h2>AUTORIZACIÓN DE INICIO DE PROCESO DE CONTRATACIÓN</h2>
@@ -60,33 +60,8 @@
                     </td>
                 </tr>
                 @php
-                    $start = Carbon\Carbon::parse($contract->start);
-                    $finish = Carbon\Carbon::parse($contract->finish);
-                    $count_months = 0;
-                    $dia_fin = 31;
-
-                    if($start->format('Y-m') == $finish->format('Y-m')){
-                        $count_months = 0;
-                        if($finish->format('d') < 30){
-                            $dia_fin = $finish->format('d') +1;
-                        }
-                        $count_days = $dia_fin - $start->format('d');
-                    }else{
-                        $count_months = 0;
-                        $count_days = 31 - $start->format('d');
-                        $start = Carbon\Carbon::parse($start->addMonth()->format('Y-m').'-01');
-                        while ($start <= $finish) {
-                            $count_months++;
-                            $start->addMonth();
-                        }
-                        $count_months--;
-                        $count_days += $start->subMonth()->diffInDays($finish) +1;
-                        if($count_days > 30){
-                            $count_days -= 30;
-                            $count_months++;
-                        }
-                    }
-                    $total = ($contract->salary *$count_months) + (($contract->salary /30) *$count_days);
+                    $contract_duration = contract_duration_calculate($contract->start, $contract->finish);
+                    $total = ($contract->salary *$contract_duration->months) + (($contract->salary /30) *$contract_duration->days);
                 @endphp
                 <tr>
                     <td>7.</td>
