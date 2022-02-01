@@ -15,8 +15,17 @@ class CreateProgramsTable extends Migration
     {
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
+            $table->integer('direccion_adminstrativa_id')->nullable();
             $table->string('name')->nullable();
             $table->text('description')->nullable();
+            $table->string('type')->nullable();
+            $table->string('class')->nullable();
+            $table->string('number')->nullable();
+            $table->string('programatic_category')->nullable();
+            $table->string('amount')->nullable();
+            $table->smallInteger('year')->nullable();
+            $table->date('start')->nullable();
+            $table->date('finish')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

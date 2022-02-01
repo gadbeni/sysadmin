@@ -95,7 +95,9 @@
                     <td style="text-align: right">{{ number_format($item->total *0.1, 2, ',', '.') }}</td>
                     <td>
                         @foreach ($item->checks as $check)
-                            {{ $check->number }} <br>
+                            @if (strpos(strtoupper($check->beneficiary->type->name), 'SALUD') !== false)
+                                {{ $check->number }} <br>
+                            @endif
                         @endforeach
                     </td>
                     <td>

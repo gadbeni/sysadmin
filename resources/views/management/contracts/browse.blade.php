@@ -52,7 +52,7 @@
                                 <tbody>
                                     @forelse ($contracts as $item)
                                     <tr>
-                                        <td>{{ $item->number }}/{{ date('Y', strtotime($item->start)) }}</td>
+                                        <td>{{ $item->code }}/{{ date('Y', strtotime($item->start)) }}</td>
                                         <td>{{ $item->person->first_name }} {{ $item->person->last_name }}</td>
                                         <td>{{ $item->cargo->Descripcion }}</td>
                                         <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
@@ -80,16 +80,24 @@
                                                 </button>
                                               
                                                 <ul class="dropdown-menu" role="menu">
-                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'autorization']) }}" target="_blank">Autorización</a></li>
-                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'invitation']) }}" target="_blank">Invitación</a></li>
-                                                    {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'answer']) }}" target="_blank">Respuesta</a></li> --}}
-                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'declaration']) }}" target="_blank">Declaración</a></li>
-                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'memorandum']) }}" target="_blank">Memorandum</a></li>
-                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'report']) }}" target="_blank">Informe</a></li>
-                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
-                                                    {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'presentation']) }}" target="_blank">Presentación de documentos</a></li> --}}
-                                                    <li class="divider"></li>
-                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'contract-eventual']) }}" target="_blank">Contrato</a></li>
+                                                    @switch($item->procedure_type_id)
+                                                        @case(1)
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'autorization']) }}" target="_blank">Autorización</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'invitation']) }}" target="_blank">Invitación</a></li>
+                                                            {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'answer']) }}" target="_blank">Respuesta</a></li> --}}
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'declaration']) }}" target="_blank">Declaración</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'memorandum']) }}" target="_blank">Memorandum</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'report']) }}" target="_blank">Informe</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
+                                                            {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'presentation']) }}" target="_blank">Presentación de documentos</a></li> --}}
+                                                            {{-- <li class="divider"></li> --}}
+                                                            @break
+                                                        @case(4)
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'contract-eventual']) }}" target="_blank">Contrato</a></li>
+                                                            @break
+                                                        @default
+                                                            
+                                                    @endswitch
                                                 </ul>
                                             </div>
                                             <a href="#" title="Ver" class="btn btn-sm btn-warning view">
