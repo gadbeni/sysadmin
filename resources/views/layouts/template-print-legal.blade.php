@@ -42,29 +42,29 @@
         }
 
         @page {
-            size: letter;
-            margin: 10mm 0mm 0mm 0mm;
+            size: legal;
+            margin: 10mm 0mm 30mm 0mm;
         }
 
         @media print {
             body{
-                margin: 20px auto;
+                margin: 40px auto;
             }
             #logo{
                 top: 0px;
             }
             #watermark {
-                top: 280px;
+                top: 500px;
             }
             #footer {
                 display: block;
                 position: fixed;
                 left: 0px;
                 right: 0px;
-                bottom: 5px;
+                bottom: 3px;
                 background: rgb(24,155,85);
                 background: linear-gradient(90deg, rgba(24,155,85,1) 0%, rgba(3,180,85,1) 100%);
-                height: 50px;
+                height: 45px;
                 text-align: center;
                 color: white;
                 padding-top: 10px

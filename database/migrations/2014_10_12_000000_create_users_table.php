@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('ci')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->integer('direccion_administrativa_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

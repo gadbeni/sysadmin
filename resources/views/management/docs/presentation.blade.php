@@ -15,7 +15,7 @@
             <br>
             <p style="text-align: left">
                 Señor: <br>
-                Lic. Geisel Marcelo Oliva Ruiz <br>
+                {{ setting('firma-autorizada.name') }} <br>
                 <b>RESPONSABLE DEL PROCESO DE CONTRATACIÓN DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO - RPA</b> <br>
                 Presente. –
             </p>

@@ -3,10 +3,10 @@
 Migraciones
     ejecutar todas las migraciones
 Seeders
-    - UpdatePermissionsSeeder, UpdateBreadSeeder
+    - UpdatePermissionsSeeder, UpdateBreadSeeder, ProcedureTypesTableSeeder
 Paquetes
 
 Comandos
 
 Otros
-    - Eliminar tabla contracts, people (eliminar de tabla migraciones)
+    - Eliminar tabla contracts, people, procedure_types, programs (eliminar de tabla migraciones)

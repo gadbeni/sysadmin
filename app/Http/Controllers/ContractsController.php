@@ -13,6 +13,7 @@ use App\Models\Program;
 use App\Models\Contract;
 use App\Models\DireccionAdministrativa;
 use App\Models\UnidadAdministrativa;
+use App\Models\Cargo;
 
 class ContractsController extends Controller
 {
@@ -23,15 +24,7 @@ class ContractsController extends Controller
      */
     public function index()
     {
-        $contracts = Contract::with(['user', 'person', 'program'])->where('deleted_at', NULL)->get();
-        $cont = 0;
-        foreach ($contracts as $item) {
-            $direccion_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->where('ID', $item->unidad_adminstrativa_id)->first();
-            $cargo = DB::connection('mysqlgobe')->table('cargo')->where('ID', $item->cargo_id)->first();
-            $contracts[$cont]->direccion_administrativa = $direccion_administrativa;
-            $contracts[$cont]->cargo = $cargo;
-            $cont++;
-        }
+        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'direccion_administrativa'])->where('deleted_at', NULL)->get();
         return view('management.contracts.browse', compact('contracts'));
     }
 
@@ -49,7 +42,10 @@ class ContractsController extends Controller
         $unidad_administrativas = UnidadAdministrativa::get();
         $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $programs = Program::where('deleted_at', NULL)->get();
-        $cargos = DB::connection('mysqlgobe')->table('cargo')->where('idPlanilla', 3)->get();
+        $cargos = Cargo::with(['nivel'])->where('idPlanilla', 2)->OrWhere('idPlanilla', 3)
+                    ->whereHas('nivel', function($q){
+                        $q->orderBy('NumNivel', 'ASC');
+                    })->get();
         return view('management.contracts.edit-add', compact('people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos'));
     }
 
@@ -71,11 +67,11 @@ class ContractsController extends Controller
                 'program_id' => $request->program_id,
                 'cargo_id' => $request->cargo_id,
                 'direccion_adminstrativa_id' => $request->direccion_adminstrativa_id,
-                'unidad_adminstrativa_id' => $request->unidad_adminstrativa_id,
+                'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'procedure_type_id' => $request->procedure_type_id,
                 'user_id' => Auth::user()->id,
                 'code' => $code,
-                'salary' => $request->salary,
+                'details_work' => $request->details_work,
                 'start' => $request->start,
                 'finish' => $request->finish,
                 'date_invitation' => $request->date_invitation,
@@ -145,8 +141,8 @@ class ContractsController extends Controller
                 'program_id' => $request->program_id,
                 'cargo_id' => $request->cargo_id,
                 'procedure_type_id' => $request->procedure_type_id,
-                'unidad_adminstrativa_id' => $request->unidad_adminstrativa_id,
-                'salary' => $request->salary,
+                'unidad_administrativa_id' => $request->unidad_administrativa_id,
+                'details_work' => $request->details_work,
                 'start' => $request->start,
                 'finish' => $request->finish,
                 'date_invitation' => $request->date_invitation,
@@ -187,9 +183,7 @@ class ContractsController extends Controller
     // ================================
     
     public function print($id, $document){
-        $contract = Contract::with(['user', 'person', 'program'])->where('id', $id)->first();
-        $contract->cargo = DB::connection('mysqlgobe')->table('cargo')->where('ID', $contract->cargo_id)->first();
-        $contract->unidad_adminstrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->where('ID', $contract->unidad_adminstrativa_id)->first();
+        $contract = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'direccion_administrativa', 'unidad_administrativa'])->where('id', $id)->first();
         $contract->workers = $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
         return view('management.docs.'.$document, compact('contract'));
     }

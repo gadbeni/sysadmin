@@ -58,7 +58,7 @@
                                         <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
                                         <td>
                                             <ul>
-                                                <li><b>Sueldo: </b> <small>Bs.</small> {{ $item->salary }}</li>
+                                                <li><b>Sueldo: </b> <small>Bs.</small> {{ $item->cargo->nivel->Sueldo }}</li>
                                             </ul>
                                         </td>
                                         <td>
@@ -90,7 +90,8 @@
                                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'report']) }}" target="_blank">Informe</a></li>
                                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
                                                             {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'presentation']) }}" target="_blank">Presentación de documentos</a></li> --}}
-                                                            {{-- <li class="divider"></li> --}}
+                                                            <li class="divider"></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'contract-consultor']) }}" target="_blank">Contrato</a></li>
                                                             @break
                                                         @case(4)
                                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'contract-eventual']) }}" target="_blank">Contrato</a></li>

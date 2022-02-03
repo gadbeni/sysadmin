@@ -27,7 +27,7 @@
         <div class="page-body">
             @php
                 $contract_duration = contract_duration_calculate($contract->start, $contract->finish);
-                $total = ($contract->salary *$contract_duration->months) + (($contract->salary /30) *$contract_duration->days);
+                $total = ($contract->cargo->nivel->Sueldo *$contract_duration->months) + (($contract->cargo->nivel->Sueldo /30) *$contract_duration->days);
                 $periodo = '';
                 if($contract_duration->months > 0){
                     if($contract_duration->months == 1){
@@ -52,7 +52,7 @@
             <table align="center">
                 <tr>
                     <td style="width: 320px;">&#9679; &nbsp; Monto mensual</td>
-                    <td style="width: 180px; text-align: right">Bs.- &nbsp;&nbsp; {{ number_format($contract->salary, 2, ',', '.') }}</td>
+                    <td style="width: 180px; text-align: right">Bs.- &nbsp;&nbsp; {{ number_format($contract->cargo->nivel->Sueldo, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td>&#9679; &nbsp; Monto total adjudicado</td>
@@ -91,7 +91,7 @@
 
             <div style="margin-top: 80px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
-                    Lic. Geisel Marcelo Oliva Ruiz <br>
+                    {{ setting('firma-autorizada.name') }} <br>
                     <b>RESPONSABLE DEL PROCESO DE CONTRATACIÓN <br>
                         DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO – RPA <br>
                         GAD - BENI

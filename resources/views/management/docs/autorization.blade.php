@@ -61,7 +61,7 @@
                 </tr>
                 @php
                     $contract_duration = contract_duration_calculate($contract->start, $contract->finish);
-                    $total = ($contract->salary *$contract_duration->months) + (($contract->salary /30) *$contract_duration->days);
+                    $total = ($contract->cargo->nivel->Sueldo *$contract_duration->months) + (($contract->cargo->nivel->Sueldo /30) *$contract_duration->days);
                 @endphp
                 <tr>
                     <td>7.</td>
@@ -79,7 +79,7 @@
 
             <div style="margin-top: 100px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
-                    Lic. Geisel Marcelo Oliva Ruiz <br>
+                    {{ setting('firma-autorizada.name') }} <br>
                     <b>RESPONSABLE DEL PROCESO DE CONTRATACIÓN <br>
                         DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO – RPA <br>
                         GAD - BENI</b>

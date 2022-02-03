@@ -1441,7 +1441,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{}',
-                'order' => 3,
+                'order' => 4,
             ),
             89 => 
             array (
@@ -1457,7 +1457,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 4,
+                'order' => 5,
             ),
             90 => 
             array (
@@ -1473,7 +1473,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 5,
+                'order' => 6,
             ),
             91 => 
             array (
@@ -1489,7 +1489,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 6,
+                'order' => 7,
             ),
             92 => 
             array (
@@ -1513,7 +1513,7 @@ class DataRowsTableSeeder extends Seeder
                 'data_type_id' => 1,
                 'field' => 'direccion_administrativa_id',
                 'type' => 'text',
-                'display_name' => 'Direccion Administrativa Id',
+                'display_name' => 'Direccion Administrativa',
                 'required' => 0,
                 'browse' => 0,
                 'read' => 0,
@@ -2273,6 +2273,22 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"display":{"width":6}}',
+                'order' => 3,
+            ),
+            141 => 
+            array (
+                'id' => 156,
+                'data_type_id' => 12,
+                'field' => 'planilla_id',
+                'type' => 'select_dropdown',
+                'display_name' => 'Tipo de planilla',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"validation":{"rule":"max:191"},"options":{"1":"Funcionamiento","2":"Inversi\\u00f3n","3":"Consultor\\u00eda de l\\u00ednea","4":"Consultor\\u00eda por Producto","":"Ninguna"}}',
                 'order' => 3,
             ),
         ));

@@ -20,7 +20,7 @@
                     <p style="position:absolute; bottom: 10px">Santísima Trinidad, {{ date('d', strtotime($contract->date_memo)) }} de {{ $months[intval(date('m', strtotime($contract->date_memo)))] }} de {{ date('Y', strtotime($contract->date_memo)) }}</p>
                 </div>
                 <div class="border-left">
-                    <b>DE:</b> Lic. Geisel Marcelo Oliva Ruiz <br>
+                    <b>DE:</b> {{ setting('firma-autorizada.name') }} <br>
                     <b>RESP. DE PROCESO DE CONTRATACION APOYO NACIONAL A LA PRODUCCION Y EMPLEO – RPA</b> <br> <br>
                     @forelse ($contract->workers as $item)
                         <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
@@ -63,7 +63,7 @@
 
             <div style="margin-top: 80px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
-                    Lic. Geisel Marcelo Oliva Ruiz <br>
+                    {{ setting('firma-autorizada.name') }} <br>
                     <b>RESPONSABLE DEL PROCESO DE CONTRATACIÓN <br>
                         DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO – RPA <br>
                         GAD - BENI

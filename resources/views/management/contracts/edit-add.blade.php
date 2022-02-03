@@ -20,7 +20,6 @@
             @isset($contract)
                 @method('PUT')
             @endisset
-            <input type="hidden" name="procedure_type_id" value="1">
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-bordered">
@@ -32,7 +31,7 @@
                                     <select name="procedure_type_id" id="select-procedure_type_id" class="form-control select2" required>
                                         <option value="">-- Selecciona el tipo de trámite --</option>
                                         @foreach (App\Models\ProcedureType::where('deleted_at', NULL)->get() as $item)
-                                        <option @if(isset($contract) && $contract->procedure_type_id == $item->id) selected @endif value="{{ $item->id }}">{{ $item->name }}</option>
+                                        <option @if(isset($contract) && $contract->procedure_type_id == $item->id) selected @endif value="{{ $item->id }}" data-planilla_id="{{ $item->planilla_id }}">{{ $item->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -49,7 +48,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="direccion_adminstrativa_id">Dirección administrativa</label>
-                                    <select name="direccion_adminstrativa_id" class="form-control select2" required>
+                                    <select name="direccion_adminstrativa_id" id="select-direccion_adminstrativa_id" class="form-control select2" required>
                                         <option value="">-- Selecciona la dirección administrativa --</option>
                                         @foreach ($direccion_administrativas as $item)
                                         <option @if(isset($contract) && $contract->direccion_adminstrativa_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
@@ -57,35 +56,30 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="unidad_adminstrativa_id">Unidad administrativa</label>
-                                    <select name="unidad_adminstrativa_id" class="form-control select2" required>
-                                        <option value="">-- Selecciona la unidad administrativa --</option>
-                                        @foreach ($unidad_administrativas as $item)
-                                        <option @if(isset($contract) && $contract->unidad_adminstrativa_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ $item->Nombre }}</option>
-                                        @endforeach
+                                    <label for="unidad_administrativa_id">Unidad administrativa</label>
+                                    <select name="unidad_administrativa_id" id="select-unidad_administrativa_id" class="form-control select2" required>
+                                        {{-- @foreach ($unidad_administrativas as $item)
+                                        <option @if(isset($contract) && $contract->unidad_administrativa_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ $item->Nombre }}</option>
+                                        @endforeach --}}
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="program_id">Programa</label>
-                                    <select name="program_id" class="form-control select2" required>
-                                        <option value="">-- Selecciona el programa --</option>
+                                    <select name="program_id" id="select-program_id" class="form-control select2" required>
+                                        {{-- <option value="">-- Selecciona el programa --</option>
                                         @foreach ($programs as $item)
                                         <option @if(isset($contract) && $contract->program_id == $item->id) selected @endif value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="cargo_id">Cargo</label>
-                                    <select name="cargo_id" class="form-control select2" required>
-                                        <option value="">-- Selecciona el cargo --</option>
+                                    <select name="cargo_id" id="select-cargo_id" class="form-control select2" required>
+                                        {{-- <option value="">-- Selecciona el cargo --</option>
                                         @foreach ($cargos as $item)
-                                        <option @if(isset($contract) && $contract->cargo_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ $item->Descripcion }}</option>
-                                        @endforeach
+                                        <option @if(isset($contract) && $contract->cargo_id == $item->ID) selected @endif value="{{ $item->ID }}" data-salary="{{ $item->nivel->Sueldo }}">{{ $item->Descripcion }} | Nivel {{ $item->nivel->NumNivel }} | Bs. {{ $item->nivel->Sueldo }}</option>
+                                        @endforeach --}}
                                     </select>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="salary">Salario</label>
-                                    <input type="number" name="salary" min="1" step="1" value="{{ isset($contract) ? $contract->salary : '' }}" class="form-control" required>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="start">Inicio de contrato</label>
@@ -114,6 +108,32 @@
                                 <div class="form-group col-md-6">
                                     <label for="organizational_source">Fuente organizacional</label>
                                     <input type="text" name="organizational_source" value="{{ isset($contract) ? $contract->organizational_source : '' }}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 div-hidden div-4">
+                    <div class="panel panel-bordered">
+                        <div class="panel-heading"><h6 class="panel-title">Datos de complementarios</h6></div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label for="details_work">Funciones generales</label>
+                                    <textarea class="form-control richTextBox" name="details_work">
+                                        {{
+                                            isset($contract) ?
+                                            $contract->details_work :
+                                            '<ul>
+                                            <li>Coordinar la planificaci&oacute;n, ejecuci&oacute;n y seguimiento de las actividades del &aacute;rea.</li>
+                                            <li>Proporcionar apoyo t&eacute;cnico en la ejecuci&oacute;n de pol&iacute;ticas y objetivos de la Entidad.</li>
+                                            <li>Informar, recomendar y emitir criterios t&eacute;cnico-administrativos a su inmediato superior en lo que corresponde al &aacute;rea de su especialidad.</li>
+                                            </ul>'
+                                        }}
+                                    </textarea>
                                 </div>
                             </div>
                         </div>
@@ -353,6 +373,9 @@
 
 @section('javascript')
     <script>
+        var unidad_administrativas = @json($unidad_administrativas);
+        var programs = @json($programs);
+        var cargos = @json($cargos);
         $(document).ready(function(){
             $('.div-hidden').fadeOut('fast');
             var additionalConfig = {
@@ -360,7 +383,6 @@
             }
 
             $.extend(additionalConfig, {})
-
             tinymce.init(window.voyagerTinyMCE.getConfig(additionalConfig));
             
             @isset($contract)
@@ -370,10 +392,32 @@
             @endisset
             $('#select-workers_memo').select2();
 
+            $('#select-direccion_adminstrativa_id').change(function(){
+                $('#select-unidad_administrativa_id').html(`<option value="">Seleccione una unidad administrativa</option>`);
+                unidad_administrativas.map(item => {
+                    if($('#select-direccion_adminstrativa_id option:selected').val() == item.idDa){
+                        $('#select-unidad_administrativa_id').append(`<option value="${item.ID}">${item.Nombre}</option>`);
+                    }
+                });
+                $('#select-program_id').html(`<option value="">Seleccione un programa</option>`);
+                programs.map(item => {
+                    if($('#select-direccion_adminstrativa_id option:selected').val() == item.direccion_adminstrativa_id){
+                        $('#select-program_id').append(`<option value="${item.id}">${item.name}</option>`);
+                    }
+                });
+            });
+
             $('#select-procedure_type_id').change(function(){
                 let id = $('#select-procedure_type_id').val();
                 $('.div-hidden').fadeOut('fast', () => {
                     $(`.div-${id}`).fadeIn('fast');
+                });
+
+                $('#select-cargo_id').html(`<option value="">Seleccione un cargo</option>`);
+                cargos.map(item => {
+                    if($('#select-procedure_type_id option:selected').data('planilla_id') == item.idPlanilla){
+                        $('#select-cargo_id').append(`<option value="${item.ID}">${item.Descripcion} | Nivel ${item.nivel.NumNivel} | Bs. ${item.nivel.Sueldo}</option>`);
+                    }
                 });
             });
         });

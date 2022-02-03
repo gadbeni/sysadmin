@@ -14,13 +14,13 @@ class Contract extends Model
         'program_id',
         'cargo_id',
         'direccion_adminstrativa_id',
-        'unidad_adminstrativa_id',
+        'unidad_administrativa_id',
         'procedure_type_id',
         'user_id',
         'code',
+        'details_work',
         'preventive_number',
         'organizational_source',
-        'salary',
         'start',
         'finish',
         'date_invitation',
@@ -56,11 +56,15 @@ class Contract extends Model
         return $this->belongsTo(Program::class);
     }
 
-    public function direcciona_administrativa(){
+    public function direccion_administrativa(){
         return $this->belongsTo(DireccionAdministrativa::class, 'direccion_adminstrativa_id', 'ID');
     }
 
     public function unidad_administrativa(){
-        return $this->belongsTo(UnidadAdministrativa::class, 'unidad_adminstrativa_id', 'ID');
+        return $this->belongsTo(UnidadAdministrativa::class, 'unidad_administrativa_id', 'ID');
+    }
+
+    public function cargo(){
+        return $this->belongsTo(Cargo::class, 'cargo_id', 'ID');
     }
 }

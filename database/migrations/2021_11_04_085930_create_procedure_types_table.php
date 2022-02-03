@@ -16,6 +16,7 @@ class CreateProcedureTypesTable extends Migration
         Schema::create('procedure_types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->smallInteger('planilla_id')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
