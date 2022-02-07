@@ -56,6 +56,10 @@ class Contract extends Model
         return $this->belongsTo(Program::class);
     }
 
+    public function type(){
+        return $this->belongsTo(ProcedureType::class, 'procedure_type_id');
+    }
+
     public function direccion_administrativa(){
         return $this->belongsTo(DireccionAdministrativa::class, 'direccion_adminstrativa_id', 'ID');
     }

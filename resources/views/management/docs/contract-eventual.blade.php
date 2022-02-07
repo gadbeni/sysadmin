@@ -2,16 +2,23 @@
 
 @section('page_title', 'Contrato Personal Eventual')
 
+@php
+    $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+    $code = str_pad($contract->code, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($contract->start));
+@endphp
+
+@section('qr_code')
+    <div id="qr_code">
+        {!! QrCode::size(80)->generate('Consultor de línea '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' al '.date('d', strtotime($contract->finish)).' de '.$months[intval(date('m', strtotime($contract->finish)))].' de '.date('Y', strtotime($contract->finish)).' con un sueldo de '.number_format($contract->cargo->nivel->Sueldo, 2, ',', '.').' Bs.'); !!}
+    </div>
+@endsection
+
 @section('content')
     <div class="content" style="text-align: justify">
-        @php
-            $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-            $code = str_pad($contract->code, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($contract->start));
-        @endphp
         <h2 class="text-center" style="font-size: 18px">CONTRATO ADMINISTRATIVO DE PERSONAL EVENTUAL <br> <small>GAD-BENI-C.E-{{ $code }}</small> </h2>
         <p><em>Conste por el presente contrato de prestaci&oacute;n de servicios </em><em><strong>de Personal Eventual</strong></em><em> celebrado de conformidad a las siguientes clausulas y condiciones:</em></p>
         <p><em><span style="text-decoration: underline;"><strong>CLAUSULA PRIMERA .- </strong></span></em><em><strong>(PARTES ).-</strong></em><em> </em></p>
-        <p><em>1.- </em><em><strong>EL GOBIERNO AUT&Oacute;NOMO DEPARTAMENTAL DE BENI</strong></em><em>, con domicilio </em><em>ubicado en la Plaza Principal Mcal. Jos&eacute; Ballivi&aacute;n representado</em><em> legalmente para este acto por el </em><em><strong> {{ setting('firma-autorizada.name') }} con C.I {{ setting('firma-autorizada.ci') }}, </strong></em><em><strong>en su calidad de </strong></em><em><strong>{{ setting('firma-autorizada.job') }} (S.D.A.F) GAD-Beni</strong></em><em><strong>,</strong></em><em> designado mediante Decreto de </em><em><strong>Gobernaci&oacute;n </strong></em><em><strong>{{ setting('firma-autorizada.desigancion') }}, </strong></em><em>y designado como Autoridad responsable de Procesos de Contrataci&oacute;n - RPA, Autoridad responsable de procesos de contrataci&oacute;n de Licitaci&oacute;n Publica &ndash; RPC y contrataciones directas, que en adelante se denominara </em><em><strong>LA ENTIDAD</strong></em><em>. </em></p>
+        <p><em>1.- </em><em><strong>EL GOBIERNO AUT&Oacute;NOMO DEPARTAMENTAL DE BENI</strong></em><em>, con domicilio </em><em>ubicado en la Plaza Principal Mcal. Jos&eacute; Ballivi&aacute;n representado</em><em> legalmente para este acto por el </em><em><strong> {{ setting('firma-autorizada.name') }} con C.I {{ setting('firma-autorizada.ci') }}, </strong></em><em><strong>en su calidad de </strong></em><em><strong>{{ setting('firma-autorizada.job') }} (S.D.A.F) GAD-BENI</strong></em><em><strong>,</strong></em><em> designado mediante Decreto de </em><em><strong>Gobernaci&oacute;n </strong></em><em><strong>{{ setting('firma-autorizada.desigancion') }}, </strong></em><em>y designado como Autoridad responsable de Procesos de Contrataci&oacute;n - RPA, Autoridad responsable de procesos de contrataci&oacute;n de Licitaci&oacute;n Publica &ndash; RPC y contrataciones directas, que en adelante se denominara </em><em><strong>LA ENTIDAD</strong></em><em>. </em></p>
         <p><em>2. {{ $contract->person->gender == 'masculino' ? 'El Señor' : 'La Señora' }} </em><em>{{ $contract->person->first_name }} {{ $contract->person->last_name }} con C.I. {{ $contract->person->ci }}; con domicilio en {{ $contract->person->address }}, de profesi&oacute;n {{ $contract->person->profession }}</em> <em>mayor de edad h&aacute;bil en toda forma de derecho que en adelante se denominada </em><em><strong>EL CONTRATADO.</strong></em></p>
         <p><em>Quienes celebran el presente CONTRATO ADMINISTRATIVO, de acuerdo a los t&eacute;rminos y condiciones siguientes:</em></p>
         <p><em><span style="text-decoration: underline;"><strong>CLAUSULA SEGUNDA</strong></span></em><em><strong>.-</strong></em><em> </em><em><strong>(ANTECEDENTES).- </strong></em><em>La Ley No 1413 del Presupuesto General del Estado Gesti&oacute;n 2022 de 17 de diciembre de 2021, determina en su Disposici&oacute;n Final Segunda, inciso b). la vigencia entre otros de la Ley del Presupuesto General del Estado 2010, aprobado en el marco del articulo 158 numeral 11 de la Constituci&oacute;n Pol&iacute;tica del Estado, que en su el art. 22 (Ley de presupuesto general del Estado 2010)determina; "La remuneraci&oacute;n del Personal Eventual debe establecerse considerando las funciones y la escala salarial aprobada de la entidad, para la cual no se requiere ning&uacute;n instrumento legal adicional".</em></p>
@@ -75,12 +82,12 @@
         <p><em><strong>d)</strong></em><em> Abuso de confianza, robo, hurto debidamente comprobado.</em></p>
         <p><em><strong>e)</strong></em><em> Cuando el CONTRATADO est&aacute; comprendido dentro de las incompatibilidades o prohibiciones para ejercer la funci&oacute;n p&uacute;blica, por raz&oacute;n de parentesco hasta el cuarto grado de consanguineidad y segundo de afinidad.</em></p>
         <p><em><strong>f)</strong></em><em> Cuando se evidencie que el CONTRATADO percibe dos remuneraciones en calidad de servidor p&uacute;blico que provengan de recursos p&uacute;blicos, conforme a normas en vigencia o incurre en incompatibilidad por conflicto de intereses seg&uacute;n el formulario respectivo</em></p>
-        <p><em><strong>g)</strong></em><em> Suspender la prestaci&oacute;n de servicios por causa justificada y autorizaci&oacute;n del inmediato superior, a requerimiento de la INSTITUCION y/o a solicitud del CONTRATADO.</em></p>
-        <p><em><strong>h)</strong></em><em> Por infracci&oacute;n de las normas internas que rigen en la entidad (Reglamento Interno de Personal - RIP) y otras causales previstas en la normativa legal aplicable.</em></p>
         
         <div class="saltopagina"></div>
         <div class="pt"></div>
-        
+
+        <p><em><strong>g)</strong></em><em> Suspender la prestaci&oacute;n de servicios por causa justificada y autorizaci&oacute;n del inmediato superior, a requerimiento de la INSTITUCION y/o a solicitud del CONTRATADO.</em></p>
+        <p><em><strong>h)</strong></em><em> Por infracci&oacute;n de las normas internas que rigen en la entidad (Reglamento Interno de Personal - RIP) y otras causales previstas en la normativa legal aplicable.</em></p>
         <p><em>En todos los casos ser&aacute; suficiente una comunicaci&oacute;n escrita con quince (15) d&iacute;as de anticipaci&oacute;n, mediante nota o memor&aacute;ndum al </em><em><strong>CONTRATADO</strong></em><em> por parte del </em><em><strong>CONTRATANTE</strong></em><em> a trav&eacute;s de la Direcci&oacute;n de Recursos Humanos.</em></p>
         <p><em>Por su parte el </em><em><strong>CONTRATADO</strong></em><em> podr&aacute; renunciar de manera voluntaria, asumiendo la obligaci&oacute;n de hacer conocer la misma con quince (15) d&iacute;as calendario de anticipaci&oacute;n</em></p>
         <p><em><strong>CLAUSULA D&Eacute;CIMA: (DERECHOS Y OBLIGACIONES DEL CONTRATADO)</strong></em></p>
@@ -108,7 +115,7 @@
         <p><em>Si la imposibilidad sobreviniente impide u obstruye el cumplimiento del contrato, la parte afectada ser&aacute; eximida de su cumplimiento solamente por el plazo que dure dicha imposibilidad previa justificaci&oacute;n y descargo. La parte que invoque la existencia de imposibilidad sobreviniente, deber&aacute; notificar a la otra por escrito, en el domicilio se&ntilde;alado en el presente contrato en el plazo de cuarenta y ocho (48) horas de iniciado el hecho, haciendo conocer cuando corresponda el tiempo estimable de duraci&oacute;n si fuera posible.</em></p>
         <p><em><strong>CLAUSULA D&Eacute;CIMA TERCERA: (ACEPTACI&Oacute;N)</strong></em></p>
         <p><em>En se&ntilde;al de aceptaci&oacute;n y estricto cumplimiento firman el presente Contrato en tres ejemplares de un mismo tenor y validez, el {{ setting('firma-autorizada.name') }}</em><em><strong>, {{ setting('firma-autorizada.job') }} </strong></em><em><strong> </strong></em><em>y por otra parte {{ $contract->person->gender == 'masculino' ? 'el Sr.' : 'la Sra.' }} </em><em>{{ $contract->person->first_name }} {{ $contract->person->last_name }}, en calidad de CONTRATADO.</em></p>
-        <p style="text-align: right;">Sant&iacute;sima Trinidad, 01 de diciembre del 2021.</p>
+        <p style="text-align: right;">Sant&iacute;sima Trinidad, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}</p>
         <table width="100%" style="text-align: center; margin-top: 80px;">
             <tr>
                 <td style="width: 50%">
@@ -118,7 +125,7 @@
                 </td>
                 <td style="width: 50%">
                     ....................................................... <br>
-                    {{ $contract->person->gender == 'masculino' ? 'el Sr.' : 'la Sra.' }} </em><em>{{ $contract->person->first_name }} {{ $contract->person->last_name }} <br>
+                    {{ $contract->person->gender == 'masculino' ? 'Sr.' : 'Sra.' }} </em><em>{{ $contract->person->first_name }} {{ $contract->person->last_name }} <br>
                     <b>CONTRATADO</b>
                 </td>
             </tr>
@@ -130,7 +137,7 @@
 @section('css')
     <style>
         .content {
-            padding: 30px 34px;
+            padding: 50px 34px;
             font-size: 11px;
         }
         .text-center{
@@ -145,7 +152,7 @@
                 page-break-before: always;
             }
             .pt{
-                height: 80px;
+                height: 90px;
             }
         }
     </style>

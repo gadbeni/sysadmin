@@ -2,17 +2,24 @@
 
 @section('page_title', 'Contrato Consultor de Línea')
 
+@php
+    $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+    $code = str_pad($contract->code, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($contract->start));
+@endphp
+
+@section('qr_code')
+    <div id="qr_code">
+        {!! QrCode::size(80)->generate('Consultor de línea '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' al '.date('d', strtotime($contract->finish)).' de '.$months[intval(date('m', strtotime($contract->finish)))].' de '.date('Y', strtotime($contract->finish)).' con un sueldo de '.number_format($contract->cargo->nivel->Sueldo, 2, ',', '.').' Bs.'); !!}
+    </div>
+@endsection
+
 @section('content')
     <div class="content" style="text-align: justify">
-        @php
-            $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-            $code = str_pad($contract->code, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($contract->start));
-        @endphp
-        <h3 class="text-center">CONTRATO ADMINISTRATIVO DE SERVICIO DE CONSULTORÍA DE LÍNEA <br> SECRETARÍA DEPARTAMENTAL DE ADMINSTRACIÓN Y FINANZAS <br> <small>UJ/SDAF/GADB N&deg; {{ $code }}</small> </h3>
-        <p>Conste por el presente Contrato Administrativo de prestaci&oacute;n de servicios de consultor&iacute;a de l&iacute;nea<em><strong>, </strong></em>que celebran por una parte la Gobernaci&oacute;n del Departamento Aut&oacute;nomo del Beni, a trav&eacute;s de su Secretar&iacute;a Departamental de Administraci&oacute;n y Finanzas, con <strong>NIT N&ordm; 177396029</strong>, con domicilio en el edificio de Gobernaci&oacute;n en Acera Sud de la Plaza Mariscal Jos&eacute; Ballivi&aacute;n, en la ciudad de la Sant&iacute;sima Trinidad, Provincia Cercado del Departamento del Beni, representado legalmente por el <strong>{{ setting('firma-autorizada.name') }}</strong>, con Cédula de Identidad <strong>N&deg; {{ setting('firma-autorizada.ci') }}</strong>, quien es RPC y RPA., conforme <strong>Resoluci&oacute;n Administrativa de Gobernaci&oacute;n </strong><strong>N&deg; 074/2021,</strong> en calidad de Secretario Departamental de Administraci&oacute;n y Finanzas, que en adelante se denominar&aacute; la <strong>ENTIDAD</strong>; y de la otra parte, la <strong>Se&ntilde;or/a. </strong><strong>Marcela Escobar M&eacute;ndez</strong>, con c&eacute;dula de Identidad <strong>N&deg; 9271460-Bn</strong>, que en adelante se denominar&aacute; <strong>LA C</strong><strong>ONSULTOR/A</strong>, quienes celebran y suscriben el presente Contrato Administrativo, de acuerdo a los t&eacute;rminos y condiciones siguientes:</p>
+        <h2 class="text-center" style="font-size: 17px">CONTRATO ADMINISTRATIVO DE SERVICIO DE CONSULTORÍA DE LÍNEA <br> SECRETARÍA DEPARTAMENTAL DE ADMINSTRACIÓN Y FINANZAS <br> <small>UJ/SDAF/GAD-BENI N&deg; {{ $code }}</small> </h2>
+        <p>Conste por el presente Contrato Administrativo de prestaci&oacute;n de servicios de consultor&iacute;a de l&iacute;nea<em><strong>, </strong></em>que celebran por una parte la Gobernaci&oacute;n del Departamento Aut&oacute;nomo del Beni, a trav&eacute;s de su Secretar&iacute;a Departamental de Administraci&oacute;n y Finanzas, con <strong>NIT N&ordm; 177396029</strong>, con domicilio en el edificio de Gobernaci&oacute;n en Acera Sud de la Plaza Mariscal Jos&eacute; Ballivi&aacute;n, en la ciudad de la Sant&iacute;sima Trinidad, Provincia Cercado del Departamento del Beni, representado legalmente por el <strong>{{ setting('firma-autorizada.name') }}</strong>, con Cédula de Identidad <strong>N&deg; {{ setting('firma-autorizada.ci') }}</strong>, quien es RPC y RPA., conforme <strong>Resoluci&oacute;n Administrativa de Gobernaci&oacute;n {{ setting('firma-autorizada.desigancion') }},</strong> en calidad de {{ setting('firma-autorizada.job') }}, que en adelante se denominar&aacute; la <strong>ENTIDAD</strong>; y de la otra parte, {{ $contract->person->gender == 'masculino' ? 'El Señor' : 'La Señora' }} </strong><strong>{{ $contract->person->first_name }} {{ $contract->person->last_name }}</strong>, con c&eacute;dula de Identidad <strong>N&deg; {{ $contract->person->ci }}</strong>, que en adelante se denominar&aacute; <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, quienes celebran y suscriben el presente Contrato Administrativo, de acuerdo a los t&eacute;rminos y condiciones siguientes:</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA PRIMERA</strong></span><strong>. - (ANTECEDENTES) </strong></p>
         <p>La <strong>ENTIDAD</strong>, mediante la modalidad de contrataci&oacute;n menor,<strong> </strong>en proceso realizado bajo las normas y regulaciones de contrataci&oacute;n establecidas.</p>
-        <p>En el Decreto Supremo N&deg; 0181, de 28 de junio de 2009, de las Normas B&aacute;sicas del Sistema de Administraci&oacute;n de Bienes y Servicios NB-SABS y los T&eacute;rminos de Referencia (TDR), invito a la <strong>Se&ntilde;or/a. </strong><strong>Marcela Escobar Mendez,</strong><strong> </strong> para que preste los servicios de Consultor&iacute;a Individual de L&iacute;nea para el cargo de <strong>&ldquo;TECNICO IV&rdquo;</strong>, con cargo al Programa <strong>&ldquo;GESTI&Oacute;N Y FORTALECIMIENTO DE RECURSOS HUMANOS&rdquo;</strong>, de la <strong>SECCI&Oacute;N DE MEMORIA INSTITUCIONAL </strong>dependiente de la <strong>SECRETARIA DEPARTAMENTAL DE ADMINISTRACI&Oacute;N Y FINANZAS GAD-BENI,</strong><strong> </strong>quien en adelante se denominara <strong>LA CONSULTORIA</strong>, provistos por <strong>LA CONSULTOR/A</strong> de conformidad a t&eacute;rminos de referencia, con estricta y absoluta sujeci&oacute;n a este contrato.</p>
+        <p>En el Decreto Supremo N&deg; 0181, de 28 de junio de 2009, de las Normas B&aacute;sicas del Sistema de Administraci&oacute;n de Bienes y Servicios NB-SABS y los T&eacute;rminos de Referencia (TDR), invito a {{ $contract->person->gender == 'masculino' ? 'el Señor' : 'la Señora' }} </strong><strong>{{ $contract->person->first_name }} {{ $contract->person->last_name }},</strong> para que preste los servicios de Consultor&iacute;a Individual de L&iacute;nea para el cargo de <strong>&ldquo;{{ $contract->cargo->Descripcion }}&rdquo;</strong>, con cargo al Programa <strong>&ldquo;{{ Str::upper($contract->program->name) }}&rdquo;</strong>, de el/la <strong>{{ Str::upper($contract->unidad_administrativa->Nombre) }} </strong>dependiente de el/la <strong>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }},</strong><strong> </strong>quien en adelante se denominara <strong>LA CONSULTORIA</strong>, provistos por <strong>LA CONSULTOR/A</strong> de conformidad a t&eacute;rminos de referencia, con estricta y absoluta sujeci&oacute;n a este contrato.</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA SEGUNDA</strong></span><strong>. - (LEGISLACI&Oacute;N APLICABLE) </strong></p>
         <p>El presente Contrato se celebra exclusivamente al amparo de las siguientes disposiciones:</p>
         <ul>
@@ -43,7 +50,7 @@
         
         <div class="saltopagina"></div>
         <div class="pt"></div>
-        
+
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA CUARTA</strong></span><strong>. - (OBLIGACIONES DEL CONSULTOR) </strong></p>
         <p><strong>LA CONSULTORA</strong><strong> </strong>se compromete y obliga a efectuar la prestaci&oacute;n del CONSULTOR/A, objeto del presente contrato de acuerdo a las especificaciones t&eacute;cnicas, caracter&iacute;sticas, cantidades, plazo y lugar se&ntilde;alado en los T&eacute;rminos de Referencia, condiciones generales de su propuesta que forma parte del presente documento, as&iacute; mismo deber&aacute; registrarse en el Reloj Biom&eacute;trico a objeto de llevar el respectivo control de asistencia, conforme a los t&eacute;rminos y condiciones de este contrato entre otros, los siguiente:</p>
         <p><strong>1. EL CONSULTOR/A</strong>, se compromete y obliga a realizar el marcado de entrada y salida en el reloj biom&eacute;trico, teniendo en cuenta y aceptando que, de no hacerlo, se proceder&aacute; a realizar descuentos por atrasos, de acuerdo a lo que se establece en los T&eacute;rminos de Referencia (TDR.), los mismos que forman parte indisoluble del presente contrato.</p>
@@ -84,11 +91,11 @@
         </ul>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA SEXTA. -</strong></span><strong> (VIGENCIA Y </strong><strong>TIEMPO DE PRESTACI&Oacute;N DEL SERVICIO</strong><strong>) </strong></p>
         <p>El contrato, entrar&aacute; en vigencia desde el d&iacute;a siguiente h&aacute;bil de su suscripci&oacute;n, por ambas partes, hasta que las mismas hayan dado cumplimento a todas las cl&aacute;usulas contenidas en el presente contrato y el tiempo de la prestaci&oacute;n del servicio, se extender&aacute; desde el <strong>02 de diciembre hasta el 31 del 2021.</strong></p>
-        <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA SEPTIMA</strong></span><strong>. - (LUGAR DE PRESTACI&Oacute;N DE SERVICIOS). </strong></p>
         
         <div class="saltopagina"></div>
         <div class="pt"></div>
         
+        <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA SEPTIMA</strong></span><strong>. - (LUGAR DE PRESTACI&Oacute;N DE SERVICIOS). </strong></p>
         <p><strong>EL CONSULTOR/A</strong> realizar&aacute; la <strong>CONSULTOR&Iacute;A</strong>, objeto del presente contrato en las oficinas de la <strong>SECCI&Oacute;N DE MEMORIA INSTITUCIONAL </strong>dependiente de la <strong>SECRETARIA DEPARTAMENTAL DE ADMINISTRACI&Oacute;N Y FINANZAS GAD-BENI, </strong>ubicada en el edificio central del GAD-BENI frente de la plaza principal.<strong> </strong></p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA OCTAVA</strong></span><strong>. - (DEL MONTO Y FORMA DE PAGO)</strong></p>
         <p>El monto total del contrato es de<strong> </strong><strong>Bs. 3.866, 66.- (Tres Mil Ochocientos Sesenta y Seis con 66/100 bolivianos)</strong>, el mismo que ser&aacute; cancelado en <strong>una (01)</strong> cuotas.</p>
@@ -137,7 +144,7 @@
         
         <div class="saltopagina"></div>
         <div class="pt"></div>
-
+        
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA OCTAVA</strong></span><strong>. - (EL VINCULO). - </strong>Por la Naturaleza de la relaci&oacute;n contractual eventual y espec&iacute;fica queda establecido que <strong>EL CONSULTOR/A</strong> no recibir&aacute; beneficio adicional alguno por parte de la <strong>ENTIDAD.</strong></p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA NOVENA</strong></span><strong>. - (CONSENTIMIENTO) </strong></p>
         <p>En se&ntilde;al de conformidad y para su fiel y estricto cumplimiento, firmamos el presente Contrato en cuatro ejemplares de un mismo tenor y validez el <strong>{{ setting('firma-autorizada.name') }}</strong>, Secretario Departamental de Administraci&oacute;n y Finanzas, en representaci&oacute;n legal de la <strong>ENTIDAD</strong>, y la se&ntilde;ora <strong>Se&ntilde;or/a. Marcela Escobar M&eacute;ndez</strong>, como <strong>EL CONSULTOR/A</strong>.</p>
@@ -168,6 +175,7 @@
     <style>
         .content {
             padding: 50px 34px;
+            font-size: 15px;
         }
         .text-center{
             text-align: center;

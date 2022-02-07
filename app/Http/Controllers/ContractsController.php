@@ -24,7 +24,7 @@ class ContractsController extends Controller
      */
     public function index()
     {
-        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'direccion_administrativa'])->where('deleted_at', NULL)->get();
+        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'direccion_administrativa', 'type'])->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
         return view('management.contracts.browse', compact('contracts'));
     }
 

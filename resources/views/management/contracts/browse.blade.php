@@ -41,6 +41,7 @@
                                 <thead>
                                     <tr>
                                         <th>N&deg;</th>
+                                        <th>Tipo</th>
                                         <th>Persona</th>
                                         <th>Cargo</th>
                                         <th>Dirección administrativa</th>
@@ -53,6 +54,7 @@
                                     @forelse ($contracts as $item)
                                     <tr>
                                         <td>{{ $item->code }}/{{ date('Y', strtotime($item->start)) }}</td>
+                                        <td>{{ $item->type->name }}</td>
                                         <td>{{ $item->person->first_name }} {{ $item->person->last_name }}</td>
                                         <td>{{ $item->cargo->Descripcion }}</td>
                                         <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
@@ -114,7 +116,7 @@
                                     </tr>
                                     @empty
                                         <tr class="odd">
-                                            <td valign="top" colspan="7" class="dataTables_empty">No hay datos disponibles en la tabla</td>
+                                            <td valign="top" colspan="8" class="dataTables_empty">No hay datos disponibles en la tabla</td>
                                         </tr>
                                     @endforelse
                                 </tbody>

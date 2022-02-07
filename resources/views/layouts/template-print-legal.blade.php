@@ -22,8 +22,13 @@
             position: fixed;
             top: 20px;
             margin-left: 20px;
-            text-align: center;
             width: 90px;
+        }
+        #qr_code{
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 60px;
         }
         #watermark {
             position: fixed;
@@ -50,11 +55,11 @@
             body{
                 margin: 40px auto;
             }
-            #logo{
+            #logo, #qr_code{
                 top: 0px;
             }
             #watermark {
-                top: 500px;
+                top: 450px;
             }
             #footer {
                 display: block;
@@ -69,11 +74,15 @@
                 color: white;
                 padding-top: 10px
             }
+            #qr_code{
+                display: block;
+            }
         }
     </style>
 </head>
 <body>
     <img id="logo" src="{{ asset('images/icon.png') }}" />
+    @yield('qr_code')
     <div id="watermark">
         <img src="{{ asset('images/icon.png') }}" /> 
     </div>
@@ -85,6 +94,21 @@
     </div>
 
     @yield('css')
+
+    <script>
+        document.body.addEventListener('keypress', function(e) {
+            switch (e.key) {
+                case 'Enter':
+                    window.print();
+                    break;
+                case 'Escape':
+                    window.close();
+                default:
+                    break;
+            }
+        });
+    </script>
+
     @yield('script')
 </body>
 </html>

@@ -85,6 +85,21 @@
     </div>
 
     @yield('css')
+
+    <script>
+        document.body.addEventListener('keypress', function(e) {
+            switch (e.key) {
+                case 'Enter':
+                    window.print();
+                    break;
+                case 'Escape':
+                    window.close();
+                default:
+                    break;
+            }
+        });
+    </script>
+
     @yield('script')
 </body>
 </html>
