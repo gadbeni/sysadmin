@@ -13,6 +13,7 @@ class Contract extends Model
         'person_id',
         'program_id',
         'cargo_id',
+        'job_id',
         'direccion_adminstrativa_id',
         'unidad_administrativa_id',
         'procedure_type_id',
@@ -70,5 +71,9 @@ class Contract extends Model
 
     public function cargo(){
         return $this->belongsTo(Cargo::class, 'cargo_id', 'ID');
+    }
+
+    public function job(){
+        return $this->belongsTo(Job::class, 'job_id');
     }
 }

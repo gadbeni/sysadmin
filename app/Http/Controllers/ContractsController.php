@@ -13,7 +13,9 @@ use App\Models\Program;
 use App\Models\Contract;
 use App\Models\DireccionAdministrativa;
 use App\Models\UnidadAdministrativa;
+use App\Models\ProcedureType;
 use App\Models\Cargo;
+use App\Models\Job;
 
 class ContractsController extends Controller
 {
@@ -24,7 +26,7 @@ class ContractsController extends Controller
      */
     public function index()
     {
-        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'direccion_administrativa', 'type'])->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
+        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'type'])->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
         return view('management.contracts.browse', compact('contracts'));
     }
 
@@ -35,6 +37,18 @@ class ContractsController extends Controller
      */
     public function create()
     {
+        $role_id = Auth::user()->role_id;
+        $query = 1;
+
+        // Recursos humanos
+        if($role_id >= 9 && $role_id <= 12 ) $query = "id = 1";
+        // Administrativo
+        if($role_id >= 13 && $role_id <= 15 ) $query = "id = 2";
+        // Contrataciones
+        if($role_id >= 16 && $role_id <= 18 ) $query = "id = 5";
+
+        $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw($query)->get();
+
         $people = Person::with(['contracts' => function($q){
             $q->where('status', 1)->where('deleted_at', NULL);
         }])->where('deleted_at', NULL)->get();
@@ -46,7 +60,8 @@ class ContractsController extends Controller
                     ->whereHas('nivel', function($q){
                         $q->orderBy('NumNivel', 'ASC');
                     })->get();
-        return view('management.contracts.edit-add', compact('people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos'));
+        $jobs = Job::with('direccion_administrativa')->where('deleted_at', NULL)->get();
+        return view('management.contracts.edit-add', compact('procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos', 'jobs'));
     }
 
     /**
@@ -65,7 +80,10 @@ class ContractsController extends Controller
             $contract = Contract::create([
                 'person_id' => $request->person_id,
                 'program_id' => $request->program_id,
-                'cargo_id' => $request->cargo_id,
+                // Si es un contrato de consultor o inversion
+                'cargo_id' => $request->procedure_type_id != 1 ? $request->cargo_id : NULL,
+                // Si es un contrato de funcionamiento
+                'job_id' => $request->procedure_type_id == 1 ? $request->cargo_id : NULL,
                 'direccion_adminstrativa_id' => $request->direccion_adminstrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'procedure_type_id' => $request->procedure_type_id,
@@ -183,7 +201,7 @@ class ContractsController extends Controller
     // ================================
     
     public function print($id, $document){
-        $contract = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'direccion_administrativa', 'unidad_administrativa'])->where('id', $id)->first();
+        $contract = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa'])->where('id', $id)->first();
         $contract->workers = $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
         return view('management.docs.'.$document, compact('contract'));
     }

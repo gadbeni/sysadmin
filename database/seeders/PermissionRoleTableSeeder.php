@@ -92,41 +92,288 @@ class PermissionRoleTableSeeder extends Seeder
 
         // Roles de recursos humanos
         $role = Role::where('name', 'rrhh_director')->firstOrFail();
-        $permissions = Permission::whereRaw('table_name = "admin"')->get();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            `key` = "browse_programs" or
+                                            `key` = "read_programs" or
+                                            `key` = "edit_programs" or
+                                            `key` = "add_programs" or
+                                            `key` = "browse_people" or
+                                            `key` = "read_people" or
+                                            `key` = "edit_people" or
+                                            `key` = "add_people" or
+                                            `key` = "browse_contracts" or
+                                            `key` = "read_contracts" or
+                                            `key` = "edit_contracts" or
+                                            `key` = "add_contracts" or
+                                            `key` = "browse_countries" or
+                                            `key` = "read_countries" or
+                                            `key` = "edit_countries" or
+                                            `key` = "add_countries" or
+                                            `key` = "browse_states" or
+                                            `key` = "read_states" or
+                                            `key` = "edit_states" or
+                                            `key` = "add_states" or
+                                            `key` = "browse_cities" or
+                                            `key` = "read_cities" or
+                                            `key` = "edit_cities" or
+                                            `key` = "add_cities" or
+                                            table_name = "reports_rrhh"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_jefe_unidad')->firstOrFail();
-        $permissions = Permission::whereRaw('table_name = "admin"')->get();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            `key` = "browse_programs" or
+                                            `key` = "read_programs" or
+                                            `key` = "edit_programs" or
+                                            `key` = "add_programs" or
+                                            `key` = "browse_people" or
+                                            `key` = "read_people" or
+                                            `key` = "edit_people" or
+                                            `key` = "add_people" or
+                                            `key` = "browse_contracts" or
+                                            `key` = "read_contracts" or
+                                            `key` = "edit_contracts" or
+                                            `key` = "add_contracts" or
+                                            `key` = "browse_countries" or
+                                            `key` = "read_countries" or
+                                            `key` = "edit_countries" or
+                                            `key` = "add_countries" or
+                                            `key` = "browse_states" or
+                                            `key` = "read_states" or
+                                            `key` = "edit_states" or
+                                            `key` = "add_states" or
+                                            `key` = "browse_cities" or
+                                            `key` = "read_cities" or
+                                            `key` = "edit_cities" or
+                                            `key` = "add_cities" or
+                                            table_name = "reports_rrhh"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_jefe_seccion')->firstOrFail();
-        $permissions = Permission::whereRaw('table_name = "admin"')->get();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            `key` = "browse_programs" or
+                                            `key` = "read_programs" or
+                                            `key` = "edit_programs" or
+                                            `key` = "add_programs" or
+                                            `key` = "browse_people" or
+                                            `key` = "read_people" or
+                                            `key` = "edit_people" or
+                                            `key` = "add_people" or
+                                            `key` = "browse_contracts" or
+                                            `key` = "read_contracts" or
+                                            `key` = "edit_contracts" or
+                                            `key` = "add_contracts" or
+                                            `key` = "browse_countries" or
+                                            `key` = "read_countries" or
+                                            `key` = "edit_countries" or
+                                            `key` = "add_countries" or
+                                            `key` = "browse_states" or
+                                            `key` = "read_states" or
+                                            `key` = "edit_states" or
+                                            `key` = "add_states" or
+                                            `key` = "browse_cities" or
+                                            `key` = "read_cities" or
+                                            `key` = "edit_cities" or
+                                            `key` = "add_cities" or
+                                            table_name = "reports_rrhh"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_tecnico')->firstOrFail();
-        $permissions = Permission::whereRaw('table_name = "admin"')->get();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            `key` = "browse_programs" or
+                                            `key` = "read_programs" or
+                                            `key` = "edit_programs" or
+                                            `key` = "add_programs" or
+                                            `key` = "browse_people" or
+                                            `key` = "read_people" or
+                                            `key` = "edit_people" or
+                                            `key` = "add_people" or
+                                            `key` = "browse_contracts" or
+                                            `key` = "read_contracts" or
+                                            `key` = "edit_contracts" or
+                                            `key` = "add_contracts" or
+                                            `key` = "browse_countries" or
+                                            `key` = "read_countries" or
+                                            `key` = "edit_countries" or
+                                            `key` = "add_countries" or
+                                            `key` = "browse_states" or
+                                            `key` = "read_states" or
+                                            `key` = "edit_states" or
+                                            `key` = "add_states" or
+                                            `key` = "browse_cities" or
+                                            `key` = "read_cities" or
+                                            `key` = "edit_cities" or
+                                            `key` = "add_cities"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de administrativo
         $role = Role::where('name', 'administrativo_director')->firstOrFail();
         $permissions = Permission::whereRaw('table_name = "admin" or
-                                            table_name = "programs" or
-                                            table_name = "people" or
-                                            table_name = "contracts"')->get();
+                                            `key` = "browse_programs" or
+                                            `key` = "read_programs" or
+                                            `key` = "edit_programs" or
+                                            `key` = "add_programs" or
+                                            `key` = "browse_people" or
+                                            `key` = "read_people" or
+                                            `key` = "edit_people" or
+                                            `key` = "add_people" or
+                                            `key` = "browse_contracts" or
+                                            `key` = "read_contracts" or
+                                            `key` = "edit_contracts" or
+                                            `key` = "add_contracts" or
+                                            `key` = "browse_countries" or
+                                            `key` = "read_countries" or
+                                            `key` = "edit_countries" or
+                                            `key` = "add_countries" or
+                                            `key` = "browse_states" or
+                                            `key` = "read_states" or
+                                            `key` = "edit_states" or
+                                            `key` = "add_states" or
+                                            `key` = "browse_cities" or
+                                            `key` = "read_cities" or
+                                            `key` = "edit_cities" or
+                                            `key` = "add_cities"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'administrativo_jefe_seccion')->firstOrFail();
         $permissions = Permission::whereRaw('table_name = "admin" or
-                                            table_name = "programs" or
-                                            table_name = "people" or
-                                            table_name = "contracts"')->get();
+                                            `key` = "browse_programs" or
+                                            `key` = "read_programs" or
+                                            `key` = "edit_programs" or
+                                            `key` = "add_programs" or
+                                            `key` = "browse_people" or
+                                            `key` = "read_people" or
+                                            `key` = "edit_people" or
+                                            `key` = "add_people" or
+                                            `key` = "browse_contracts" or
+                                            `key` = "read_contracts" or
+                                            `key` = "edit_contracts" or
+                                            `key` = "add_contracts" or
+                                            `key` = "browse_countries" or
+                                            `key` = "read_countries" or
+                                            `key` = "edit_countries" or
+                                            `key` = "add_countries" or
+                                            `key` = "browse_states" or
+                                            `key` = "read_states" or
+                                            `key` = "edit_states" or
+                                            `key` = "add_states" or
+                                            `key` = "browse_cities" or
+                                            `key` = "read_cities" or
+                                            `key` = "edit_cities" or
+                                            `key` = "add_cities"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'administrativo_tecnico')->firstOrFail();
         $permissions = Permission::whereRaw('table_name = "admin" or
-                                            table_name = "programs" or
-                                            table_name = "people" or
-                                            table_name = "contracts"')->get();
+                                            `key` = "browse_programs" or
+                                            `key` = "read_programs" or
+                                            `key` = "edit_programs" or
+                                            `key` = "add_programs" or
+                                            `key` = "browse_people" or
+                                            `key` = "read_people" or
+                                            `key` = "edit_people" or
+                                            `key` = "add_people" or
+                                            `key` = "browse_contracts" or
+                                            `key` = "read_contracts" or
+                                            `key` = "edit_contracts" or
+                                            `key` = "add_contracts" or
+                                            `key` = "browse_countries" or
+                                            `key` = "read_countries" or
+                                            `key` = "edit_countries" or
+                                            `key` = "add_countries" or
+                                            `key` = "browse_states" or
+                                            `key` = "read_states" or
+                                            `key` = "edit_states" or
+                                            `key` = "add_states" or
+                                            `key` = "browse_cities" or
+                                            `key` = "read_cities" or
+                                            `key` = "edit_cities" or
+                                            `key` = "add_cities"')->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        // Roles de contrataciones
+        $role = Role::where('name', 'contrataciones_director')->firstOrFail();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            `key` = "browse_programs" or
+                                            `key` = "read_programs" or
+                                            `key` = "edit_programs" or
+                                            `key` = "add_programs" or
+                                            `key` = "browse_people" or
+                                            `key` = "read_people" or
+                                            `key` = "edit_people" or
+                                            `key` = "add_people" or
+                                            `key` = "browse_contracts" or
+                                            `key` = "read_contracts" or
+                                            `key` = "edit_contracts" or
+                                            `key` = "add_contracts" or
+                                            `key` = "browse_countries" or
+                                            `key` = "read_countries" or
+                                            `key` = "edit_countries" or
+                                            `key` = "add_countries" or
+                                            `key` = "browse_states" or
+                                            `key` = "read_states" or
+                                            `key` = "edit_states" or
+                                            `key` = "add_states" or
+                                            `key` = "browse_cities" or
+                                            `key` = "read_cities" or
+                                            `key` = "edit_cities" or
+                                            `key` = "add_cities"')->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        $role = Role::where('name', 'contrataciones_jefe_seccion')->firstOrFail();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            `key` = "browse_programs" or
+                                            `key` = "read_programs" or
+                                            `key` = "edit_programs" or
+                                            `key` = "add_programs" or
+                                            `key` = "browse_people" or
+                                            `key` = "read_people" or
+                                            `key` = "edit_people" or
+                                            `key` = "add_people" or
+                                            `key` = "browse_contracts" or
+                                            `key` = "read_contracts" or
+                                            `key` = "edit_contracts" or
+                                            `key` = "add_contracts" or
+                                            `key` = "browse_countries" or
+                                            `key` = "read_countries" or
+                                            `key` = "edit_countries" or
+                                            `key` = "add_countries" or
+                                            `key` = "browse_states" or
+                                            `key` = "read_states" or
+                                            `key` = "edit_states" or
+                                            `key` = "add_states" or
+                                            `key` = "browse_cities" or
+                                            `key` = "read_cities" or
+                                            `key` = "edit_cities" or
+                                            `key` = "add_cities"')->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        $role = Role::where('name', 'contrataciones_tecnico')->firstOrFail();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            `key` = "browse_programs" or
+                                            `key` = "read_programs" or
+                                            `key` = "edit_programs" or
+                                            `key` = "add_programs" or
+                                            `key` = "browse_people" or
+                                            `key` = "read_people" or
+                                            `key` = "edit_people" or
+                                            `key` = "add_people" or
+                                            `key` = "browse_contracts" or
+                                            `key` = "read_contracts" or
+                                            `key` = "edit_contracts" or
+                                            `key` = "add_contracts" or
+                                            `key` = "browse_countries" or
+                                            `key` = "read_countries" or
+                                            `key` = "edit_countries" or
+                                            `key` = "add_countries" or
+                                            `key` = "browse_states" or
+                                            `key` = "read_states" or
+                                            `key` = "edit_states" or
+                                            `key` = "add_states" or
+                                            `key` = "browse_cities" or
+                                            `key` = "read_cities" or
+                                            `key` = "edit_cities" or
+                                            `key` = "add_cities"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
     }
 }

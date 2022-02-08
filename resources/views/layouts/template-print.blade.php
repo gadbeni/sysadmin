@@ -25,6 +25,12 @@
             text-align: center;
             width: 90px;
         }
+        #qr_code{
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 60px;
+        }
         #watermark {
             position: fixed;
             top: 350px;
@@ -50,7 +56,7 @@
             body{
                 margin: 20px auto;
             }
-            #logo{
+            #logo, #qr_code{
                 top: 0px;
             }
             #watermark {
@@ -69,11 +75,15 @@
                 color: white;
                 padding-top: 10px
             }
+            #qr_code{
+                display: block;
+            }
         }
     </style>
 </head>
 <body>
     <img id="logo" src="{{ asset('images/icon.png') }}" />
+    @yield('qr_code')
     <div id="watermark">
         <img src="{{ asset('images/icon.png') }}" /> 
     </div>

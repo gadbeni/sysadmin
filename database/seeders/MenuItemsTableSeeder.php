@@ -711,7 +711,7 @@ class MenuItemsTableSeeder extends Seeder
             array (
                 'id' => 45,
                 'menu_id' => 1,
-                'title' => 'Administrativo',
+                'title' => 'Contrataciones',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-file-text',
@@ -719,7 +719,7 @@ class MenuItemsTableSeeder extends Seeder
                 'parent_id' => NULL,
                 'order' => 5,
                 'created_at' => '2021-12-30 09:23:07',
-                'updated_at' => '2021-12-30 09:24:15',
+                'updated_at' => '2022-02-07 21:22:45',
                 'route' => NULL,
                 'parameters' => '',
             ),

@@ -22,8 +22,8 @@ class ProcedureTypesTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'name' => 'Consultoría de línea',
-                'planilla_id' => 3,
+                'name' => 'Funcionamiento',
+                'planilla_id' => 1,
                 'description' => NULL,
                 'created_at' => '2022-01-17 16:13:01',
                 'updated_at' => '2022-01-17 16:13:18',
@@ -32,8 +32,8 @@ class ProcedureTypesTableSeeder extends Seeder
             1 => 
             array (
                 'id' => 2,
-                'name' => 'Consultoría de producto',
-                'planilla_id' => 4,
+                'name' => 'Consultoría de línea',
+                'planilla_id' => 3,
                 'description' => NULL,
                 'created_at' => '2022-01-17 16:13:36',
                 'updated_at' => '2022-01-17 16:13:36',
@@ -42,8 +42,8 @@ class ProcedureTypesTableSeeder extends Seeder
             2 => 
             array (
                 'id' => 3,
-                'name' => 'Servicios',
-                'planilla_id' => NULL,
+                'name' => 'Consultoría de producto',
+                'planilla_id' => 4,
                 'description' => NULL,
                 'created_at' => '2022-01-17 16:13:45',
                 'updated_at' => '2022-01-17 16:13:45',
@@ -52,6 +52,16 @@ class ProcedureTypesTableSeeder extends Seeder
             3 => 
             array (
                 'id' => 4,
+                'name' => 'Servicios',
+                'planilla_id' => NULL,
+                'description' => NULL,
+                'created_at' => '2022-01-17 16:14:12',
+                'updated_at' => '2022-01-17 16:14:12',
+                'deleted_at' => NULL,
+            ),
+            4 => 
+            array (
+                'id' => 5,
                 'name' => 'Personal eventual',
                 'planilla_id' => 2,
                 'description' => NULL,

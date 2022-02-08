@@ -11,7 +11,7 @@
         <div class="page-title">
             <h2>
                 <span style="color: #009A2F">MEMORANDUM</span> <br>
-                S.D.A.F./R.E.C. N° {{ $code }}
+                <small>S.D.A.F./R.E.C. N° {{ $code }}</small>
             </h2>
         </div>
         <div class="page-body">
@@ -36,26 +36,26 @@
             <p>
                 De mi consideración: <br> <br>
                 En uso de las atribuciones que me confiere el Decreto Supremo 0181 y la Resolución Administrativa de Gobernación N° 074/2021, de fecha 30 de agosto del 2021, bajo la Modalidad de Contratación Menor, transfiero a ustedes como <b>RESPONSABLE DE EVALUACIÓN</b>, el siguiente proceso de contratación: <br>
-
-                <table border="1" cellspacing="0" cellpadding="10">
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Modalidad</th>
-                            <th>Objeto</th>
-                            <th>programa</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>GAD - BENI / MC N° {{ $code }}</td>
-                            <td>CONTRATACIÓN MENOR</td>
-                            <td>CONTRATACION DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}</td>
-                            <td>{{ Str::upper($contract->program->name) }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-
+            </p>
+            <table border="1" cellspacing="0" cellpadding="10">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Modalidad</th>
+                        <th>Objeto</th>
+                        <th>programa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>GAD - BENI / MC N° {{ $code }}</td>
+                        <td>CONTRATACIÓN MENOR</td>
+                        <td>CONTRATACION DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}</td>
+                        <td>{{ Str::upper($contract->program->name) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
                 La recepción de documentos se realizará en oficinas de la Dirección Administrativa dependiente de la Secretaría Departamental de Administración y Finanzas. <br> <br>
                 Como Responsable de Evaluación, deberá cumplir las funciones establecidas en el artículo 38 del D.S. 0181, con dedicación exclusiva y no podrá delegar sus funciones ni excusarse, salvo en los casos de conflictos de intereses, impedimento físico o por las causales de excusa establecidas en el artículo 41 del mencionado decreto. <br> <br>
                 Atentamente,
@@ -93,6 +93,7 @@
         }
         .page-body p{
             text-align: justify;
+            font-size: 14px;
         }
         .content {
             padding: 0px 34px;
