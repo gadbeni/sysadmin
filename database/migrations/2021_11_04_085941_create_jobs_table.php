@@ -17,7 +17,7 @@ class CreateJobsTable extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->smallInteger('level')->nullable();
-            $table->integer('direccion_adminstrativa_id')->nullable();
+            $table->integer('direccion_administrativa_id')->nullable();
             $table->decimal('salary', 10, 2)->nullable();
             $table->smallInteger('status')->nullable()->default(1);
             $table->timestamps();

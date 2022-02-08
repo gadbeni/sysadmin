@@ -60,15 +60,21 @@
                                         <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->NOMBRE : $item->job->direccion_administrativa->NOMBRE }}</td>
                                         <td>
                                             <ul>
-                                                <li><b>Sueldo: </b> <small>Bs.</small> {{ $item->cargo ? $item->cargo->nivel->Sueldo : $item->job->salary }}</li>
+                                                <li><b>Sueldo: </b> <small>Bs.</small> {{ number_format($item->cargo ? $item->cargo->nivel->Sueldo : $item->job->salary, 2, ',', '.') }}</li>
                                             </ul>
                                         </td>
                                         <td>
                                             @switch($item->status)
                                                 @case(1)
-                                                    <label class="label label-success">Activo</label>
+                                                    <label class="label label-warning">Elaborado</label>
                                                     @break
                                                 @case(2)
+                                                    <label class="label label-info">Enviado</label>
+                                                    @break
+                                                @case(3)
+                                                    <label class="label label-success">Firmado</label>
+                                                    @break
+                                                @case(4)
                                                     <label class="label label-danger">Finalizado</label>
                                                     @break
                                                 @default

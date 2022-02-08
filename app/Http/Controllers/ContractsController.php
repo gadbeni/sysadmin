@@ -38,20 +38,19 @@ class ContractsController extends Controller
     public function create()
     {
         $role_id = Auth::user()->role_id;
-        $query = 1;
+        $ids = '';
 
         // Recursos humanos
-        if($role_id >= 9 && $role_id <= 12 ) $query = "id = 1";
+        if($role_id >= 9 && $role_id <= 12) $ids .= "1,";
         // Administrativo
-        if($role_id >= 13 && $role_id <= 15 ) $query = "id = 2";
+        if($role_id >= 13 && $role_id <= 15) $ids .= "2,";
         // Contrataciones
-        if($role_id >= 16 && $role_id <= 18 ) $query = "id = 5";
+        if(($role_id >= 9 && $role_id <= 12) || ($role_id >= 16 && $role_id <= 18)) $ids .= "5,";
 
-        $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw($query)->get();
+        $ids = substr($ids, 0, -1);
+        $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw("id in ($ids)")->get();
 
-        $people = Person::with(['contracts' => function($q){
-            $q->where('status', 1)->where('deleted_at', NULL);
-        }])->where('deleted_at', NULL)->get();
+        $people = Person::whereRaw("id not in (select person_id from contracts where status <> 4 and deleted_at is null)")->where('deleted_at', NULL)->get();
         $direccion_administrativas = DireccionAdministrativa::get();
         $unidad_administrativas = UnidadAdministrativa::get();
         $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
@@ -60,7 +59,11 @@ class ContractsController extends Controller
                     ->whereHas('nivel', function($q){
                         $q->orderBy('NumNivel', 'ASC');
                     })->get();
-        $jobs = Job::with('direccion_administrativa')->where('deleted_at', NULL)->get();
+        
+        
+        $jobs = Job::with('direccion_administrativa')
+                    ->whereRaw("id not in (select job_id from contracts where status <> 4 and deleted_at is null)")
+                    ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)->where('deleted_at', NULL)->get();
         return view('management.contracts.edit-add', compact('procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos', 'jobs'));
     }
 
@@ -84,7 +87,7 @@ class ContractsController extends Controller
                 'cargo_id' => $request->procedure_type_id != 1 ? $request->cargo_id : NULL,
                 // Si es un contrato de funcionamiento
                 'job_id' => $request->procedure_type_id == 1 ? $request->cargo_id : NULL,
-                'direccion_adminstrativa_id' => $request->direccion_adminstrativa_id,
+                'direccion_administrativa_id' => $request->direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'procedure_type_id' => $request->procedure_type_id,
                 'user_id' => Auth::user()->id,
@@ -136,12 +139,34 @@ class ContractsController extends Controller
     public function edit($id)
     {
         $contract = Contract::with(['user', 'person', 'program'])->where('id', $id)->first();
-        $people = Person::where('deleted_at', NULL)->get();
-        $direccion_administrativas = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
+        $role_id = Auth::user()->role_id;
+        $ids = '';
+
+        // Recursos humanos
+        if($role_id >= 9 && $role_id <= 12) $ids .= "1,";
+        // Administrativo
+        if($role_id >= 13 && $role_id <= 15) $ids .= "2,";
+        // Contrataciones
+        if(($role_id >= 9 && $role_id <= 12) || ($role_id >= 16 && $role_id <= 18)) $ids .= "5,";
+
+        $ids = substr($ids, 0, -1);
+        $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw("id in ($ids)")->get();
+
+        $people = Person::where('id', $contract->person->id)->where('deleted_at', NULL)->get();
+        $direccion_administrativas = DireccionAdministrativa::get();
+        $unidad_administrativas = UnidadAdministrativa::get();
         $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $programs = Program::where('deleted_at', NULL)->get();
-        $cargos = DB::connection('mysqlgobe')->table('cargo')->where('idPlanilla', 3)->get();
-        return view('management.contracts.edit-add', compact('contract', 'people', 'direccion_administrativas', 'funcionarios', 'programs', 'cargos'));
+        $cargos = Cargo::with(['nivel'])->where('idPlanilla', 2)->OrWhere('idPlanilla', 3)
+                    ->whereHas('nivel', function($q){
+                        $q->orderBy('NumNivel', 'ASC');
+                    })->get();
+        
+        
+        $jobs = Job::with('direccion_administrativa')
+                    ->whereRaw("id not in (select job_id from contracts where status <> 4 and deleted_at is null) or id = ".$contract->job_id)
+                    ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)->where('deleted_at', NULL)->get();
+        return view('management.contracts.edit-add', compact('contract', 'procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos', 'jobs'));
     }
 
     /**
@@ -157,9 +182,13 @@ class ContractsController extends Controller
             $contract = Contract::where('id', $id)->update([
                 'person_id' => $request->person_id,
                 'program_id' => $request->program_id,
-                'cargo_id' => $request->cargo_id,
-                'procedure_type_id' => $request->procedure_type_id,
+                // Si es un contrato de consultor o inversion
+                'cargo_id' => $request->procedure_type_id != 1 ? $request->cargo_id : NULL,
+                // Si es un contrato de funcionamiento
+                'job_id' => $request->procedure_type_id == 1 ? $request->cargo_id : NULL,
+                'direccion_administrativa_id' => $request->direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
+                'procedure_type_id' => $request->procedure_type_id,
                 'details_work' => $request->details_work,
                 'start' => $request->start,
                 'finish' => $request->finish,

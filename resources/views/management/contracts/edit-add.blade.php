@@ -1,9 +1,5 @@
 @extends('voyager::master')
 
-@section('css')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-@stop
-
 @section('page_title', isset($contract) ? 'Editar contrato' : 'Crear contrato')
 
 @section('page_header')
@@ -28,10 +24,10 @@
                             <div class="row">
                                 <div class="form-group col-md-6">
                                     <label for="procedure_type_id">Tipo de trámite</label>
-                                    <select name="procedure_type_id" id="select-procedure_type_id" class="form-control select2" required>
+                                    <select name="procedure_type_id" id="select-procedure_type_id" class="form-control" required>
                                         <option value="">-- Selecciona el tipo de trámite --</option>
                                         @foreach ($procedure_type as $item)
-                                        <option @if(isset($contract) && $contract->procedure_type_id == $item->id) selected @endif value="{{ $item->id }}" data-planilla_id="{{ $item->planilla_id }}">{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}" data-planilla_id="{{ $item->planilla_id }}">{{ $item->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -40,18 +36,16 @@
                                     <select name="person_id" class="form-control select2" required>
                                         <option value="">-- Selecciona a la persona --</option>
                                         @foreach ($people as $item)
-                                        @if ($item->contracts->count() == 0)
-                                        <option @if(isset($contract) && $contract->person->id == $item->id) selected @endif value="{{ $item->id }}">{{ $item->first_name }} {{ $item->last_name }} - {{ $item->ci }}</option>                                            
-                                        @endif
+                                        <option @if(isset($contract) && $contract->person->id == $item->id) selected @endif value="{{ $item->id }}">{{ $item->first_name }} {{ $item->last_name }} - {{ $item->ci }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="direccion_adminstrativa_id">Dirección administrativa</label>
-                                    <select name="direccion_adminstrativa_id" id="select-direccion_adminstrativa_id" class="form-control select2">
+                                    <label for="direccion_administrativa_id">Dirección administrativa</label>
+                                    <select name="direccion_administrativa_id" id="select-direccion_administrativa_id" class="form-control select2">
                                         {{-- <option value="">-- Selecciona la dirección administrativa --</option>
                                         @foreach ($direccion_administrativas as $item)
-                                        <option @if(isset($contract) && $contract->direccion_adminstrativa_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
+                                        <option @if(isset($contract) && $contract->direccion_administrativa_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
                                         @endforeach --}}
                                     </select>
                                 </div>
@@ -87,7 +81,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="finish">Fin de contrato</label>
-                                    <input type="date" name="finish" value="{{ isset($contract) ? $contract->finish : '' }}" class="form-control">
+                                    <input type="date" name="finish" id="input-finish" value="{{ isset($contract) ? $contract->finish : '' }}" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -371,6 +365,12 @@
     </div>
 @stop
 
+@section('css')
+    <style>
+
+    </style>
+@endsection
+
 @section('javascript')
     <script>
         var direccion_administrativas = @json($direccion_administrativas);
@@ -384,6 +384,8 @@
                 selector: '.richTextBox',
             }
 
+            $('#select-procedure_type_id').select2();
+
             $.extend(additionalConfig, {})
             tinymce.init(window.voyagerTinyMCE.getConfig(additionalConfig));
             
@@ -391,24 +393,26 @@
                 let workers_memo = '{!! $contract->workers_memo !!}' ? JSON.parse('{!! $contract->workers_memo !!}') : [];
                 $('#select-workers_memo').val(workers_memo);
                 $('.div-{{ $contract->procedure_type_id }}').fadeIn('fast');
+                setTimeout(() => {
+                    $('#select-procedure_type_id').val("{{ $contract->procedure_type_id }}");
+                    $('#select-procedure_type_id').trigger('change');
+                }, 0);
             @endisset
             $('#select-workers_memo').select2();
 
-            $('#select-direccion_adminstrativa_id').change(function(){
+            $('#select-direccion_administrativa_id').change(function(){
                 $('#select-unidad_administrativa_id').html(`<option value="">Seleccione una unidad administrativa</option>`);
                 unidad_administrativas.map(item => {
-                    if($('#select-direccion_adminstrativa_id option:selected').val() == item.idDa){
+                    if($('#select-direccion_administrativa_id option:selected').val() == item.idDa){
                         $('#select-unidad_administrativa_id').append(`<option value="${item.ID}">${item.Nombre}</option>`);
                     }
                 });
-                $('#select-unidad_administrativa_id').attr('required', true);
                 $('#select-program_id').html(`<option value="">Seleccione un programa</option>`);
                 programs.map(item => {
-                    if($('#select-direccion_adminstrativa_id option:selected').val() == item.direccion_adminstrativa_id){
+                    if($('#select-direccion_administrativa_id option:selected').val() == item.direccion_administrativa_id){
                         $('#select-program_id').append(`<option value="${item.id}">${item.name}</option>`);
                     }
                 });
-                $('#select-program_id').attr('required', true);
             });
 
             $('#select-procedure_type_id').change(function(){
@@ -419,21 +423,39 @@
 
                 $('#select-cargo_id').html(`<option value="">Seleccione un cargo</option>`);
                 if(id == 1){
+                    $('#select-direccion_administrativa_id').empty();
+                    $('#select-unidad_administrativa_id').empty();
+                    $('#select-program_id').empty();
+                    $('#select-program_id').attr('disabled', true);
+                    $('#select-program_id').attr('required', false);
+                    $('#select-direccion_administrativa_id').attr('disabled', true);
+                    $('#select-direccion_administrativa_id').attr('required', false);
+                    $('#select-unidad_administrativa_id').attr('disabled', true);
+                    $('#select-unidad_administrativa_id').attr('required', false);
+                    $('#input-finish').attr('required', false);
                     jobs.map(item => {
-                        $('#select-cargo_id').append(`<option value="${item.id}">${item.id} - ${item.name}</option>`);
+                        $('#select-cargo_id').append(`<option value="${item.id}">Item: ${item.id} - ${item.name}</option>`);
                     });
+                    $('#select-cargo_id').val("{{ isset($contract) ? $contract->job_id : '' }}");
                 }else{
-                    $('#select-direccion_adminstrativa_id').html(`<option value="">Selecciona la dirección administrativa</option>`);
+                    $('#select-direccion_administrativa_id').attr('disabled', false);
+                    $('#select-direccion_administrativa_id').attr('required', true);
+                    $('#select-unidad_administrativa_id').attr('disabled', false);
+                    $('#select-unidad_administrativa_id').attr('required', true);
+                    $('#select-program_id').attr('disabled', false);
+                    $('#select-program_id').attr('required', true);
+                    $('#input-finish').attr('required', true);
+                    $('#select-direccion_administrativa_id').html(`<option value="">Selecciona la dirección administrativa</option>`);
                     direccion_administrativas.map(item => {
-                        $('#select-direccion_adminstrativa_id').append(`<option value="${item.ID}">${item.NOMBRE}</option>`);
+                        $('#select-direccion_administrativa_id').append(`<option value="${item.ID}">${item.NOMBRE}</option>`);
                     });
-                    $('#select-direccion_adminstrativa_id').attr('required', true);
 
                     cargos.map(item => {
                         if($('#select-procedure_type_id option:selected').data('planilla_id') == item.idPlanilla){
                             $('#select-cargo_id').append(`<option value="${item.ID}">${item.Descripcion} | Nivel ${item.nivel.NumNivel} | Bs. ${item.nivel.Sueldo}</option>`);
                         }
                     });
+                    $('#select-cargo_id').val("{{ isset($contract) ? $contract->cargo_id : '' }}");
                 }
             });
         });

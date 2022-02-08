@@ -18,7 +18,7 @@ class CreatePeopleTable extends Migration
             $table->foreignId('city_id')->nullable()->constrained('cities');
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->string('ci')->nullable();
+            $table->string('ci')->unique();
             $table->string('profession')->nullable();
             $table->string('issued')->nullable();
             $table->string('phone')->nullable();

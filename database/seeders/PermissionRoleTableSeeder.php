@@ -375,5 +375,27 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = "edit_cities" or
                                             `key` = "add_cities"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
+
+        // Roles de jurídico
+        $role = Role::where('name', 'juridico_director')->firstOrFail();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            `key` = "browse_contracts" or
+                                            `key` = "read_contracts" or
+                                            `key` = "edit_contracts"')->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        $role = Role::where('name', 'juridico_jefe_seccion')->firstOrFail();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            `key` = "browse_contracts" or
+                                            `key` = "read_contracts" or
+                                            `key` = "edit_contracts"')->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        $role = Role::where('name', 'juridico_tecnico')->firstOrFail();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            `key` = "browse_contracts" or
+                                            `key` = "read_contracts" or
+                                            `key` = "edit_contracts"')->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
     }
 }

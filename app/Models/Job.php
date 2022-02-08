@@ -12,6 +12,6 @@ class Job extends Model
     protected $dates = ['deleted_at'];
 
     public function direccion_administrativa(){
-        return $this->belongsTo(DireccionAdministrativa::class, 'direccion_adminstrativa_id', 'ID');
+        return $this->belongsTo(DireccionAdministrativa::class, 'direccion_administrativa_id', 'ID');
     }
 }

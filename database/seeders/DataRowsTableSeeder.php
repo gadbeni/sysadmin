@@ -2263,9 +2263,9 @@ class DataRowsTableSeeder extends Seeder
             array (
                 'id' => 155,
                 'data_type_id' => 10,
-                'field' => 'direccion_adminstrativa_id',
+                'field' => 'direccion_administrativa_id',
                 'type' => 'direccionadministrativa',
-                'display_name' => 'Dirección Adminstrativa',
+                'display_name' => 'Dirección Administrativa',
                 'required' => 0,
                 'browse' => 0,
                 'read' => 1,

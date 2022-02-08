@@ -18,7 +18,7 @@
         <div class="page-title">
             <h2>
                 <span style="color: #009A2F">MEMORANDUM</span> <br>
-                <small>SDAF N° {{ $code }}</small>
+                <small>GAD-BENI SDAF N° {{ $code }}</small>
             </h2>
         </div>
         <div class="page-body">

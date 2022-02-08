@@ -15,7 +15,7 @@ class CreateProgramsTable extends Migration
     {
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
-            $table->integer('direccion_adminstrativa_id')->nullable();
+            $table->integer('direccion_administrativa_id')->nullable();
             $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->string('type')->nullable();

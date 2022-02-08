@@ -18,7 +18,7 @@ class CreateContractsTable extends Migration
             $table->foreignId('person_id')->nullable()->constrained('people');
             $table->integer('cargo_id')->nullable();
             $table->foreignId('job_id')->nullable()->constrained('jobs');
-            $table->integer('direccion_adminstrativa_id')->nullable();
+            $table->integer('direccion_administrativa_id')->nullable();
             $table->integer('unidad_administrativa_id')->nullable();
             $table->foreignId('program_id')->nullable()->constrained('programs');
             $table->foreignId('procedure_type_id')->nullable()->constrained('procedure_types');

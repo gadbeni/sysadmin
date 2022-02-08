@@ -14,7 +14,7 @@ class Contract extends Model
         'program_id',
         'cargo_id',
         'job_id',
-        'direccion_adminstrativa_id',
+        'direccion_administrativa_id',
         'unidad_administrativa_id',
         'procedure_type_id',
         'user_id',
@@ -62,7 +62,7 @@ class Contract extends Model
     }
 
     public function direccion_administrativa(){
-        return $this->belongsTo(DireccionAdministrativa::class, 'direccion_adminstrativa_id', 'ID');
+        return $this->belongsTo(DireccionAdministrativa::class, 'direccion_administrativa_id', 'ID');
     }
 
     public function unidad_administrativa(){

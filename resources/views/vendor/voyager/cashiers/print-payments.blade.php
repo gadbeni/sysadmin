@@ -114,9 +114,37 @@
                     @endphp
                     <tr @if($payment->deleted_at) style="text-decoration:line-through;color: red" @endif>
                         <td>{{ $cont }}</td>
-                        <td style="font-size: 11px">{{ $data->Nombre_Empleado  }} <br> <small>{{ $data->Direccion_Administrativa }}</small> </td>
-                        <td>{{ $data->CedulaIdentidad }}</td>
-                        <td>{{ $months[$data->Mes].'/'.$data->Anio }}</td>
+                        <td>
+                            @if ($payment->planilla_haber_id)
+                                {{ $data->Nombre_Empleado  }} <br> <small>{{ $data->Direccion_Administrativa }}</small>
+                            @elseif($payment->aguinaldo_id)
+                                {{ $payment->aguinaldo->funcionario }}
+                            @elseif($payment->stipend_id)
+                                {{ $payment->stipend->funcionario }}
+                            @endif
+                            <br>
+                            @if ($payment->deleted_at)
+                                <label class="label label-danger">Anulado</label>
+                            @endif
+                        </td>
+                        <td>
+                            @if ($payment->planilla_haber_id)
+                                {{ $data->CedulaIdentidad }}
+                            @elseif($payment->aguinaldo_id)
+                                {{ $payment->aguinaldo->ci }}
+                            @elseif($payment->stipend_id)
+                                {{ $payment->stipend->ci }}
+                            @endif
+                        </td>
+                        <td>
+                            @if ($payment->planilla_haber_id)
+                                {{ $months[$data->Mes].'/'.$data->Anio }}
+                            @elseif($payment->aguinaldo_id)
+                                Aguinaldo
+                            @elseif($payment->stipend_id)
+                                Estipendio
+                            @endif
+                        </td>
                         <td>{{ $payment->created_at->format('d/m/Y H:i') }}</td>
                         <td style="text-align: right">{{ number_format($payment->amount, 2, ',', '.') }}</td>
                     </tr>
