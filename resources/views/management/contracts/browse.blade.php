@@ -56,11 +56,11 @@
                                         <td>{{ $item->code }}/{{ date('Y', strtotime($item->start)) }}</td>
                                         <td>{{ $item->type->name }}</td>
                                         <td>{{ $item->person->first_name }} {{ $item->person->last_name }}</td>
-                                        <td>{{ $item->cargo->Descripcion }}</td>
-                                        <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
+                                        <td>{{ $item->cargo ? $item->cargo->Descripcion : $item->job->name }}</td>
+                                        <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->NOMBRE : $item->job->direccion_administrativa->NOMBRE }}</td>
                                         <td>
                                             <ul>
-                                                <li><b>Sueldo: </b> <small>Bs.</small> {{ $item->cargo->nivel->Sueldo }}</li>
+                                                <li><b>Sueldo: </b> <small>Bs.</small> {{ $item->cargo ? $item->cargo->nivel->Sueldo : $item->job->salary }}</li>
                                             </ul>
                                         </td>
                                         <td>
@@ -84,19 +84,22 @@
                                                 <ul class="dropdown-menu" role="menu">
                                                     @switch($item->procedure_type_id)
                                                         @case(1)
-                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'autorization']) }}" target="_blank">Autorización</a></li>
-                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'invitation']) }}" target="_blank">Invitación</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'personal.memorandum']) }}" target="_blank">Memoramdum</a></li>
+                                                            @break
+                                                        @case(2)
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.autorization']) }}" target="_blank">Autorización</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.invitation']) }}" target="_blank">Invitación</a></li>
                                                             {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'answer']) }}" target="_blank">Respuesta</a></li> --}}
-                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'declaration']) }}" target="_blank">Declaración</a></li>
-                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'memorandum']) }}" target="_blank">Memorandum</a></li>
-                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'report']) }}" target="_blank">Informe</a></li>
-                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.declaration']) }}" target="_blank">Declaración</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.memorandum']) }}" target="_blank">Memorandum</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.report']) }}" target="_blank">Informe</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
                                                             {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'presentation']) }}" target="_blank">Presentación de documentos</a></li> --}}
                                                             <li class="divider"></li>
-                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'contract-consultor']) }}" target="_blank">Contrato</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.contract']) }}" target="_blank">Contrato</a></li>
                                                             @break
-                                                        @case(4)
-                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'contract-eventual']) }}" target="_blank">Contrato</a></li>
+                                                        @case(5)
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract']) }}" target="_blank">Contrato</a></li>
                                                             @break
                                                         @default
                                                             
