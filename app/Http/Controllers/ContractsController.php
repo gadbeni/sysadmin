@@ -26,7 +26,12 @@ class ContractsController extends Controller
      */
     public function index()
     {
-        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'type'])->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
+        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
+                        // ->whereHas('job', function($query) {
+                        //     $query->whereRaw(Auth::user()->direccion_administrativa_id ? "(direccion_administrativa_id is not NULL or direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id.")" : 1);
+                        // })
+                        ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
+                        ->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
         return view('management.contracts.browse', compact('contracts'));
     }
 
@@ -48,7 +53,7 @@ class ContractsController extends Controller
         if(($role_id >= 9 && $role_id <= 12) || ($role_id >= 16 && $role_id <= 18)) $ids .= "5,";
 
         $ids = substr($ids, 0, -1);
-        $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw("id in ($ids)")->get();
+        $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw($ids ? "id in ($ids)" : 1)->get();
 
         $people = Person::whereRaw("id not in (select person_id from contracts where status <> 4 and deleted_at is null)")->where('deleted_at', NULL)->get();
         $direccion_administrativas = DireccionAdministrativa::get();
@@ -60,10 +65,10 @@ class ContractsController extends Controller
                         $q->orderBy('NumNivel', 'ASC');
                     })->get();
         
-        
         $jobs = Job::with('direccion_administrativa')
-                    ->whereRaw("id not in (select job_id from contracts where status <> 4 and deleted_at is null)")
-                    ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)->where('deleted_at', NULL)->get();
+                    ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 4 and deleted_at is null)")
+                    ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
+                    ->where('deleted_at', NULL)->get();
         return view('management.contracts.edit-add', compact('procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos', 'jobs'));
     }
 
@@ -85,9 +90,10 @@ class ContractsController extends Controller
                 'program_id' => $request->program_id,
                 // Si es un contrato de consultor o inversion
                 'cargo_id' => $request->procedure_type_id != 1 ? $request->cargo_id : NULL,
-                // Si es un contrato de funcionamiento
+                // Si es un contrato de permanente
                 'job_id' => $request->procedure_type_id == 1 ? $request->cargo_id : NULL,
-                'direccion_administrativa_id' => $request->direccion_administrativa_id,
+                // Si es un contrato permanente se el id_da se obtiene de la tabal jobs, sino se obtiene del request
+                'direccion_administrativa_id' => $request->procedure_type_id == 1 ? Job::find($request->cargo_id)->direccion_administrativa_id : $request->direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'procedure_type_id' => $request->procedure_type_id,
                 'user_id' => Auth::user()->id,
@@ -150,7 +156,7 @@ class ContractsController extends Controller
         if(($role_id >= 9 && $role_id <= 12) || ($role_id >= 16 && $role_id <= 18)) $ids .= "5,";
 
         $ids = substr($ids, 0, -1);
-        $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw("id in ($ids)")->get();
+        $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw($ids ? "id in ($ids)" : 1)->get();
 
         $people = Person::where('id', $contract->person->id)->where('deleted_at', NULL)->get();
         $direccion_administrativas = DireccionAdministrativa::get();
@@ -162,10 +168,10 @@ class ContractsController extends Controller
                         $q->orderBy('NumNivel', 'ASC');
                     })->get();
         
-        
         $jobs = Job::with('direccion_administrativa')
-                    ->whereRaw("id not in (select job_id from contracts where status <> 4 and deleted_at is null) or id = ".$contract->job_id)
-                    ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)->where('deleted_at', NULL)->get();
+                    ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 4 and deleted_at is null) or id = ".($contract->job_id ?? 0))
+                    ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
+                    ->where('deleted_at', NULL)->get();
         return view('management.contracts.edit-add', compact('contract', 'procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos', 'jobs'));
     }
 
@@ -184,9 +190,10 @@ class ContractsController extends Controller
                 'program_id' => $request->program_id,
                 // Si es un contrato de consultor o inversion
                 'cargo_id' => $request->procedure_type_id != 1 ? $request->cargo_id : NULL,
-                // Si es un contrato de funcionamiento
+                // Si es un contrato de permanente
                 'job_id' => $request->procedure_type_id == 1 ? $request->cargo_id : NULL,
-                'direccion_administrativa_id' => $request->direccion_administrativa_id,
+                // Si es un contrato permanente se el id_da se obtiene de la tabal jobs, sino se obtiene del request
+                'direccion_administrativa_id' => $request->procedure_type_id == 1 ? Job::find($request->cargo_id)->direccion_administrativa_id : $request->direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'procedure_type_id' => $request->procedure_type_id,
                 'details_work' => $request->details_work,

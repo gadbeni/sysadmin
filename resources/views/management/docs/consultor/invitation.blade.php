@@ -17,7 +17,7 @@
             <p style="text-align: left">
                 {{ $contract->person->gender == 'masculino' ? 'Señor' : 'Señora' }}: <br>
                 {{ $contract->person->first_name }} {{ $contract->person->last_name }} <br>
-                Cel. {{ $contract->person->phone }} <br>
+                {!! $contract->person->phone ? 'Cel. '.$contract->person->phone.'<br>' : '' !!}
                 Presente .–
             </p>
         </div>
