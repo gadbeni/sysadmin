@@ -90,7 +90,8 @@
                                                 <ul class="dropdown-menu" role="menu">
                                                     @switch($item->procedure_type_id)
                                                         @case(1)
-                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'personal.memorandum']) }}" target="_blank">Memoramdum</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'personal.memorandum']) }}" target="_blank">Memoramdum de desiganación</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'personal.memorandum-reasigancion']) }}" target="_blank">Memoramdum de reasignación</a></li>
                                                             @break
                                                         @case(2)
                                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.autorization']) }}" target="_blank">Autorización</a></li>

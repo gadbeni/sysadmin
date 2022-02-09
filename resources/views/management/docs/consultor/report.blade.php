@@ -63,14 +63,15 @@
                     <b>1. ANTECEDENTES</b> <br>
                     El Gobierno Autónomo Departamental del Beni, a través de la Secretaría de Administración y Finanzas, cuenta con diferentes programas y para la ejecución de los mismos, mediante Resolución Administrativa de Gobernación N° 074/2021 de fecha 30 de agosto del 2021, el Gobernador del Departamento del Beni en el marco de sus funciones, designa como Responsable del Proceso de Contratación al {{ setting('firma-autorizada.name') }}, {{ setting('firma-autorizada.job') }}, en el marco del Decreto Supremo N° 0181 de fecha 28 de junio de 2009. <br> <br>
                     La {{ Str::upper($contract->unidad_administrativa->NOMBRE) }}, mediante solicitud de fecha {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }}, requiere la contratación de un Consultor Individual de Línea, para el cargo de {{ Str::upper($contract->cargo->Descripcion) }}, con cargo al Programa: “{{ Str::upper($contract->program->name) }}”, para tal efecto adjunta al requerimiento los Términos de Referencia, Certificación Presupuestaria. <br> <br>
-                    <b>1. EVALUACIÓN</b> <br>
+                    <b>2. EVALUACIÓN</b> <br>
                     La evaluación de la documentación presentada por {{ $contract->person->gender == 'masculino' ? 'el' : 'la' }} postulante <b>{{ $contract->person->first_name }} {{ $contract->person->last_name }}</b>, para el Proceso de Contratación <b>“GAD-BENI/MC N° {{ $code }}”</b> para la prestación de servicios de un <b>CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}</b>, se detalla en el siguiente cuadro: <br> <br>
                 </p>
             </div>
 
             <div class="saltopagina"></div>
+            <div class="pt"></div>
 
-            <div style="padding-top: 50px">
+            <div>
                 <h3 style="text-align: center">CUADRO DE NIVEL DE CONSULTORÍA REQUERIDO</h3>
 
                 {!! $contract->table_report !!}
@@ -103,12 +104,14 @@
             </div>
 
             <div class="saltopagina"></div>
+            <div class="pt"></div>
 
-            <div style="padding-top: 100px">
-                <p>
-                    {!! $contract->details_report !!}
-                </p>
+            <div>
+                <p><b>3. MONTO Y FORMA DE PAGO</b></p>
+                {!! $contract->details_report !!}
 
+                <p>Para efectos del pago de sus haberes mensuales, se, deberá de presentar Informe de Actividades mensuales, el cual deberá de estar debidamente aprobado por su inmediato superior.</p>
+                
                 <p>
                     En su condición de Responsable del Proceso de Contratación de Apoyo Nacional a la Producción Empleo – RPA podrá aprobar el presente informe y sus recomendaciones o solicitar su complementación o sustentación, conforme establece el Artículo 34 del D.S. 0181 Normas Básicas del Sistema de Administración de Bienes y Servicios. <br> <br>
                     Es cuanto informo, para los fines consiguientes.
@@ -187,6 +190,9 @@
             .saltopagina{
                 display: block;
                 page-break-before: always;
+            }
+            .pt{
+                height: 100px;
             }
         }
     </style>

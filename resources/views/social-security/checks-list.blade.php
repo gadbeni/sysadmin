@@ -72,6 +72,9 @@
                             <td>{{ date('d/m/Y H:i', strtotime($row->created_at)) }}<br><small>{{ \Carbon\Carbon::parse($row->created_at)->diffForHumans() }}</small></td>
                             <td>
                                 <div class="no-sort no-click bread-actions text-right">
+                                    <a href="#" title="Ver" class="btn btn-sm btn-dark view" data-toggle="modal" data-target="#modal-derivation">
+                                        <i class="voyager-move"></i> <span class="hidden-xs hidden-sm">Derivación</span>
+                                    </a>
                                     <a href="{{ route('checks.show', ['check' => $row->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
                                         <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                                     </a>
@@ -101,7 +104,39 @@
             </nav>
         </div>
     </div>
-    
+
+    {{-- Modal derivación --}}
+    <form id="form-derive" action="{{ route('checks.derive') }}" method="post">
+        <div class="modal modal-primary fade" tabindex="-1" id="modal-derivation" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-move"></i> Derivar cheque</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Destino</label>
+                            <select name="office_id" class="form-control select2" required>
+                                @foreach (\App\Models\Office::where('deleted_at', NULL)->get() as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Motivo</label>
+                            <textarea name="description" class="form-control" rows="4"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark" value="Derivar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
     {{-- Modal delete massive --}}
     <div class="modal modal-danger fade" tabindex="-1" id="delete_multiple" role="dialog">
         <div class="modal-dialog">

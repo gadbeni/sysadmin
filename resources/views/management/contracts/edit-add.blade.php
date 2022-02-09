@@ -346,7 +346,7 @@
                                         {{
                                             isset($contract) ?
                                             $contract->details_report :
-                                            '<p><strong style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">3. MONTO Y FORMA DE PAGO</strong><br style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;" /><span style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">El monto total a cancelar ser&aacute; de&nbsp;</span><strong style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">Bs.- 11.550,00 (Once mil quinientos cincuenta 00/100 Bolivianos)</strong><span style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">, mismos que ser&aacute;n cancelados en cuatro (04) cuotas mensuales: la primera correspondiente a nueve (09) d&iacute;as del mes de septiembre por&nbsp;</span><strong style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">Bs.- 1.200.00</strong><span style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">&nbsp;(Un mil doscientos 00/100 bolivianos), la segunda, tercera y cuarta cuota correspondiente a los meses de octubre, noviembre y diciembre por un monto mensual de&nbsp;</span><strong style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">Bs.- 4.000.00</strong><span style="color: #000000; font-family: Arial, sans-serif; font-size: 13px; text-align: justify;">&nbsp;(cuatro mil 00/100 bolivianos), mismas que ser&aacute;n canceladas previa presentaci&oacute;n y aprobaci&oacute;n de informe de actividades.</span></p>'
+                                            '<p><span style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">El monto total a cancelar ser&aacute; de </span><strong style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">Bs.- 11.550,00 (Once mil quinientos cincuenta 00/100 Bolivianos)</strong><span style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">, mismos que ser&aacute;n cancelados en cuatro (04) cuotas mensuales: la primera correspondiente a nueve (09) d&iacute;as del mes de septiembre por&nbsp;</span><strong style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">Bs.- 1.200.00</strong><span style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">&nbsp;(Un mil doscientos 00/100 bolivianos), la segunda, tercera y cuarta cuota correspondiente a los meses de octubre, noviembre y diciembre por un monto mensual de&nbsp;</span><strong style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">Bs.- 4.000.00</strong><span style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">&nbsp;(cuatro mil 00/100 bolivianos).</span></p>'
                                         }}
                                     </textarea>
                                 </div>
@@ -451,13 +451,13 @@
                     });
 
                     setTimeout(() => {
-                        $('#select-direccion_administrativa_id').val("{{ $contract->direccion_administrativa_id }}");
+                        $('#select-direccion_administrativa_id').val("{{ isset($contract) ? $contract->direccion_administrativa_id : '' }}");
                         $('#select-direccion_administrativa_id').trigger('change');
 
-                        $('#select-unidad_administrativa_id').val("{{ $contract->unidad_administrativa_id }}");
+                        $('#select-unidad_administrativa_id').val("{{ isset($contract) ? $contract->unidad_administrativa_id : '' }}");
                         $('#select-unidad_administrativa_id').trigger('change');
 
-                        $('#select-program_id').val("{{ $contract->program_id }}");
+                        $('#select-program_id').val("{{ isset($contract) ? $contract->program_id : '' }}");
                         $('#select-program_id').trigger('change');
                     }, 0);
 

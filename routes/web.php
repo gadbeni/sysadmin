@@ -87,6 +87,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::put('social-security/checks/{check}/update', [SocialSecurityController::class, 'checks_update'])->name('checks.update');
     Route::delete('social-security/checks/{check}/delete', [SocialSecurityController::class, 'checks_delete'])->name('checks.delete');
     Route::post('social-security/checks/delete/multiple', [SocialSecurityController::class, 'checks_delete_multiple'])->name('checks.delete_multiple');
+    Route::post('social-security/checks/derive', [SocialSecurityController::class, 'checks_derive'])->name('checks.derive');
 
     // *Pagos
     Route::get('social-security/payments', [SocialSecurityController::class, 'payments_index'])->name('payments.index');
@@ -157,10 +158,6 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('reports/cashier/payments/list', [ReportsController::class, 'cashier_payments_list'])->name('reports.cashier.payments.list');
     Route::get('reports/cashier/vaults', [ReportsController::class, 'cashier_vaults_index'])->name('reports.cashier.vaults.index');
     Route::post('reports/cashier/vaults/list', [ReportsController::class, 'cashier_vaults_list'])->name('reports.cashier.vaults.list');
-
-    // Testing
-    // Obtener los cheques segun el año
-    Route::get('/test/{year}', [SocialSecurityController::class, 'test']);
 
     // Complementos
     Route::get('plugins/cashiers/tickets', [PluginsController::class, 'cashiers_tickets'])->name('cashiers.tickets');
