@@ -22,7 +22,7 @@ class ProcedureTypesTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'name' => 'Funcionamiento',
+                'name' => 'Permanente',
                 'planilla_id' => 1,
                 'description' => NULL,
                 'created_at' => '2022-01-17 16:13:01',

@@ -9,7 +9,7 @@
 
 @section('qr_code')
     <div id="qr_code">
-        {!! QrCode::size(80)->generate('Planilla de funcionamiento '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)).' con un sueldo de '.number_format($contract->job->salary, 2, ',', '.').' Bs.'); !!}
+        {!! QrCode::size(80)->generate('Contrato permanente '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)).' con un sueldo de '.number_format($contract->job->salary, 2, ',', '.').' Bs.'); !!}
     </div>
 @endsection
 
@@ -36,7 +36,7 @@
             <br>
             <p style="text-align: center"><u><b>DESIGNACIÓN</b></u></p>
             <p>
-                Mediante el presente comunico a Usted que, a partir de la fecha, es designado para ejercer el cargo de <b>{{ Str::upper($contract->job->name) }}</b>, dependiente de la/el <b>{{ Str::upper($contract->job->direccion_administrativa->NOMBRE) }}</b> con el Nivel Salarial <b>{{ $contract->job->level }}</b> de la <b>planilla de funcionamiento</b>.
+                Mediante el presente comunico a Usted que, a partir de la fecha, es designado para ejercer el cargo de <b>{{ Str::upper($contract->job->name) }}</b>, dependiente de la/el <b>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }}</b> con el Nivel Salarial <b>{{ $contract->job->level }}</b> de <b>CONTRATO PERMANENTE</b>.
             </p>
             <p>
                 De acuerdo a normas vigentes deberá recibir bajo inventario del Responsable de Registro y Control de Bienes Públicos los activos que serán asignados a su persona.

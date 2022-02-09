@@ -450,6 +450,17 @@
                         $('#select-direccion_administrativa_id').append(`<option value="${item.ID}">${item.NOMBRE}</option>`);
                     });
 
+                    setTimeout(() => {
+                        $('#select-direccion_administrativa_id').val("{{ $contract->direccion_administrativa_id }}");
+                        $('#select-direccion_administrativa_id').trigger('change');
+
+                        $('#select-unidad_administrativa_id').val("{{ $contract->unidad_administrativa_id }}");
+                        $('#select-unidad_administrativa_id').trigger('change');
+
+                        $('#select-program_id').val("{{ $contract->program_id }}");
+                        $('#select-program_id').trigger('change');
+                    }, 0);
+
                     cargos.map(item => {
                         if($('#select-procedure_type_id option:selected').data('planilla_id') == item.idPlanilla){
                             $('#select-cargo_id').append(`<option value="${item.ID}">${item.Descripcion} | Nivel ${item.nivel.NumNivel} | Bs. ${item.nivel.Sueldo}</option>`);

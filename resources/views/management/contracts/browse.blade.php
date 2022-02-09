@@ -57,7 +57,7 @@
                                         <td>{{ $item->type->name }}</td>
                                         <td>{{ $item->person->first_name }} {{ $item->person->last_name }}</td>
                                         <td>{{ $item->cargo ? $item->cargo->Descripcion : $item->job->name }}</td>
-                                        <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->NOMBRE : $item->job->direccion_administrativa->NOMBRE }}</td>
+                                        <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
                                         <td>
                                             <ul>
                                                 <li><b>Sueldo: </b> <small>Bs.</small> {{ number_format($item->cargo ? $item->cargo->nivel->Sueldo : $item->job->salary, 2, ',', '.') }}</li>

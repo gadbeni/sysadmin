@@ -1162,13 +1162,13 @@ class DataRowsTableSeeder extends Seeder
                 'field' => 'ci',
                 'type' => 'text',
                 'display_name' => 'CI',
-                'required' => 0,
+                'required' => 1,
                 'browse' => 1,
                 'read' => 1,
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
+                'details' => '{"validation":{"rule":"required|max:191|unique:people"},"display":{"width":6}}',
                 'order' => 6,
             ),
             72 => 
@@ -1200,7 +1200,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
+                'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
                 'order' => 9,
             ),
             74 => 
@@ -1232,7 +1232,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"options":{"":"No definido","masculino":"Masculino","femenino":"Femenino"},"display":{"width":6}}',
+                'details' => '{"options":{"masculino":"Masculino","femenino":"Femenino"},"display":{"width":6}}',
                 'order' => 10,
             ),
             76 => 
@@ -2144,7 +2144,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6},"options":{"funcionamiento":"Funcionamiento","inversi\\u00f3n":"Inversi\\u00f3n","consultor\\u00eda":"Consultor\\u00eda","contrato":"Contrato","otros":"Otros"}}',
+                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6},"options":{"permanente":"Permanente","inversi\\u00f3n":"Inversi\\u00f3n","consultor\\u00eda":"Consultor\\u00eda","contrato":"Contrato","otros":"Otros"}}',
                 'order' => 5,
             ),
             133 => 
@@ -2288,7 +2288,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"validation":{"rule":"max:191"},"options":{"1":"Funcionamiento","2":"Inversi\\u00f3n","3":"Consultor\\u00eda de l\\u00ednea","4":"Consultor\\u00eda por Producto","":"Ninguna"}}',
+                'details' => '{"validation":{"rule":"max:191"},"options":{"1":"Permanente","2":"Inversi\\u00f3n","3":"Consultor\\u00eda de l\\u00ednea","4":"Consultor\\u00eda por Producto","":"Ninguna"}}',
                 'order' => 3,
             ),
         ));
