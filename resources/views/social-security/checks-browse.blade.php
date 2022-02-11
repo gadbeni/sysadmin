@@ -75,8 +75,10 @@
             $(document).ready(function() {
                 list();
                 
-                $('#input-search').on('keyup', function(){
-                    list();
+                $('#input-search').on('keyup', function(e){
+                    if(e.keyCode == 13) {
+                        list();
+                    }
                 });
                 $('#input-search').on('change', function(){
                     list();

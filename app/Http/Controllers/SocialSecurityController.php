@@ -15,6 +15,7 @@ use App\Models\Dependence;
 use App\Models\ChecksBeneficiary;
 use App\Models\Spreadsheet;
 use App\Models\Planillahaber;
+use App\Models\ChecksPaymentsDerivations;
 
 class SocialSecurityController extends Controller
 {
@@ -29,7 +30,7 @@ class SocialSecurityController extends Controller
 
     public function checks_list($search = null){
         $paginate = request('paginate') ?? 10;
-        $data = ChecksPayment::with(['user', 'beneficiary.type', 'planilla_haber.tipo', 'spreadsheet'])
+        $data = ChecksPayment::with(['user', 'beneficiary.type', 'planilla_haber.tipo', 'spreadsheet', 'derivations.office'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')
                     ->where(function($query) use ($search){
@@ -184,6 +185,21 @@ class SocialSecurityController extends Controller
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
             return redirect()->route('checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function checks_derive(Request $request){
+        try {
+            $derivation = ChecksPaymentsDerivations::create([
+                'user_id' => Auth::user()->id,
+                'checks_payment_id' => $request->checks_payment_id,
+                'office_id' => $request->office_id,
+                'observations' => $request->observations,
+            ]);
+            return response()->json(['derivation' => $derivation]);
+        } catch (\Throwable $th) {
+            env('APP_DEBUG') ? dd($th) : null;
+            return response()->json(['error' => 1]);
         }
     }
 
