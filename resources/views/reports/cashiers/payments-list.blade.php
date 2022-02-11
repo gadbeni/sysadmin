@@ -13,6 +13,8 @@
                         <tr>
                             <th>N&deg;</th>
                             <th>DETALLE</th>
+                            <th>CI</th>
+                            <th>PERIODO</th>
                             <th>FECHA</th>
                             <th>CAJERO(A)</th>
                             <th>OBSERVACIONES </th>
@@ -34,6 +36,16 @@
                             <tr>
                                 <td>{{ $cont }}</td>
                                 <td @if($item->deleted_at) class="item-delete" @endif>{{ $item->description }}</td>
+                                <td>
+                                    @if ($item->planilla)
+                                        {{ $item->planilla->CedulaIdentidad }}
+                                    @elseif($item->aguinaldo)
+                                        {{ $item->aguinaldo->ci }}
+                                    @elseif($item->stipend)
+                                        {{ $item->stipend->ci }}
+                                    @endif
+                                    {{ $item->planilla ? $item->planilla->CedulaIdentidad : '' }}</td>
+                                <td>{{ $item->planilla ? $item->planilla->Periodo : '' }}</td>
                                 <td>{{ date('d', strtotime($item->created_at)).'/'.$months[intval(date('m', strtotime($item->created_at)))].'/'.date('Y', strtotime($item->created_at)) }} <br> <small>{{ date('H:i', strtotime($item->created_at)) }}</small> </td>
                                 <td>{{ $item->cashier->user->name }} </td>
                                 <td style="max-width: 150px">
@@ -50,11 +62,11 @@
                             @endphp
                         @empty
                             <tr>
-                                <td colspan="6"><h4 class="text-center">No hay resultados</h4></td>
+                                <td colspan="8"><h4 class="text-center">No hay resultados</h4></td>
                             </tr>
                         @endforelse
                         <tr>
-                            <td colspan="5" class="text-right"><b>TOTAL</b></td>
+                            <td colspan="7" class="text-right"><b>TOTAL</b></td>
                             <td class="text-right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
                         </tr>
                     </tbody>

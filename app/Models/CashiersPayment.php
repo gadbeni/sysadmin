@@ -12,6 +12,10 @@ class CashiersPayment extends Model
         'cashier_id', 'planilla_haber_id', 'aguinaldo_id', 'amount', 'description', 'observations', 'stipend_id'
     ];
 
+    public function planilla(){
+        return $this->belongsTo(Planillahaber::class, 'planilla_haber_id', 'ID');
+    }
+    
     public function cashier(){
         return $this->belongsTo(Cashier::class);
     }
