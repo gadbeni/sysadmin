@@ -22,6 +22,7 @@
         "simplesoftwareio/simple-qrcode": "^4.2",
         "tcg/voyager": "^1.4",
         "villca/numeros-en-letras": "^1.2",
+        "yadahan/laravel-authentication-log": "^1.5",
         "yajra/laravel-datatables-oracle": "^9.18"
     },
     "require-dev": {

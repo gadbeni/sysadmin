@@ -107,6 +107,10 @@
                     break;
             }
         });
+
+        window.onafterprint = function(event) {
+            console.log('before print');
+        };
     </script>
 
     @yield('script')
