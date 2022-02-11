@@ -27,4 +27,8 @@ class ChecksPayment extends Model
     public function planilla_haber(){
         return $this->belongsTo(Planillahaber::class, 'planilla_haber_id', 'ID');
     }
+
+    public function derivations(){
+        return $this->hasMany(ChecksPaymentsDerivations::class, 'checks_payment_id');
+    }
 }

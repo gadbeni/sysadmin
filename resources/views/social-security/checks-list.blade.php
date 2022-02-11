@@ -11,7 +11,7 @@
                         <th>Impresión</th>
                         <th>Vencimiento</th>
                         <th>Registrado por</th>
-                        <th>Registrado el</th>
+                        <th>Derivaciones</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -68,11 +68,17 @@
                                 @endphp
                                 <span style="{{ ($date_expire <= date('Y-m-d') && $row->status == 1 ? 'color: red' : '') }}">{{ date('d/m/Y', strtotime($date_expire)) }}<br><small>{{ \Carbon\Carbon::parse($date_expire)->diffForHumans() }}</small></span>
                             </td>
-                            <td>{{ $row->user->name }}</td>
-                            <td>{{ date('d/m/Y H:i', strtotime($row->created_at)) }}<br><small>{{ \Carbon\Carbon::parse($row->created_at)->diffForHumans() }}</small></td>
+                            <td>{{ $row->user->name }} <br> {{ date('d/m/Y H:i', strtotime($row->created_at)) }}<br><small>{{ \Carbon\Carbon::parse($row->created_at)->diffForHumans() }}</small></td>
+                            <td>
+                                <ul style="padding-left: 20px">
+                                    @foreach ($row->derivations as $derivation)
+                                        <li title="{{ $derivation->observations }}" class="li-derivation"><b>{{ $derivation->office->name }}</b> por {{ $derivation->user->name }} <br> {{ date('d/m/Y H:i', strtotime($derivation->created_at)) }}</li>
+                                    @endforeach
+                                </ul>
+                            </td>
                             <td>
                                 <div class="no-sort no-click bread-actions text-right">
-                                    <a href="#" title="Ver" class="btn btn-sm btn-dark view" data-toggle="modal" data-target="#modal-derivation">
+                                    <a href="#" title="Ver" class="btn btn-sm btn-dark btn-derivation" data-id="{{ $row->id }}" data-toggle="modal" data-target="#modal-derivation">
                                         <i class="voyager-move"></i> <span class="hidden-xs hidden-sm">Derivación</span>
                                     </a>
                                     <a href="{{ route('checks.show', ['check' => $row->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
@@ -105,38 +111,6 @@
         </div>
     </div>
 
-    {{-- Modal derivación --}}
-    <form id="form-derive" action="{{ route('checks.derive') }}" method="post">
-        <div class="modal modal-primary fade" tabindex="-1" id="modal-derivation" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title"><i class="voyager-move"></i> Derivar cheque</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="">Destino</label>
-                            <select name="office_id" class="form-control select2" required>
-                                @foreach (\App\Models\Office::where('deleted_at', NULL)->get() as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="">Motivo</label>
-                            <textarea name="description" class="form-control" rows="4"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" class="btn btn-dark" value="Derivar">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-
     {{-- Modal delete massive --}}
     <div class="modal modal-danger fade" tabindex="-1" id="delete_multiple" role="dialog">
         <div class="modal-dialog">
@@ -150,8 +124,8 @@
                     <h4>¿Estás seguro de que quieres eliminar los cheques seleccionados?</h4>
                 </div>
                 <div class="modal-footer">
-                        {{ csrf_field() }}
-                        <input type="submit" class="btn btn-danger pull-right delete-confirm" value="Eliminar">
+                    {{ csrf_field() }}
+                    <input type="submit" class="btn btn-danger pull-right delete-confirm" value="Eliminar">
                     <button type="button" class="btn btn-default pull-right" data-dismiss="modal">
                         Cancelar
                     </button>
@@ -161,10 +135,69 @@
     </div><!-- /.modal-dialog -->
 </form>
 
+{{-- Modal derivación --}}
+<form id="form-derivation" action="{{ route('checks.derive') }}" method="post">
+    @csrf
+    <input type="hidden" name="checks_payment_id">
+    <div class="modal modal-primary fade" tabindex="-1" id="modal-derivation" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="voyager-move"></i> Derivar cheque</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Destino</label>
+                        <select name="office_id" class="form-control select2" required>
+                            @foreach (\App\Models\Office::where('deleted_at', NULL)->get() as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Motivo</label>
+                        <textarea name="observations" class="form-control" rows="4" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" class="btn btn-dark" value="Derivar">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
+<style>
+    .li-derivation{
+        cursor: pointer
+    }
+    .li-derivation:hover{
+        color: rgb(31, 31, 31)
+    }
+</style>
 
 <script>
+    var page = "{{ request('page') }}";
     $(document).ready(function(){
+        $('.btn-derivation').click(function(){
+            $('#form-derivation input[name="checks_payment_id"]').val($(this).data('id'));
+        });
+
+        $('#form-derivation').submit(function(e){
+            e.preventDefault();
+            $.post($(this).attr('action'), $(this).serialize(), function(res){
+                if(res.derivation){
+                    $('#modal-derivation').modal('hide');
+                    toastr.success('Cheque derivado correctamente');
+                    list(page);
+                }else{
+                    toastr.error('Error al derivar cheque');
+                }
+            });
+        });
+
         $('.page-link').click(function(e){
             e.preventDefault();
             let link = $(this).attr('href');

@@ -1,7 +1,7 @@
 
 
 Migraciones
-
+    - ejecutar todas las migraciones
 Seeders
     - UpdatePermissionsSeeder, UpdateBreadSeeder, ProcedureTypesTableSeeder, SettingsTableSeeder
 Paquetes
