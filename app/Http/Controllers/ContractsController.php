@@ -26,7 +26,9 @@ class ContractsController extends Controller
      */
     public function index()
     {
-        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
+        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel' => function($q){
+                            $q->where('Estado', 1);
+                        }, 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
                         // ->whereHas('job', function($query) {
                         //     $query->whereRaw(Auth::user()->direccion_administrativa_id ? "(direccion_administrativa_id is not NULL or direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id.")" : 1);
                         // })
@@ -236,7 +238,9 @@ class ContractsController extends Controller
     // ================================
     
     public function print($id, $document){
-        $contract = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa'])->where('id', $id)->first();
+        $contract = Contract::with(['user', 'person', 'program', 'cargo.nivel' => function($q){
+            $q->where('Estado', 1);
+        }, 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa'])->where('id', $id)->first();
         $contract->workers = $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
         return view('management.docs.'.$document, compact('contract'));
     }

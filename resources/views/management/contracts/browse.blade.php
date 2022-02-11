@@ -52,6 +52,7 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($contracts as $item)
+                                    {{-- {{ dd($item) }} --}}
                                     <tr>
                                         <td>{{ $item->code }}/{{ date('Y', strtotime($item->start)) }}</td>
                                         <td>{{ $item->type->name }}</td>
@@ -60,7 +61,7 @@
                                         <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
                                         <td>
                                             <ul>
-                                                <li><b>Sueldo: </b> <small>Bs.</small> {{ number_format($item->cargo ? $item->cargo->nivel->Sueldo : $item->job->salary, 2, ',', '.') }}</li>
+                                                <li><b>Sueldo: </b> <small>Bs.</small> {{ number_format($item->cargo ? $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo : $item->job->salary, 2, ',', '.') }}</li>
                                             </ul>
                                         </td>
                                         <td>
