@@ -35,7 +35,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             1 => 
             array (
@@ -53,7 +53,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             2 => 
             array (
@@ -71,7 +71,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             3 => 
             array (
@@ -89,7 +89,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             4 => 
             array (
@@ -107,7 +107,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             5 => 
             array (
@@ -125,7 +125,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             6 => 
             array (
@@ -143,7 +143,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             7 => 
             array (
@@ -161,7 +161,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             8 => 
             array (
@@ -179,7 +179,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             9 => 
             array (
@@ -197,7 +197,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             10 => 
             array (
@@ -215,7 +215,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             11 => 
             array (
@@ -233,7 +233,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             12 => 
             array (
@@ -251,7 +251,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             13 => 
             array (
@@ -269,7 +269,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             14 => 
             array (
@@ -287,7 +287,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             15 => 
             array (
@@ -305,7 +305,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             16 => 
             array (
@@ -323,7 +323,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             17 => 
             array (
@@ -341,7 +341,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             18 => 
             array (
@@ -359,7 +359,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             19 => 
             array (
@@ -377,7 +377,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             20 => 
             array (
@@ -395,7 +395,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             21 => 
             array (
@@ -413,7 +413,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             22 => 
             array (
@@ -431,7 +431,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             23 => 
             array (
@@ -449,7 +449,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             24 => 
             array (
@@ -467,7 +467,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             25 => 
             array (
@@ -485,7 +485,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             26 => 
             array (
@@ -503,7 +503,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             27 => 
             array (
@@ -521,7 +521,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             28 => 
             array (
@@ -539,7 +539,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             29 => 
             array (
@@ -557,7 +557,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             30 => 
             array (
@@ -575,7 +575,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             31 => 
             array (
@@ -593,7 +593,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             32 => 
             array (
@@ -611,7 +611,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             33 => 
             array (
@@ -629,7 +629,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             34 => 
             array (
@@ -647,7 +647,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             35 => 
             array (
@@ -665,7 +665,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             36 => 
             array (
@@ -683,7 +683,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             37 => 
             array (
@@ -701,7 +701,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             38 => 
             array (
@@ -719,7 +719,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             39 => 
             array (
@@ -737,7 +737,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             40 => 
             array (
@@ -755,7 +755,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             41 => 
             array (
@@ -773,7 +773,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             42 => 
             array (
@@ -791,7 +791,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             43 => 
             array (
@@ -809,7 +809,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             44 => 
             array (
@@ -827,7 +827,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             45 => 
             array (
@@ -845,7 +845,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             46 => 
             array (
@@ -863,7 +863,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             47 => 
             array (
@@ -881,7 +881,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             48 => 
             array (
@@ -899,7 +899,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             49 => 
             array (
@@ -917,7 +917,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             50 => 
             array (
@@ -935,7 +935,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             51 => 
             array (
@@ -953,7 +953,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             52 => 
             array (
@@ -971,7 +971,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             53 => 
             array (
@@ -989,7 +989,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             54 => 
             array (
@@ -1007,7 +1007,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             55 => 
             array (
@@ -1025,7 +1025,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             56 => 
             array (
@@ -1043,7 +1043,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             57 => 
             array (
@@ -1061,7 +1061,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             58 => 
             array (
@@ -1079,7 +1079,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             59 => 
             array (
@@ -1097,7 +1097,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             60 => 
             array (
@@ -1115,7 +1115,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             61 => 
             array (
@@ -1133,7 +1133,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             62 => 
             array (
@@ -1151,7 +1151,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             63 => 
             array (
@@ -1169,7 +1169,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             64 => 
             array (
@@ -1187,7 +1187,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             65 => 
             array (
@@ -1205,7 +1205,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             66 => 
             array (
@@ -1223,7 +1223,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             67 => 
             array (
@@ -1241,7 +1241,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             68 => 
             array (
@@ -1259,7 +1259,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             69 => 
             array (
@@ -1277,7 +1277,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             70 => 
             array (
@@ -1295,7 +1295,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             71 => 
             array (
@@ -1313,7 +1313,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             72 => 
             array (
@@ -1331,7 +1331,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             73 => 
             array (
@@ -1349,7 +1349,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             74 => 
             array (
@@ -1367,7 +1367,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             75 => 
             array (
@@ -1385,7 +1385,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             76 => 
             array (
@@ -1403,7 +1403,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             77 => 
             array (
@@ -1421,7 +1421,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             78 => 
             array (
@@ -1439,7 +1439,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             79 => 
             array (
@@ -1457,7 +1457,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             80 => 
             array (
@@ -1475,7 +1475,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             81 => 
             array (
@@ -1493,7 +1493,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             82 => 
             array (
@@ -1511,7 +1511,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             83 => 
             array (
@@ -1529,7 +1529,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             84 => 
             array (
@@ -1547,7 +1547,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             85 => 
             array (
@@ -1565,7 +1565,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             86 => 
             array (
@@ -1583,7 +1583,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             87 => 
             array (
@@ -1601,7 +1601,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             88 => 
             array (
@@ -1619,7 +1619,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             89 => 
             array (
@@ -1637,7 +1637,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
             90 => 
             array (
@@ -1655,7 +1655,7 @@ class ProgramsTableSeeder extends Seeder
                 'finish' => '2022-12-31',
                 'created_at' => '2022-01-10 16:00:00',
                 'updated_at' => '2022-01-10 16:00:00',
-                'deleted_at' => '2022-01-10 16:00:00',
+                'deleted_at' => NULL,
             ),
         ));
         

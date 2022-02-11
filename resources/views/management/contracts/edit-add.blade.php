@@ -463,8 +463,15 @@
 
                     cargos.map(item => {
                         if($('#select-procedure_type_id option:selected').data('planilla_id') == item.idPlanilla){
-                            $('#select-cargo_id').append(`<option value="${item.ID}">${item.Descripcion} | Nivel ${item.nivel.NumNivel} | Bs. ${item.nivel.Sueldo}</option>`);
+                            let nivel = {};
+                            item.nivel.map(data => {
+                                if(data.IdPlanilla == item.idPlanilla && data.Estado == 1){
+                                    nivel = data;
+                                }
+                            });
+                            $('#select-cargo_id').append(`<option value="${item.ID}">${item.Descripcion} | Nivel ${nivel.NumNivel} | Bs. ${nivel.Sueldo}</option>`);
                         }
+                            
                     });
                     $('#select-cargo_id').val("{{ isset($contract) ? $contract->cargo_id : '' }}");
                 }

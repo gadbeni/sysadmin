@@ -13,6 +13,6 @@ class Cargo extends Model
     protected $table = 'cargo';
 
     public function nivel(){
-        return $this->belongsTo(NivelSalarial::class, 'idNivel', 'ID');
+        return $this->hasMany(NivelSalarial::class, 'NumNivel', 'idNumNivel');
     }
 }

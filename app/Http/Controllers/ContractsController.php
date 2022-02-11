@@ -60,11 +60,10 @@ class ContractsController extends Controller
         $unidad_administrativas = UnidadAdministrativa::get();
         $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $programs = Program::where('deleted_at', NULL)->get();
-        $cargos = Cargo::with(['nivel'])->where('idPlanilla', 2)->OrWhere('idPlanilla', 3)
-                    ->whereHas('nivel', function($q){
-                        $q->orderBy('NumNivel', 'ASC');
-                    })->get();
-        
+        $cargos = Cargo::with(['nivel' => function($q){
+            $q->where('Estado', 1);
+        }])->where('estado', 1)->get();
+        // dd($cargos);
         $jobs = Job::with('direccion_administrativa')
                     ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 4 and deleted_at is null)")
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
