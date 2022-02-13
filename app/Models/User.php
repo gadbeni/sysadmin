@@ -45,4 +45,8 @@ class User extends \TCG\Voyager\Models\User
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function direccion_administrativa(){
+        return $this->belongsTo(DireccionAdministrativa::class, 'direccion_administrativa_id', 'ID');
+    }
 }

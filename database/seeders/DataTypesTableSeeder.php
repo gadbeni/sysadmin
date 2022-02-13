@@ -197,7 +197,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"name","order_display_column":"name","order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-01-04 10:56:30',
-                'updated_at' => '2022-02-01 15:24:41',
+                'updated_at' => '2022-02-13 15:29:37',
             ),
             10 => 
             array (
@@ -288,6 +288,24 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null}',
                 'created_at' => '2022-01-27 14:46:34',
                 'updated_at' => '2022-01-27 14:46:34',
+            ),
+            15 => 
+            array (
+                'id' => 17,
+                'name' => 'signatures',
+                'slug' => 'signatures',
+                'display_name_singular' => 'Firma autorizada',
+                'display_name_plural' => 'Firmas autorizadas',
+                'icon' => 'voyager-edit',
+                'model_name' => 'App\\Models\\Signature',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2022-02-13 15:20:26',
+                'updated_at' => '2022-02-13 17:20:30',
             ),
         ));
         

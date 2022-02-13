@@ -58,6 +58,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('states');
         Permission::generateFor('cities');
         Permission::generateFor('offices');
+        Permission::generateFor('signatures');
 
         $keys = [
             'browse_social-securityprint'

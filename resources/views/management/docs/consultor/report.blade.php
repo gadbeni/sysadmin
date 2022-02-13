@@ -7,7 +7,7 @@
         <div class="page-head">
             @php
                 $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-                $code = str_pad($contract->code, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($contract->start));
+                $code = $contract->code;
             @endphp
             <h4 style="text-align: center">
                 INFORME <br>

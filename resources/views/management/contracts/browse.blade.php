@@ -40,7 +40,8 @@
                             <table id="dataTable" class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>N&deg;</th>
+                                        <th>ID</th>
+                                        <th>Código</th>
                                         <th>Tipo</th>
                                         <th>Persona</th>
                                         <th>Cargo</th>
@@ -54,6 +55,7 @@
                                     @forelse ($contracts as $item)
                                     {{-- {{ dd($item) }} --}}
                                     <tr>
+                                        <td>{{ $item->id }}</td>
                                         <td>{{ $item->code }}/{{ date('Y', strtotime($item->start)) }}</td>
                                         <td>{{ $item->type->name }}</td>
                                         <td>{{ $item->person->first_name }} {{ $item->person->last_name }}</td>
@@ -169,7 +171,8 @@
     <script>
         $(document).ready(() => {
             $('#dataTable').DataTable({
-                language
+                language,
+                order: [[0, 'desc']],
             });
         });
 
