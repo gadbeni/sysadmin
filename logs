@@ -3,9 +3,9 @@
 Migraciones
     - ejecutar todas las migraciones
 Seeders
-    - UpdatePermissionsSeeder, UpdateBreadSeeder, ProcedureTypesTableSeeder, SettingsTableSeeder
+    - UpdatePermissionsSeeder, UpdateBreadSeeder
 Paquetes
 
 Comandos
-    - composer install
+
 Otros

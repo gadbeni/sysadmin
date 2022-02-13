@@ -16,6 +16,7 @@ use App\Models\UnidadAdministrativa;
 use App\Models\ProcedureType;
 use App\Models\Cargo;
 use App\Models\Job;
+use App\Models\Signature;
 
 class ContractsController extends Controller
 {
@@ -33,7 +34,7 @@ class ContractsController extends Controller
                         //     $query->whereRaw(Auth::user()->direccion_administrativa_id ? "(direccion_administrativa_id is not NULL or direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id.")" : 1);
                         // })
                         ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
-                        ->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
+                        ->where('deleted_at', NULL)->get();
         return view('management.contracts.browse', compact('contracts'));
     }
 
@@ -81,10 +82,20 @@ class ContractsController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         try {
-            $code = Contract::whereYear('start', date('Y', strtotime($request->start)))
-                        ->where('procedure_type_id', $request->procedure_type_id,)->count() + 1;
+
+            $contract_person = Contract::where('person_id', $request->person_id)->where('status', '<>', 4)->where('deleted_at', NULL)->first();
+            if($contract_person){
+                return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso.', 'alert-type' => 'warning']);
+            }
+
+            $older_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
+                        ->where('procedure_type_id', $request->procedure_type_id)
+                        ->whereHas('user', function($q){
+                            $q->where('direccion_administrativa_id', Auth::user()->direccion_administrativa_id);
+                        })->count();
+            $d_a = DireccionAdministrativa::find(Auth::user()->direccion_administrativa_id);
+            $code = ($d_a ? $d_a->Sigla.'-' : '').str_pad($older_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
 
             $contract = Contract::create([
                 'person_id' => $request->person_id,
@@ -241,6 +252,7 @@ class ContractsController extends Controller
             $q->where('Estado', 1);
         }, 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa'])->where('id', $id)->first();
         $contract->workers = $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
-        return view('management.docs.'.$document, compact('contract'));
+        $signature = Signature::where('direccion_administrativa_id', $contract->user->direccion_administrativa_id)->where('status', 1)->where('deleted_at', NULL)->first();
+        return view('management.docs.'.$document, compact('contract', 'signature'));
     }
 }

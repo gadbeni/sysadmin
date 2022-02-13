@@ -4,7 +4,7 @@
 
 @php
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-    $code = str_pad($contract->code, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($contract->start));
+    $code = $contract->code;
 @endphp
 
 @section('qr_code')
@@ -18,7 +18,7 @@
         <h2 class="text-center" style="font-size: 18px">CONTRATO ADMINISTRATIVO DE PERSONAL EVENTUAL <br> <small>GAD-BENI-C.E-{{ $code }}</small> </h2>
         <p><em>Conste por el presente contrato de prestaci&oacute;n de servicios </em><em><strong>de Personal Eventual</strong></em><em> celebrado de conformidad a las siguientes cláusulas y condiciones:</em></p>
         <p><em><span style="text-decoration: underline;"><strong>CLÁUSULA PRIMERA .- </strong></span></em><em><strong>(PARTES ).-</strong></em><em> </em></p>
-        <p><em>1.- </em><em><strong>EL GOBIERNO AUT&Oacute;NOMO DEPARTAMENTAL DE BENI</strong></em><em>, con domicilio </em><em>ubicado en la Plaza Principal Mcal. Jos&eacute; Ballivi&aacute;n representado</em><em> legalmente para este acto por el </em><em><strong> {{ setting('firma-autorizada.name') }} con C.I {{ setting('firma-autorizada.ci') }}, </strong></em><em><strong>en su calidad de </strong></em><em><strong>{{ setting('firma-autorizada.job') }} (S.D.A.F) GAD-BENI</strong></em><em><strong>,</strong></em><em> designado mediante Decreto de </em><em><strong>Gobernaci&oacute;n </strong></em><em><strong>{{ setting('firma-autorizada.designation') }}</strong>, que en adelante se denominará <strong>LA ENTIDAD</strong>. </em></p>
+        <p><em>1.- </em><em><strong>EL GOBIERNO AUT&Oacute;NOMO DEPARTAMENTAL DE BENI</strong></em><em>, con domicilio </em><em>ubicado en la Plaza Principal Mcal. Jos&eacute; Ballivi&aacute;n representado</em><em> legalmente para este acto por el </em><em><strong> {{ $signature ? $signature->name : setting('firma-autorizada.name') }} con C.I {{ $signature ? $signature->ci : setting('firma-autorizada.ci') }}, </strong>en su calidad de </em><em><strong>{{ $signature ? $signature->job : setting('firma-autorizada.job') }} GAD-BENI</strong></em><em><strong>,</strong></em><em> designado mediante Decreto de </em><em><strong>Gobernaci&oacute;n </strong></em><em><strong>{{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}</strong>, que en adelante se denominará <strong>LA ENTIDAD</strong>. </em></p>
         <p><em>2. {{ $contract->person->gender == 'masculino' ? 'El Señor' : 'La Señora' }} </em><em>{{ $contract->person->first_name }} {{ $contract->person->last_name }} con C.I. {{ $contract->person->ci }}; con domicilio en {{ $contract->person->address }}, de profesi&oacute;n {{ $contract->person->profession }}</em> <em>mayor de edad h&aacute;bil en toda forma de derecho que en adelante se denominará </em><em><strong>EL CONTRATADO.</strong></em></p>
         <p><em>Quienes celebran el presente CONTRATO ADMINISTRATIVO, de acuerdo a los t&eacute;rminos y condiciones siguientes:</em></p>
         <p><em><span style="text-decoration: underline;"><strong>CLÁUSULA SEGUNDA</strong></span></em><em><strong>.-</strong></em><em> </em><em><strong>(ANTECEDENTES).- </strong></em><em>La Ley No 1413 del Presupuesto General del Estado Gesti&oacute;n 2022 de 17 de diciembre de 2021, determina en su Disposici&oacute;n Final Segunda, inciso b). la vigencia entre otros de la Ley del Presupuesto General del Estado 2010, aprobado en el marco del articulo 158 numeral 11 de la Constituci&oacute;n Pol&iacute;tica del Estado, que en su el art. 22 (Ley de presupuesto general del Estado 2010)determina; "La remuneraci&oacute;n del Personal Eventual debe establecerse considerando las funciones y la escala salarial aprobada de la entidad, para la cual no se requiere ning&uacute;n instrumento legal adicional".</em></p>
@@ -119,8 +119,8 @@
             <tr>
                 <td style="width: 50%">
                     {{-- ....................................................... <br>
-                    {{ setting('firma-autorizada.name') }} <br>
-                    <b>{{ Str::upper(setting('firma-autorizada.job')) }}</b> --}}
+                    {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
+                    <b>{{ Str::upper($signature ? $signature->job : setting('firma-autorizada.job')) }}</b> --}}
                 </td>
                 <td style="width: 50%">
                     ....................................................... <br>

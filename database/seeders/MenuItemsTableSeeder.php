@@ -867,6 +867,22 @@ class MenuItemsTableSeeder extends Seeder
                 'route' => 'voyager.offices.index',
                 'parameters' => NULL,
             ),
+            53 => 
+            array (
+                'id' => 55,
+                'menu_id' => 1,
+                'title' => 'Firmas autorizadas',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => 'voyager-edit',
+                'color' => NULL,
+                'parent_id' => 29,
+                'order' => 8,
+                'created_at' => '2022-02-13 15:20:26',
+                'updated_at' => '2022-02-13 15:20:46',
+                'route' => 'voyager.signatures.index',
+                'parameters' => NULL,
+            ),
         ));
         
         
