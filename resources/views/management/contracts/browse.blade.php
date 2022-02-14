@@ -56,7 +56,7 @@
                                     {{-- {{ dd($item) }} --}}
                                     <tr>
                                         <td>{{ $item->id }}</td>
-                                        <td>{{ $item->code }}/{{ date('Y', strtotime($item->start)) }}</td>
+                                        <td>{{ $item->code }}</td>
                                         <td>{{ $item->type->name }}</td>
                                         <td>{{ $item->person->first_name }} {{ $item->person->last_name }}</td>
                                         <td>{{ $item->cargo ? $item->cargo->Descripcion : $item->job->name }}</td>
