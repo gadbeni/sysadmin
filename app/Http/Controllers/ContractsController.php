@@ -59,7 +59,7 @@ class ContractsController extends Controller
         $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw($ids ? "id in ($ids)" : 1)->get();
 
         $people = Person::whereRaw("id not in (select person_id from contracts where status <> 4 and deleted_at is null)")->where('deleted_at', NULL)->get();
-        $direccion_administrativas = DireccionAdministrativa::get();
+        $direccion_administrativas = DireccionAdministrativa::whereRaw(Auth::user()->direccion_administrativa_id ? "ID = ".Auth::user()->direccion_administrativa_id : 1)->get();
         $unidad_administrativas = UnidadAdministrativa::get();
         $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $programs = Program::where('deleted_at', NULL)->get();
@@ -171,7 +171,7 @@ class ContractsController extends Controller
         $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw($ids ? "id in ($ids)" : 1)->get();
 
         $people = Person::where('id', $contract->person->id)->where('deleted_at', NULL)->get();
-        $direccion_administrativas = DireccionAdministrativa::get();
+        $direccion_administrativas = DireccionAdministrativa::whereRaw(Auth::user()->direccion_administrativa_id ? "ID = ".Auth::user()->direccion_administrativa_id : 1)->get();
         $unidad_administrativas = UnidadAdministrativa::get();
         $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $programs = Program::where('deleted_at', NULL)->get();

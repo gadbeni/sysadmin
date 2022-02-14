@@ -409,7 +409,7 @@
                 });
                 $('#select-program_id').html(`<option value="">Seleccione un programa</option>`);
                 programs.map(item => {
-                    if($('#select-direccion_administrativa_id option:selected').val() == item.direccion_administrativa_id){
+                    if($('#select-direccion_administrativa_id option:selected').val() == item.direccion_administrativa_id && $('#select-procedure_type_id option:selected').val() == item.procedure_type_id){
                         $('#select-program_id').append(`<option value="${item.id}">${item.name}</option>`);
                     }
                 });
@@ -426,13 +426,21 @@
                     $('#select-direccion_administrativa_id').empty();
                     $('#select-unidad_administrativa_id').empty();
                     $('#select-program_id').empty();
-                    $('#select-program_id').attr('disabled', true);
-                    $('#select-program_id').attr('required', false);
+                    // $('#select-program_id').attr('disabled', true);
+                    // $('#select-program_id').attr('required', false);
                     $('#select-direccion_administrativa_id').attr('disabled', true);
                     $('#select-direccion_administrativa_id').attr('required', false);
                     $('#select-unidad_administrativa_id').attr('disabled', true);
                     $('#select-unidad_administrativa_id').attr('required', false);
                     $('#input-finish').attr('required', false);
+                    
+                    programs.map(item => {
+                        if($('#select-procedure_type_id option:selected').val() == item.procedure_type_id){
+                            $('#select-program_id').append(`<option value="${item.id}">${item.name}</option>`);
+                        }
+                    });
+                    $('#select-procedure_type_id').val("{{ isset($contract) ? $contract->procedure_type_id : '' }}");
+
                     jobs.map(item => {
                         $('#select-cargo_id').append(`<option value="${item.id}">Item: ${item.id} - ${item.name}</option>`);
                     });

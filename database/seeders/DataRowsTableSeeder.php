@@ -1312,7 +1312,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
+                'details' => '{"validation":{"rule":"required|max:191"}}',
                 'order' => 2,
             ),
             81 => 
@@ -1329,7 +1329,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{}',
-                'order' => 4,
+                'order' => 3,
             ),
             82 => 
             array (
@@ -1345,7 +1345,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 13,
+                'order' => 15,
             ),
             83 => 
             array (
@@ -1361,7 +1361,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 14,
+                'order' => 16,
             ),
             84 => 
             array (
@@ -1377,7 +1377,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 15,
+                'order' => 17,
             ),
             85 => 
             array (
@@ -1392,7 +1392,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
+                'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
                 'order' => 8,
             ),
             86 => 
@@ -2139,13 +2139,13 @@ class DataRowsTableSeeder extends Seeder
                 'type' => 'select_dropdown',
                 'display_name' => 'Tipo',
                 'required' => 0,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6},"options":{"permanente":"Permanente","inversi\\u00f3n":"Inversi\\u00f3n","consultor\\u00eda":"Consultor\\u00eda","contrato":"Contrato","otros":"Otros"}}',
-                'order' => 5,
+                'browse' => 0,
+                'read' => 0,
+                'edit' => 0,
+                'add' => 0,
+                'delete' => 0,
+                'details' => '{}',
+                'order' => 4,
             ),
             133 => 
             array (
@@ -2161,7 +2161,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6},"options":{"programa":"Programa","proyecto":"Proyecto"}}',
-                'order' => 6,
+                'order' => 8,
             ),
             134 => 
             array (
@@ -2177,7 +2177,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
-                'order' => 7,
+                'order' => 9,
             ),
             135 => 
             array (
@@ -2193,7 +2193,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
-                'order' => 8,
+                'order' => 10,
             ),
             136 => 
             array (
@@ -2209,7 +2209,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
-                'order' => 9,
+                'order' => 11,
             ),
             137 => 
             array (
@@ -2225,7 +2225,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6},"default":"2022"}',
-                'order' => 10,
+                'order' => 12,
             ),
             138 => 
             array (
@@ -2241,7 +2241,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
-                'order' => 11,
+                'order' => 13,
             ),
             139 => 
             array (
@@ -2257,7 +2257,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
-                'order' => 12,
+                'order' => 14,
             ),
             140 => 
             array (
@@ -2273,7 +2273,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"display":{"width":6}}',
-                'order' => 3,
+                'order' => 7,
             ),
             141 => 
             array (
@@ -2450,6 +2450,38 @@ class DataRowsTableSeeder extends Seeder
                 'delete' => 1,
                 'details' => '{"off":"Inactivo","on":"Activo","checked":true}',
                 'order' => 7,
+            ),
+            152 => 
+            array (
+                'id' => 167,
+                'data_type_id' => 10,
+                'field' => 'procedure_type_id',
+                'type' => 'text',
+                'display_name' => 'Tipo de planilla',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{}',
+                'order' => 5,
+            ),
+            153 => 
+            array (
+                'id' => 168,
+                'data_type_id' => 10,
+                'field' => 'program_belongsto_procedure_type_relationship',
+                'type' => 'relationship',
+                'display_name' => 'Tipo de planilla',
+                'required' => 1,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"model":"App\\\\Models\\\\ProcedureType","table":"procedure_types","type":"belongsTo","column":"procedure_type_id","key":"id","label":"name","pivot_table":"aguinaldos","pivot":"0","taggable":"0"}',
+                'order' => 6,
             ),
         ));
         
