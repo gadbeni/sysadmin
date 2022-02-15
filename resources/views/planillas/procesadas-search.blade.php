@@ -214,7 +214,7 @@
 
 
 
-        <form id="form-pago-multiple" action="{{ route('planillas.details.payment.multiple') }}" method="post">
+        <form id="form-pago-multiple" action="{{ route('planillas.pagos.details.payment.multiple') }}" method="post">
             @csrf
             <div class="panel-body">
                 <div class="table-responsive">
@@ -405,10 +405,10 @@
     function print_recipe(id, type){
         switch (type) {
             case 'sueldo':
-                window.open("{{ url('admin/planillas/pago/print') }}/"+id, "Recibo", `width=700, height=500`);
+                window.open("{{ url('admin/planillas/pagos/print') }}/"+id, "Recibo", `width=700, height=500`);
                 break;
             case 'aguinaldo':
-                window.open("{{ url('admin/aguinaldos/pago/print') }}/"+id, "Recibo", `width=700, height=500`);
+                window.open("{{ url('admin/planillas/pagos/aguinaldos/print') }}/"+id, "Recibo", `width=700, height=500`);
                 break;
             default:
                 break;

@@ -62,19 +62,21 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('vaults/{vault}/print/closure', [VaultsController::class, 'print_closure'])->name('vaults.print.closure');
     Route::get('vaults/{vault}/print/status', [VaultsController::class, 'print_status'])->name('vaults.print.status');
 
-    Route::get('planillas', [PlanillasController::class, 'planilla_index'])->name('planillas.index');
-    Route::post('planillas/search', [PlanillasController::class, 'planilla_search'])->name('planillas.search');
-    Route::get('planillas/search/id', [PlanillasController::class, 'planilla_search_by_id'])->name('planillas.search.id');
-    Route::post('planillas/details/open', [PlanillasController::class, 'planilla_details_open'])->name('planillas.details.open');
-    Route::post('planillas/details/payment', [PlanillasController::class, 'planilla_details_payment'])->name('planillas.details.payment');
-    Route::post('planillas/details/payment/multiple', [PlanillasController::class, 'planilla_details_payment_multiple'])->name('planillas.details.payment.multiple');
-    Route::post('planillas/update/status', [PlanillasController::class, 'planilla_update_status'])->name('planillas.update.status');
-    Route::get('planillas/pago/print/{id}', [PlanillasController::class, 'planillas_pago_print']);
-    Route::get('aguinaldos/pago/print/{id}', [PlanillasController::class, 'aguinaldos_pago_print']);
-    Route::post('planillas/pago/delete', [PlanillasController::class, 'planilla_payment_delete'])->name('planilla.payment.delete');
-    Route::get('planillas/pago/delete/print/{id}', [PlanillasController::class, 'planillas_pago_delete_print']);
+    Route::get('planillas', [PlanillasController::class, 'planillas_index'])->name('planillas.index');
+    Route::get('planillas/create', [PlanillasController::class, 'planillas_create'])->name('planillas.create');
+    Route::get('planillas/pagos', [PlanillasController::class, 'planillas_pagos_index'])->name('planillas.pagos.index');
+    Route::post('planillas/pagos/search', [PlanillasController::class, 'planillas_pagos_search'])->name('planillas.pagos.search');
+    Route::get('planillas/pagos/search/id', [PlanillasController::class, 'planillas_pagos_search_by_id']);
+    Route::post('planillas/pagos/details/open', [PlanillasController::class, 'planillas_pagos_details_open'])->name('planillas.pagos.details.open');
+    Route::post('planillas/pagos/details/payment', [PlanillasController::class, 'planillas_pagos_details_payment'])->name('planillas.pagos.details.payment');
+    Route::post('planillas/pagos/details/payment/multiple', [PlanillasController::class, 'planillas_pagos_details_payment_multiple'])->name('planillas.pagos.details.payment.multiple');
+    Route::post('planillas/pagos/update/status', [PlanillasController::class, 'planillas_pagos_update_status'])->name('planillas.pagos.update.status');
+    Route::get('planillas/pagos/print/{id}', [PlanillasController::class, 'planillas_pagos_print']);
+    Route::get('planillas/pagos/aguinaldos/print/{id}', [PlanillasController::class, 'planillas_pagos_aguinaldos_print']);
+    Route::post('planillas/pagos/delete', [PlanillasController::class, 'planillas_pagos_delete'])->name('planillas.pagos.delete');
+    Route::get('planillas/pagos/delete/print/{id}', [PlanillasController::class, 'planillas_pagos_delete_print']);
 
-    Route::post('planillas/centralizada/search', [PlanillasController::class, 'planilla_centralizada_search'])->name('planillas.centralizada.search');
+    Route::post('planillas/pagos/centralizada/search', [PlanillasController::class, 'planillas_pagos_centralizada_search'])->name('planillas.pagos.centralizada.search');
 
     // Previsión social
     // * Cheques
@@ -121,7 +123,8 @@ Route::group(['prefix' => 'admin'], function () {
 
     // *Contratos
     Route::resource('contracts', ContractsController::class);
-    Route::get('/contracts/{id}/print/{document}', [ContractsController::class, 'print'])->name('contracts.print');
+    Route::get('contracts/direccion-administrativa/{id}', [ContractsController::class, 'contracts_direccion_administrativa']);
+    Route::get('contracts/{id}/print/{document}', [ContractsController::class, 'print'])->name('contracts.print');
     
     // Reportes
 

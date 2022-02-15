@@ -15,6 +15,7 @@ use App\Models\CashiersPaymentsDelete;
 use App\Models\PlanillasHistory;
 use App\Models\Aguinaldo;
 use App\Models\Stipend;
+use App\Models\TipoDireccionAdministrativa;
 
 class PlanillasController extends Controller
 {
@@ -23,11 +24,21 @@ class PlanillasController extends Controller
         $this->middleware('auth');
     }
     
-    public function planilla_index(){
+    public function planillas_index(){
+        return view('planillas.planillas-browse');
+    }
+
+    public function planillas_create(){
+        $tipo_planillas = TipoDireccionAdministrativa::with(['direcciones_administrativas'])->where('Estado', 1)->get();
+        // dd($tipo_planillas);
+        return view('planillas.planillas-edit-add', compact('tipo_planillas'));
+    }
+    
+    public function planillas_pagos_index(){
         return view('planillas.procesadas-browse');
     }
 
-    public function planilla_search(Request $request){
+    public function planillas_pagos_search(Request $request){
         $tipo_planilla = $request->tipo_planilla;
         $title = '';
         $aguinaldo = [];
@@ -79,7 +90,7 @@ class PlanillasController extends Controller
         return view('planillas.procesadas-search', compact('planilla', 'tipo_planilla', 'title', 'aguinaldo', 'stipend'));
     }
 
-    public function planilla_search_by_id(){
+    public function planillas_pagos_search_by_id(){
         $search = \Request::query('q');
         if($search){
             return DB::connection('mysqlgobe')->table('planillahaberes as ph')
@@ -96,7 +107,7 @@ class PlanillasController extends Controller
     }
 
     // Habilitar (pagada=1) planillas haberes para pago
-    public function planilla_details_open(Request $request){
+    public function planillas_pagos_details_open(Request $request){
         try {
             $id = $request->id;
             // Si el id no es un array lo convertimos
@@ -123,7 +134,7 @@ class PlanillasController extends Controller
         }
     }
 
-    public function planilla_details_payment(Request $request){
+    public function planillas_pagos_details_payment(Request $request){
         $cashier = Cashier::with(['movements' => function($q){
             $q->where('deleted_at', NULL);
         }, 'payments' => function($q){
@@ -203,7 +214,7 @@ class PlanillasController extends Controller
 
 
     // Realizar pagos de planilla haberes múltiple
-    public function planilla_details_payment_multiple(Request $request){
+    public function planillas_pagos_details_payment_multiple(Request $request){
         // dd($request);
         DB::beginTransaction();
         try {
@@ -226,7 +237,7 @@ class PlanillasController extends Controller
         }
     }
 
-    public function planilla_update_status(Request $request){
+    public function planillas_pagos_update_status(Request $request){
         $id = $request->id;
         // Si el id no es un array lo convertimos
         if(!is_array($id)){
@@ -251,7 +262,7 @@ class PlanillasController extends Controller
         }
     }
 
-    public function planilla_payment_delete(Request $request){
+    public function planillas_pagos_delete(Request $request){
         // dd($request);
         DB::beginTransaction();
         try {
@@ -277,7 +288,7 @@ class PlanillasController extends Controller
         }
     }
 
-    public function planillas_pago_print($id){
+    public function planillas_pagos_print($id){
         $payment = CashiersPayment::with(['cashier.user'])->where('id', $id)->first();
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
@@ -288,13 +299,13 @@ class PlanillasController extends Controller
         return view('planillas.payment-recipe', compact('payment', 'planilla'));
     }
 
-    public function aguinaldos_pago_print($id){
+    public function planillas_pagos_aguinaldos_print($id){
         $payment = Aguinaldo::with(['payment.cashier.user',])->where('id', $id)->first();
         // dd($payment);
         return view('planillas.payment-aguinaldo-recipe', compact('payment'));
     }
 
-    public function planillas_pago_delete_print($id){
+    public function planillas_pagos_delete_print($id){
         $payment = CashiersPayment::with(['cashier.user', 'deletes.user'])->where('id', $id)->first();
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->where('p.id', $payment->planilla_haber_id)
@@ -306,7 +317,7 @@ class PlanillasController extends Controller
 
     // Funcionales
 
-    public function planilla_centralizada_search(Request $request){
+    public function planillas_pagos_centralizada_search(Request $request){
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->where('p.Estado', 1)
                         ->where('p.Tplanilla', $request->t_planilla ?? 0)

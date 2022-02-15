@@ -284,7 +284,7 @@
         </div>
     </div>
 
-    <form id="form-delete" action="{{ route('planilla.payment.delete') }}" id="delete_form" method="POST">
+    <form id="form-delete" action="{{ route('planillas.pagos.delete') }}" id="delete_form" method="POST">
         <input type="hidden" name="id" value="{{ $cashier->id }}">
         <input type="hidden" name="planilla_haber_id">
         @csrf
@@ -322,11 +322,11 @@
         });
 
         function print_recipe(id){
-            window.open("{{ url('admin/planillas/pago/print') }}/"+id, "Recibo", `width=700, height=500`)
+            window.open("{{ url('admin/planillas/pagos/print') }}/"+id, "Recibo", `width=700, height=500`)
         }
 
         function print_recipe_delete(id){
-            window.open("{{ url('admin/planillas/pago/delete/print') }}/"+id, "Recibo", `width=700, height=500`)
+            window.open("{{ url('admin/planillas/pagos/delete/print') }}/"+id, "Recibo", `width=700, height=500`)
         }
 
         function print_transfer(id){

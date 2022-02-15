@@ -60,6 +60,18 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('offices');
         Permission::generateFor('signatures');
 
+        // Pago de planillas
+        $keys = [
+            'browse_planillaspagos',
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'planillas',
+            ]);
+        }
+
         $keys = [
             'browse_social-securityprint'
         ];

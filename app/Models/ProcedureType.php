@@ -11,4 +11,8 @@ class ProcedureType extends Model
     use HasFactory;
     use SoftDeletes;
     protected $dates = ['deleted_at'];
+
+    public function contracts(){
+        return $this->hasMany(Contract::class, 'procedure_type_id');
+    }
 }

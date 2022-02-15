@@ -245,6 +245,13 @@ class ContractsController extends Controller
         //
     }
 
+    // ===============================
+
+    public function contracts_direccion_administrativa($id){
+        $tipo_planilla = ProcedureType::with('contracts.user', 'contracts.person', 'contracts.program')->where('ID', $id)->get();
+        return response()->json($tipo_planilla);
+    }
+
     // ================================
     
     public function print($id, $document){
