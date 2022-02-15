@@ -113,7 +113,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 7,
+                'order' => 14,
             ),
             6 => 
             array (
@@ -129,7 +129,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 8,
+                'order' => 15,
             ),
             7 => 
             array (
@@ -145,7 +145,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{}',
-                'order' => 10,
+                'order' => 8,
             ),
             8 => 
             array (
@@ -161,7 +161,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 0,
                 'details' => '{"model":"TCG\\\\Voyager\\\\Models\\\\Role","table":"roles","type":"belongsTo","column":"role_id","key":"id","label":"name","pivot_table":"roles","pivot":"0","taggable":"0"}',
-                'order' => 12,
+                'order' => 10,
             ),
             9 => 
             array (
@@ -177,7 +177,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 0,
                 'details' => '{"model":"TCG\\\\Voyager\\\\Models\\\\Role","table":"roles","type":"belongsToMany","column":"id","key":"id","label":"display_name","pivot_table":"user_roles","pivot":"1","taggable":"0"}',
-                'order' => 13,
+                'order' => 11,
             ),
             10 => 
             array (
@@ -193,7 +193,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 14,
+                'order' => 13,
             ),
             11 => 
             array (
@@ -353,7 +353,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{}',
-                'order' => 11,
+                'order' => 9,
             ),
             21 => 
             array (
@@ -465,7 +465,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{}',
-                'order' => 9,
+                'order' => 7,
             ),
             28 => 
             array (
@@ -641,7 +641,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 15,
+                'order' => 16,
             ),
             39 => 
             array (
@@ -1512,16 +1512,16 @@ class DataRowsTableSeeder extends Seeder
                 'id' => 107,
                 'data_type_id' => 1,
                 'field' => 'direccion_administrativa_id',
-                'type' => 'text',
-                'display_name' => 'Direccion Administrativa',
+                'type' => 'direccionadministrativa',
+                'display_name' => 'Dirección Administrativa',
                 'required' => 0,
-                'browse' => 0,
-                'read' => 0,
+                'browse' => 1,
+                'read' => 1,
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 14,
+                'order' => 12,
             ),
             94 => 
             array (
@@ -2267,7 +2267,7 @@ class DataRowsTableSeeder extends Seeder
                 'type' => 'direccionadministrativa',
                 'display_name' => 'Dirección Administrativa',
                 'required' => 0,
-                'browse' => 0,
+                'browse' => 1,
                 'read' => 1,
                 'edit' => 1,
                 'add' => 1,
