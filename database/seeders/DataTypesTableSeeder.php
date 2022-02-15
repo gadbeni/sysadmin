@@ -307,6 +307,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2022-02-13 15:20:26',
                 'updated_at' => '2022-02-13 17:20:30',
             ),
+            16 => 
+            array (
+                'id' => 18,
+                'name' => 'checks_categories',
+                'slug' => 'checks-categories',
+                'display_name_singular' => 'Tipo de Cheque',
+                'display_name_plural' => 'Tipos de Cheques',
+                'icon' => 'voyager-browser',
+                'model_name' => 'App\\Models\\ChecksCategory',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null}',
+                'created_at' => '2022-02-15 11:59:04',
+                'updated_at' => '2022-02-15 11:59:04',
+            ),
         ));
         
         
