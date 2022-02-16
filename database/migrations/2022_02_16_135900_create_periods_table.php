@@ -15,7 +15,13 @@ class CreatePeriodsTable extends Migration
     {
         Schema::create('periods', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->string('name')->unique();
+            $table->string('tipo_direccion_administrativa_id')->nullable();
+            $table->smallInteger('status')->nullable()->default(1);
+            $table->text('observations')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

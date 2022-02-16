@@ -20,9 +20,7 @@ class CreateChecksTable extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->text('observations')->nullable();
             $table->text('resumen')->nullable();
-         
             $table->smallInteger('status')->nullable()->default(1);
-
             $table->timestamps();
             $table->softDeletes();
         });
