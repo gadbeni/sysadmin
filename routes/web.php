@@ -13,6 +13,7 @@ use App\Http\Controllers\SpreadsheetsController;
 use App\Http\Controllers\PluginsController;
 use App\Http\Controllers\ContractsController;
 use App\Http\Controllers\StipendController;
+use App\Http\Controllers\CheckController;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,6 +120,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::resource('planillas_adicionales', StipendController::class);
     Route::post('planillas_adicionales/update', [StipendController::class, 'update_planilla'])->name('planilla.adicional.update');
     Route::delete('planillas_adicionales/delete', [StipendController::class, 'destroy'])->name('planillas.adicional.delete');
+
+    // CHECK
+    Route::resource('checks', CheckController::class);
+    Route::post('check/update', [CheckController::class, 'update_checks'])->name('checks.updat');
+    Route::delete('check/delete', [CheckController::class, 'destroy'])->name('checks.delet');
+
 
     // Administrativo
 
