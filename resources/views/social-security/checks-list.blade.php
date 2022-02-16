@@ -1,4 +1,4 @@
-<form action="{{ route('checks.delete_multiple') }}" id="form-selection-multiple" method="POST">
+<form action="{{ route('social-security.checks.delete_multiple') }}" id="form-selection-multiple" method="POST">
     <div class="col-md-12">
         <div id="dataTable" class="table-responsive">
             <table class="table table-bordered table-hover">
@@ -81,13 +81,13 @@
                                     <a href="#" title="Ver" class="btn btn-sm btn-dark btn-derivation" data-id="{{ $row->id }}" data-toggle="modal" data-target="#modal-derivation">
                                         <i class="voyager-move"></i> <span class="hidden-xs hidden-sm">Derivación</span>
                                     </a>
-                                    <a href="{{ route('checks.show', ['check' => $row->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
+                                    <a href="{{ route('social-security.checks.show', ['check' => $row->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
                                         <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                                     </a>
-                                    <a href="{{ route('checks.edit', ['check' => $row->id]) }}" title="Editar" class="btn btn-sm btn-info edit">
+                                    <a href="{{ route('social-security.checks.edit', ['check' => $row->id]) }}" title="Editar" class="btn btn-sm btn-info edit">
                                         <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
                                     </a>
-                                    <button type="button" onclick="deleteItem('{{ route('checks.delete', ['check' => $row->id]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
+                                    <button type="button" onclick="deleteItem('{{ route('social-security.checks.delete', ['check' => $row->id]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
                                         <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
                                     </button>
                                 </div>

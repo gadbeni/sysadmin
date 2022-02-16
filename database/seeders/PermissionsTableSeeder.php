@@ -60,6 +60,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('offices');
         Permission::generateFor('signatures');
         Permission::generateFor('checks_categories');
+        Permission::generateFor('checks');
 
         // Pago de planillas
         $keys = [

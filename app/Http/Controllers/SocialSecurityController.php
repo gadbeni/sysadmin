@@ -155,10 +155,10 @@ class SocialSecurityController extends Controller
                 'observations' => $request->observations,
                 'status' => $request->status
             ]);
-            return redirect()->route('checks.index')->with(['message' => 'Cheque editado correctamente.', 'alert-type' => 'success']);
+            return redirect()->route('social-security.checks.index')->with(['message' => 'Cheque editado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('social-security.checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
 
@@ -167,10 +167,10 @@ class SocialSecurityController extends Controller
             ChecksPayment::where('id', $id)->update([
                 'deleted_at' => Carbon::now()
             ]);
-            return redirect()->route('checks.index')->with(['message' => 'Cheque eliminado correctamente.', 'alert-type' => 'success']);
+            return redirect()->route('social-security.checks.index')->with(['message' => 'Cheque eliminado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('social-security.checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
 
@@ -181,10 +181,10 @@ class SocialSecurityController extends Controller
                     'deleted_at' => Carbon::now()
                 ]);
             }
-            return redirect()->route('checks.index')->with(['message' => 'Cheques eliminados correctamente.', 'alert-type' => 'success']);
+            return redirect()->route('social-security.checks.index')->with(['message' => 'Cheques eliminados correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('social-security.checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
 

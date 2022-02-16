@@ -5,7 +5,7 @@
 @section('page_header')
     <h1 class="page-title">
         <i class="voyager-window-list"></i> Viendo Cheque
-        <a href="{{ route('checks.index') }}" class="btn btn-warning">
+        <a href="{{ route('social-security.checks.index') }}" class="btn btn-warning">
             <span class="glyphicon glyphicon-list"></span>&nbsp;
             Volver a la lista
         </a>

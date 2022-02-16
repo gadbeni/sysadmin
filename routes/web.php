@@ -82,15 +82,15 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     // Previsión social
     // * Cheques
-    Route::get('social-security/checks', [SocialSecurityController::class, 'checks_index'])->name('checks.index');
-    Route::get('social-security/checks/list/{search?}', [SocialSecurityController::class, 'checks_list'])->name('checks.list');
-    Route::get('social-security/checks/create', [SocialSecurityController::class, 'checks_create'])->name('checks.create');
-    Route::post('social-security/checks/store', [SocialSecurityController::class, 'checks_store'])->name('checks.store');
-    Route::get('social-security/checks/{check}', [SocialSecurityController::class, 'checks_show'])->name('checks.show');
-    Route::get('social-security/checks/{check}/edit', [SocialSecurityController::class, 'checks_edit'])->name('checks.edit');
-    Route::put('social-security/checks/{check}/update', [SocialSecurityController::class, 'checks_update'])->name('checks.update');
-    Route::delete('social-security/checks/{check}/delete', [SocialSecurityController::class, 'checks_delete'])->name('checks.delete');
-    Route::post('social-security/checks/delete/multiple', [SocialSecurityController::class, 'checks_delete_multiple'])->name('checks.delete_multiple');
+    Route::get('social-security/checks', [SocialSecurityController::class, 'checks_index'])->name('social-security.checks.index');
+    Route::get('social-security/checks/list/{search?}', [SocialSecurityController::class, 'checks_list'])->name('social-security.checks.list');
+    Route::get('social-security/checks/create', [SocialSecurityController::class, 'checks_create'])->name('social-security.checks.create');
+    Route::post('social-security/checks/store', [SocialSecurityController::class, 'checks_store'])->name('social-security.checks.store');
+    Route::get('social-security/checks/{check}', [SocialSecurityController::class, 'checks_show'])->name('social-security.checks.show');
+    Route::get('social-security/checks/{check}/edit', [SocialSecurityController::class, 'checks_edit'])->name('social-security.checks.edit');
+    Route::put('social-security/checks/{check}/update', [SocialSecurityController::class, 'checks_update'])->name('social-security.checks.update');
+    Route::delete('social-security/checks/{check}/delete', [SocialSecurityController::class, 'checks_delete'])->name('social-security.checks.delete');
+    Route::post('social-security/checks/delete/multiple', [SocialSecurityController::class, 'checks_delete_multiple'])->name('social-security.checks.delete_multiple');
     Route::post('social-security/checks/derive', [SocialSecurityController::class, 'checks_derive'])->name('checks.derive');
 
     // *Pagos

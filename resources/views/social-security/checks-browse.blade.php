@@ -24,7 +24,7 @@
                                 <a href="#" id="btn-delete-multiple" style="display: none" class="btn btn-danger btn-multiple" data-toggle="modal" data-target="#delete_multiple">
                                     <i class="voyager-trash"></i> <span>Eliminar seleccionados</span>
                                 </a>
-                                <a href="{{ route('checks.create') }}" class="btn btn-success btn-add-new">
+                                <a href="{{ route('social-security.checks.create') }}" class="btn btn-success btn-add-new">
                                     <i class="voyager-plus"></i> <span>Añadir Cheque</span>
                                 </a>
                             </div>

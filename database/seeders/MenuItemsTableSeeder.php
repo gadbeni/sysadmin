@@ -400,7 +400,7 @@ class MenuItemsTableSeeder extends Seeder
                 'order' => 1,
                 'created_at' => '2021-09-20 14:40:07',
                 'updated_at' => '2021-09-20 14:40:42',
-                'route' => 'checks.index',
+                'route' => 'social-security.checks.index',
                 'parameters' => NULL,
             ),
             24 => 
