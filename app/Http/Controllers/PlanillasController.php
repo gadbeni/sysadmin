@@ -37,9 +37,13 @@ class PlanillasController extends Controller
 
     public function planillas_generate(Request $request){
         // dd($request->all());
+        $afp = $request->afp;
         $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel' => function($q){
                             $q->where('Estado', 1);
                         }, 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
+                        // ->whereHas('person', function($q) use ($afp){
+                        //     $q->where('afp', $afp);
+                        // })
                         ->where('direccion_administrativa_id', $request->da_id)
                         ->where('procedure_type_id', $request->tipo_planilla)
                         ->where('status', 1)

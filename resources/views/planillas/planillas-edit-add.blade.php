@@ -49,6 +49,13 @@
                                         <option value="">--Seleccione el tipo de planilla--</option>
                                     </select>
                                 </div>
+                                {{-- <div class="form-group col-md-6">
+                                    <label for="tipo_planilla">AFP</label>
+                                    <select name="afp" id="select-afp" class="form-control select2" required>
+                                        <option value="1">Futuro</option>
+                                        <option value="2">Previsión</option>
+                                    </select>
+                                </div> --}}
                                 <div class="form-group col-md-12 text-right">
                                     <button type="submit" class="btn btn-primary">Generar</button>
                                 </div>

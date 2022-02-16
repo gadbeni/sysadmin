@@ -20,9 +20,10 @@
     overflow-y: auto;
 }
 
-.btn-success{
+.btn-success, .modal-success{
     background-color: #5EAF4A !important;
     border-color: #3c9625 !important;
+    color: white;
 }
 
 th{

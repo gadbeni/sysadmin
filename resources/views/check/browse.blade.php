@@ -57,7 +57,7 @@
                                             <th>Deposito</th>
                                             <th>Observacion</th>
                                             <th>Estado</th>
-                                            <th></th>
+                                            <th>Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -78,21 +78,19 @@
                                             <td>{{ json_decode($item->resumen)->deposito }}</td>
                                             <td>{{ json_decode($item->resumen)->observacion }}</td>
                                             <td>
-                                                    @if ($item->status == 1)
-                                                        <label class="label label-danger">Pendiente</label>
-                                                    @endif
+                                                @if ($item->status == 1)
+                                                    <label class="label label-danger">Pendiente</label>
+                                                @endif
 
-                                                    @if ($item->status == 2)
-                                                        <label class="label label-success">Entregado</label>
-                                                    @endif
-                                                </td>
-
-                                            <td>
+                                                @if ($item->status == 2)
+                                                    <label class="label label-success">Entregado</label>
+                                                @endif
+                                            </td>
+                                            <td class="actions text-right dt-not-orderable sorting_disabled">
                                                 @if ($item->status != 2)
-                                                    <a type="button" data-toggle="modal" data-target="#modal_entregar" data-id="{{ $item->id}}"  class="btn btn-success"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Entregar</span></a>
-                                                    <a type="button" data-toggle="modal" data-target="#delete_editar" data-id="{{ $item->id}}" data-items="{{$item->resumen}}"  class="btn btn-primary"><i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span></a>
+                                                    <a type="button" data-toggle="modal" data-target="#modal_entregar" data-id="{{ $item->id}}"  class="btn btn-dark"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Entregar</span></a>
+                                                    <a type="button" data-toggle="modal" data-target="#edit_modal" data-id="{{ $item->id}}" data-items="{{$item->resumen}}"  class="btn btn-primary"><i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span></a>
                                                     <a type="button" data-toggle="modal" data-target="#delete_modal" data-id="{{ $item->id}}" class="btn btn-danger"><i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span></a>
-                                             
                                                 @endif  
                                             </td>
                                         </tr>
@@ -107,8 +105,8 @@
             </div>
         </div>
 
-        <div class="modal fade" tabindex="-1" id="modal_entregar" role="dialog">
-            <div class="modal-dialog modal-success">
+        <div class="modal modal-primary fade" tabindex="-1" id="modal_entregar" role="dialog">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     {!! Form::open(['route' => 'checks.entregar', 'method' => 'POST']) !!}
                     <div class="modal-header">
@@ -121,15 +119,12 @@
                         <div class="text-center" style="text-transform:uppercase">
                             <i class="voyager-dollar" style="color: green; font-size: 5em;"></i>
                             <br>
-                            
                             <p><b>Desea entregar el cheque....!</b></p>
                         </div>
                     </div>                
                     <div class="modal-footer">
-                        
-                            <input type="submit" class="btn btn-success pull-right" value="Sí, Entregar">
-                        
-                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark" value="Sí, Entregar">
                     </div>
                     {!! Form::close()!!} 
                 </div>
@@ -140,117 +135,113 @@
             <div class="modal-dialog">
                 <div class="modal-content">                
                     <!-- Modal Header -->
-                    <div class="modal-header btn-success">
-                        <h4 class="modal-title"><i class="voyager-plus"></i>Registrar Cheque</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <div class="modal-header modal-success">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-plus"></i> Crear cheque</h4>
                     </div>
                     {!! Form::open(['route' => 'checks.store','class' => 'was-validated'])!!}
-                    <!-- Modal body -->
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><b>Tipo de Cheque:</b></span>
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><b>Tipo de Cheque:</b></span>
+                                    </div>
+                                    <select name="checkcategoria_id" id="" class="form-control select2" required>
+                                        <option value="">Seleccione un tipo..</option>
+                                        @foreach($tipos as $data)
+                                            <option value="{{$data->id}}">{{$data->name}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <select name="checkcategoria_id" id="" class="form-control select2" required>
-                                    <option value="">Seleccione un tipo..</option>
-                                    @foreach($tipos as $data)
-                                        <option value="{{$data->id}}">{{$data->name}}</option>
-                                    @endforeach
-                                </select>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><b>Nro Cheque:</b></span>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><b>Nro Cheque:</b></span>
+                                    </div>
+                                    <input type="text" class="form-control" name="nrocheque"required>
                                 </div>
-                                <input type="text" class="form-control" name="nrocheque"required>
+                                <div class="col-md-8">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Resumen:</b></span>
+                                </div>
+                                <input type="text" class="form-control" name="resumen" required>
+                                </div>
                             </div>
-                            <div class="col-md-8">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><b>Resumen:</b></span>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Nro memorándum:</b></span>
+                                    </div>
+                                    <input type="number" step="any" class="form-control" name="nromemo" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><b>Nro Preventivo:</b></span>
+                                    </div>
+                                    <input type="text" class="form-control" name="nroprev"required>
+                                </div>     
+                                <div class="col-md-4">
+                                    <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Nro Devengado:</b></span>
+                                    </div>
+                                    <input type="number" step="any" class="form-control" name="nrodev" required>
+                                </div>                   
                             </div>
-                            <input type="text" class="form-control" name="resumen" required>
+                            <div class="row">                            
+                                <div class="col-md-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><b>Fecha Cheque:</b></span>
+                                    </div>
+                                    <input type="date" step="any" class="form-control" name="fechacheque"required>
+                                </div> 
+                                <div class="col-md-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><b>Monto:</b></span>
+                                    </div>
+                                    <input type="number" step="any" class="form-control" name="monto"required>
+                                </div>   
+                                <div class="col-md-4">
+                                    <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Deposito:</b></span>
+                                    </div>
+                                    <input type="text" step="any" class="form-control" name="deposito"required>
+                                </div>                
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="input-group-prepend">
-                                <span class="input-group-text"><b>Nro memorándum:</b></span>
-                                </div>
-                                <input type="number" step="any" class="form-control" name="nromemo" required>
+                            <div class="row">    
+                                    
+                                <div class="col-md-12">
+                                    <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Observacion:</b></span>
+                                    </div>
+                                    <textarea name="observacion" cols="77" rows="3" required></textarea>
+                                </div>                
                             </div>
-                            <div class="col-md-4">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><b>Nro Preventivo:</b></span>
-                                </div>
-                                <input type="text" class="form-control" name="nroprev"required>
-                            </div>     
-                            <div class="col-md-4">
-                                <div class="input-group-prepend">
-                                <span class="input-group-text"><b>Nro Devengado:</b></span>
-                                </div>
-                                <input type="number" step="any" class="form-control" name="nrodev" required>
-                            </div>                   
-                        </div>
-                        <div class="row">                            
-                            <div class="col-md-4">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><b>Fecha Cheque:</b></span>
-                                </div>
-                                <input type="date" step="any" class="form-control" name="fechacheque"required>
-                            </div> 
-                            <div class="col-md-4">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><b>Monto:</b></span>
-                                </div>
-                                <input type="number" step="any" class="form-control" name="monto"required>
-                            </div>   
-                            <div class="col-md-4">
-                                <div class="input-group-prepend">
-                                <span class="input-group-text"><b>Deposito:</b></span>
-                                </div>
-                                <input type="text" step="any" class="form-control" name="deposito"required>
-                            </div>                
-                        </div>
-                        <div class="row">    
-                                 
-                            <div class="col-md-12">
-                                <div class="input-group-prepend">
-                                <span class="input-group-text"><b>Observacion:</b></span>
-                                </div>
-                                <textarea name="observacion" cols="77" rows="3" required></textarea>
-                            </div>                
                         </div>
                         
-                        
-                        
-                    </div>
-                    
-                    <!-- Modal footer -->
-                    <div class="modal-footer justify-content-between">
-                        <button type="button text-left" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" title="Volver">Cancelar
-                        </button>
-                        <button type="submit" class="btn btn-success btn-sm" title="Registrar..">
-                            Registrar
-                        </button>
-                    </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer justify-content-between">
+                            <button type="button text-left" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" title="Volver">Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-success btn-sm" title="Registrar..">
+                                Registrar
+                            </button>
+                        </div>
                     {!! Form::close()!!} 
                     
                 </div>
             </div>
         </div>
 
-
-        <div class="modal fade" role="dialog" id="delete_editar">
-            <div class="modal-dialog modal-info">
+        <div class="modal modal-info fade" tabindex="-1" id="edit_modal" role="dialog">
+            <div class="modal-dialog">
                 <div class="modal-content">
                 
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <h4 class="modal-title"><i class="voyager-edit"></i>Editar Cheque</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-edit"></i> Editar cheque</h4>
                     </div>
                     {!! Form::open(['route' => 'checks.updat','class' => 'was-validated'])!!}
                     <!-- Modal body -->
@@ -332,15 +323,10 @@
                                 <textarea id="observacion" name="observacion" cols="77" rows="3" required></textarea>
                             </div>                
                         </div>
-                        
-                        
-                        
                     </div>
-                    
-                    
                     <!-- Modal footer -->
                     <div class="modal-footer justify-content-between">
-                        <button type="button text-left" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" title="Volver">Cancelar
+                        <button type="button text-left" class="btn btn-default" data-dismiss="modal" data-toggle="tooltip" title="Volver">Cancelar
                         </button>
                         <button type="submit" class="btn btn-primary btn-sm" title="Registrar..">
                             Registrar
@@ -429,7 +415,7 @@
                 $('#select-checkcategoria_id').select2();
             });
 
-            $('#delete_editar').on('show.bs.modal', function (event) {
+            $('#edit_modal').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget) //captura valor del data-empresa=""
 
                 var id = button.data('id')
