@@ -48,7 +48,7 @@
                                             <th>Id&deg;</th>
                                             <th>Tipo.</th>
                                             <th>Nro Cheque.</th>
-                                            <th>Resumen.</th>
+                                            <th>Beneficiario.</th>
                                             <th>Nro Mem.</th>
                                             <th>Nro Prev</th>
                                             <th>Nro Dev.</th>
@@ -56,7 +56,7 @@
                                             <th>Fecha Cheque</th>
                                             <th>Monto </th>
                                             
-                                            <th>Observacion</th>
+                                            <th>Resumen</th>
                                             <th>Estado</th>
                                             <th>Acciones</th>
                                         </tr>
