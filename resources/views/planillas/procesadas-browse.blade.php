@@ -14,7 +14,7 @@
                             </h1>
                         </div>
                         <div class="col-md-4" style="margin-top: 30px">
-                            <form id="form-search" action="{{ route('planillas.search') }}" method="post">
+                            <form id="form-search" action="{{ route('planillas.pagos.search') }}" method="post">
                                 @csrf
                                 <div class="form-group text-right">
                                     <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="1" checked>Centralizada</label>
@@ -98,7 +98,7 @@
     </div>
 
     {{-- Pago listo modal --}}
-    <form id="form-abrir-planilla" action="{{ route('planillas.details.open') }}" method="post">
+    <form id="form-abrir-planilla" action="{{ route('planillas.pagos.details.open') }}" method="post">
         @csrf
         <input type="hidden" name="id">
         <div class="modal modal-success fade" tabindex="-1" id="pago-listo_modal" role="dialog">
@@ -122,7 +122,7 @@
     </form>
 
     {{-- Pagar modal --}}
-    <form id="form-pagar" action="{{ route('planillas.details.payment') }}" method="post">
+    <form id="form-pagar" action="{{ route('planillas.pagos.details.payment') }}" method="post">
         @csrf
         <input type="hidden" name="cashier_id">
         <input type="hidden" name="id">
@@ -191,7 +191,7 @@
     </form>
 
     {{-- Pagar aguinaldo modal --}}
-    <form id="form-pagar-aguinaldo" action="{{ route('planillas.details.payment') }}" method="post">
+    <form id="form-pagar-aguinaldo" action="{{ route('planillas.pagos.details.payment') }}" method="post">
         @csrf
         <input type="hidden" name="cashier_id">
         <input type="hidden" name="aguinaldo_id">
@@ -252,7 +252,7 @@
     </form>
 
     {{-- Pagar Planilla Adicional modal --}}
-    <form id="form-pagar-planillaadicional" action="{{ route('planillas.details.payment') }}" method="post">
+    <form id="form-pagar-planillaadicional" action="{{ route('planillas.pagos.details.payment') }}" method="post">
         @csrf
         <input type="hidden" name="cashier_id">
         <input type="hidden" name="stipend_id">
@@ -312,7 +312,7 @@
         </div>
     </form>
 
-    <form id="form-cerrar-planilla" action="{{ route('planillas.update.status') }}" method="post">
+    <form id="form-cerrar-planilla" action="{{ route('planillas.pagos.update.status') }}" method="post">
         @csrf
         <input type="hidden" name="status" value="3">
         <div class="modal modal-danger fade" tabindex="-1" id="cerrar-planilla-modal" role="dialog">
@@ -416,7 +416,7 @@
                     toastr.success(message, 'Bien hecho!');
                     getData();
                     if(formId == 'form-pagar' && $('#check-print').is(':checked')){
-                        window.open("{{ url('admin/planillas/pago/print') }}/"+res.payment_id, "Recibo", `width=700, height=400`)
+                        window.open("{{ url('admin/planillas/pagos/print') }}/"+res.payment_id, "Recibo", `width=700, height=400`)
                         $('#form-pagar').trigger("reset");
                     }
                 }else{
