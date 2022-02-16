@@ -52,9 +52,10 @@
                                             <th>Nro Mem.</th>
                                             <th>Nro Prev</th>
                                             <th>Nro Dev.</th>
+                                            <th>Fecha Ingreso</th>
                                             <th>Fecha Cheque</th>
                                             <th>Monto </th>
-                                            <th>Deposito</th>
+                                            
                                             <th>Observacion</th>
                                             <th>Estado</th>
                                             <th>Acciones</th>
@@ -73,9 +74,10 @@
                                             <td>{{ json_decode($item->resumen)->nromemo }}</td>
                                             <td>{{ json_decode($item->resumen)->nroprev }}</td>
                                             <td>{{ json_decode($item->resumen)->nrodev }}</td>
-                                            <td>{{ json_decode($item->resumen)->fechacheque }}</td>
+                                            <td>{{ json_decode($item->resumen)->deposito}}</td>
+                                            <td>{{ \Carbon\Carbon::parse(json_decode($item->resumen)->fechacheque)->format('d/m/Y') }}</td>
                                             <td>{{ json_decode($item->resumen)->monto }}</td>
-                                            <td>{{ json_decode($item->resumen)->deposito }}</td>
+                                            
                                             <td>{{ json_decode($item->resumen)->observacion }}</td>
                                             <td>
                                                 @if ($item->status == 1)
@@ -188,26 +190,26 @@
                                     </div>
                                     <input type="number" step="any" class="form-control" name="nrodev" required>
                                 </div>                   
-                            </div>
-                            <div class="row">                            
+                            </div>                            
+                            <div class="row">    
+                                <div class="col-md-4">
+                                    <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Fecha Ingreso:</b></span>
+                                    </div>
+                                    <input type="date" step="any" class="form-control" id="deposito" name="deposito" required>
+                                </div>                          
                                 <div class="col-md-4">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><b>Fecha Cheque:</b></span>
                                     </div>
-                                    <input type="date" step="any" class="form-control" name="fechacheque"required>
+                                    <input type="date" step="any" class="form-control" id="fechacheque" name="fechacheque" required>
                                 </div> 
                                 <div class="col-md-4">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><b>Monto:</b></span>
                                     </div>
-                                    <input type="number" step="any" class="form-control" name="monto"required>
-                                </div>   
-                                <div class="col-md-4">
-                                    <div class="input-group-prepend">
-                                    <span class="input-group-text"><b>Deposito:</b></span>
-                                    </div>
-                                    <input type="text" step="any" class="form-control" name="deposito"required>
-                                </div>                
+                                    <input type="number" step="any" class="form-control" id="monto" name="monto" required>
+                                </div>                                             
                             </div>
                             <div class="row">    
                                     
@@ -215,9 +217,10 @@
                                     <div class="input-group-prepend">
                                     <span class="input-group-text"><b>Observacion:</b></span>
                                     </div>
-                                    <textarea name="observacion" cols="77" rows="3" required></textarea>
+                                    <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
                                 </div>                
                             </div>
+
                         </div>
                         
                         <!-- Modal footer -->
@@ -294,7 +297,13 @@
                                 <input type="number" step="any" class="form-control" id="nrodev" name="nrodev" required>
                             </div>                   
                         </div>
-                        <div class="row">                            
+                        <div class="row">    
+                            <div class="col-md-4">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text"><b>Fecha Ingreso:</b></span>
+                                </div>
+                                <input type="date" step="any" class="form-control" id="deposito" name="deposito" required>
+                            </div>                          
                             <div class="col-md-4">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><b>Fecha Cheque:</b></span>
@@ -306,13 +315,7 @@
                                     <span class="input-group-text"><b>Monto:</b></span>
                                 </div>
                                 <input type="number" step="any" class="form-control" id="monto" name="monto" required>
-                            </div>   
-                            <div class="col-md-4">
-                                <div class="input-group-prepend">
-                                <span class="input-group-text"><b>Deposito:</b></span>
-                                </div>
-                                <input type="text" step="any" class="form-control" id="deposito" name="deposito" required>
-                            </div>                
+                            </div>                                             
                         </div>
                         <div class="row">    
                                  
@@ -320,7 +323,7 @@
                                 <div class="input-group-prepend">
                                 <span class="input-group-text"><b>Observacion:</b></span>
                                 </div>
-                                <textarea id="observacion" name="observacion" cols="77" rows="3" required></textarea>
+                                <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
                             </div>                
                         </div>
                     </div>
