@@ -146,7 +146,7 @@
             @if($type == 'create')
                 $("#select-planilla_haber_id").select2({
                     ajax: {
-                        url: "{{ url('admin/planillas/search/id') }}",
+                        url: "{{ url('admin/planillas/pagos/search/id') }}",
                         dataType: 'json',
                         delay: 250,
                         data: function (params) {
@@ -259,7 +259,7 @@
             });
 
             $('.select-request').change(function(){
-                getPlanillas('{{ route("planillas.centralizada.search") }}');
+                getPlanillas('{{ route("planillas.pagos.centralizada.search") }}');
             });
 
             $('#btn-reset').click(function(){

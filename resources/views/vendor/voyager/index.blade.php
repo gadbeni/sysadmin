@@ -477,10 +477,10 @@
                     window.open("{{ url('admin/cashiers/print/transfer') }}/"+id, "Entrega de fondos", `width=700, height=400`);
                 }
                 function print_recipe(id){
-                    window.open("{{ url('admin/planillas/pago/print') }}/"+id, "Recibo", `width=700, height=500`)
+                    window.open("{{ url('admin/planillas/pagos/print') }}/"+id, "Recibo", `width=700, height=500`)
                 }
                 function print_recipe_delete(id){
-                    window.open("{{ url('admin/planillas/pago/delete/print') }}/"+id, "Recibo", `width=700, height=500`)
+                    window.open("{{ url('admin/planillas/pagos/delete/print') }}/"+id, "Recibo", `width=700, height=500`)
                 }
             </script>
         @endif
