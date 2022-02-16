@@ -33,7 +33,7 @@ Route::get('/', [HomeController::class, 'index']);
 Route::post('search', [HomeController::class, 'search_payroll_by_ci'])->name('home.search.payroll.ci');
 
 
-Route::group(['prefix' => 'admin'], function () {
+Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Voyager::routes();
 
     Route::post('cashiers/store', [CashiersController::class, 'store'])->name('cashiers.store');
@@ -64,6 +64,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::get('planillas', [PlanillasController::class, 'planillas_index'])->name('planillas.index');
     Route::get('planillas/create', [PlanillasController::class, 'planillas_create'])->name('planillas.create');
+    Route::post('planillas/generate', [PlanillasController::class, 'planillas_generate'])->name('planillas.generate');
     Route::get('planillas/pagos', [PlanillasController::class, 'planillas_pagos_index'])->name('planillas.pagos.index');
     Route::post('planillas/pagos/search', [PlanillasController::class, 'planillas_pagos_search'])->name('planillas.pagos.search');
     Route::get('planillas/pagos/search/id', [PlanillasController::class, 'planillas_pagos_search_by_id']);

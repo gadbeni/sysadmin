@@ -16,6 +16,7 @@ use App\Models\PlanillasHistory;
 use App\Models\Aguinaldo;
 use App\Models\Stipend;
 use App\Models\TipoDireccionAdministrativa;
+use App\Models\Contract;
 
 class PlanillasController extends Controller
 {
@@ -32,6 +33,18 @@ class PlanillasController extends Controller
         $tipo_planillas = TipoDireccionAdministrativa::with(['direcciones_administrativas'])->where('Estado', 1)->get();
         // dd($tipo_planillas);
         return view('planillas.planillas-edit-add', compact('tipo_planillas'));
+    }
+
+    public function planillas_generate(Request $request){
+        // dd($request->all());
+        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel' => function($q){
+                            $q->where('Estado', 1);
+                        }, 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
+                        ->where('direccion_administrativa_id', $request->da_id)
+                        ->where('procedure_type_id', $request->tipo_planilla)
+                        ->where('status', 1)
+                        ->where('deleted_at', NULL)->get();
+        return view('planillas.planillas-generate', compact('contracts'));
     }
     
     public function planillas_pagos_index(){
