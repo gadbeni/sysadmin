@@ -80,16 +80,20 @@
                                             <td>
                                                     @if ($item->status == 1)
                                                         <label class="label label-danger">Pendiente</label>
-                                                    @else
-                                                        <label class="label label-success">Pagada</label>
+                                                    @endif
+
+                                                    @if ($item->status == 2)
+                                                        <label class="label label-success">Entregado</label>
                                                     @endif
                                                 </td>
 
                                             <td>
-                                                <a type="button" data-toggle="modal" data-target="#delete_modal" data-id="{{ $item->id}}" class="btn btn-danger"><i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span></a>
+                                                @if ($item->status != 2)
+                                                    <a type="button" data-toggle="modal" data-target="#modal_entregar" data-id="{{ $item->id}}"  class="btn btn-success"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Entregar</span></a>
+                                                    <a type="button" data-toggle="modal" data-target="#delete_editar" data-id="{{ $item->id}}" data-items="{{$item->resumen}}"  class="btn btn-primary"><i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span></a>
+                                                    <a type="button" data-toggle="modal" data-target="#delete_modal" data-id="{{ $item->id}}" class="btn btn-danger"><i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span></a>
                                              
-                                                <a type="button" data-toggle="modal" data-target="#delete_editar" data-id="{{ $item->id}}" data-items="{{$item->resumen}}"  class="btn btn-success"><i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span></a>
-                                                  
+                                                @endif  
                                             </td>
                                         </tr>
                                         @empty
@@ -99,6 +103,35 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" tabindex="-1" id="modal_entregar" role="dialog">
+            <div class="modal-dialog modal-success">
+                <div class="modal-content">
+                    {!! Form::open(['route' => 'checks.entregar', 'method' => 'POST']) !!}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-dollar"></i> Entregar Cheque</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="id">
+
+                        <div class="text-center" style="text-transform:uppercase">
+                            <i class="voyager-dollar" style="color: green; font-size: 5em;"></i>
+                            <br>
+                            
+                            <p><b>Desea entregar el cheque....!</b></p>
+                        </div>
+                    </div>                
+                    <div class="modal-footer">
+                        
+                            <input type="submit" class="btn btn-success pull-right" value="Sí, Entregar">
+                        
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancelar</button>
+                    </div>
+                    {!! Form::close()!!} 
                 </div>
             </div>
         </div>
@@ -211,11 +244,11 @@
 
 
         <div class="modal fade" role="dialog" id="delete_editar">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-info">
                 <div class="modal-content">
                 
                     <!-- Modal Header -->
-                    <div class="modal-header btn-success">
+                    <div class="modal-header">
                         <h4 class="modal-title"><i class="voyager-edit"></i>Editar Cheque</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
@@ -309,7 +342,7 @@
                     <div class="modal-footer justify-content-between">
                         <button type="button text-left" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" title="Volver">Cancelar
                         </button>
-                        <button type="submit" class="btn btn-success btn-sm" title="Registrar..">
+                        <button type="submit" class="btn btn-primary btn-sm" title="Registrar..">
                             Registrar
                         </button>
                     </div>
@@ -363,7 +396,34 @@
         <script>
             $(document).ready(() => {
                 $('#dataTable').DataTable({
-                    language
+                    language: {
+                            // "order": [[ 0, "desc" ]],
+                            sProcessing: "Procesando...",
+                            sLengthMenu: "Mostrar _MENU_ registros",
+                            sZeroRecords: "No se encontraron resultados",
+                            sEmptyTable: "Ningún dato disponible en esta tabla",
+                            sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                            sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+                            sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+                            sSearch: "Buscar:",
+                            sInfoThousands: ",",
+                            sLoadingRecords: "Cargando...",
+                            oPaginate: {
+                                sFirst: "Primero",
+                                sLast: "Último",
+                                sNext: "Siguiente",
+                                sPrevious: "Anterior"
+                            },
+                            oAria: {
+                                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                            },
+                            buttons: {
+                                copy: "Copiar",
+                                colvis: "Visibilidad"
+                            }
+                        },
+                        order: [[ 0, 'desc' ]],
                 });
 
                 $('#select-checkcategoria_id').select2();
@@ -394,6 +454,15 @@
                 
 
 
+                
+            });
+            $('#modal_entregar').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) //captura valor del data-empresa=""
+
+                var id = button.data('id')
+
+                var modal = $(this)
+                modal.find('.modal-body #id').val(id)
                 
             });
             $('#delete_modal').on('show.bs.modal', function (event) {

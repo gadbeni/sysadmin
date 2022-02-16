@@ -120,6 +120,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     // CHECK
     Route::resource('checks', CheckController::class);
+    Route::post('check/entregar', [CheckController::class, 'entregar_checks'])->name('checks.entregar');
     Route::post('check/update', [CheckController::class, 'update_checks'])->name('checks.updat');
     Route::delete('check/delete', [CheckController::class, 'destroy'])->name('checks.delet');
 

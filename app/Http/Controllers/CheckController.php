@@ -19,9 +19,7 @@ class CheckController extends Controller
         $check = DB::table('checks as c')
                 ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
                 ->select('cc.name', 'c.resumen', 'c.id', 'c.status')
-                // ->where('c.status', 1)
                 ->where('c.deleted_at', NULL)->get();
-        // return $check;
 
         return view('check.browse', compact('tipos', 'check'));
     }
@@ -65,9 +63,15 @@ class CheckController extends Controller
         }
     }
 
+    public function entregar_checks(Request $request)
+    {
+
+        Check::where('id',$request->id)->update(['status' => 2]);
+        return redirect()->route('checks.index')->with(['message' => 'Cheque Entregado Exitosamente.', 'alert-type' => 'success']);
+    }
+
     public function destroy(Request $request)
     {
         Check::where('id',$request->id)->update(['deleted_at' => Carbon::now()]);
-        return redirect()->route('checks.index')->with(['message' => 'Eliminado Exitosamente.', 'alert-type' => 'success']);
     }
 }
