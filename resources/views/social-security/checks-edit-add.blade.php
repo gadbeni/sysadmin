@@ -13,7 +13,7 @@
     <div class="page-content edit-add container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <form id="form" action="{{ $type == 'create' ? route('checks.store') : route('checks.update', ['check' => $id]) }}" method="post">
+                <form id="form" action="{{ $type == 'create' ? route('social-security.checks.store') : route('social-security.checks.update', ['check' => $id]) }}" method="post">
                     @csrf
                     @if ($type == 'edit')
                         @method('PUT')

@@ -178,6 +178,13 @@
 
                                                 {{ $d_a ? $d_a->NOMBRE : '' }}
 
+                                                @elseif(($row->type == 'user_id'))
+                                                   @php
+                                                        $user = \App\Models\User::find($data->{$row->field});
+                                                   @endphp
+
+                                                {{ $user ? $user->name : '' }}
+
                                                 @elseif($row->type == 'checkbox')
                                                     @if(property_exists($row->details, 'on') && property_exists($row->details, 'off'))
                                                         @if($data->{$row->field})

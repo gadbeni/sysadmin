@@ -44,7 +44,12 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'caja_responsable_valores')->firstOrFail();
-        $permissions = Permission::whereRaw('table_name = "admin"')->get();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                            `key` = "browse_planillaspagos" or
+                                            table_name = "planillas_adicionales" or
+                                            table_name = "checks_categories" or
+                                            table_name = "checks" or
+                                            table_name = "plugins"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'caja_cajero')->firstOrFail();
