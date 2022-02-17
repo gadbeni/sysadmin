@@ -126,6 +126,14 @@
                             <br>
                             <p><b>Desea devolver el cheque....!</b></p>
                         </div>
+                        <div class="row">   
+                            <div class="col-md-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Observacion:</b></span>
+                                </div>
+                                <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
+                            </div>                
+                        </div>
                     </div>                
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -150,6 +158,15 @@
                             <i class="voyager-dollar" style="color: green; font-size: 5em;"></i>
                             <br>
                             <p><b>Desea entregar el cheque....!</b></p>
+                        </div>
+
+                        <div class="row">   
+                            <div class="col-md-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Observacion:</b></span>
+                                </div>
+                                <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
+                            </div>                
                         </div>
                     </div>                
                     <div class="modal-footer">
@@ -392,6 +409,14 @@
                             <br>
                             
                             <p><b>Desea eliminar el siguiente registro?</b></p>
+                        </div>
+                        <div class="row">   
+                            <div class="col-md-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Observacion:</b></span>
+                                </div>
+                                <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
+                            </div>                
                         </div>
                     </div>                
                     <div class="modal-footer">
