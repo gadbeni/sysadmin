@@ -48,8 +48,71 @@
                             @endphp
                             @forelse ($contracts as $item)
                                 @php
+                                    // Periodo de la planilla
+                                    $period = \App\Models\Period::find($periodo_id);
+
+                                    // Periodo de inicio de contrato
+                                    $period_start = date('Ym', strtotime($item->start));
+
+                                    // Días que el trabajador debió haber trabajado
+                                    $days_enabled_worker = 30;
+                                    if($period_start == $period->name){
+                                        $start_day = date('d', strtotime($item->start));
+                                        if($start_day > 0){
+                                            $days_enabled_worker = 30 - ($start_day - 1);
+                                        }
+                                    }
+
+                                    // Sueldo actual
                                     $salary = $item->cargo ? $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo : $item->job->salary;
+                                    // Nivel salarial
                                     $level = $item->cargo ? $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->NumNivel : $item->job->level;
+
+                                    // Sueldo parcial (en caso de que el trabajador tenga una fecha de ingreso posterior al periodo de la planilla)
+                                    $partial_salary = ($salary/30) * $days_enabled_worker;
+
+                                    // Calcular bono antigüedad
+                                    $minimum_salary = setting('planillas.minimum_salary') ?? 2164;
+                                    $seniority_bonus_pecentaje = 0;
+                                    if(count($item->person->seniority_bonus) > 0){
+                                        $seniority_bonus_pecentaje = $item->person->seniority_bonus->first()->type->percentaje;
+                                        // dd($item->person->seniority_bonus->first());
+                                    }
+                                    $seniority_bonus_amount = (($minimum_salary * ($seniority_bonus_pecentaje /100)) /30) * $days_enabled_worker;
+
+                                    // Total ganado
+                                    $total_amout = $partial_salary + $seniority_bonus_amount;
+
+                                    // Calcular edad
+                                    $now = \Carbon\Carbon::now();
+                                    $birthday = new \Carbon\Carbon($item->person->birthday);
+                                    $age = $birthday->diffInYears($now);
+
+                                    // Calcular aportes AFP
+                                    $solidary_contribution = $total_amout * 0.005;
+                                    $common_risk = 0;
+                                    if($age < 65){
+                                        $common_risk = $total_amout *0.0171;   
+                                    }
+                                    $commission_afp = $total_amout * 0.005;
+                                    $retirement_contribution = 0;
+                                    if($item->person->afp_status == 1){
+                                        $retirement_contribution = $total_amout * 0.1;
+                                    }
+
+                                    $solidary_contribution_national = 0;
+                                    if($total_amout >= 13000){
+                                        $solidary_contribution_national = ($total_amout - 13000) *0.01;
+                                    }
+                                    if ($total_amout >= 25000) {
+                                        $solidary_contribution_national = ($total_amout - 25000) *0.05;
+                                    }
+                                    if ($total_amout >= 35000) {
+                                        $solidary_contribution_national = ($total_amout - 35000) *0.1;
+                                    }
+
+                                    $total_contributions_afp = $solidary_contribution + $common_risk + $commission_afp + $retirement_contribution + $solidary_contribution_national;
+                                    
                                 @endphp
                                 <tr>
                                     <td>{{ $cont }}</td>
@@ -61,18 +124,18 @@
                                     <td><b>{{ $item->person->ci }}</b></td>
                                     <td>{{ $item->person->nua_cua }}</td>
                                     <td>{{ $item->start }}</td>
-                                    <td><b>30</b></td>
+                                    <td><b>{{ $days_enabled_worker }}</b></td>
                                     <td>{{ number_format($salary, 2, ',', '.') }}</td>
-                                    <td><b>{{ number_format($salary, 2, ',', '.') }}</b></td>
-                                    <td>0%</td>
-                                    <td>0,00</td>
-                                    <td><b>{{ number_format($salary, 2, ',', '.') }}</b></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td><b>{{ number_format($partial_salary, 2, ',', '.') }}</b></td>
+                                    <td>{{ $seniority_bonus_pecentaje }}%</td>
+                                    <td>{{ number_format($seniority_bonus_amount, 2, ',', '.') }}</td>
+                                    <td><b>{{ number_format($total_amout, 2, ',', '.') }}</b></td>
+                                    <td>{{ number_format($solidary_contribution, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($common_risk, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($commission_afp, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($retirement_contribution, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($solidary_contribution_national, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($total_contributions_afp, 2, ',', '.') }}</td>
                                     <td></td>
                                     <td></td>
                                     <td></td>

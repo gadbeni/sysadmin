@@ -3,9 +3,10 @@
 Migraciones
     - ejecutar todas las migraciones
 Seeders
-    - UpdatePermissionsSeeder, UpdateBreadSeeder
+    - UpdatePermissionsSeeder, UpdateBreadSeeder, SeniorityBonusTypesTableSeeder
 Paquetes
 
 Comandos
 
 Otros
+    Crear setting setting('planillas.minimum_salary')

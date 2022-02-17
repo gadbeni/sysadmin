@@ -32,5 +32,6 @@ class TemplateDatabaseSeeder extends Seeder
         $this->call(ProgramsTableSeeder::class);
         $this->call(OfficesTableSeeder::class);
         $this->call(ChecksCategoriesTableSeeder::class);
+        $this->call(SeniorityBonusTypesTableSeeder::class);
     }
 }

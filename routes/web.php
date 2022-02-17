@@ -14,6 +14,7 @@ use App\Http\Controllers\PluginsController;
 use App\Http\Controllers\ContractsController;
 use App\Http\Controllers\StipendController;
 use App\Http\Controllers\CheckController;
+use App\Http\Controllers\PeriodsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -128,6 +129,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('check/devolver', [CheckController::class, 'devolver_checks'])->name('checks.devolver');
     Route::delete('check/delete', [CheckController::class, 'destroy'])->name('checks.delet');
 
+    // Periods
+    Route::get('periods/tipo_direccion_adminstrativa/{id}', [PeriodsController::class, 'periods_tipo_direccion_adminstrativa']);
 
     // Administrativo
 

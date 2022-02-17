@@ -38,9 +38,9 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="periodo">Periodo</label>
-                                    <select name="periodo" id="select-periodo" class="form-control select2" required>
-                                        <option value="202201">202201</option>
+                                    <label for="periodo_id">Periodo</label>
+                                    <select name="periodo_id" id="select-periodo_id" class="form-control select2" required>
+                                        <option value="">--Seleccione el perido--</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -74,12 +74,27 @@
     <script>
         $(document).ready(function(){
             $('#select-tipo_da').change(function(){
+                let type = $(this).find(':selected').val();
                 let da = $(this).find(':selected').data('da');
-                $('#select-da_id').html('<option value="">--Seleccione una dirección administrativa--</option>');
-                da.map(item => {
-                    $('#select-da_id').append(`<option value="${item.ID}">${item.NOMBRE}</option>`);
-                });
-                $('#select-tipo_planilla').html('<option value="">--Seleccione el tipo de planilla--</option>');
+                if(da){
+                    // Obtener DA
+                    $('#select-da_id').html('<option value="">--Seleccione una dirección administrativa--</option>');
+                    da.map(item => {
+                        $('#select-da_id').append(`<option value="${item.ID}">${item.NOMBRE}</option>`);
+                    });
+                    $('#select-tipo_planilla').html('<option value="">--Seleccione el tipo de planilla--</option>');
+
+                    // Obtener periodos
+                    $('#select-periodo_id').html('<option value="">--Seleccione el perido--</option>');
+                    $.get('{{ url("admin/periods/tipo_direccion_adminstrativa") }}/'+type, function(res){
+                        res.map(item => {
+                            $('#select-periodo_id').append(`<option value="${item.id}">${item.name}</option>`);
+                        });
+                    });
+                }else{
+                    $('#select-da_id').html('<option value="">--Seleccione una dirección administrativa--</option>');
+                    $('#select-periodo_id').html('<option value="">--Seleccione el perido--</option>');
+                }
             });
 
             $('#select-da_id').change(function(){

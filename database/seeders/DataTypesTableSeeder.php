@@ -343,6 +343,42 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2022-02-16 15:00:56',
                 'updated_at' => '2022-02-16 16:03:06',
             ),
+            18 => 
+            array (
+                'id' => 20,
+                'name' => 'seniority_bonus_types',
+                'slug' => 'seniority-bonus-types',
+                'display_name_singular' => 'Bono antigüedad',
+                'display_name_plural' => 'Bono antigüedad',
+                'icon' => 'voyager-calendar',
+                'model_name' => 'App\\Models\\SeniorityBonusType',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":"id","order_display_column":"id","order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2022-02-17 13:21:28',
+                'updated_at' => '2022-02-17 13:28:25',
+            ),
+            19 => 
+            array (
+                'id' => 21,
+                'name' => 'seniority_bonus_people',
+                'slug' => 'seniority-bonus-people',
+                'display_name_singular' => 'Bono antigüedad',
+                'display_name_plural' => 'Bonos antigüedad',
+                'icon' => 'voyager-calendar',
+                'model_name' => 'App\\Models\\SeniorityBonusPerson',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":"id","order_display_column":"id","order_direction":"desc","default_search_key":null,"scope":null}',
+                'created_at' => '2022-02-17 14:59:11',
+                'updated_at' => '2022-02-17 15:18:48',
+            ),
         ));
         
         

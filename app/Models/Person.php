@@ -15,4 +15,8 @@ class Person extends Model
     public function contracts(){
         return $this->hasMany(Contract::class);
     }
+
+    public function seniority_bonus(){
+        return $this->hasMany(SeniorityBonusPerson::class, 'person_id');
+    }
 }
