@@ -48,7 +48,7 @@
                                             <th>Id&deg;</th>
                                             <th>Tipo.</th>
                                             <th>Nro Cheque.</th>
-                                            <th>Resumen.</th>
+                                            <th>Beneficiario.</th>
                                             <th>Nro Mem.</th>
                                             <th>Nro Prev</th>
                                             <th>Nro Dev.</th>
@@ -56,7 +56,7 @@
                                             <th>Fecha Cheque</th>
                                             <th>Monto </th>
                                             
-                                            <th>Observacion</th>
+                                            <th>Resumen</th>
                                             <th>Estado</th>
                                             <th>Acciones</th>
                                         </tr>
@@ -68,7 +68,7 @@
                                         @endphp
                                         <tr>
                                             <td>{{ $item->id }}</td>
-                                            <td>{{ $item->name }}</td>
+                                            <td>{{ $item->name }}</small></td>
                                             <td>{{ json_decode($item->resumen)->nrocheque }}</td>
                                             <td>{{ json_decode($item->resumen)->resumen }}</td>
                                             <td>{{ json_decode($item->resumen)->nromemo }}</td>
@@ -94,6 +94,9 @@
                                                     <a type="button" data-toggle="modal" data-target="#edit_modal" data-id="{{ $item->id}}" data-items="{{$item->resumen}}"  class="btn btn-primary"><i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span></a>
                                                     <a type="button" data-toggle="modal" data-target="#delete_modal" data-id="{{ $item->id}}" class="btn btn-danger"><i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span></a>
                                                 @endif  
+                                                @if ($item->status == 2)
+                                                    <a type="button" data-toggle="modal" data-target="#modal_devolver" data-id="{{ $item->id}}"  class="btn btn-warning"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Devolver</span></a>
+                                                @endif  
                                             </td>
                                         </tr>
                                         @empty
@@ -107,6 +110,39 @@
             </div>
         </div>
 
+        <div class="modal modal-warning fade" tabindex="-1" id="modal_devolver" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    {!! Form::open(['route' => 'checks.devolver', 'method' => 'POST']) !!}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-dollar"></i> Devolver Cheque</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="id">
+
+                        <div class="text-center" style="text-transform:uppercase">
+                            <i class="voyager-warning" style="color: orange; font-size: 5em;"></i>
+                            <br>
+                            <p><b>Desea devolver el cheque....!</b></p>
+                        </div>
+                        <div class="row">   
+                            <div class="col-md-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Observacion:</b></span>
+                                </div>
+                                <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
+                            </div>                
+                        </div>
+                    </div>                
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark" value="Sí, Devolver">
+                    </div>
+                    {!! Form::close()!!} 
+                </div>
+            </div>
+        </div>
         <div class="modal modal-primary fade" tabindex="-1" id="modal_entregar" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -122,6 +158,15 @@
                             <i class="voyager-dollar" style="color: green; font-size: 5em;"></i>
                             <br>
                             <p><b>Desea entregar el cheque....!</b></p>
+                        </div>
+
+                        <div class="row">   
+                            <div class="col-md-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Observacion:</b></span>
+                                </div>
+                                <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
+                            </div>                
                         </div>
                     </div>                
                     <div class="modal-footer">
@@ -149,13 +194,16 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><b>Tipo de Cheque:</b></span>
                                     </div>
-                                    <select name="checkcategoria_id" id="" class="form-control select2" required>
+                                    <select name="checkcategoria_id" id="tipopagos" class="form-control select2" required>
                                         <option value="">Seleccione un tipo..</option>
                                         @foreach($tipos as $data)
                                             <option value="{{$data->id}}">{{$data->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
+                            </div>
+                            <div class="row" id="tip">
+                                
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
@@ -263,6 +311,9 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="row" id="tips">
+                                
+                        </div>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="input-group-prepend">
@@ -359,6 +410,14 @@
                             
                             <p><b>Desea eliminar el siguiente registro?</b></p>
                         </div>
+                        <div class="row">   
+                            <div class="col-md-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Observacion:</b></span>
+                                </div>
+                                <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
+                            </div>                
+                        </div>
                     </div>                
                     <div class="modal-footer">
                         
@@ -416,6 +475,10 @@
                 });
 
                 $('#select-checkcategoria_id').select2();
+
+                $('#tipopagos').on('change', function_div);
+
+                $('#select-checkcategoria_id').on('change', function_divs);
             });
 
             $('#edit_modal').on('show.bs.modal', function (event) {
@@ -430,6 +493,7 @@
                 var modal = $(this)
                 modal.find('.modal-body #id').val(id)
                 modal.find('.modal-body #select-checkcategoria_id').val(item.checkcategoria_id).trigger('change')
+                
                 modal.find('.modal-body #nrocheque').val(item.nrocheque)
                 modal.find('.modal-body #resumen').val(item.resumen)
                 modal.find('.modal-body #nromemo').val(item.nromemo)
@@ -439,7 +503,28 @@
                 modal.find('.modal-body #monto').val(item.monto)
                 modal.find('.modal-body #deposito').val(item.deposito)
                 modal.find('.modal-body #observacion').val(item.observacion)
-               
+                // alert(item.checkcategoria_id)
+                if(item.checkcategoria_id == 2)
+                {
+                    var div =   '<div class="col-md-12">'
+                        div+=           '<div class="input-group-prepend">'
+                        div+=                '<span class="input-group-text"><b>Tipo:</b></span>'
+                        div+=            '</div>'
+                        div+=            '<select name="tipopagos" id="select-tipo" class="form-control select2" required>'
+                        div+=                '<option value="">Seleccione un tipo..</option>'
+                        div+=                '<option value="1">Personal Eventual.</option>'
+                        div+=                '<option value="2">Funcionamiento.</option>'
+                        div+=                '<option value="3">Consultoria.</option>'                                        
+                        div+=            '</select>'
+                        div+=        '</div>'
+                    $('#tips').html(div);
+                }
+                else
+                {
+                    div ='';
+                    $('#tips').html(div);
+                }
+                modal.find('.modal-body #select-tipo').val(item.tipopagos).trigger('change')   
                 
 
 
@@ -447,6 +532,15 @@
             });
             $('#modal_entregar').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget) //captura valor del data-empresa=""
+
+                var id = button.data('id')
+
+                var modal = $(this)
+                modal.find('.modal-body #id').val(id)
+                
+            });
+            $('#modal_devolver').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) 
 
                 var id = button.data('id')
 
@@ -463,6 +557,60 @@
                 modal.find('.modal-body #id').val(id)
                 
             });
+
+            function function_div()
+            {
+                var id =  $(this).val();   
+            
+                if(id == 2)
+                {
+                    var div =   '<div class="col-md-12">'
+                        div+=           '<div class="input-group-prepend">'
+                        div+=                '<span class="input-group-text"><b>Tipo:</b></span>'
+                        div+=            '</div>'
+                        div+=            '<select name="tipopagos" id="tipopagos" class="form-control select2" required>'
+                        div+=                '<option value="">Seleccione un tipo..</option>'
+                        div+=                '<option value="1">Personal Eventual.</option>'
+                        div+=                '<option value="2">Funcionamiento.</option>'
+                        div+=                '<option value="3">Consultoria.</option>'                                        
+                        div+=            '</select>'
+                        div+=        '</div>'
+                    $('#tip').html(div);
+                }
+                else
+                {
+                    div ='';
+                    $('#tip').html(div);
+                }
+            }
+
+
+            function function_divs()
+            {
+                // alert(5)
+                var id =  $(this).val();   
+            
+                if(id == 2)
+                {
+                    var div =   '<div class="col-md-12">'
+                        div+=           '<div class="input-group-prepend">'
+                        div+=                '<span class="input-group-text"><b>Tipo:</b></span>'
+                        div+=            '</div>'
+                        div+=            '<select name="tipopagos" id="tipopagos" class="form-control select2" required>'
+                        div+=                '<option value="">Seleccione un tipo..</option>'
+                        div+=                '<option value="1">Personal Eventual.</option>'
+                        div+=                '<option value="2">Funcionamiento.</option>'
+                        div+=                '<option value="3">Consultoria.</option>'                                        
+                        div+=            '</select>'
+                        div+=        '</div>'
+                    $('#tips').html(div);
+                }
+                else
+                {
+                    div ='';
+                    $('#tips').html(div);
+                }
+            }
 
         </script>
     @stop

@@ -29,7 +29,7 @@ class CheckController extends Controller
     {
         DB::beginTransaction();
         try {
-            
+            // return $request;
            
             $check = Check::create(['user_id' => Auth::user()->id, 'checkcategoria_id'=> $request->checkcategoria_id, 'resumen'=> json_encode($request->all())]);
             ChecksHistory::create(['check_id' => $check->id, 'office_id' => 1,'user_id' => Auth::user()->id]);
@@ -63,15 +63,30 @@ class CheckController extends Controller
         }
     }
 
+    public function devolver_checks(Request $request)
+    {
+        Check::where('id',$request->id)->update(['status' => 1]);
+        ChecksHistory::create(['check_id' => $request->id, 'office_id' => 1, 'status' => 3, 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
+
+        return redirect()->route('checks.index')->with(['message' => 'Cheque Devolvido Exitosamente.', 'alert-type' => 'success']);
+    }   
+
     public function entregar_checks(Request $request)
     {
 
         Check::where('id',$request->id)->update(['status' => 2]);
+
+        ChecksHistory::create(['check_id' => $request->id, 'status' => 2, 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
+
         return redirect()->route('checks.index')->with(['message' => 'Cheque Entregado Exitosamente.', 'alert-type' => 'success']);
     }
 
     public function destroy(Request $request)
     {
+        // return $request;
         Check::where('id',$request->id)->update(['deleted_at' => Carbon::now()]);
+        ChecksHistory::create(['check_id' => $request->id, 'status' => 0, 'office_id' => 1,'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
+
+        return redirect()->route('checks.index')->with(['message' => 'Cheque Eliminado Exitosamente.', 'alert-type' => 'success']);
     }
 }
