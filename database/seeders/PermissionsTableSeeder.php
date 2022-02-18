@@ -101,6 +101,18 @@ class PermissionsTableSeeder extends Seeder
             ]);
         }
 
+        // Reports Contracts
+        $keys = [
+            'browse_reportscontractscontracts',
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'reports_contracts',
+            ]);
+        }
+
         // Reports social security
         $keys = [
             'browse_reportssocial-securitypayments',
