@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSeniorityBonusTypesTable extends Migration
+class CreatePaymentschedulesFilesDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateSeniorityBonusTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('seniority_bonus_types', function (Blueprint $table) {
+        Schema::create('paymentschedules_files_details', function (Blueprint $table) {
             $table->id();
-            $table->string('description')->nullable();
-            $table->smallInteger('percentage')->nullable();
-            $table->smallInteger('status')->nullable()->default(1);
+            $table->foreignId('paymentschedules_file_id')->nullable()->constrained('paymentschedules_files');
+            $table->foreignId('person_id')->nullable()->constrained('people');
+            $table->text('details')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +30,6 @@ class CreateSeniorityBonusTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('seniority_bonus_types');
+        Schema::dropIfExists('paymentschedules_files_details');
     }
 }

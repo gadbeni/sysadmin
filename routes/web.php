@@ -15,6 +15,7 @@ use App\Http\Controllers\ContractsController;
 use App\Http\Controllers\StipendController;
 use App\Http\Controllers\CheckController;
 use App\Http\Controllers\PeriodsController;
+use App\Http\Controllers\PaymentschedulesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,9 +65,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('vaults/{vault}/print/closure', [VaultsController::class, 'print_closure'])->name('vaults.print.closure');
     Route::get('vaults/{vault}/print/status', [VaultsController::class, 'print_status'])->name('vaults.print.status');
 
-    Route::get('planillas', [PlanillasController::class, 'planillas_index'])->name('planillas.index');
-    Route::get('planillas/create', [PlanillasController::class, 'planillas_create'])->name('planillas.create');
-    Route::post('planillas/generate', [PlanillasController::class, 'planillas_generate'])->name('planillas.generate');
     Route::get('planillas/pagos', [PlanillasController::class, 'planillas_pagos_index'])->name('planillas.pagos.index');
     Route::post('planillas/pagos/search', [PlanillasController::class, 'planillas_pagos_search'])->name('planillas.pagos.search');
     Route::get('planillas/pagos/search/id', [PlanillasController::class, 'planillas_pagos_search_by_id']);
@@ -80,6 +78,15 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('planillas/pagos/delete/print/{id}', [PlanillasController::class, 'planillas_pagos_delete_print']);
 
     Route::post('planillas/pagos/centralizada/search', [PlanillasController::class, 'planillas_pagos_centralizada_search'])->name('planillas.pagos.centralizada.search');
+
+    // Planillas de pagos
+    Route::resource('paymentschedules', PaymentschedulesController::class);
+    Route::post('paymentschedules/generate', [PaymentschedulesController::class, 'generate'])->name('paymentschedules.generate');
+    Route::get('paymentschedules/files/list', [PaymentschedulesController::class, 'files_index'])->name('paymentschedules.files.index');
+    Route::get('paymentschedules/files/create', [PaymentschedulesController::class, 'files_create'])->name('paymentschedules.files.create');
+    Route::post('paymentschedules/files/generate', [PaymentschedulesController::class, 'files_generate'])->name('paymentschedules.files.generate');
+    Route::post('paymentschedules/files/store', [PaymentschedulesController::class, 'files_store'])->name('paymentschedules.files.store');
+    Route::post('paymentschedules/files/delete', [PaymentschedulesController::class, 'files_delete'])->name('paymentschedules.files.delete');
 
     // Previsión social
     // * Cheques
