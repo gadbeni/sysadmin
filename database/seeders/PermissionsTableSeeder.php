@@ -40,7 +40,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('permissions');
         Permission::generateFor('settings');
 
-        Permission::generateFor('planillas');
+        // Permission::generateFor('planillas');
         Permission::generateFor('cashiers');
         Permission::generateFor('vaults');
         Permission::generateFor('social_security_types');
@@ -64,7 +64,21 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('periods');
         Permission::generateFor('seniority_bonus_types');
         Permission::generateFor('seniority_bonus_people');
+        Permission::generateFor('paymentschedules');
 
+        // Planillas
+        $keys = [
+            'browse_paymentschedulesfiles',
+            'browse_paymentschedulesfilescreate'
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'paymentschedules',
+            ]);
+        }
+        
         // Pago de planillas
         $keys = [
             'browse_planillaspagos',

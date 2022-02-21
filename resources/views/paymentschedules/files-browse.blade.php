@@ -1,6 +1,6 @@
 @extends('voyager::master')
 
-@section('page_title', 'Viendo Planillas')
+@section('page_title', 'Viendo Archivos')
 
 @section('page_header')
     <div class="container-fluid">
@@ -10,7 +10,7 @@
                     <div class="panel-body" style="padding: 0px">
                         <div class="col-md-8" style="padding: 0px">
                             <h1 class="page-title">
-                                <i class="voyager-logbook"></i> Planillas
+                                <i class="voyager-file-text"></i> Archivos
                             </h1>
                             {{-- <div class="alert alert-info">
                                 <strong>Información:</strong>
@@ -18,7 +18,7 @@
                             </div> --}}
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
-                            <a href="{{ route('planillas.create') }}" class="btn btn-success">
+                            <a href="{{ route('paymentschedules.files.create') }}" class="btn btn-success">
                                 <i class="voyager-plus"></i> <span>Crear</span>
                             </a>
                         </div>

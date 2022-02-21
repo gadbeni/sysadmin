@@ -23,7 +23,7 @@ class SeniorityBonusTypesTableSeeder extends Seeder
             array (
                 'id' => 1,
                 'description' => '2 a 4 años',
-                'percentaje' => 5,
+                'percentage' => 5,
                 'status' => 1,
                 'created_at' => '2022-02-17 13:25:07',
                 'updated_at' => '2022-02-17 13:25:07',
@@ -33,7 +33,7 @@ class SeniorityBonusTypesTableSeeder extends Seeder
             array (
                 'id' => 2,
                 'description' => '5 a 7 años',
-                'percentaje' => 11,
+                'percentage' => 11,
                 'status' => 1,
                 'created_at' => '2022-02-17 13:25:26',
                 'updated_at' => '2022-02-17 13:25:26',
@@ -43,7 +43,7 @@ class SeniorityBonusTypesTableSeeder extends Seeder
             array (
                 'id' => 3,
                 'description' => '8 a 10 años',
-                'percentaje' => 18,
+                'percentage' => 18,
                 'status' => 1,
                 'created_at' => '2022-02-17 13:25:46',
                 'updated_at' => '2022-02-17 13:26:17',
@@ -53,7 +53,7 @@ class SeniorityBonusTypesTableSeeder extends Seeder
             array (
                 'id' => 4,
                 'description' => '11 a 14 años',
-                'percentaje' => 26,
+                'percentage' => 26,
                 'status' => 1,
                 'created_at' => '2022-02-17 13:26:09',
                 'updated_at' => '2022-02-17 13:26:09',
@@ -63,7 +63,7 @@ class SeniorityBonusTypesTableSeeder extends Seeder
             array (
                 'id' => 5,
                 'description' => '15 a 19 años',
-                'percentaje' => 34,
+                'percentage' => 34,
                 'status' => 1,
                 'created_at' => '2022-02-17 13:26:47',
                 'updated_at' => '2022-02-17 13:26:47',
@@ -73,7 +73,7 @@ class SeniorityBonusTypesTableSeeder extends Seeder
             array (
                 'id' => 6,
                 'description' => '20 a 24 años',
-                'percentaje' => 42,
+                'percentage' => 42,
                 'status' => 1,
                 'created_at' => '2022-02-17 13:27:10',
                 'updated_at' => '2022-02-17 13:27:10',
@@ -83,7 +83,7 @@ class SeniorityBonusTypesTableSeeder extends Seeder
             array (
                 'id' => 7,
                 'description' => '25 o mas años',
-                'percentaje' => 50,
+                'percentage' => 50,
                 'status' => 1,
                 'created_at' => '2022-02-17 13:28:05',
                 'updated_at' => '2022-02-17 13:28:05',
