@@ -180,7 +180,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = "read_cities" or
                                             `key` = "edit_cities" or
                                             `key` = "add_cities" or
-                                            table_name = "reports_rrhh"')->get();
+                                            table_name = "reports_rrhh" or
+                                            table_name = "seniority_bonus_people"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_tecnico')->firstOrFail();
@@ -208,7 +209,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = "browse_cities" or
                                             `key` = "read_cities" or
                                             `key` = "edit_cities" or
-                                            `key` = "add_cities"')->get();
+                                            `key` = "add_cities" or
+                                            table_name = "seniority_bonus_people"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de administrativo

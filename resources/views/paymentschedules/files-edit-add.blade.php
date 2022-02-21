@@ -59,7 +59,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="file">Archivo</label>
-                                    <input type="file" name="file" class="form-control" required>
+                                    <input type="file" name="file" class="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required>
                                 </div>
                                 <div class="form-group col-md-12 text-right">
                                     <button type="submit" class="btn btn-success">Generar</button>

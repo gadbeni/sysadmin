@@ -69,6 +69,11 @@ class PaymentschedulesController extends Controller
             'deleted_at' => NULL,
         ]);
 
+        if($paymentschedule->status == NULL){
+            $paymentschedule->status = 1;
+            $paymentschedule->save();
+        }
+
         return view('paymentschedules.generate', compact('contracts', 'period_id', 'paymentschedule', 'paymentschedules_file'));
     }
 
@@ -169,8 +174,23 @@ class PaymentschedulesController extends Controller
     {
         DB::beginTransaction();
         try {
+            // Obtener datos de la planilla actual
+            $centralize_code = '';
+            if($request->centralize){
+                $centralize_code = $request->paymentschedule_id.'-c';
+                $current_paymentschedule = Paymentschedule::find($request->paymentschedule_id);
+                $paymentschedule = Paymentschedule::where('period_id', $current_paymentschedule->period_id)
+                                        ->where('procedure_type_id', $current_paymentschedule->procedure_type_id)
+                                        ->where('centralize', 1)->where('deleted_at', NULL)->first();
+                if($paymentschedule){
+                    $centralize_code = $paymentschedule->centralize_code ?? $request->paymentschedule_id.'-c';
+                }
+            }
 
             Paymentschedule::where('id', $request->paymentschedule_id)->update([
+                'centralize' => $request->centralize,
+                'centralize_code' => $centralize_code,
+                'observations' => $request->observations,
                 'status' => 2,
                 'user_id' => Auth::user()->id,
             ]);
@@ -191,9 +211,8 @@ class PaymentschedulesController extends Controller
             $health = json_decode($request->health);
             $rc_iva_amount = json_decode($request->rc_iva_amount);
             $faults_quantity = json_decode($request->faults_quantity);
-
-            // dd($common_risk);
-            for ($i=0; $i < count($contract_id); $i++) { 
+            
+            for ($i=0; $i < count($contract_id); $i++) {
                 PaymentschedulesDetail::create([
                     'paymentschedule_id' => $request->paymentschedule_id,
                     'contract_id' => $contract_id[$i],

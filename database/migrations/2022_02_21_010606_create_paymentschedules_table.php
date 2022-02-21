@@ -20,6 +20,7 @@ class CreatePaymentschedulesTable extends Migration
             $table->foreignId('period_id')->nullable()->constrained('periods');
             $table->foreignId('procedure_type_id')->nullable()->constrained('procedure_types');
             $table->smallInteger('centralize')->nullable()->default(0);
+            $table->string('centralize_code')->nullable();
             $table->text('observations')->nullable();
             $table->smallInteger('status')->nullable()->default(1);
             $table->timestamps();

@@ -12,6 +12,6 @@ class PaymentschedulesDetail extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'paymentschedule_id', 'contract_id', 'worked_days', 'job', 'job_level', 'salary', 'seniority_bonus_percentage', 'solidary', 'common_risk', 'afp_commission', 'retirement', 'solidary_national', 'solidary_employer', 'housing_employer', 'health', 'rc_iva_amount', 'faults_quantity'
+        'paymentschedule_id', 'contract_id', 'item', 'worked_days', 'job', 'job_level', 'salary', 'seniority_bonus_percentage', 'solidary', 'common_risk', 'afp_commission', 'retirement', 'solidary_national', 'solidary_employer', 'housing_employer', 'health', 'rc_iva_amount', 'faults_quantity'
     ];
 }
