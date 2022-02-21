@@ -87,6 +87,10 @@
                                                 @if ($item->status == 2)
                                                     <label class="label label-success">Entregado</label>
                                                 @endif
+                                                @if ($item->status == 3)
+                                                    <label class="label label-warning">Anulado</label>
+                                                    <!-- <label class="label label-warning">Devolvido</label> -->
+                                                @endif
                                             </td>
                                             <td class="actions text-right dt-not-orderable sorting_disabled">
                                                 @if ($item->status != 2)
@@ -205,6 +209,9 @@
                             <div class="row" id="tip">
                                 
                             </div>
+                            <div class="row" id="div_ci">
+                                
+                            </div>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="input-group-prepend">
@@ -312,6 +319,9 @@
                             </div>
                         </div>
                         <div class="row" id="tips">
+                                
+                        </div>
+                        <div class="row" id="div_cis">
                                 
                         </div>
                         <div class="row">
@@ -479,6 +489,8 @@
                 $('#tipopagos').on('change', function_div);
 
                 $('#select-checkcategoria_id').on('change', function_divs);
+                $('#tipopagos').on('change', function_cis);
+
             });
 
             $('#edit_modal').on('show.bs.modal', function (event) {
@@ -526,10 +538,28 @@
                 }
                 modal.find('.modal-body #select-tipo').val(item.tipopagos).trigger('change')   
                 
+                if(item.checkcategoria_id == 4 || item.tipopagos == 3)
+                {
+                    var div =   '<div class="col-md-12">'
+                        div+=           '<div class="input-group-prepend">'
+                        div+=                '<span class="input-group-text"><b>Ci:</b></span>'
+                        div+=            '</div>'
+                        div+=            '<input type="text" id="ci" class="form-control" name="ci" required>'
+                        div+=        '</div>'
+                    $('#div_cis').html(div);
+                }
+                else
+                {
+                    div ='';
+                    $('#div_cis').html(div);
+                }
+                modal.find('.modal-body #ci').val(item.ci)   
 
 
                 
             });
+
+
             $('#modal_entregar').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget) //captura valor del data-empresa=""
 
@@ -568,7 +598,7 @@
                         div+=           '<div class="input-group-prepend">'
                         div+=                '<span class="input-group-text"><b>Tipo:</b></span>'
                         div+=            '</div>'
-                        div+=            '<select name="tipopagos" id="tipopagos" class="form-control select2" required>'
+                        div+=            '<select name="tipopagos" id="tippago" class="form-control select2" required>'
                         div+=                '<option value="">Seleccione un tipo..</option>'
                         div+=                '<option value="1">Personal Eventual.</option>'
                         div+=                '<option value="2">Funcionamiento.</option>'
@@ -576,11 +606,47 @@
                         div+=            '</select>'
                         div+=        '</div>'
                     $('#tip').html(div);
+                    $('#tippago').on('change', function_ci);
                 }
                 else
                 {
                     div ='';
                     $('#tip').html(div);
+                }
+
+                if(id == 4)
+                {
+                    var div =        '<div class="col-md-12">'
+                        div+=           '<div class="input-group-prepend">'
+                        div+=                '<span class="input-group-text"><b>Ci:</b></span>'
+                        div+=            '</div>'                                
+                        div+=            '<input type="text" class="form-control" name="ci" required>'
+                        div+=        '</div>'
+                    $('#div_ci').html(div);
+                }
+                else
+                {
+                    div ='';
+                    $('#div_ci').html(div);
+                }
+            }
+            function function_ci()
+            {
+                var id =  $(this).val();   
+                if(id == 3)
+                {
+                    var div =   '<div class="col-md-12">'
+                        div+=           '<div class="input-group-prepend">'
+                        div+=                '<span class="input-group-text"><b>Ci:</b></span>'
+                        div+=            '</div>'                                
+                        div+=            '<input type="text" class="form-control" name="ci" required>'
+                        div+=        '</div>'
+                    $('#div_ci').html(div);
+                }
+                else
+                {
+                    div ='';
+                    $('#div_ci').html(div);
                 }
             }
 
@@ -596,7 +662,7 @@
                         div+=           '<div class="input-group-prepend">'
                         div+=                '<span class="input-group-text"><b>Tipo:</b></span>'
                         div+=            '</div>'
-                        div+=            '<select name="tipopagos" id="tipopagos" class="form-control select2" required>'
+                        div+=            '<select name="tipopagos" id="tippagos" class="form-control select2" required>'
                         div+=                '<option value="">Seleccione un tipo..</option>'
                         div+=                '<option value="1">Personal Eventual.</option>'
                         div+=                '<option value="2">Funcionamiento.</option>'
@@ -604,11 +670,48 @@
                         div+=            '</select>'
                         div+=        '</div>'
                     $('#tips').html(div);
+                    $('#tippagos').on('change', function_cis);
+
                 }
                 else
                 {
                     div ='';
                     $('#tips').html(div);
+                }
+
+                if(id == 4)
+                {
+                    var div =        '<div class="col-md-12">'
+                        div+=           '<div class="input-group-prepend">'
+                        div+=                '<span class="input-group-text"><b>Ci:</b></span>'
+                        div+=            '</div>'                                
+                        div+=            '<input type="text" class="form-control" name="ci" required>'
+                        div+=        '</div>'
+                    $('#div_cis').html(div);
+                }
+                else
+                {
+                    div ='';
+                    $('#div_cis').html(div);
+                }
+            }
+            function function_cis()
+            {
+                var id =  $(this).val();   
+                if(id == 3)
+                {
+                    var div =   '<div class="col-md-12">'
+                        div+=           '<div class="input-group-prepend">'
+                        div+=                '<span class="input-group-text"><b>Ci:</b></span>'
+                        div+=            '</div>'                                
+                        div+=            '<input type="text" class="form-control" name="ci" required>'
+                        div+=        '</div>'
+                    $('#div_cis').html(div);
+                }
+                else
+                {
+                    div ='';
+                    $('#div_cis').html(div);
                 }
             }
 

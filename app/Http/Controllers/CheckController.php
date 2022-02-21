@@ -65,7 +65,7 @@ class CheckController extends Controller
 
     public function devolver_checks(Request $request)
     {
-        Check::where('id',$request->id)->update(['status' => 1]);
+        Check::where('id',$request->id)->update(['status' => 3]);
         ChecksHistory::create(['check_id' => $request->id, 'office_id' => 1, 'status' => 3, 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
 
         return redirect()->route('checks.index')->with(['message' => 'Cheque Devolvido Exitosamente.', 'alert-type' => 'success']);
@@ -84,9 +84,14 @@ class CheckController extends Controller
     public function destroy(Request $request)
     {
         // return $request;
-        Check::where('id',$request->id)->update(['deleted_at' => Carbon::now()]);
+        Check::where('id',$request->id)->update(['deleted_at' => Carbon::now(),'status' => 0 ]);
         ChecksHistory::create(['check_id' => $request->id, 'status' => 0, 'office_id' => 1,'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
 
         return redirect()->route('checks.index')->with(['message' => 'Cheque Eliminado Exitosamente.', 'alert-type' => 'success']);
+    }
+
+    protected function report_view()
+    {
+        return view('reports.check.check-browse');
     }
 }

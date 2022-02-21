@@ -643,4 +643,47 @@ class ReportsController extends Controller
             return view('reports.cashiers.vaults-list', compact('closure'));
         }
     }
+
+
+
+    public function check_list(Request $request){
+        if($request->tipo == 1)
+        {
+            $detalle = DB::table('checks as c')
+                ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
+                ->select('cc.name', 'c.resumen')
+                ->get();
+        }
+        else
+        {
+            $detalle = DB::table('checks as c')
+                ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
+                ->select('cc.name', 'c.resumen')
+                ->get();
+
+
+            if($request->tipo == 2)
+            {
+
+            }
+            else
+            {
+                if($request->tipo == 3)
+                {
+
+                }
+                else
+                {
+
+                }
+            }
+        }
+
+        // $detalle = DB::table('checks as c')
+        //         ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
+        //         ->select('cc.name', 'c.resumen')
+        //         ->get();
+        // dd($detalle);
+        return view('reports.check.check-list', compact('detalle'));
+    }
 }
