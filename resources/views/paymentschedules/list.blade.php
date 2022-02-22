@@ -34,18 +34,15 @@
                                         $status = '<label class="label label-default">Borrador</label>';
                                         break;
                                     case '2':
-                                        $status = '<label class="label label-warning">Cargada</label>';
-                                        break;
-                                    case '3':
                                         $status = '<label class="label label-info">Procesada</label>';
                                         break;
-                                    case '4':
+                                    case '3':
                                         $status = '<label class="label label-primary">Enviada</label>';
                                         break;
-                                    case '5':
+                                    case '4':
                                         $status = '<label class="label label-success">Habilitada</label>';
                                         break;
-                                    case '6':
+                                    case '5':
                                         $status = '<label class="label label-dark">Pagada</label>';
                                         break;
                                     default:

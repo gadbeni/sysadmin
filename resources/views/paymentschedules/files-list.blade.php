@@ -8,6 +8,7 @@
                     <th>Periodo</th>
                     <th>Tipo planilla</th>
                     <th>Tipo de archivo</th>
+                    <th>Estado</th>
                     <th>Creado por</th>
                     <th>Acciones</th>
                 </tr>
@@ -20,6 +21,23 @@
                         <td>{{ $item->period->name }}</td>
                         <td>{{ $item->procedure_type->name }}</td>
                         <td>{{ $item->type }}</td>
+                        <td>
+                            @php
+                                $status = '';
+                                switch ($item->status) {
+                                    case '1':
+                                        $status = '<label class="label label-default">Borrador</label>';
+                                        break;
+                                    case '2':
+                                        $status = '<label class="label label-success">Cargado</label>';
+                                        break;
+                                    default:
+                                        # code...
+                                        break;
+                                }
+                            @endphp
+                            {!! $status !!}
+                        </td>
                         <td>
                             {{ $item->user ? $item->user->name : '' }} <br>
                             {{ date('d/m/Y', strtotime($item->created_at)) }} <br>

@@ -16,6 +16,7 @@ use App\Http\Controllers\StipendController;
 use App\Http\Controllers\CheckController;
 use App\Http\Controllers\PeriodsController;
 use App\Http\Controllers\PaymentschedulesController;
+use App\Http\Controllers\ImportsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,11 +85,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('paymentschedules/ajax/list/{search?}', [PaymentschedulesController::class, 'list']);
     Route::post('paymentschedules/generate', [PaymentschedulesController::class, 'generate'])->name('paymentschedules.generate');
     Route::get('paymentschedules/files/index', [PaymentschedulesController::class, 'files_index'])->name('paymentschedules.files.index');
-    Route::get('paymentschedules/files/list', [PaymentschedulesController::class, 'files_list'])->name('paymentschedules.files.list');
+    Route::get('paymentschedules/files/list/{search?}', [PaymentschedulesController::class, 'files_list'])->name('paymentschedules.files.list');
     Route::get('paymentschedules/files/create', [PaymentschedulesController::class, 'files_create'])->name('paymentschedules.files.create');
     Route::post('paymentschedules/files/generate', [PaymentschedulesController::class, 'files_generate'])->name('paymentschedules.files.generate');
     Route::post('paymentschedules/files/store', [PaymentschedulesController::class, 'files_store'])->name('paymentschedules.files.store');
-    Route::post('paymentschedules/files/{file}/delete', [PaymentschedulesController::class, 'files_delete'])->name('paymentschedules.files.delete');
+    Route::post('paymentschedules/files/delete', [PaymentschedulesController::class, 'files_delete'])->name('paymentschedules.files.delete');
 
     // Previsión social
     // * Cheques
@@ -200,6 +201,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('plugins/cashiers/tickets/get', function(){
         return response()->json(['ticket' => setting('auxiliares.numero_ticket')]);
     });
+
+    Route::get('imports', [ImportsController::class, 'imports_index'])->name('imports.index');
+    Route::post('imports/store', [ImportsController::class, 'imports_store'])->name('imports.store');
 });
 
 // Clear cache

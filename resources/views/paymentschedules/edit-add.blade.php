@@ -59,7 +59,7 @@
             </div>
         </div>
 
-        <div id="result"></div>
+        <div class="row" id="div-results" style="min-height: 120px"></div>
     </div>
 @stop
 
@@ -101,11 +101,13 @@
             });
 
             $('#form-generate').submit(function(e){
+                $('#div-results').loading({message: 'Cargando...'});
                 e.preventDefault();
                 let form = $('#form-generate');
                 let data = form.serialize();
                 $.post(form.attr('action'), data, function(res){
-                    $('#result').html(res);
+                    $('#div-results').html(res);
+                    $('#div-results').loading('toggle');
                 });
             });
         });

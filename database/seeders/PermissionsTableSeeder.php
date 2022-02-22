@@ -65,6 +65,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('seniority_bonus_types');
         Permission::generateFor('seniority_bonus_people');
         Permission::generateFor('paymentschedules');
+        Permission::generateFor('imports');
 
         // Planillas
         $keys = [

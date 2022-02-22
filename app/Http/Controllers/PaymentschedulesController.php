@@ -22,6 +22,11 @@ use App\Models\PaymentschedulesDetail;
 
 class PaymentschedulesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -107,16 +112,16 @@ class PaymentschedulesController extends Controller
         $paginate = request('paginate') ?? 10;
         $data = PaymentschedulesFile::with(['user', 'details', 'direccion_administrativa', 'period', 'procedure_type'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
-                    // ->where(function($query) use ($search){
-                    //     if($search){
-                    //         $query->OrwhereHas('period', function($query) use($search){
-                    //             $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
-                    //         })
-                    //         ->OrWhereHas('user', function($query) use($search){
-                    //             $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
-                    //         });
-                    //     }
-                    // })
+                    ->where(function($query) use ($search){
+                        if($search){
+                            $query->OrwhereHas('period', function($query) use($search){
+                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                            })
+                            ->OrWhereHas('user', function($query) use($search){
+                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                            });
+                        }
+                    })
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')
                     ->paginate($paginate);
         // dd($data);
