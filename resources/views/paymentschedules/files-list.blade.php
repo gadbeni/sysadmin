@@ -21,22 +21,24 @@
                         <td>{{ $item->period->name }}</td>
                         <td>{{ $item->procedure_type->name }}</td>
                         <td>{{ $item->type }}</td>
-                        <td>
+                        <td>                          
                             @php
-                                $status = '';
                                 switch ($item->status) {
-                                    case '1':
-                                        $status = '<label class="label label-default">Borrador</label>';
+                                    case 'anulado':
+                                        $label = 'danger';
                                         break;
-                                    case '2':
-                                        $status = '<label class="label label-success">Cargado</label>';
+                                    case 'borrador':
+                                        $label = 'default';
+                                        break;
+                                    case 'cargado':
+                                        $label = 'success';
                                         break;
                                     default:
-                                        # code...
+                                        $label = 'default';
                                         break;
                                 }
                             @endphp
-                            {!! $status !!}
+                            <label class="label label-{{ $label }}">{{ $item->status }}</label>
                         </td>
                         <td>
                             {{ $item->user ? $item->user->name : '' }} <br>

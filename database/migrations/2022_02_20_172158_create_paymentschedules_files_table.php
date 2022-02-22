@@ -22,7 +22,7 @@ class CreatePaymentschedulesFilesTable extends Migration
             $table->string('type')->nullable();
             $table->text('observations')->nullable();
             $table->string('url')->nullable();
-            $table->smallInteger('status')->nullable()->default(1);
+            $table->string('status')->nullable()->default('borrador');
             $table->timestamps();
             $table->softDeletes();
         });

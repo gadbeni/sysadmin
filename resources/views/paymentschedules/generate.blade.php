@@ -1,4 +1,4 @@
-@if($paymentschedule->status != 1)
+@if($paymentschedule->status != 'borrador')
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-bordered">

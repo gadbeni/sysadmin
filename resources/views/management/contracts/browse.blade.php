@@ -67,22 +67,29 @@
                                             </ul>
                                         </td>
                                         <td>
-                                            @switch($item->status)
-                                                @case(1)
-                                                    <label class="label label-warning">Elaborado</label>
-                                                    @break
-                                                @case(2)
-                                                    <label class="label label-info">Enviado</label>
-                                                    @break
-                                                @case(3)
-                                                    <label class="label label-success">Firmado</label>
-                                                    @break
-                                                @case(4)
-                                                    <label class="label label-danger">Finalizado</label>
-                                                    @break
-                                                @default
-                                                    
-                                            @endswitch
+                                            @php
+                                                switch ($item->status) {
+                                                    case 'anulado':
+                                                        $label = 'danger';
+                                                        break;
+                                                    case 'elaborado':
+                                                        $label = 'default';
+                                                        break;
+                                                    case 'enviado':
+                                                        $label = 'info';
+                                                        break;
+                                                    case 'firmado':
+                                                        $label = 'success';
+                                                        break;
+                                                    case 'finalizado':
+                                                        $label = 'warning';
+                                                        break;
+                                                    default:
+                                                        $label = 'default';
+                                                        break;
+                                                }
+                                            @endphp
+                                            <label class="label label-{{ $label }}">{{ $item->status }}</label>
                                         </td>
                                         <td class="no-sort no-click bread-actions text-right">
                                             <div class="btn-group">

@@ -63,7 +63,7 @@ class ContractsController extends Controller
         $ids = substr($ids, 0, -1);
         $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw($ids ? "id in ($ids)" : 1)->get();
 
-        $people = Person::whereRaw("id not in (select person_id from contracts where status <> 4 and deleted_at is null)")->where('deleted_at', NULL)->get();
+        $people = Person::whereRaw("id not in (select person_id from contracts where status <> 'finalizado' and deleted_at is null)")->where('deleted_at', NULL)->get();
         $direccion_administrativas = DireccionAdministrativa::whereRaw(Auth::user()->direccion_administrativa_id ? "ID = ".Auth::user()->direccion_administrativa_id : 1)->get();
         $unidad_administrativas = UnidadAdministrativa::get();
         $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
@@ -73,7 +73,7 @@ class ContractsController extends Controller
         }])->where('estado', 1)->get();
         // dd($cargos);
         $jobs = Job::with('direccion_administrativa')
-                    ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 4 and deleted_at is null)")
+                    ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'finalizado' and deleted_at is null)")
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->where('deleted_at', NULL)->get();
         return view('management.contracts.edit-add', compact('procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos', 'jobs'));
@@ -89,7 +89,7 @@ class ContractsController extends Controller
     {
         try {
 
-            $contract_person = Contract::where('person_id', $request->person_id)->where('status', '<>', 4)->where('deleted_at', NULL)->first();
+            $contract_person = Contract::where('person_id', $request->person_id)->where('status', '<>', 'finalizado')->where('deleted_at', NULL)->first();
             if($contract_person){
                 return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso.', 'alert-type' => 'warning']);
             }
@@ -185,7 +185,7 @@ class ContractsController extends Controller
                     }])->where('estado', 1)->get();
         
         $jobs = Job::with('direccion_administrativa')
-                    ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 4 and deleted_at is null) or id = ".($contract->job_id ?? 0))
+                    ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'finalizado' and deleted_at is null) or id = ".($contract->job_id ?? 0))
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->where('deleted_at', NULL)->get();
         return view('management.contracts.edit-add', compact('contract', 'procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos', 'jobs'));

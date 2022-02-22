@@ -36,4 +36,8 @@ class PaymentschedulesDetail extends Model
         'faults_amount',
         'liquid_payable'
     ];
+
+    public function contract(){
+        return $this->belongsTo(Contract::class, 'contract_id');
+    }
 }

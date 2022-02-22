@@ -22,7 +22,7 @@ class CreatePaymentschedulesTable extends Migration
             $table->smallInteger('centralize')->nullable()->default(0);
             $table->string('centralize_code')->nullable();
             $table->text('observations')->nullable();
-            $table->smallInteger('status')->nullable()->default(1);
+            $table->string('status')->nullable()->default('borrador');
             $table->timestamps();
             $table->softDeletes();
         });
