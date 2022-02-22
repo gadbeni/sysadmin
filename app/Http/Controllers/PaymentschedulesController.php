@@ -32,6 +32,27 @@ class PaymentschedulesController extends Controller
         return view('paymentschedules.browse');
     }
 
+    public function list($search = null){
+        $paginate = request('paginate') ?? 10;
+        $data = Paymentschedule::with(['user', 'details', 'direccion_administrativa', 'period', 'procedure_type'])
+                    ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
+                    // ->where('status', '>', 1)
+                    ->where(function($query) use ($search){
+                        if($search){
+                            $query->OrwhereHas('period', function($query) use($search){
+                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                            })
+                            ->OrWhereHas('user', function($query) use($search){
+                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                            });
+                        }
+                    })
+                    ->where('deleted_at', NULL)->orderBy('id', 'DESC')
+                    ->paginate($paginate);
+        // dd($data);
+        return view('paymentschedules.list', compact('data', 'search'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -80,6 +101,26 @@ class PaymentschedulesController extends Controller
     public function files_index()
     {
         return view('paymentschedules.files-browse');
+    }
+
+    public function files_list($search = null){
+        $paginate = request('paginate') ?? 10;
+        $data = PaymentschedulesFile::with(['user', 'details', 'direccion_administrativa', 'period', 'procedure_type'])
+                    ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
+                    // ->where(function($query) use ($search){
+                    //     if($search){
+                    //         $query->OrwhereHas('period', function($query) use($search){
+                    //             $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                    //         })
+                    //         ->OrWhereHas('user', function($query) use($search){
+                    //             $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                    //         });
+                    //     }
+                    // })
+                    ->where('deleted_at', NULL)->orderBy('id', 'DESC')
+                    ->paginate($paginate);
+        // dd($data);
+        return view('paymentschedules.files-list', compact('data', 'search'));
     }
 
     public function files_create(){
@@ -197,40 +238,50 @@ class PaymentschedulesController extends Controller
 
             $contract_id = json_decode($request->contract_id);
             $worked_days = json_decode($request->worked_days);
+            $salary = json_decode($request->salary);
+            $partial_salary = json_decode($request->partial_salary);
             $job = json_decode($request->job);
             $job_level = json_decode($request->job_level);
-            $salary = json_decode($request->salary);
             $seniority_bonus_percentage = json_decode($request->seniority_bonus_percentage);
+            $seniority_bonus_amount = json_decode($request->seniority_bonus_amount);
             $solidary = json_decode($request->solidary);
             $common_risk = json_decode($request->common_risk);
             $afp_commission = json_decode($request->afp_commission);
             $retirement = json_decode($request->retirement);
             $solidary_national = json_decode($request->solidary_national);
+            $labor_total = json_decode($request->labor_total);
             $solidary_employer = json_decode($request->solidary_employer);
             $housing_employer = json_decode($request->housing_employer);
             $health = json_decode($request->health);
             $rc_iva_amount = json_decode($request->rc_iva_amount);
             $faults_quantity = json_decode($request->faults_quantity);
+            $faults_amount = json_decode($request->faults_amount);
+            $liquid_payable = json_decode($request->liquid_payable);
             
             for ($i=0; $i < count($contract_id); $i++) {
                 PaymentschedulesDetail::create([
                     'paymentschedule_id' => $request->paymentschedule_id,
                     'contract_id' => $contract_id[$i],
                     'worked_days' => $worked_days[$i],
+                    'salary' => $salary[$i],
+                    'partial_salary' => $partial_salary[$i],
                     'job' => $job[$i],
                     'job_level' => $job_level[$i],
-                    'salary' => $salary[$i],
                     'seniority_bonus_percentage' => $seniority_bonus_percentage[$i],
+                    'seniority_bonus_amount' => $seniority_bonus_amount[$i],
                     'solidary' => $solidary[$i],
                     'common_risk' => $common_risk[$i],
                     'afp_commission' => $afp_commission[$i],
                     'retirement' => $retirement[$i],
                     'solidary_national' => $solidary_national[$i],
+                    'labor_total' => $labor_total[$i],
                     'solidary_employer' => $solidary_employer[$i],
                     'housing_employer' => $housing_employer[$i],
                     'health' => $health[$i],
                     'rc_iva_amount' => $rc_iva_amount[$i],
                     'faults_quantity' => $faults_quantity[$i],
+                    'faults_amount' => $faults_amount[$i],
+                    'liquid_payable' => $liquid_payable[$i],
                 ]);
             }
             
@@ -252,7 +303,7 @@ class PaymentschedulesController extends Controller
      */
     public function show($id)
     {
-        //
+        return view('paymentschedules.read');
     }
 
     /**

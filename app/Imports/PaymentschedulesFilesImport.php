@@ -29,14 +29,14 @@ class PaymentschedulesFilesImport implements ToModel
             $details = '';
             if($this->type == 'rc-iva'){
                 $details = json_encode([
-                    'salary' => $row[3],
-                    'iva' => $row[4],
-                    'iue' => $row[5],
-                    'it' => $row[6]
+                    'salary' => number_format($row[3], 2, '.', ''),
+                    'iva' => number_format($row[4], 2, '.', ''),
+                    'iue' => number_format($row[5], 2, '.', ''),
+                    'it' => number_format($row[6], 2, '.', '')
                 ]);
             }elseif($this->type == 'biométrico'){
                 $details = json_encode([
-                    'faults' => $row[3],
+                    'faults' => number_format($row[3], 2, '.', ''),
                     'observations' => $row[4]
                 ]);
             }
