@@ -27,13 +27,37 @@ class CheckController extends Controller
 
     public function store(Request $request)
     {
+        // return $request;
         DB::beginTransaction();
         try {
-            // return $request;
-           
-            $check = Check::create(['user_id' => Auth::user()->id, 'checkcategoria_id'=> $request->checkcategoria_id, 'resumen'=> json_encode($request->all())]);
-            ChecksHistory::create(['check_id' => $check->id, 'office_id' => 1,'user_id' => Auth::user()->id]);
+            // return count($request->nrocheque);
+            $i=0;
 
+            // $arr = array('checkcategoria_id' => $request->checkcategoria_id, 'nrocheque' => $request->nrocheque[$i],
+            //                 'resumen' => $request->resumen[$i], 'nromemo' => $request->nromemo, 'nroprev' => $request->nroprev, 'nrodev' => $request->nrodev,
+            //                 'deposito' => $request->deposito, 'fechacheque' => $request->fechacheque, 'monto' => $request->monto[$i], 'observacion' => $request->observacion);
+
+            //                 // return json_encode($arr);
+
+            // $check = Check::create(['user_id' => Auth::user()->id, 'checkcategoria_id'=> $request->checkcategoria_id, 
+            //                     'resumen' => json_encode( ['checkcategoria_id' => $request->checkcategoria_id, 'nrocheque' => $request->nrocheque[$i],
+            //                     'resumen' => $request->resumen[$i], 'nromemo' => $request->nromemo, 'nroprev' => $request->nroprev, 'nrodev' => $request->nrodev,
+            //                     'deposito' => $request->deposito, 'fechacheque' => $request->fechacheque, 'monto' => $request->monto[$i], 'observacion' => $request->observacion])]);
+            // return $check;
+            
+
+            while($i < count($request->nrocheque))   
+            {     
+                $check = Check::create(['user_id' => Auth::user()->id, 'checkcategoria_id'=> $request->checkcategoria_id, 
+                                'resumen' => json_encode( ['checkcategoria_id' => $request->checkcategoria_id, 'nrocheque' => $request->nrocheque[$i],
+                                'resumen' => $request->resumen[$i], 'nromemo' => $request->nromemo, 'nroprev' => $request->nroprev, 'nrodev' => $request->nrodev,
+                                'deposito' => $request->deposito, 'fechacheque' => $request->fechacheque, 'monto' => $request->monto[$i], 'observacion' => $request->observacion])]);
+                
+
+                ChecksHistory::create(['check_id' => $check->id, 'office_id' => 1,'user_id' => Auth::user()->id]);
+                $i++;
+            }
+            // return $check;
 
             DB::commit();
             return redirect()->route('checks.index')->with(['message' => 'Cheque Registrado Correctamente.', 'alert-type' => 'success']);

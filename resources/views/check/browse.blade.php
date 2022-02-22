@@ -13,6 +13,7 @@
                             <div class="col-md-8" style="padding: 0px">
                                 <h1 class="page-title">
                                 <i class="voyager-certificate"></i> Cheques
+                                
                                 </h1>
                                 {{-- <div class="alert alert-info">
                                     <strong>Información:</strong>
@@ -183,7 +184,7 @@
         </div>
         <!-- The Modal -->
         <div class="modal fade" role="dialog" id="modalRegistrar">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">                
                     <!-- Modal Header -->
                     <div class="modal-header modal-success">
@@ -212,20 +213,48 @@
                             <div class="row" id="div_ci">
                                 
                             </div>
+
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-12">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text"><b>Nro Cheque:</b></span>
+                                        <span class="input-group-text"><b>Cantidad de Cheque:</b></span>
                                     </div>
-                                    <input type="text" class="form-control" name="nrocheque"required>
-                                </div>
-                                <div class="col-md-8">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><b>Resumen:</b></span>
-                                </div>
-                                <input type="text" class="form-control" name="resumen" required>
+                                    <select id="numerocheque" class="form-control select2" required>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                    </select>
                                 </div>
                             </div>
+                            
+                            <div id="cantcheque">                                   
+                                <div class="row" >
+                                    <div class="col-md-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><b>Nro Cheque:</b></span>
+                                        </div>
+                                        <input type="text" class="form-control" name="nrocheque[]" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><b>Monto:</b></span>
+                                        </div>
+                                        <input type="number" step="any" class="form-control" id="monto" name="monto[]" required>
+                                    </div> 
+                                    <div class="col-md-6">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><b>Resumen:</b></span>
+                                        </div>
+                                        <input type="text" class="form-control" name="resumen[]" required>
+                                    </div>                                 
+                                </div>
+                            </div>
+
+                            <hr>
+                            <p>Detalle</p>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="input-group-prepend">
@@ -259,12 +288,7 @@
                                     </div>
                                     <input type="date" step="any" class="form-control" id="fechacheque" name="fechacheque" required>
                                 </div> 
-                                <div class="col-md-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><b>Monto:</b></span>
-                                    </div>
-                                    <input type="number" step="any" class="form-control" id="monto" name="monto" required>
-                                </div>                                             
+                                                                           
                             </div>
                             <div class="row">    
                                     
@@ -491,6 +515,9 @@
                 $('#select-checkcategoria_id').on('change', function_divs);
                 $('#tipopagos').on('change', function_cis);
 
+
+                $('#numerocheque').on('change', function_cant);
+
             });
 
             $('#edit_modal').on('show.bs.modal', function (event) {
@@ -587,6 +614,41 @@
                 modal.find('.modal-body #id').val(id)
                 
             });
+
+            function function_cant()
+            {
+                var x =  $(this).val(); 
+                // alert(4)
+                var i=0;
+                var html_cant='';
+                for(i=1; i<=x; i++)
+                {                                       
+                    html_cant+=             '<hr>'
+                    html_cant+=             '<span><b>CHEQUE NRO '+i+'</b></span>'
+                    html_cant+=             '<div class="row">'
+                    html_cant+=                '<div class="col-md-3">'
+                    html_cant+=                     '<div class="input-group-prepend">'
+                    html_cant+=                         '<span class="input-group-text"><b>Nro Cheque:</b></span>'
+                    html_cant+=                     '</div>'
+                    html_cant+=                     '<input type="text" class="form-control" name="nrocheque[]" required>'
+                    html_cant+=                 '</div>'
+                    html_cant+=                 '<div class="col-md-3">'
+                    html_cant+=                     '<div class="input-group-prepend">'
+                    html_cant+=                         '<span class="input-group-text"><b>Monto:</b></span>'
+                    html_cant+=                     '</div>'
+                    html_cant+=                     '<input type="number" step="any" class="form-control" id="monto" name="monto[]" required>'
+                    html_cant+=                 '</div>' 
+                    html_cant+=                 '<div class="col-md-6">'
+                    html_cant+=                     '<div class="input-group-prepend">'
+                    html_cant+=                         '<span class="input-group-text"><b>Resumen:</b></span>'
+                    html_cant+=                     '</div>'
+                    html_cant+=                    '<input type="text" class="form-control" name="resumen[]" required>'
+                    html_cant+=                '</div>'                                 
+                    html_cant+=            '</div>'
+                }
+                // alert(html_cant)
+                $('#cantcheque').html(html_cant);
+            }
 
             function function_div()
             {
@@ -714,6 +776,14 @@
                     $('#div_cis').html(div);
                 }
             }
+
+
+
+
+
+
+
+            
 
         </script>
     @stop
