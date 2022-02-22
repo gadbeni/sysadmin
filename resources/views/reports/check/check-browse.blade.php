@@ -29,12 +29,20 @@
                                     <input type="date" name="finish" class="form-control" value="{{ date('Y-m-d') }}" required>
                                 </div>
                                 <div class="form-group">
+                                    <select name="categoria_id" class="form-control select2">
+                                        <option value="0">Todos los tipos de Cheques</option>
+                                        @foreach (\App\Models\ChecksCategory::where('status', 1)->get() as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <select name="tipo" class="form-control select2">
-                                        <!-- <option value="">Todos los cajeros</option> -->
-                                        <option value="1">Registrado</option>
+                                        <!-- <option value="0">Todos</option> -->
+                                        <option value="0">Ingresado</option>
                                         <option value="2">Entregado</option>
-                                        <option value="3">Devolvido</option>
-                                        <option value="4">Anulado</option>
+                                        <!-- <option value="3">Devolvido</option> -->
+                                        <option value="3">Anulado</option>
                                     </select>
                                 </div>
                                 <div class="text-right">

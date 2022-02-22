@@ -647,43 +647,75 @@ class ReportsController extends Controller
 
 
     public function check_list(Request $request){
-        if($request->tipo == 1)
+        $cat ='';
+        $tip ='';
+        if($request->categoria_id == 0)
         {
-            $detalle = DB::table('checks as c')
-                ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
-                ->select('cc.name', 'c.resumen')
-                ->get();
+            $cat ='!=';
         }
         else
         {
-            $detalle = DB::table('checks as c')
-                ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
-                ->select('cc.name', 'c.resumen')
-                ->get();
-
-
-            if($request->tipo == 2)
-            {
-
-            }
-            else
-            {
-                if($request->tipo == 3)
-                {
-
-                }
-                else
-                {
-
-                }
-            }
+            $cat ='=';
         }
 
-        // $detalle = DB::table('checks as c')
+        if($request->tipo == 0)
+        {
+            $tip ='!=';
+        }
+        else
+        {
+            $tip ='=';
+        }
+
+        $detalle = DB::table('checks as c')
+                ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
+                ->select('cc.name', 'c.resumen')
+                ->where('c.status', $tip, $request->tipo)
+                ->where('c.checkcategoria_id',$cat, $request->categoria_id)
+                ->where('c.deleted_at', null)
+                ->get();
+
+        // if($request->tipo == 1)
+        // {
+        //     $detalle = DB::table('checks as c')
         //         ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
         //         ->select('cc.name', 'c.resumen')
+        //         ->where('c.status', '!=', 0)
+        //         ->where('c.checkcategoria_id',$cat, $request->categoria_id)
         //         ->get();
-        // dd($detalle);
-        return view('reports.check.check-list', compact('detalle'));
+        //         // return 2;
+        // }
+        // else
+        // {          
+        //     if($request->tipo == 2)
+        //     {
+        //         $detalle = DB::table('checks as c')
+        //         ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
+        //         ->select('cc.name', 'c.resumen')
+        //         ->where('c.status', 2)
+        //         ->where('c.checkcategoria_id',$cat, $request->categoria_id)
+        //         ->get();
+        //     }
+        //     else
+        //     {                
+        //             $detalle = DB::table('checks as c')
+        //             ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
+        //             ->select('cc.name', 'c.resumen')
+        //             // ->where('c.deleted_at','!=', null)
+        //             ->where('c.status', 3)
+        //             ->get();
+        //     }
+        // }
+        $inicio = $request->start;
+        $fin = $request->finish;
+        // dd($inicio);
+    
+        if($request->print){
+            return view('reports.check.check-print', compact('detalle', 'inicio', 'fin'));
+
+        }else{
+            return view('reports.check.check-list', compact('detalle', 'inicio', 'fin'));
+
+        }
     }
 }

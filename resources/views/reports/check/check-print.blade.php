@@ -1,14 +1,27 @@
+@extends('layouts.template-print-alt')
 
-<div class="col-md-12 text-right">
+@section('page_title', 'Reporte de caja')
 
-<button type="button" onclick="report_print()" class="btn btn-danger"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+@section('content')
 
-</div>
-<div class="col-md-12">
-<div class="panel panel-bordered">
-<div class="panel-body">
-    <div class="table-responsive">
-        <table id="dataTable" class="table table-bordered">
+    <table width="100%">
+        <tr>
+            <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="120px"></td>
+            <td style="text-align: right">
+                <h3 style="margin-bottom: 0px; margin-top: 5px">
+                    REPORTE DE CHEQUES <br>
+                    
+                    {{-- <small>RECURSOS HUMANOS</small> <br> --}}
+                    <small style="font-size: 11px; font-weight: 100">Impreso por: {{ Auth::user()->name }} <br> {{ date('d/M/Y H:i:s') }}</small>
+                </h3>
+            </td>
+        </tr>
+        <tr>
+            <tr></tr>
+        </tr>
+    </table>
+    <br><br>
+    <table style="width: 100%; font-size: 12px" border="1" cellspacing="0" cellpadding="5">
             <thead>
                 <tr>
                     <th style="text-align: right">N&deg;</th>
@@ -20,7 +33,7 @@
                     <th style="text-align: right">NRO<br> DEV. </th>
                     <th style="text-align: right">FECHA<br> INGRESO. </th>                    
                     <th style="text-align: right">FECHA<br> CHEQUE. </th>                    
-                    <th style="text-align: right">MONTO<br> (*BS). </th>                                          
+                    <th style="text-align: right">MONTO<br> (*BS). </th>                                        
                 </tr>
             </thead>
             <tbody>
@@ -29,10 +42,7 @@
                             $total =0;
                         @endphp
                         @forelse ($detalle as $item)
-                                @php
-                                   
-                          
-                                @endphp
+                               
                             @if(json_decode($item->resumen)->deposito >= $inicio && json_decode($item->resumen)->deposito <= $fin )
                                 @php
                                     $total+=json_decode($item->resumen)->monto;
@@ -64,14 +74,6 @@
                             <td style="text-align: right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
                         </tr>
             </tbody>
-        </table>
-    </div>
-</div>
-</div>
-</div>
+    </table>
 
-<script>
-$(document).ready(function(){
-
-})
-</script>
+@endsection

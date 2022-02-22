@@ -129,6 +129,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::delete('check/delete', [CheckController::class, 'destroy'])->name('checks.delet');
 
 
+    Route::get('reports/check/check-browse', [CheckController::class, 'report_view'])->name('report.check.browse');
+    Route::post('reports/check/chek-list', [ReportsController::class, 'check_list'])->name('reports.check.list');
+
+
+
+
     // Administrativo
 
     // *Contratos

@@ -87,9 +87,9 @@ class DataTypesTableSeeder extends Seeder
                 'description' => NULL,
                 'generate_permissions' => 1,
                 'server_side' => 0,
-                'details' => '{"order_column":"table_name","order_display_column":"table_name","order_direction":"asc","default_search_key":null,"scope":null}',
+                'details' => '{"order_column":"id","order_display_column":"id","order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2021-08-10 11:40:22',
-                'updated_at' => '2022-02-16 14:58:29',
+                'updated_at' => '2021-09-16 15:32:44',
             ),
             4 => 
             array (
@@ -324,24 +324,6 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null}',
                 'created_at' => '2022-02-15 11:59:04',
                 'updated_at' => '2022-02-15 11:59:04',
-            ),
-            17 => 
-            array (
-                'id' => 19,
-                'name' => 'periods',
-                'slug' => 'periods',
-                'display_name_singular' => 'Periodo',
-                'display_name_plural' => 'Periodos',
-                'icon' => 'voyager-calendar',
-                'model_name' => 'App\\Models\\Period',
-                'policy_name' => NULL,
-                'controller' => NULL,
-                'description' => NULL,
-                'generate_permissions' => 1,
-                'server_side' => 0,
-                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"desc","default_search_key":null,"scope":null}',
-                'created_at' => '2022-02-16 15:00:56',
-                'updated_at' => '2022-02-16 16:03:06',
             ),
         ));
         
