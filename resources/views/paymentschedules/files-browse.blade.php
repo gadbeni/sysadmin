@@ -50,7 +50,7 @@
                                 <input type="text" id="input-search" class="form-control">
                             </div>
                         </div>
-                        <div class="row" id="data-result"></div>
+                        <div class="row" id="div-results" style="min-height: 120px"></div>
                     </div>
                 </div>
             </div>
@@ -85,22 +85,34 @@
 @section('javascript')
     <script src="{{ url('js/main.js') }}"></script>
     <script>
+        var countPage = 10, order = 'id', typeOrder = 'desc';
         $(document).ready(function() {
-            let columns = [
-                { data: 'id', title: 'id' },
-                { data: 'cliente', title: 'Cliente' },
-                { data: 'detalle', title: 'Detalle' },
-                { data: 'fecha', title: 'Fecha' },
-                { data: 'total', title: 'Total' },
-                { data: 'action', title: 'Acciones', orderable: false, searchable: false },
-            ]
-            // customDataTable("{{ url('admin/ventas/ajax/list') }}/", columns);
+            list();
+            
+            $('#input-search').on('keyup', function(e){
+                if(e.keyCode == 13) {
+                    list();
+                }
+            });
+
+            $('#select-paginate').change(function(){
+                countPage = $(this).val();
+                list();
+            });
         });
 
-        function deleteItem(id){
-            let url = '{{ url("admin/ventas") }}/'+id;
-            $('#delete_form').attr('action', url);
+        function list(page = 1){
+            $('#div-results').loading({message: 'Cargando...'});
+            let url = '{{ url("admin/paymentschedules/files/list") }}';
+            let search = $('#input-search').val() ? $('#input-search').val() : '';
+            $.ajax({
+                url: `${url}/${search}?paginate=${countPage}&page=${page}`,
+                type: 'get',
+                success: function(response){
+                    $('#div-results').html(response);
+                    $('#div-results').loading('toggle');
+                }
+            });
         }
-
     </script>
 @stop

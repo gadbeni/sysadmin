@@ -65,20 +65,25 @@
 
                                         $array_contract_id = [];
                                         $array_worked_days = [];
+                                        $array_salary = [];
+                                        $array_partial_salary = [];
                                         $array_job = [];
                                         $array_job_level = [];
-                                        $array_salary = [];
                                         $array_seniority_bonus_percentage = [];
+                                        $array_seniority_bonus_amount = [];
                                         $array_solidary = [];
                                         $array_common_risk = [];
                                         $array_afp_commission = [];
                                         $array_retirement = [];
                                         $array_solidary_national = [];
+                                        $array_labor_total = [];
                                         $array_housing_employer = [];
                                         $array_solidary_employer = [];
                                         $array_health = [];
                                         $array_rc_iva_amount = [];
                                         $array_faults_quantity = [];
+                                        $array_faults_amount = [];
+                                        $array_liquid_payable = [];
                                     @endphp
                                     @forelse ($contracts as $item)
                                         @php
@@ -146,7 +151,7 @@
                                                 $solidary_national = ($total_amout - 35000) *0.1;
                                             }
 
-                                            $total_afp = $solidary + $common_risk + $afp_commission + $retirement + $solidary_national;
+                                            $labor_total = $solidary + $common_risk + $afp_commission + $retirement + $solidary_national;
 
                                             $solidary_employer = $total_amout * 0.03;
                                             $housing_employer = $total_amout * 0.02;
@@ -161,23 +166,34 @@
                                             $faults_quantity = $faults ? json_decode($faults->details)->faults : 0;
                                             $faults_amount = ($salary / 30) * $faults_quantity;
 
+                                            // Descuentos
+                                            $total_discount = $labor_total + $faults_amount + $rc_iva_amount;
+
+                                            // Líquido pagable
+                                            $liquid_payable = $total_amout - $total_discount;
+
                                             // Inputs
                                             array_push($array_contract_id, $item->id);
                                             array_push($array_worked_days, $days_enabled_worker);
+                                            array_push($array_salary, $salary);
+                                            array_push($array_partial_salary, $partial_salary);
                                             array_push($array_job, $item->cargo ? $item->cargo->Descripcion : $item->job->name);
                                             array_push($array_job_level, $level);
-                                            array_push($array_salary, $salary);
                                             array_push($array_seniority_bonus_percentage, $seniority_bonus_percentage);
+                                            array_push($array_seniority_bonus_amount, $seniority_bonus_amount);
                                             array_push($array_solidary, $solidary);
                                             array_push($array_common_risk, $common_risk);
                                             array_push($array_afp_commission, $afp_commission);
                                             array_push($array_retirement, $retirement);
                                             array_push($array_solidary_national, $solidary_national);
+                                            array_push($array_labor_total, $labor_total);
                                             array_push($array_solidary_employer, $solidary_employer);
                                             array_push($array_housing_employer, $housing_employer);
                                             array_push($array_health, $health);
                                             array_push($array_rc_iva_amount, $rc_iva_amount);
                                             array_push($array_faults_quantity, $faults_quantity);
+                                            array_push($array_faults_amount, $faults_amount);
+                                            array_push($array_liquid_payable, $liquid_payable);
                                         @endphp
                                         <tr>
                                             <td>{{ $cont }}</td>
@@ -190,22 +206,22 @@
                                             <td>{{ $item->person->nua_cua }}</td>
                                             <td>{{ $item->start }}</td>
                                             <td><b>{{ $days_enabled_worker }}</b></td>
-                                            <td>{{ number_format($salary, 2, ',', '.') }}</td>
-                                            <td><b>{{ number_format($partial_salary, 2, ',', '.') }}</b></td>
-                                            <td>{{ $seniority_bonus_percentage }}%</td>
-                                            <td>{{ number_format($seniority_bonus_amount, 2, ',', '.') }}</td>
-                                            <td><b>{{ number_format($total_amout, 2, ',', '.') }}</b></td>
-                                            <td>{{ number_format($solidary, 2, ',', '.') }}</td>
-                                            <td>{{ number_format($common_risk, 2, ',', '.') }}</td>
-                                            <td>{{ number_format($afp_commission, 2, ',', '.') }}</td>
-                                            <td>{{ number_format($retirement, 2, ',', '.') }}</td>
-                                            <td>{{ number_format($solidary_national, 2, ',', '.') }}</td>
-                                            <td>{{ number_format($total_afp, 2, ',', '.') }}</td>
-                                            <td>{{ number_format($rc_iva_amount, 2, ',', '.') }}</td>
-                                            <td>{{ number_format($faults_quantity, floor($faults_quantity) < $faults_quantity ? 1 : 0, ',', '.') }}</td>
-                                            <td>{{ number_format($faults_amount, 2, ',', '.') }}</td>
-                                            <td>{{ number_format($total_afp + $faults_amount, 2, ',', '.') }}</td>
-                                            <td>{{ number_format($total_amout - $faults_amount - $total_afp, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($salary, 2, ',', '.') }}</td>
+                                            <td class="text-right"><b>{{ number_format($partial_salary, 2, ',', '.') }}</b></td>
+                                            <td class="text-right">{{ $seniority_bonus_percentage }}%</td>
+                                            <td class="text-right">{{ number_format($seniority_bonus_amount, 2, ',', '.') }}</td>
+                                            <td class="text-right"><b>{{ number_format($total_amout, 2, ',', '.') }}</b></td>
+                                            <td class="text-right">{{ number_format($solidary, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($common_risk, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($afp_commission, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($retirement, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($solidary_national, 2, ',', '.') }}</td>
+                                            <td class="text-right"><b>{{ number_format($labor_total, 2, ',', '.') }}</b></td>
+                                            <td class="text-right">{{ number_format($rc_iva_amount, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($faults_quantity, floor($faults_quantity) < $faults_quantity ? 1 : 0, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($faults_amount, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($total_discount, 2, ',', '.') }}</td>
+                                            <td class="text-right"><b>{{ number_format($liquid_payable, 2, ',', '.') }}</b></td>
                                         </tr>
                                         @php
                                             $cont++;
@@ -214,6 +230,27 @@
                                         
                                     @endforelse
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="7" class="text-right"><b>TOTAL</b></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_salary)->sum(), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_partial_salary)->sum(), 2, ',', '.') }}</b></td>
+                                        <td></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_seniority_bonus_amount)->sum(), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_partial_salary)->sum() + collect($array_seniority_bonus_amount)->sum(), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_solidary)->sum(), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_common_risk)->sum(), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_afp_commission)->sum(), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_retirement)->sum(), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_solidary_national)->sum(), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_labor_total)->sum(), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_rc_iva_amount)->sum(), 2, ',', '.') }}</b></td>
+                                        <td></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_faults_amount)->sum(), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_labor_total)->sum() + collect($array_faults_amount)->sum() + collect($array_rc_iva_amount)->sum(), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_liquid_payable)->sum(), 2, ',', '.') }}</b></td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -236,20 +273,25 @@
                         {{-- <p class="text-muted">Si realiza esta acción no podrá deshacer los cambios, desea continuar?</p> --}}
                         <input type="hidden" name="contract_id" value="{{ json_encode($array_contract_id) }}">
                         <input type="hidden" name="worked_days" value="{{ json_encode($array_worked_days) }}">
+                        <input type="hidden" name="salary" value="{{ json_encode($array_salary) }}">
+                        <input type="hidden" name="partial_salary" value="{{ json_encode($array_partial_salary) }}">
                         <input type="hidden" name="job" value="{{ json_encode($array_job) }}">
                         <input type="hidden" name="job_level" value="{{ json_encode($array_job_level) }}">
-                        <input type="hidden" name="salary" value="{{ json_encode($array_salary) }}">
                         <input type="hidden" name="seniority_bonus_percentage" value="{{ json_encode($array_seniority_bonus_percentage) }}">
+                        <input type="hidden" name="seniority_bonus_amount" value="{{ json_encode($array_seniority_bonus_amount) }}">
                         <input type="hidden" name="solidary" value="{{ json_encode($array_solidary) }}">
                         <input type="hidden" name="common_risk" value="{{ json_encode($array_common_risk) }}">
                         <input type="hidden" name="afp_commission" value="{{ json_encode($array_afp_commission) }}">
                         <input type="hidden" name="retirement" value="{{ json_encode($array_retirement) }}">
                         <input type="hidden" name="solidary_national" value="{{ json_encode($array_solidary_national) }}">
+                        <input type="hidden" name="labor_total" value="{{ json_encode($array_labor_total) }}">
                         <input type="hidden" name="solidary_employer" value="{{ json_encode($array_solidary_employer) }}">
                         <input type="hidden" name="housing_employer" value="{{ json_encode($array_housing_employer) }}">
                         <input type="hidden" name="health" value="{{ json_encode($array_health) }}">
                         <input type="hidden" name="rc_iva_amount" value="{{ json_encode($array_rc_iva_amount) }}">
                         <input type="hidden" name="faults_quantity" value="{{ json_encode($array_faults_quantity) }}">
+                        <input type="hidden" name="faults_amount" value="{{ json_encode($array_faults_amount) }}">
+                        <input type="hidden" name="liquid_payable" value="{{ json_encode($array_liquid_payable) }}">
 
                         <div class="form-group">
                             <label>Centralizar planilla</label> <br>
@@ -276,5 +318,8 @@
     }
     td{
         font-size: 10px !important
+    }
+    tfoot td{
+        font-size: 11px !important
     }
 </style>

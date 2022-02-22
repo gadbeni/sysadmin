@@ -16,7 +16,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($data as $row)
+                    @forelse ($data as $row)
                         <tr>
                             <td><div><input type="checkbox" name="id[]" onclick="checkId()" value="{{ $row->id }}" /></div></td>
                             <td>{{ $row->id }}</td>
@@ -93,7 +93,11 @@
                                 </div>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="9"><h5 class="text-center">No se encontraron resultados</h5></td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
