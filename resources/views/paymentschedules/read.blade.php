@@ -21,7 +21,7 @@
                 <div class="panel panel-bordered">
                     <div class="panel-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered table-details">
                                 <thead>
                                     <tr>
                                         <th rowspan="3">ITEM</th>
@@ -63,10 +63,39 @@
                                 <tbody>
                                     @php
                                         $cont = 1;
+                                        $total_partial_salary = 0;
+                                        $total_seniority_bonus_amount = 0;
+                                        $total_amount = 0;
+                                        $total_health = 0;
+                                        $total_common_risk = 0;
+                                        $total_solidary_employer = 0;
+                                        $total_housing_employer = 0;
+                                        $total_solidary = 0;
+                                        $total_afp_commission = 0;
+                                        $total_retirement = 0;
+                                        $total_solidary_national = 0;
+                                        $labor_total = 0;
+                                        $labor_rc_iva_amount = 0;
+                                        $labor_faults_amount = 0;
+                                        $labor_liquid_payable = 0;
                                     @endphp
                                     @forelse ($data->details as $item)
                                         @php
-
+                                            $total_partial_salary += $item->partial_salary;
+                                            $total_seniority_bonus_amount += $item->seniority_bonus_amount;
+                                            $total_amount += $item->partial_salary + $item->seniority_bonus_amount;
+                                            $total_health += $item->health;
+                                            $total_common_risk += $item->common_risk;
+                                            $total_solidary_employer += $item->solidary_employer;
+                                            $total_housing_employer += $item->housing_employer;
+                                            $total_solidary += $item->solidary;
+                                            $total_afp_commission += $item->afp_commission;
+                                            $total_retirement += $item->retirement;
+                                            $total_solidary_national += $item->solidary_national;
+                                            $labor_total += $item->labor_total;
+                                            $labor_rc_iva_amount += $item->rc_iva_amount;
+                                            $labor_faults_amount += $item->faults_amount;
+                                            $labor_liquid_payable += $item->liquid_payable;
                                         @endphp
                                         <tr>
                                             <td>{{ $cont }}</td>
@@ -104,15 +133,18 @@
                                     @endforelse
                                 </tbody>
                                 <tfoot>
+                                    @php
+                                        
+                                    @endphp
                                     <tr>
                                         <td colspan="7" class="text-right"><b>TOTAL</b></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('salary'), 2, ',', '.') }}</b></td>
-                                        <td class="text-right"><b>{{ number_format($data->details->sum('partial_salary'), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format($total_partial_salary, 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ $data->details->sum('seniority_bonus_percentage') }}%</b></td>
-                                        <td class="text-right"><b>{{ number_format($data->details->sum('seniority_bonus_amount'), 2, ',', '.') }}</b></td>
-                                        <td class="text-right"><b>{{ number_format($data->details->sum('partial_salary') + $data->details->sum('seniority_bonus_amount'), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format($total_seniority_bonus_amount, 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format($total_amount, 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('solidary'), 2, ',', '.') }}</b></td>
-                                        <td class="text-right"><b>{{ number_format($data->details->sum('common_risk'), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format($total_common_risk, 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('afp_commission'), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('retirement'), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('solidary_national'), 2, ',', '.') }}</b></td>
@@ -130,18 +162,311 @@
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-bordered">
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th colspan="5" class="text-center">RESUMEN</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3" class="text-center">Descripción</th>
+                                        <th class="text-center">Debe</th>
+                                        <th class="text-center">Haber</th>
+                                    </tr>
+                                </thead>
+                                @php
+                                    $lactation_amount = 0;
+                                    $total_social_security = $total_health + $total_common_risk + $total_solidary_employer + $total_housing_employer;
+                                    $total_debe = 0;
+                                    $total_haber = 0;
+                                @endphp
+                                <tbody>
+                                    <tr>
+                                        <td><b>12000 SERVICIOS NO PERMANENTES</b></td>
+                                        <td></td>
+                                        <td class="text-right"><b><u>{{ number_format($total_amount + $lactation_amount + $total_social_security, 2, ',', '.') }}</u></b></td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>12000 Servicios no Permanentes</td>
+                                        <td></td>
+                                        <td class="text-right">{{ number_format($total_amount + $lactation_amount, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        @php
+                                            $total_debe += $total_amount + $lactation_amount;
+                                        @endphp
+                                        <td class="text-right">{{ number_format($total_amount + $lactation_amount, 2, ',', '.') }}</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>11200 Categorías</td>
+                                        <td></td>
+                                        <td class="text-right">{{ number_format($total_seniority_bonus_amount, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>11600 Asignaciones Familiares</td>
+                                        <td></td>
+                                        <td class="text-right">{{ number_format($lactation_amount, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>12100 Personal Eventual</td>
+                                        <td></td>
+                                        <td class="text-right">{{ number_format($total_partial_salary, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>1300 PREVISIÓN SOCIAL</b></td>
+                                        <td></td>
+                                        <td class="text-right"><b><u>{{ number_format($total_social_security, 2, ',', '.') }}</u></b></td>
+                                        {{-- ========== --}}
+                                        @php
+                                            $total_debe += $total_social_security;
+                                        @endphp
+                                        <td class="text-right">{{ number_format($total_social_security, 2, ',', '.') }}</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>13110 Aporte Patronal Caja de Salud</td>
+                                        <td>10%</td>
+                                        <td class="text-right">{{ number_format($total_health, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>13120 Prima de Riesgo Profesión - Regimen de Largo Plazo</td>
+                                        <td>1.71%</td>
+                                        <td class="text-right">{{ number_format($total_common_risk, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>13131 Aporte Patronal Solidario</td>
+                                        <td>3%</td>
+                                        <td class="text-right">{{ number_format($total_solidary_employer, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>13200 Aporte Patronal A.F.P. Vivienda</td>
+                                        <td>2%</td>
+                                        <td class="text-right">{{ number_format($total_housing_employer, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b><u>APORTES PATRONALES - SALUD</u></b></td>
+                                        <td></td>
+                                        <td class="text-right"><b><u>{{ number_format($total_health, 2, ',', '.') }}</u></b></td>
+                                        {{-- ========== --}}
+                                        @php
+                                            $total_haber += $total_health;
+                                        @endphp
+                                        <td></td>
+                                        <td class="text-right">{{ number_format($total_health, 2, ',', '.') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Caja de Salud</td>
+                                        <td>10%</td>
+                                        <td class="text-right">{{ number_format($total_health, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+
+                                    @php
+                                        $total_patronal = $total_common_risk + $total_solidary_employer + $total_housing_employer;
+                                        $total_afp = $labor_total + $total_patronal;
+
+                                        $total_haber += $total_afp;
+                                    @endphp
+                                    <tr>
+                                        <td><b><u>APORTES PATRONALES AFP</u></b></td>
+                                        <td></td>
+                                        <td></td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td class="text-right">{{ number_format($total_afp, 2, ',', '.') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b><u>PREVISIÓN SOCIAL</u></b></td>
+                                        <td></td>
+                                        <td class="text-right"><b><u>{{ number_format($total_patronal, 2, ',', '.') }}</u></b></td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Riesgo Profesion a Largo Plazo</td>
+                                        <td>1.71%</td>
+                                        <td class="text-right">{{ number_format($total_common_risk, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Aporte Patronal Solidario</td>
+                                        <td>3%</td>
+                                        <td class="text-right">{{ number_format($total_solidary_employer, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Aporte Patronal Vivienda</td>
+                                        <td>2%</td>
+                                        <td class="text-right">{{ number_format($total_housing_employer, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b><u>APORTES LABORAL AFP</u></b></td>
+                                        <td></td>
+                                        <td></td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b><u>PREVISIÓN SOCIAL</u></b></td>
+                                        <td></td>
+                                        <td class="text-right"><b><u>{{ number_format($labor_total, 2, ',', '.') }}</u></b></td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Aporte Solidario</td>
+                                        <td>0.5%</td>
+                                        <td class="text-right">{{ number_format($total_solidary, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Riesgo Común</td>
+                                        <td>1.71%</td>
+                                        <td class="text-right">{{ number_format($total_common_risk, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Comisión AFP</td>
+                                        <td>0.5%</td>
+                                        <td class="text-right">{{ number_format($total_afp_commission, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Aporte Jubilación</td>
+                                        <td>10%</td>
+                                        <td class="text-right">{{ number_format($total_retirement, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Aporte Nacional Solidario</td>
+                                        <td>1%</td>
+                                        <td class="text-right">{{ number_format($total_solidary_national, 2, ',', '.') }}</td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>OTROS DESCUENTOS LABORALES</b></td>
+                                        <td></td>
+                                        <td></td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>RC-IVA</td>
+                                        <td></td>
+                                        <td></td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        @php
+                                            $total_haber += $labor_rc_iva_amount;
+                                        @endphp
+                                        <td class="text-right">{{ number_format($labor_rc_iva_amount, 2, ',', '.') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Descuento de no Ley</td>
+                                        <td></td>
+                                        <td></td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Multas y Sanciones</td>
+                                        <td></td>
+                                        <td></td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        @php
+                                        $total_haber += $labor_faults_amount;
+                                    @endphp
+                                    <td class="text-right">{{ number_format($labor_faults_amount, 2, ',', '.') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Líquido Pagable</td>
+                                        <td></td>
+                                        <td></td>
+                                        {{-- ========== --}}
+                                        <td></td>
+                                        @php
+                                            $total_haber += $labor_liquid_payable;
+                                        @endphp
+                                        <td class="text-right">{{ number_format($labor_liquid_payable, 2, ',', '.') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3"><b>TOTAL</b></td>
+                                        <td class="text-right"><b>{{ number_format($total_debe, 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format($total_haber, 2, ',', '.') }}</b></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @stop
 
 @section('css')
     <style>
-        th{
+        .table-details th{
             font-size: 7px !important
         }
-        td{
+        .table-details td{
             font-size: 10px !important
         }
-        tfoot td{
+        .table-details tfoot td{
             font-size: 11px !important
         }
     </style>

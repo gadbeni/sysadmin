@@ -6,12 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class VaultsDetailsCash extends Model
+class ContractsHistory extends Model
 {
     use HasFactory, SoftDeletes;
-
+    
     protected $dates = ['deleted_at'];
     protected $fillable = [
-        'vaults_detail_id', 'cash_value', 'quantity'
+        'contract_id',
+        'office_id',
+        'user_id',
+        'status',
+        'observations',
     ];
 }

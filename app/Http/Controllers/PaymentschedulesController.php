@@ -85,7 +85,7 @@ class PaymentschedulesController extends Controller
                                     ->where('direccion_administrativa_id', $request->da_id)
                                     ->where('period_id', $request->period_id)
                                     ->where('procedure_type_id', $request->procedure_type_id)
-                                    ->where('status', 'borrador')->get();
+                                    ->where('status', 'cargado')->get();
 
         $paymentschedule = Paymentschedule::firstOrCreate([
             'direccion_administrativa_id' =>  $request->da_id,

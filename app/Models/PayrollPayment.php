@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PayrollPayment extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+    protected $dates = ['deleted_at'];
 
     protected $fillable = [
         'user_id', 'planilla_haber_id', 'spreadsheet_id', 'date_payment_afp', 'fpc_number', 'payment_id', 'penalty_payment', 'date_payment_cc', 'gtc_number', 'recipe_number', 'deposit_number', 'check_id', 'penalty_check', 'manual'

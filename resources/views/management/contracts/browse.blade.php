@@ -74,9 +74,11 @@
                                                         break;
                                                     case 'elaborado':
                                                         $label = 'default';
+                                                        $netx_status = 'enviado';
                                                         break;
                                                     case 'enviado':
                                                         $label = 'info';
+                                                        $netx_status = 'firmado';
                                                         break;
                                                     case 'firmado':
                                                         $label = 'success';
@@ -89,9 +91,18 @@
                                                         break;
                                                 }
                                             @endphp
-                                            <label class="label label-{{ $label }}">{{ $item->status }}</label>
+                                            <label class="label label-{{ $label }}">{{ ucfirst($item->status) }}</label>
                                         </td>
                                         <td class="no-sort no-click bread-actions text-right">
+                                            
+                                            {{-- Definir siguiente estado --}}
+                                            @if ($item->status != 'firmado')
+                                                <button title="Promover a la siguiente instancia" data-toggle="modal" data-target="#status_modal" onclick="changeStatus({{ $item->id }}, '{{ $netx_status }}')" class="btn btn-sm btn-dark btn-status view">
+                                                    <i class="voyager-check"></i> <span class="hidden-xs hidden-sm">Promover</span>
+                                                </button>
+                                            @endif
+
+                                            {{-- Botón de impresión --}}
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                                   Imprimir <span class="caret"></span>
@@ -148,6 +159,33 @@
         </div>
     </div>
 
+    {{-- change status modal --}}
+    <form action="{{ route('contracts.status') }}" id="delete_form" method="POST">
+        {{ csrf_field() }}
+        <div class="modal modal-primary fade" tabindex="-1" id="status_modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-check"></i> Desea promover el contrato a la siguiente instancia?</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="hidden" name="id">
+                            <input type="hidden" name="status">
+                            <label for="observations">Observaciones</label>
+                            <textarea name="observations" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark" value="Aceptar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    
     {{-- Single delete modal --}}
     <div class="modal modal-danger fade" tabindex="-1" id="delete_modal" role="dialog">
         <div class="modal-dialog">
@@ -182,6 +220,11 @@
                 order: [[0, 'desc']],
             });
         });
+
+        function changeStatus(id, status) {
+            $('#delete_form input[name="id"]').val(id)
+            $('#delete_form input[name="status"]').val(status)
+        };
 
         function deleteItem(id){
             let url = '{{ url("admin/ventas") }}/'+id;

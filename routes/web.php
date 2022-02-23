@@ -146,6 +146,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     // *Contratos
     Route::resource('contracts', ContractsController::class);
+    Route::post('contracts/status', [ContractsController::class, 'contracts_status'])->name('contracts.status');
     Route::get('contracts/direccion-administrativa/{id}', [ContractsController::class, 'contracts_direccion_administrativa']);
     Route::get('contracts/{id}/print/{document}', [ContractsController::class, 'print'])->name('contracts.print');
     

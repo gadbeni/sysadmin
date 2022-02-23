@@ -2,7 +2,7 @@
     <div class="col-md-12">
         <div class="panel panel-bordered">
             <div class="panel-body">
-                @if ($payment_schedules_file->status == 1)
+                @if ($payment_schedules_file->status == 'borrador')
                 <div class="table-responsive">
                     <h3>{{ ucfirst($payment_schedules_file->type) }} @isset($draft) <label class="label label-danger">Borrador</label> @endisset </h3> <br>
                     @if ($payment_schedules_file->type == 'rc-iva')
@@ -86,7 +86,7 @@
                 @endif
             </div>
             <div class="panel-footer text-right">
-                @if ($payment_schedules_file->status == 1)
+                @if ($payment_schedules_file->status == 'borrador')
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_modal">Anular</button>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#store_modal">Guardar</button>
                 @endif

@@ -49,7 +49,7 @@
                                         break;
                                 }
                             @endphp
-                            <label class="label label-{{ $label }}">{{ $item->status }}</label>
+                            <label class="label label-{{ $label }}">{{ ucfirst($item->status) }}</label>
                         </td>
                         <td>
                             {{ $item->user ? $item->user->name : '' }} <br>
@@ -57,9 +57,12 @@
                             <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
                         </td>
                         <td class="no-sort no-click bread-actions text-right">
-                            <a href="{{ route('paymentschedules.show', ['paymentschedule' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
-                                <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
-                            </a>
+                            @if ($item->status != 'borrador')
+                                <a href="{{ route('paymentschedules.show', ['paymentschedule' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
+                                    <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
+                                </a>
+                            @endif
+                            
                             {{-- <button type="button" onclick="deleteItem('{{ route('paymentschedules.destroy', ['paymentschedule' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
                                 <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
                             </button> --}}

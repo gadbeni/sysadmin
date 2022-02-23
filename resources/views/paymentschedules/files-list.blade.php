@@ -38,7 +38,7 @@
                                         break;
                                 }
                             @endphp
-                            <label class="label label-{{ $label }}">{{ $item->status }}</label>
+                            <label class="label label-{{ $label }}">{{ ucfirst($item->status) }}</label>
                         </td>
                         <td>
                             {{ $item->user ? $item->user->name : '' }} <br>
