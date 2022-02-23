@@ -9,5 +9,4 @@ Paquetes
 Comandos
 
 Otros
-    Crear setting setting('planillas.minimum_salary')
-    eliminar tabla paymentschedules_details
+    Eliminar tabla paymentschedules_details

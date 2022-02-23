@@ -42,6 +42,11 @@
                 padding: 0px 0px
             }
         }
+        @media print and (min-width: 700px) and (orientation: landscape) {
+            #watermark {
+                top: 200px;
+            }
+        }
     </style>
     @yield('css')
 </head>

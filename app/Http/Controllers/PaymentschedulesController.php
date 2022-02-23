@@ -85,7 +85,7 @@ class PaymentschedulesController extends Controller
                                     ->where('direccion_administrativa_id', $request->da_id)
                                     ->where('period_id', $request->period_id)
                                     ->where('procedure_type_id', $request->procedure_type_id)
-                                    ->where('status', 'borrador')->get();
+                                    ->where('status', 'cargado')->get();
 
         $paymentschedule = Paymentschedule::firstOrCreate([
             'direccion_administrativa_id' =>  $request->da_id,
@@ -205,9 +205,25 @@ class PaymentschedulesController extends Controller
      */
     public function show($id)
     {
+        $afp = request('afp');
+        $print = request('print');
         $data = Paymentschedule::with(['user', 'details.contract', 'direccion_administrativa', 'period', 'procedure_type'])
                     ->where('id', $id)->where('deleted_at', NULL)->first();
-        return view('paymentschedules.read', compact('data'));
+        
+        // Si se elije una AFP, se filtran los contratos que correspondan a esa AFP
+        if($afp){
+            $details = collect();
+            foreach($data->details as $detail){
+                if($detail->contract->person->afp == $afp){
+                    $details->push($detail);
+                }
+            }
+            $data->details = $details;
+        }
+        if($print){
+            return view('paymentschedules.print', compact('data', 'afp'));
+        }
+        return view('paymentschedules.read', compact('data', 'afp'));
     }
 
     /**

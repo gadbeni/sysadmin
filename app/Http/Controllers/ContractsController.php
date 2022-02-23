@@ -17,6 +17,7 @@ use App\Models\ProcedureType;
 use App\Models\Cargo;
 use App\Models\Job;
 use App\Models\Signature;
+use App\Models\ContractsHistory;
 
 class ContractsController extends Controller
 {
@@ -235,6 +236,28 @@ class ContractsController extends Controller
             return redirect()->route('contracts.index')->with(['message' => 'Contrato editado exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             //throw $th;
+            return redirect()->route('contracts.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function contracts_status(Request $request){
+        // dd($request->all());
+        DB::beginTransaction();
+        try {
+            $contract = Contract::where('id', $request->id)->update([
+                'status' => $request->status,
+            ]);
+
+            ContractsHistory::create([
+                'contract_id' => $request->id,
+                'user_id' => Auth::user()->id,
+                'status' => $request->status,
+                'observations' => $request->observations,
+            ]);
+            DB::commit();
+            return redirect()->route('contracts.index')->with(['message' => 'Contrato promovido exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollback();
             return redirect()->route('contracts.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
