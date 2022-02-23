@@ -39,7 +39,9 @@ class PaymentschedulesController extends Controller
 
     public function list($search = null){
         $paginate = request('paginate') ?? 10;
-        $data = Paymentschedule::with(['user', 'details', 'direccion_administrativa', 'period', 'procedure_type'])
+        $data = Paymentschedule::with(['user', 'details', 'direccion_administrativa', 'period', 'procedure_type', 'details' => function($query){
+                        $query->where('deleted_at', NULL);
+                    }])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
                     ->where(function($query) use ($search){
                         if($search){
@@ -51,6 +53,8 @@ class PaymentschedulesController extends Controller
                             });
                         }
                     })
+                    // ->groupBy('centralize_code')
+                    // ->having('centralize_code', '<>', '')
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')
                     ->paginate($paginate);
         // dd($data);
@@ -128,6 +132,8 @@ class PaymentschedulesController extends Controller
                 if($paymentschedule){
                     $centralize_code = $paymentschedule->centralize_code ?? $request->paymentschedule_id.'-c';
                 }
+            }else{
+                $centralize_code = $request->paymentschedule_id;
             }
 
             Paymentschedule::where('id', $request->paymentschedule_id)->update([
@@ -207,8 +213,13 @@ class PaymentschedulesController extends Controller
     {
         $afp = request('afp');
         $print = request('print');
-        $data = Paymentschedule::with(['user', 'details.contract', 'direccion_administrativa', 'period', 'procedure_type'])
-                    ->where('id', $id)->where('deleted_at', NULL)->first();
+        $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type'])->where('id', $id)->where('deleted_at', NULL)->first();
+        $centralize_code = $data->centralize_code ?? $data->id;
+        $data->details = PaymentschedulesDetail::with(['contract'])
+                        ->whereHas('paymentschedule', function($q) use($centralize_code){
+                            $q->where('centralize_code', $centralize_code);
+                        })
+                        ->where('deleted_at', NULL)->get();
         
         // Si se elije una AFP, se filtran los contratos que correspondan a esa AFP
         if($afp){

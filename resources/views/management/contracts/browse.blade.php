@@ -88,6 +88,7 @@
                                                         break;
                                                     default:
                                                         $label = 'default';
+                                                        $netx_status = '';
                                                         break;
                                                 }
                                             @endphp

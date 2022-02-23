@@ -27,7 +27,8 @@
         <div class="page-body">
             @php
                 $contract_duration = contract_duration_calculate($contract->start, $contract->finish);
-                $total = ($contract->cargo->nivel->Sueldo *$contract_duration->months) + (($contract->cargo->nivel->Sueldo /30) *$contract_duration->days);
+                $salary = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
+                $total = ($salary *$contract_duration->months) + (($salary /30) *$contract_duration->days);
                 $periodo = '';
                 if($contract_duration->months > 0){
                     if($contract_duration->months == 1){
@@ -52,7 +53,10 @@
             <table align="center">
                 <tr>
                     <td style="width: 320px;">&#9679; &nbsp; Monto mensual</td>
-                    <td style="width: 180px; text-align: right">Bs.- &nbsp;&nbsp; {{ number_format($contract->cargo->nivel->Sueldo, 2, ',', '.') }}</td>
+                    @php
+                        $salary = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
+                    @endphp
+                    <td style="width: 180px; text-align: right">Bs.- &nbsp;&nbsp; {{ number_format($salary, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td>&#9679; &nbsp; Monto total adjudicado</td>

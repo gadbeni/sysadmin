@@ -134,6 +134,7 @@ class ContractsController extends Controller
                 'certification_poa' => $request->certification_poa,
                 'certification_pac' => $request->certification_pac,
                 'date_presentation' => $request->date_presentation,
+                'status' => 'elaborado',
             ]);
 
             return redirect()->route('contracts.index')->with(['message' => 'Contrato guardado exitosamente.', 'alert-type' => 'success']);

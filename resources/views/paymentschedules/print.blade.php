@@ -15,7 +15,7 @@
                     <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="100px"></td>
                     <td style="text-align: right">
                         <h3 style="margin: 0px">PLANILLA DE PAGO HABERES AL PERSONAL DEPENDIENTE GAD-BENI</h3>
-                        <span>CORRESPONDIENTE AL MES DE: {{ strtoupper($months[intval($month)]) }} DE {{ $year }} | AFP - {{ $afp == 1 ? 'BBVA FUTURO' : 'BBVA PREVISION' }}</span>
+                        <span>CORRESPONDIENTE AL MES DE: {{ strtoupper($months[intval($month)]) }} DE {{ $year }} | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }}</span>
                         <h3 style="margin: 0px">{{ $data->direccion_administrativa->NOMBRE }}</h3>
                         <span>{{ $data->procedure_type->name }}</span>
                     </td>
@@ -35,7 +35,7 @@
             </table>
         </div>
 
-        <div style="margin-top: 160px">
+        <div style="margin-top: 20px">
             <table class="table table-bordered table-hover table-details" border="1" cellpadding="2" cellspacing="0">
                 <thead>
                     <tr>
@@ -146,11 +146,6 @@
                     @empty
                         
                     @endforelse
-                </tbody>
-                <tfoot>
-                    @php
-                        
-                    @endphp
                     <tr>
                         <td colspan="7" style="text-align: right"><b>TOTAL</b></td>
                         <td style="text-align: right"><b>{{ number_format($data->details->sum('salary'), 2, ',', '.') }}</b></td>
@@ -170,15 +165,44 @@
                         <td style="text-align: right"><b>{{ number_format($data->details->sum('labor_total') + $data->details->sum('rc_iva_amount') + $data->details->sum('faults_amount'), 2, ',', '.') }}</b></td>
                         <td style="text-align: right"><b>{{ number_format($data->details->sum('liquid_payable'), 2, ',', '.') }}</b></td>
                     </tr>
-                </tfoot>
+                </tbody>
             </table>
         </div>
 
         <div class="saltopagina"></div>
-        <div class="pt"></div>
+        <div class="header-resume">
+            <table width="100%">
+                <tr>
+                    @php
+                        $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                        $year = Str::substr($data->period->name, 0, 4);
+                        $month = Str::substr($data->period->name, 4, 2);
+                    @endphp
+                    <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="100px"></td>
+                    <td style="text-align: right">
+                        <h3 style="margin: 0px">PLANILLA DE PAGO HABERES AL PERSONAL DEPENDIENTE GAD-BENI</h3>
+                        <span>CORRESPONDIENTE AL MES DE: {{ strtoupper($months[intval($month)]) }} DE {{ $year }} | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }}</span>
+                        <h3 style="margin: 0px">{{ $data->direccion_administrativa->NOMBRE }}</h3>
+                        <span>{{ $data->procedure_type->name }}</span>
+                    </td>
+                    <td style="text-align:center; width: 90px">
+                        {!! QrCode::size(80)->generate('Planilla '.str_pad($data->id, 6, "0", STR_PAD_LEFT).' | '.$data->period->name.' | '.$data->direccion_administrativa->NOMBRE.' | '.$data->procedure_type->name); !!} <br>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                    <td style="text-align: center"><b>{{ str_pad($data->id, 6, "0", STR_PAD_LEFT) }}</b></td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right">
+                        <small style="font-size: 9px; font-weight: 100">Impreso por: {{ Auth::user()->name }} {{ date('d/M/Y H:i:s') }}</small>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-        <div style="margin-top: 70px">
-            <table  cellpadding="2" cellspacing="0" width="70%">
+        <div style="margin-top: 10px">
+            <table class="table-resumen" cellpadding="2" cellspacing="0" width="70%">
                 <thead>
                     <tr>
                         <th colspan="5" class="text-center">RESUMEN</th>
@@ -472,10 +496,10 @@
             font-size: 13px;
         }
         .header{
-            position: fixed;
-            top: 50px;
-            left: 0px;
             width: 100%;
+        }
+        .header-resume{
+            display: none;
         }
         .table-details th{
             font-size: 7px !important
@@ -485,6 +509,10 @@
         }
         .table-details tfoot td{
             font-size: 11px !important
+        }
+        .table-resumen{
+            font-size: 11px !important;
+            margin-top: 100px;
         }
         .saltopagina{
             display: none;
@@ -497,6 +525,9 @@
             .header{
                 top: 0px;
             }
+            .header-resume{
+                display: block;
+            }
             .table-details th{
                 font-size: 6px !important
             }
@@ -506,12 +537,12 @@
             .table-details tfoot td{
                 font-size: 10px !important
             }
+            .table-resumen{
+                margin-top: 0px;
+            }
             .saltopagina{
                 display: block;
                 page-break-before: always;
-            }
-            .pt{
-                height: 50px;
             }
         }
     </style>

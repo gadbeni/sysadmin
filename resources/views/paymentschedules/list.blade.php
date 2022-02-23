@@ -17,7 +17,7 @@
             <tbody>
                 @forelse ($data as $item)
                     <tr>
-                        <td>{{ $item->id }}</td>
+                        <td>{{ str_pad($item->centralize_code != '' ? $item->centralize_code : $item->id, 6, "0", STR_PAD_LEFT) }}</td>
                         <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
                         <td>{{ $item->period->name }}</td>
                         <td>{{ $item->procedure_type->name }}</td>

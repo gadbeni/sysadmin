@@ -44,7 +44,7 @@ class CreateContractsTable extends Migration
             $table->date('date_autorization')->nullable();
             $table->string('certification_poa')->nullable();
             $table->string('certification_pac')->nullable();
-            $table->string('status')->nullable()->default('generado');
+            $table->string('status')->nullable()->default('elaborado');
             $table->timestamps();
             $table->softDeletes();
         });

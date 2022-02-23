@@ -37,6 +37,10 @@ class PaymentschedulesDetail extends Model
         'liquid_payable'
     ];
 
+    public function paymentschedule(){
+        return $this->belongsTo(Paymentschedule::class, 'paymentschedule_id');
+    }
+
     public function contract(){
         return $this->belongsTo(Contract::class, 'contract_id');
     }

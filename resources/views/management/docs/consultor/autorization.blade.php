@@ -61,7 +61,8 @@
                 </tr>
                 @php
                     $contract_duration = contract_duration_calculate($contract->start, $contract->finish);
-                    $total = ($contract->cargo->nivel->Sueldo *$contract_duration->months) + (($contract->cargo->nivel->Sueldo /30) *$contract_duration->days);
+                    $salary = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
+                    $total = ($salary *$contract_duration->months) + (($salary /30) *$contract_duration->days);
                 @endphp
                 <tr>
                     <td>7.</td>

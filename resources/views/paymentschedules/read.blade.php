@@ -4,7 +4,7 @@
 
 @section('page_header')
     <h1 class="page-title">
-        <i class="voyager-logbook"></i> Planilla - {{ str_pad($data->id, 6, "0", STR_PAD_LEFT) }}
+        <i class="voyager-logbook"></i> Planilla - {{ str_pad($data->centralize_code, 6, "0", STR_PAD_LEFT) }}
         <a href="{{ route('paymentschedules.index') }}" class="btn btn-warning">
             <span class="glyphicon glyphicon-list"></span>&nbsp; Volver a la lista
         </a>

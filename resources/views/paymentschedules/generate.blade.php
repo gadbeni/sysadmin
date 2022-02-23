@@ -18,7 +18,7 @@
                 <div class="panel panel-bordered">
                     <div class="panel-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th rowspan="3">ITEM</th>
@@ -130,15 +130,26 @@
 
                                             // Calcular aportes AFP
                                             $solidary = $total_amout * 0.005;
-                                            $common_risk = 0;
-                                            if($age < 65){
-                                                $common_risk = $total_amout *0.0171;   
+                                            $retirement = $total_amout * 0.1;
+                                            $common_risk = $total_amout *0.0171;   
+                                            
+                                            // Si es mayor a 57 y menos a 65 años y tiene su AFP inactiva no paga jubilación
+                                            if($age >= 58 && $age < 65 && $item->person->afp_status == 0){
+                                                $retirement = 0;
                                             }
+
+                                            // Si es mayor a 64 años y tiene su AFP activa no paga riesgo común
+                                            if($age >= 65 && $item->person->afp_status == 1){
+                                                $common_risk = 0;
+                                            }
+
+                                            // Si es mayor a 64 años y tiene su AFP inactiva no paga jubilación ni riesgo común
+                                            if($age >= 65 && $item->person->afp_status == 0){
+                                                $retirement = 0;
+                                                $common_risk = 0;
+                                            }
+
                                             $afp_commission = $total_amout * 0.005;
-                                            $retirement = 0;
-                                            if($item->person->afp_status == 1){
-                                                $retirement = $total_amout * 0.1;
-                                            }
 
                                             $solidary_national = 0;
                                             if($total_amout >= 13000){

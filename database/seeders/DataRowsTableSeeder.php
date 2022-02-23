@@ -1560,7 +1560,7 @@ class DataRowsTableSeeder extends Seeder
                 'id' => 110,
                 'data_type_id' => 9,
                 'field' => 'afp_status',
-                'type' => 'select_dropdown',
+                'type' => 'hidden',
                 'display_name' => 'Estado de la AFP',
                 'required' => 0,
                 'browse' => 0,
@@ -1568,7 +1568,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"default":1,"options":{"0":"Inactivo","1":"Activo"},"display":{"width":6}}',
+                'details' => '{"default":1}',
                 'order' => 14,
             ),
             97 => 
@@ -1616,7 +1616,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
+                'details' => '{"validation":{"rule":"required|max:191|unique:people"},"display":{"width":6}}',
                 'order' => 15,
             ),
             100 => 
