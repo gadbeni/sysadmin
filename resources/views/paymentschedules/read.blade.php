@@ -1,16 +1,30 @@
 @extends('voyager::master')
 
-@section('page_title', 'Ver Palnilla')
+@section('page_title', 'Ver Planilla')
 
 @section('page_header')
     <h1 class="page-title">
-        <i class="voyager-logbook"></i> Planilla
-        <a href="#" class="btn btn-warning">
+        <i class="voyager-logbook"></i> Planilla - {{ str_pad($data->id, 6, "0", STR_PAD_LEFT) }}
+        <a href="{{ route('paymentschedules.index') }}" class="btn btn-warning">
             <span class="glyphicon glyphicon-list"></span>&nbsp; Volver a la lista
         </a>
-        <a href="#" class="btn btn-danger">
-            <span class="glyphicon glyphicon-print"></span>&nbsp; Imprimir
-        </a>
+        <div class="btn-group">
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+              AFP's <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="?">Todas</a></li>
+                <li><a href="?afp=1">Futuro</a></li>
+                <li><a href="?afp=2">Previsión</a></li>
+            </ul>
+        </div>
+
+        {{-- Si se elgió un AFP se activa el botón de imprimir --}}
+        @if ($afp)
+            <a href="?afp={{ $afp }}&print=true" target="_blank" class="btn btn-danger">
+                <span class="glyphicon glyphicon-print"></span>&nbsp; Imprimir
+            </a>
+        @endif
     </h1>
 @stop
 
@@ -18,10 +32,109 @@
     <div class="page-content read container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <div class="panel panel-bordered" style="padding-bottom:5px;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Dirección administrativa</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>{{ $data->direccion_administrativa->NOMBRE }}</p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Periodo</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>{{ $data->period->name }}</p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Tipo de planilla</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>{{ $data->procedure_type->name }}</p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Cantidad de personas</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>{{ $data->details->count() }}</p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">AFP</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>
+                                    @if (!$afp)
+                                        Todas
+                                    @elseif($afp == 1)
+                                        Futuro
+                                    @elseif($afp == 2)
+                                        Previsión
+                                    @endif
+                                </p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">AFP</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>
+                                    @php
+                                        switch ($data->status) {
+                                            case 'anulada':
+                                                $label = 'danger';
+                                                break;
+                                            case 'borrador':
+                                                $label = 'default';
+                                                break;
+                                            case 'procesada':
+                                                $label = 'info';
+                                                break;
+                                            case 'enviada':
+                                                $label = 'primary';
+                                                break;
+                                            case 'pabilitada':
+                                                $label = 'success';
+                                                break;
+                                            case 'pagada':
+                                                $label = 'dark';
+                                                break;
+                                            default:
+                                                $label = 'default';
+                                                break;
+                                        }
+                                    @endphp
+                                    <label class="label label-{{ $label }}">{{ ucfirst($data->status) }}</label>
+                                </p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
                 <div class="panel panel-bordered">
                     <div class="panel-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-details">
+                            <table class="table table-bordered table-hover table-details">
                                 <thead>
                                     <tr>
                                         <th rowspan="3">ITEM</th>
@@ -31,11 +144,11 @@
                                         <th rowspan="3">N&deg; NUA/CUA</th>
                                         <th rowspan="3">FECHA INGRESO</th>
                                         <th rowspan="3">DÍAS TRAB.</th>
-                                        <th style="text-align: right" rowspan="3">SUELDO MENSUAL</th>
-                                        <th style="text-align: right" rowspan="3">SUELDO PARCIAL</th>
+                                        <th rowspan="3">SUELDO MENSUAL</th>
+                                        <th rowspan="3">SUELDO PARCIAL</th>
                                         <th rowspan="3">%</th>
-                                        <th style="text-align: right" rowspan="3">BONO ANTIG.</th>
-                                        <th style="text-align: right" rowspan="3">TOTAL GANADO</th>
+                                        <th rowspan="3">BONO ANTIG.</th>
+                                        <th rowspan="3">TOTAL GANADO</th>
                                         <th style="text-align: center" colspan="5">APORTES LABORALES</th>
                                         <th rowspan="3">TOTAL APORTES AFP</th>
                                         <th rowspan="3">RC-IVA</th>
