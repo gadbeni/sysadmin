@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <div class="row" id="div-results" style="min-height: 120px"></div>
+        <div id="div-results" style="min-height: 120px"></div>
     </div>
 @stop
 

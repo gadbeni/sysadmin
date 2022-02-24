@@ -19,6 +19,10 @@
             </ul>
         </div>
 
+        @if ($data->status == 'procesada')
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#send_modal"><i class="glyphicon glyphicon-ok-circle"></i> Enviar planilla</button>
+        @endif
+
         {{-- Si se elgió un AFP se activa el botón de imprimir --}}
         @if ($afp)
             <a href="?afp={{ $afp }}&print=true" target="_blank" class="btn btn-danger">
@@ -108,7 +112,7 @@
                                             case 'enviada':
                                                 $label = 'primary';
                                                 break;
-                                            case 'pabilitada':
+                                            case 'habilitada':
                                                 $label = 'success';
                                                 break;
                                             case 'pagada':
@@ -175,7 +179,6 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        $cont = 1;
                                         $total_partial_salary = 0;
                                         $total_seniority_bonus_amount = 0;
                                         $total_amount = 0;
@@ -211,7 +214,7 @@
                                             $labor_liquid_payable += $item->liquid_payable;
                                         @endphp
                                         <tr>
-                                            <td>{{ $cont }}</td>
+                                            <td>{{ $item->item }}</td>
                                             <td>{{ $item->job_level }}</td>
                                             <td>
                                                 <b>{{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }}</b> <br>
@@ -238,9 +241,6 @@
                                             <td class="text-right">{{ number_format($item->labor_total + $item->rc_iva_amount + $item->faults_amount, 2, ',', '.') }}</td>
                                             <td class="text-right"><b>{{ number_format($item->liquid_payable, 2, ',', '.') }}</b></td>
                                         </tr>
-                                        @php
-                                            $cont++;
-                                        @endphp
                                     @empty
                                         
                                     @endforelse
@@ -569,6 +569,27 @@
             </div>
         </div>
     </div>
+
+    {{-- send modal --}}
+    <form action="{{ route('paymentschedules.update.status') }}" method="POST">
+        @csrf
+        <input type="hidden" name="centralize_code" value="{{ $data->centralize_code }}">
+        <input type="hidden" name="status" value="enviada">
+        <div class="modal modal-primary fade" tabindex="-1" id="send_modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="glyphicon glyphicon-ok-circle"></i> Desea enviar la siguiente planilla?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark" value="Sí, enviar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 @stop
 
 @section('css')

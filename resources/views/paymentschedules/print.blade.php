@@ -57,6 +57,8 @@
                         <th colspan="2">FONDO SOCIAL</th>
                         <th rowspan="3">TOTAL DESC.</th>
                         <th rowspan="3">LÍQUIDO PAGABLE</th>
+                        <th rowspan="3">FIRMA</th>
+                        <th rowspan="3">ITEM</th>
                     </tr>
                     <tr>
                         <th>APORTE SOLIDARIO</th>
@@ -77,7 +79,6 @@
                 </thead>
                 <tbody>
                     @php
-                        $cont = 1;
                         $total_partial_salary = 0;
                         $total_seniority_bonus_amount = 0;
                         $total_amount = 0;
@@ -113,7 +114,7 @@
                             $labor_liquid_payable += $item->liquid_payable;
                         @endphp
                         <tr>
-                            <td>{{ $cont }}</td>
+                            <td>{{ $item->item }}</td>
                             <td>{{ $item->job_level }}</td>
                             <td>
                                 <b>{{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }}</b> <br>
@@ -139,10 +140,9 @@
                             <td style="text-align: right">{{ number_format($item->faults_amount, 2, ',', '.') }}</td>
                             <td style="text-align: right">{{ number_format($item->labor_total + $item->rc_iva_amount + $item->faults_amount, 2, ',', '.') }}</td>
                             <td style="text-align: right"><b>{{ number_format($item->liquid_payable, 2, ',', '.') }}</b></td>
+                            <td style="width: 200px; height: 50px"></td>
+                            <td>{{ $item->item }}</td>
                         </tr>
-                        @php
-                            $cont++;
-                        @endphp
                     @empty
                         
                     @endforelse
@@ -164,6 +164,8 @@
                         <td style="text-align: right"><b>{{ number_format($data->details->sum('faults_amount'), 2, ',', '.') }}</b></td>
                         <td style="text-align: right"><b>{{ number_format($data->details->sum('labor_total') + $data->details->sum('rc_iva_amount') + $data->details->sum('faults_amount'), 2, ',', '.') }}</b></td>
                         <td style="text-align: right"><b>{{ number_format($data->details->sum('liquid_payable'), 2, ',', '.') }}</b></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>
@@ -517,11 +519,12 @@
         .saltopagina{
             display: none;
         }
+        @page {
+            size: landscape;
+            margin: 10mm 0mm 30mm 0mm;
+        }
+        
         @media print{
-            .content {
-                padding-left: 0px;
-                padding-right: 0px;
-            }
             .header{
                 top: 0px;
             }

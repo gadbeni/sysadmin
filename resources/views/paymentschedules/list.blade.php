@@ -38,7 +38,7 @@
                                     case 'enviada':
                                         $label = 'primary';
                                         break;
-                                    case 'pabilitada':
+                                    case 'habilitada':
                                         $label = 'success';
                                         break;
                                     case 'pagada':
@@ -62,10 +62,16 @@
                                     <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                                 </a>
                             @endif
-                            
-                            {{-- <button type="button" onclick="deleteItem('{{ route('paymentschedules.destroy', ['paymentschedule' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
-                                <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
-                            </button> --}}
+                            @if ($item->status != 'pagada' && $item->status != 'borrador')
+                                <button type="button" data-id="{{ $item->centralize_code }}" data-toggle="modal" data-target="#cancel-modal" title="Revertir" class="btn btn-sm btn-dark btn-cancel edit">
+                                    <i class="glyphicon glyphicon-retweet"></i> <span class="hidden-xs hidden-sm">Revertir</span>
+                                </button>
+                            @endif
+                            @if ($item->status != 'pagada' )
+                                <button type="button" onclick="deleteItem('{{ route('paymentschedules.destroy', ['paymentschedule' => $item->centralize_code]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
+                                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Anular</span>
+                                </button>
+                            @endif
                         </td>
                     </tr>
                 @empty
@@ -90,26 +96,31 @@
     </div>
 </div>
 
-{{-- Modal delete massive --}}
-<div class="modal modal-danger fade" tabindex="-1" id="delete_multiple" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title"><i class="voyager-trash"></i> ¿Estás seguro?</h4>
-            </div>
-            <div class="modal-body">
-                <h4>¿Estás seguro de que quieres eliminar los cheques seleccionados?</h4>
-            </div>
-            <div class="modal-footer">
-                {{ method_field('DELETE') }}
-                {{ csrf_field() }}
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <input type="submit" class="btn btn-danger delete-confirm" value="Anular">
+{{-- Modal cancel --}}
+<form id="form-cancel" action="{{ route('paymentschedules.cancel') }}" method="post">
+    <div class="modal modal-primary fade" tabindex="-1" id="cancel-modal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="glyphicon glyphicon-retweet"></i> Desea revertir la siguiente planilla?</h4>
+                </div>
+                <div class="modal-body">
+                    @csrf
+                    <input type="hidden" name="centralize_code" >
+                    <div class="form-group">
+                        <label for="observations">Descipción del Motivo</label>
+                        <textarea class="form-control richTextBox" name="observations"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" class="btn btn-dark" value="Revertir">
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>
 
 <style>
 
@@ -118,6 +129,13 @@
 <script>
     var page = "{{ request('page') }}";
     $(document).ready(function(){
+        $.extend({selector: '.richTextBox'}, {})
+        tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
+
+        $('.btn-cancel').click(function(){
+            $('#form-cancel input[name="centralize_code"]').val($(this).data('id'));
+        });
+
         $('.page-link').click(function(e){
             e.preventDefault();
             let link = $(this).attr('href');
