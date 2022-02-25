@@ -17,7 +17,13 @@
             <tbody>
                 @forelse ($data as $item)
                     <tr>
-                        <td>{{ str_pad($item->centralize_code != '' ? $item->centralize_code : $item->id, 6, "0", STR_PAD_LEFT) }}</td>
+                        <td>
+                            {{ str_pad($item->id, 6, "0", STR_PAD_LEFT) }} <br>
+                            @if ($item->centralize_code)
+                                <label class="label label-danger" title="{{ str_pad($item->centralize_code, 6, "0", STR_PAD_LEFT) }}">centralizada</label>
+                                
+                            @endif
+                        </td>
                         <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
                         <td>{{ $item->period->name }}</td>
                         <td>{{ $item->procedure_type->name }}</td>
@@ -57,18 +63,29 @@
                             <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
                         </td>
                         <td class="no-sort no-click bread-actions text-right">
+                            {{-- @if ($item->status == 'procesada')
+                                <button type="button" data-id="{{ $item->id }}" class="btn btn-dark btn-send" data-toggle="modal" data-target="#send_modal"><i class="glyphicon glyphicon-ok-circle"></i> Enviar</button>
+                            @endif --}}
+
                             @if ($item->status != 'borrador')
-                                <a href="{{ route('paymentschedules.show', ['paymentschedule' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
-                                    <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
-                                </a>
+                                @if ($item->centralize_code)
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+                                            <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="{{ route('paymentschedules.show', ['paymentschedule' => $item->id]) }}">Sola</a></li>
+                                            <li><a href="{{ route('paymentschedules.show', ['paymentschedule' => $item->id]).'?centralize=true' }}">Agrupada</a></li>
+                                        </ul>
+                                    </div>
+                                @else
+                                    <a href="{{ route('paymentschedules.show', ['paymentschedule' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
+                                        <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
+                                    </a>
+                                @endif
                             @endif
-                            @if ($item->status != 'pagada' && $item->status != 'borrador')
-                                <button type="button" data-id="{{ $item->centralize_code }}" data-toggle="modal" data-target="#cancel-modal" title="Revertir" class="btn btn-sm btn-dark btn-cancel edit">
-                                    <i class="glyphicon glyphicon-retweet"></i> <span class="hidden-xs hidden-sm">Revertir</span>
-                                </button>
-                            @endif
-                            @if ($item->status != 'pagada' )
-                                <button type="button" onclick="deleteItem('{{ route('paymentschedules.destroy', ['paymentschedule' => $item->centralize_code]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
+                            @if ($item->status != 'pagada' && Auth::user()->hasPermission('delete_paymentschedules') )
+                                <button type="button" data-id="{{ $item->id }}" data-toggle="modal" data-target="#cancel-modal" title="Anular" class="btn btn-sm btn-danger btn-cancel edit">
                                     <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Anular</span>
                                 </button>
                             @endif
@@ -96,6 +113,27 @@
     </div>
 </div>
 
+{{-- send modal --}}
+<form id="form-send" action="{{ route('paymentschedules.update.status') }}" method="POST">
+    @csrf
+    <input type="hidden" name="id">
+    <input type="hidden" name="status" value="enviada">
+    <div class="modal modal-primary fade" tabindex="-1" id="send_modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="glyphicon glyphicon-ok-circle"></i> Desea enviar la siguiente planilla?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" class="btn btn-dark" value="Sí, enviar">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 {{-- Modal cancel --}}
 <form id="form-cancel" action="{{ route('paymentschedules.cancel') }}" method="post">
     <div class="modal modal-primary fade" tabindex="-1" id="cancel-modal" role="dialog">
@@ -107,7 +145,7 @@
                 </div>
                 <div class="modal-body">
                     @csrf
-                    <input type="hidden" name="centralize_code" >
+                    <input type="hidden" name="id" >
                     <div class="form-group">
                         <label for="observations">Descipción del Motivo</label>
                         <textarea class="form-control richTextBox" name="observations"></textarea>
@@ -132,8 +170,12 @@
         $.extend({selector: '.richTextBox'}, {})
         tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
 
+        $('.btn-send').click(function(){
+            $('#form-send input[name="id"]').val($(this).data('id'));
+        });
+
         $('.btn-cancel').click(function(){
-            $('#form-cancel input[name="centralize_code"]').val($(this).data('id'));
+            $('#form-cancel input[name="id"]').val($(this).data('id'));
         });
 
         $('.page-link').click(function(e){

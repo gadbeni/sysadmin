@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -53,8 +54,7 @@ class PaymentschedulesController extends Controller
                             });
                         }
                     })
-                    // ->groupBy('centralize_code')
-                    // ->having('centralize_code', '<>', '')
+                    ->where('status', '!=', 'borrador')
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
         // dd($data);
         return view('paymentschedules.list', compact('data', 'search'));
@@ -120,7 +120,7 @@ class PaymentschedulesController extends Controller
         DB::beginTransaction();
         try {
             // Obtener datos de la planilla actual
-            $centralize_code = '';
+            $centralize_code = NULL;
             if($request->centralize){
                 $centralize_code = $request->paymentschedule_id.'-c';
                 $current_paymentschedule = Paymentschedule::find($request->paymentschedule_id);
@@ -130,8 +130,6 @@ class PaymentschedulesController extends Controller
                 if($paymentschedule){
                     $centralize_code = $paymentschedule->centralize_code ?? $request->paymentschedule_id.'-c';
                 }
-            }else{
-                $centralize_code = $request->paymentschedule_id;
             }
 
             Paymentschedule::where('id', $request->paymentschedule_id)->update([
@@ -211,14 +209,21 @@ class PaymentschedulesController extends Controller
     {
         $afp = request('afp');
         $print = request('print');
-        $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type'])
+        $centralize = request('centralize');
+        $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract' => function($q){
+                        $q->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
+                    }])
                     ->where('id', $id)->where('deleted_at', NULL)->first();
-        $centralize_code = $data->centralize_code ?? $data->id;
-        $data->details = PaymentschedulesDetail::with(['contract'])
-                        ->whereHas('paymentschedule', function($q) use($centralize_code){
-                            $q->where('centralize_code', $centralize_code);
-                        })
-                        ->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
+        
+        if($centralize){
+            $centralize_code = $data->centralize_code;
+            $data->details = PaymentschedulesDetail::with(['contract'])
+                            ->whereHas('paymentschedule', function($q) use($centralize_code){
+                                $q->where('centralize_code', $centralize_code);
+                            })
+                            ->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
+        }
+
         // Si se elije una AFP, se filtran los contratos que correspondan a esa AFP
         if($afp){
             $details = collect();
@@ -230,9 +235,9 @@ class PaymentschedulesController extends Controller
             $data->details = $details;
         }
         if($print){
-            return view('paymentschedules.print', compact('data', 'afp'));
+            return view('paymentschedules.print', compact('data', 'afp', 'centralize'));
         }
-        return view('paymentschedules.read', compact('data', 'afp'));
+        return view('paymentschedules.read', compact('data', 'afp', 'centralize'));
     }
 
     /**
@@ -260,11 +265,12 @@ class PaymentschedulesController extends Controller
 
     public function update_status(Request $request)
     {
+        dd($request->all());
         try {
-            $data = Paymentschedule::where('centralize_code', $request->centralize_code)
-                                    ->where('deleted_at', NULL)->update(['status' => $request->status]);
+            $data = Paymentschedule::where('id', $request->id)
+                        ->where('deleted_at', NULL)->update(['status' => $request->status]);
             if($request->status == 'enviada'){
-                dd($request->centralize_code);
+                dd($request->id);
             }
             return redirect()->route('paymentschedules.index')->with(['message' => 'Estado actualizado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
@@ -278,9 +284,12 @@ class PaymentschedulesController extends Controller
             if($request->observations == ''){
                 return redirect()->route('paymentschedules.index')->with(['message' => 'Debe describir un motivo.', 'alert-type' => 'error']); 
             }
-            $aymentschedules = Paymentschedule::where('centralize_code', $request->centralize_code)->where('deleted_at', NULL)->get();
+            $aymentschedules = Paymentschedule::where('id', $request->id)->where('deleted_at', NULL)->get();
             foreach ($aymentschedules as $item) {
-                Paymentschedule::where('id', $item->id)->update(['status' => 'borrador']);
+                Paymentschedule::where('id', $item->id)->update([
+                    'status' => 'anulada',
+                    'deleted_at' => Carbon::now()
+                ]);
                 PaymentschedulesDetail::where('paymentschedule_id', $item->id)->delete();
             }
             
@@ -301,21 +310,7 @@ class PaymentschedulesController extends Controller
      */
     public function destroy($centralize_code)
     {
-        DB::beginTransaction();
-        try {
-            $aymentschedules = Paymentschedule::where('centralize_code', $centralize_code)->where('deleted_at', NULL)->get();
-            foreach ($aymentschedules as $item) {
-                Paymentschedule::where('id', $item->id)->delete();
-                PaymentschedulesDetail::where('paymentschedule_id', $item->id)->delete();
-            }
-            
-            DB::commit();
-            return redirect()->route('paymentschedules.index')->with(['message' => 'Estado actualizado correctamente.', 'alert-type' => 'success']);
-        } catch (\Throwable $th) {
-            DB::rollback();
-            // dd($th);
-            return redirect()->route('paymentschedules.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
-        }
+
     }
 
     // Archivos
