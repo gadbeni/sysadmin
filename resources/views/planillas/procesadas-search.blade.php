@@ -79,7 +79,7 @@
 
         {{-- Formulario de pago de aguinaldo --}}
         {{-- @if (count($aguinaldo) > 0) --}}
-        <form action="" method="post">
+        {{-- <form action="" method="post">
             @csrf
             <div class="panel-body" style="margin-bottom: 50px">
                 <div class="table-responsive">
@@ -138,11 +138,11 @@
                     </table>
                 </div>
             </div>
-        </form>
+        </form> --}}
         {{-- @endif --}}
 
         {{-- AdditionalSteddts --}}
-        <form action="" method="post">
+        {{-- <form action="" method="post">
             @csrf
             <div class="panel-body" style="margin-bottom: 50px">
                 <div class="table-responsive">
@@ -195,10 +195,6 @@
                                         @if ($item->estado == 'pendiente')
                                             <button type="button" data-toggle="modal" data-target="#pagar-planilla-adicional-modal" onclick='planillasetValuePayBonus(@json($item), @json($cashier))' class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
                                         @endif
-
-                                        {{-- @if ($item->estado == 'pagada')
-                                        <button type="button" onclick="print_recipe({{ $item->id }}, 'aguinaldo')" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
-                                        @endif --}}
                                     </td>
                                     @endif
                                     
@@ -210,7 +206,7 @@
                     </table>
                 </div>
             </div>
-        </form>
+        </form> --}}
 
 
 

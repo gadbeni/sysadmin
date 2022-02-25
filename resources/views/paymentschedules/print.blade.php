@@ -16,11 +16,16 @@
                     <td style="text-align: right">
                         <h3 style="margin: 0px">PLANILLA DE PAGO HABERES AL PERSONAL DEPENDIENTE GAD-BENI</h3>
                         <span>CORRESPONDIENTE AL MES DE: {{ strtoupper($months[intval($month)]) }} DE {{ $year }} | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }}</span>
-                        <h3 style="margin: 0px">{{ $data->direccion_administrativa->NOMBRE }}</h3>
-                        <span>{{ $data->procedure_type->name }}</span>
+                        @if ($centralize)
+                            <h3 style="margin: 0px">{{ $data->procedure_type->name }}</h3>
+                        @else
+                            <h3 style="margin: 0px">{{ $data->direccion_administrativa->NOMBRE }}</h3>
+                            <span>{{ $data->procedure_type->name }}</span>
+                        @endif
+                        
                     </td>
                     <td style="text-align:center; width: 90px">
-                        {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).' | '.$data->period->name.' | '.$data->direccion_administrativa->NOMBRE.' | '.$data->procedure_type->name); !!} <br>
+                        {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->NOMBRE).' | '.$data->procedure_type->name); !!} <br>
                     </td>
                 </tr>
                 <tr>
@@ -186,11 +191,15 @@
                     <td style="text-align: right">
                         <h3 style="margin: 0px">PLANILLA DE PAGO HABERES AL PERSONAL DEPENDIENTE GAD-BENI</h3>
                         <span>CORRESPONDIENTE AL MES DE: {{ strtoupper($months[intval($month)]) }} DE {{ $year }} | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }}</span>
-                        <h3 style="margin: 0px">{{ $data->direccion_administrativa->NOMBRE }}</h3>
-                        <span>{{ $data->procedure_type->name }}</span>
+                        @if ($centralize)
+                            <h3 style="margin: 0px">{{ $data->procedure_type->name }}</h3>
+                        @else
+                            <h3 style="margin: 0px">{{ $data->direccion_administrativa->NOMBRE }}</h3>
+                            <span>{{ $data->procedure_type->name }}</span>
+                        @endif
                     </td>
                     <td style="text-align:center; width: 90px">
-                        {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).' | '.$data->period->name.' | '.$data->direccion_administrativa->NOMBRE.' | '.$data->procedure_type->name); !!} <br>
+                        {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->NOMBRE).' | '.$data->procedure_type->name); !!} <br>
                     </td>
                 </tr>
                 <tr>
@@ -522,12 +531,14 @@
         .saltopagina{
             display: none;
         }
-        @page {
-            size: landscape;
-            margin: 10mm 0mm 30mm 0mm;
-        }
         
         @media print{
+            @page {
+                size: landscape;
+            }
+            .content {
+                margin-left: 30px;
+            }
             .header{
                 top: 0px;
             }

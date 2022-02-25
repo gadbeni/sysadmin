@@ -15,6 +15,7 @@ use App\Models\CashiersPaymentsDelete;
 use App\Models\PlanillasHistory;
 use App\Models\Aguinaldo;
 use App\Models\Stipend;
+use App\Models\PaymentschedulesDetail;
 
 class PlanillasController extends Controller
 {
@@ -57,6 +58,14 @@ class PlanillasController extends Controller
                                 ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
                                 ->orderByRaw("FIELD (p.idDa,'9','16','10','15','8','13','37','41','42','50','55','61','64','6','62','69','5','17','48','53'), p.Nivel")
                                 ->get();
+
+                // $paymentschedule = PaymentschedulesDetail::with(['contract'])
+                //                         ->whereHas('paymentschedule', function($q){
+                //                             $q->where('')->where('centralize_code', '<>', NULL);
+                //                         })
+                //                         ->where('deleted_at', NULL)->orderBy('item', 'ASC')->get();
+                // dd($paymentschedule);
+
                 $title = ($request->t_planilla ? ($request->t_planilla == 1 ? 'Funcionamiento ' : 'Inversión ') : '').($request->periodo ?? ' ').' '.($request->afp ? ($request->afp == 1 ? ' - Futuro' : ' - Previsión') : '');
                 break;
             case '2':
@@ -71,7 +80,6 @@ class PlanillasController extends Controller
                 $aguinaldo = Aguinaldo::with('payment.cashier.user')->where('ci', 'like', '%'. $request->ci.'%')->where('deleted_at', NULL)->get();
                 $stipend = Stipend::with('payment.cashier.user')->where('ci', 'like', '%'. $request->ci.'%')->where('deleted_at', NULL)->get();
                 
-                // return Stipend::where('ci',$request->ci)->get();
                 $title = '';
                 break;
         }
