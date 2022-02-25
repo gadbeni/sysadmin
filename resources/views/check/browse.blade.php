@@ -81,26 +81,38 @@
                                             
                                             <td>{{ json_decode($item->resumen)->observacion }}</td>
                                             <td>
-                                                @if ($item->status == 1)
+                                                @if ($item->status == "registrado" || $item->status == "habilitado")
                                                     <label class="label label-danger">Pendiente</label>
                                                 @endif
 
-                                                @if ($item->status == 2)
+                                                @if ($item->status == "aprobado")
+                                                    <label class="label label-success">Aprobado</label>
+                                                @endif
+                                                @if ($item->status == "entregado")
                                                     <label class="label label-success">Entregado</label>
                                                 @endif
-                                                @if ($item->status == 3)
-                                                    <label class="label label-warning">Anulado</label>
-                                                    <!-- <label class="label label-warning">Devolvido</label> -->
+                                                @if ($item->status == "observado")
+                                                    <label class="label label-warning">Observado</label>
                                                 @endif
                                             </td>
                                             <td class="actions text-right dt-not-orderable sorting_disabled">
-                                                @if ($item->status != 2)
-                                                    <a type="button" data-toggle="modal" data-target="#modal_entregar" data-id="{{ $item->id}}"  class="btn btn-dark"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Entregar</span></a>
+                                                @if ($item->status == "registrado" || $item->status == "habilitado")
+                                                    <a type="button" data-toggle="modal" data-target="#modal_aprobar" data-id="{{ $item->id}}"  class="btn btn-success"><i class="voyager-check"></i> <span class="hidden-xs hidden-sm">Aprobar</span></a>
+                                                    <!-- <a type="button" data-toggle="modal" data-target="#modal_devolver" data-id="{{ $item->id}}"  class="btn btn-warning"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Devolver</span></a> -->
                                                     <a type="button" data-toggle="modal" data-target="#edit_modal" data-id="{{ $item->id}}" data-items="{{$item->resumen}}"  class="btn btn-primary"><i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span></a>
                                                     <a type="button" data-toggle="modal" data-target="#delete_modal" data-id="{{ $item->id}}" class="btn btn-danger"><i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span></a>
                                                 @endif  
-                                                @if ($item->status == 2)
+
+                                                @if ($item->status == "aprobado")
+                                                    <a type="button" data-toggle="modal" data-target="#modal_entregar" data-id="{{ $item->id}}"  class="btn btn-dark"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Entregar</span></a>
+                                                    <!-- <a type="button" data-toggle="modal" data-target="#edit_modal" data-id="{{ $item->id}}" data-items="{{$item->resumen}}"  class="btn btn-primary"><i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span></a>
+                                                    <a type="button" data-toggle="modal" data-target="#delete_modal" data-id="{{ $item->id}}" class="btn btn-danger"><i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span></a> -->
+                                                @endif  
+                                                @if ($item->status == "entregado")
                                                     <a type="button" data-toggle="modal" data-target="#modal_devolver" data-id="{{ $item->id}}"  class="btn btn-warning"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Devolver</span></a>
+                                                @endif  
+                                                @if ($item->status == "observado")
+                                                    <a type="button" data-toggle="modal" data-target="#modal_habilitar" data-id="{{ $item->id}}"  class="btn btn-info"><i class="voyager-exclamation"></i> <span class="hidden-xs hidden-sm">Habilitar</span></a>
                                                 @endif  
                                             </td>
                                         </tr>
@@ -148,6 +160,43 @@
                 </div>
             </div>
         </div>
+        <!-- aprobar -->
+        <div class="modal modal-primary fade" tabindex="-1" id="modal_aprobar" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    {!! Form::open(['route' => 'checks.aprobar', 'method' => 'POST']) !!}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-dollar"></i> Aprobar Cheque</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="id">
+
+                        <div class="text-center" style="text-transform:uppercase">
+                            <i class="voyager-dollar" style="color: green; font-size: 5em;"></i>
+                            <br>
+                            <p><b>Aprobar el cheque....!</b></p>
+                        </div>
+
+                        <div class="row">   
+                            <div class="col-md-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Observacion:</b></span>
+                                </div>
+                                <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
+                            </div>                
+                        </div>
+                    </div>                
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark" value="Sí, APROBAR">
+                    </div>
+                    {!! Form::close()!!} 
+                </div>
+            </div>
+        </div>
+
+        <!-- entregar  -->
         <div class="modal modal-primary fade" tabindex="-1" id="modal_entregar" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -177,6 +226,41 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         <input type="submit" class="btn btn-dark" value="Sí, Entregar">
+                    </div>
+                    {!! Form::close()!!} 
+                </div>
+            </div>
+        </div>
+        <!-- habilitar cheque -->
+        <div class="modal modal-info fade" tabindex="-1" id="modal_habilitar" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    {!! Form::open(['route' => 'checks.habilitar', 'method' => 'POST']) !!}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-exclamation"></i> Habilitar Cheque</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="id">
+
+                        <div class="text-center" style="text-transform:uppercase">
+                            <i class="voyager-dollar" style="color: green; font-size: 5em;"></i>
+                            <br>
+                            <p><b>Habilitar cheque....!</b></p>
+                        </div>
+
+                        <div class="row">   
+                            <div class="col-md-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Observacion:</b></span>
+                                </div>
+                                <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
+                            </div>                
+                        </div>
+                    </div>                
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-info" value="Sí, Habilitar">
                     </div>
                     {!! Form::close()!!} 
                 </div>
@@ -587,8 +671,17 @@
             });
 
 
+            $('#modal_habilitar').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) 
+
+                var id = button.data('id')
+
+                var modal = $(this)
+                modal.find('.modal-body #id').val(id)
+                
+            });
             $('#modal_entregar').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget) //captura valor del data-empresa=""
+                var button = $(event.relatedTarget) 
 
                 var id = button.data('id')
 
@@ -597,6 +690,15 @@
                 
             });
             $('#modal_devolver').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) 
+
+                var id = button.data('id')
+
+                var modal = $(this)
+                modal.find('.modal-body #id').val(id)
+                
+            });
+            $('#modal_aprobar').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget) 
 
                 var id = button.data('id')

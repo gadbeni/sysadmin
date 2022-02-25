@@ -89,20 +89,39 @@ class CheckController extends Controller
 
     public function devolver_checks(Request $request)
     {
-        Check::where('id',$request->id)->update(['status' => 3]);
-        ChecksHistory::create(['check_id' => $request->id, 'office_id' => 1, 'status' => 3, 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
+        Check::where('id',$request->id)->update(['status' => 'observado']);
+        ChecksHistory::create(['check_id' => $request->id, 'office_id' => 1, 'status' => 'observado', 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
 
         return redirect()->route('checks.index')->with(['message' => 'Cheque Devolvido Exitosamente.', 'alert-type' => 'success']);
     }   
 
+    public function aprobar_checks(Request $request)
+    {
+
+        Check::where('id',$request->id)->update(['status' => 'aprobado']);
+
+        ChecksHistory::create(['check_id' => $request->id, 'status' => 'aprobado', 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
+
+        return redirect()->route('checks.index')->with(['message' => 'Cheque Aprobado Exitosamente.', 'alert-type' => 'success']);
+    }
+
     public function entregar_checks(Request $request)
     {
 
-        Check::where('id',$request->id)->update(['status' => 2]);
+        Check::where('id',$request->id)->update(['status' => 'entregado']);
 
-        ChecksHistory::create(['check_id' => $request->id, 'status' => 2, 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
+        ChecksHistory::create(['check_id' => $request->id, 'status' => 'entregado', 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
 
         return redirect()->route('checks.index')->with(['message' => 'Cheque Entregado Exitosamente.', 'alert-type' => 'success']);
+    }
+    public function habilitar_checks(Request $request)
+    {
+
+        Check::where('id',$request->id)->update(['status' => 'habilitado']);
+
+        ChecksHistory::create(['check_id' => $request->id, 'status' => 'habilitado', 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
+
+        return redirect()->route('checks.index')->with(['message' => 'Cheque Habilitado Exitosamente.', 'alert-type' => 'success']);
     }
 
     public function destroy(Request $request)
