@@ -40,7 +40,7 @@ class PaymentschedulesController extends Controller
 
     public function list($search = null){
         $paginate = request('paginate') ?? 10;
-        $data = Paymentschedule::with(['user', 'details', 'direccion_administrativa', 'period', 'procedure_type', 'details' => function($query){
+        $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details' => function($query){
                         $query->where('deleted_at', NULL);
                     }])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
@@ -221,7 +221,7 @@ class PaymentschedulesController extends Controller
                             ->whereHas('paymentschedule', function($q) use($centralize_code){
                                 $q->where('centralize_code', $centralize_code);
                             })
-                            ->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
+                            ->where('deleted_at', NULL)->orderBy('item', 'ASC')->get();
         }
 
         // Si se elije una AFP, se filtran los contratos que correspondan a esa AFP
@@ -265,13 +265,35 @@ class PaymentschedulesController extends Controller
 
     public function update_status(Request $request)
     {
-        dd($request->all());
         try {
-            $data = Paymentschedule::where('id', $request->id)
-                        ->where('deleted_at', NULL)->update(['status' => $request->status]);
-            if($request->status == 'enviada'){
-                dd($request->id);
+            $paymentschedule = Paymentschedule::findOrFail($request->id);
+            // Si es centralizada, se debe actualizar el estado de todas las planillas que están asociadas a la centralización
+            if($paymentschedule->centralize_code){
+                Paymentschedule::where('centralize_code', $paymentschedule->centralize_code)->where('deleted_at', NULL)->update(['status' => $request->status]);
+                $paymentschedules = Paymentschedule::with(['details' => function($query){
+                    $query->where('deleted_at', NULL);
+                }])
+                ->orderBy('direccion_administrativa_id', 'ASC')
+                ->where('deleted_at', NULL)->get();
+
+                $cont = 1;
+                foreach ($paymentschedules as $paymentschedule) {
+                    foreach ($paymentschedule->details as $item) {
+                        PaymentschedulesDetail::where('id', $item->id)->update(['item' => $cont]);
+                        $cont++;
+                    }
+                }
+            }else{
+                $paymentschedule->update(['status' => $request->status]);
+                if($request->status == 'enviada'){
+                    $cont = 1;
+                    foreach ($paymentschedule->details as $item) {
+                        PaymentschedulesDetail::where('id', $item->id)->update(['item' => $cont]);
+                        $cont++;
+                    }
+                }
             }
+
             return redirect()->route('paymentschedules.index')->with(['message' => 'Estado actualizado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             return redirect()->route('paymentschedules.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);

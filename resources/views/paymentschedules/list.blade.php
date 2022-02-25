@@ -63,9 +63,9 @@
                             <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
                         </td>
                         <td class="no-sort no-click bread-actions text-right">
-                            {{-- @if ($item->status == 'procesada')
+                            @if ($item->status == 'procesada')
                                 <button type="button" data-id="{{ $item->id }}" class="btn btn-dark btn-send" data-toggle="modal" data-target="#send_modal"><i class="glyphicon glyphicon-ok-circle"></i> Enviar</button>
-                            @endif --}}
+                            @endif
 
                             @if ($item->status != 'borrador')
                                 @if ($item->centralize_code)

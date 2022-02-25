@@ -28,6 +28,7 @@
                             <th>Fin</th>
                             <th>Programa</th>
                             <th>Categoría programática</th>
+                            <th>Estado</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,6 +52,7 @@
                             <td>{{ date('d/m/Y', strtotime($item->finish)) }}</td>
                             <td>{{ $item->program->name }}</td>
                             <td>{{ $item->program->programatic_category }}</td>
+                            <td>{{ $item->status }}</td>
 
                         </tr>
                         @php
@@ -58,7 +60,7 @@
                         @endphp
                         @empty
                             <tr class="odd">
-                                <td valign="top" colspan="14" class="text-center">No hay datos disponibles en la tabla</td>
+                                <td valign="top" colspan="15" class="text-center">No hay datos disponibles en la tabla</td>
                             </tr>
                         @endforelse
                     </tbody>

@@ -79,6 +79,7 @@
                 </thead>
                 <tbody>
                     @php
+                        $cont = 0;
                         $total_partial_salary = 0;
                         $total_seniority_bonus_amount = 0;
                         $total_amount = 0;
@@ -97,6 +98,7 @@
                     @endphp
                     @forelse ($data->details as $item)
                         @php
+                            $cont++;
                             $total_partial_salary += $item->partial_salary;
                             $total_seniority_bonus_amount += $item->seniority_bonus_amount;
                             $total_amount += $item->partial_salary + $item->seniority_bonus_amount;
@@ -114,7 +116,7 @@
                             $labor_liquid_payable += $item->liquid_payable;
                         @endphp
                         <tr>
-                            <td>{{ $item->item }}</td>
+                            <td>{{ $item->centralize_code ? $item->item : $cont }}</td>
                             <td>{{ $item->job_level }}</td>
                             <td>
                                 <b>{{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }}</b> <br>
@@ -126,7 +128,7 @@
                             <td><b>{{ $item->worked_days }}</b></td>
                             <td style="text-align: right">{{ number_format($item->salary, 2, ',', '.') }}</td>
                             <td style="text-align: right"><b>{{ number_format($item->partial_salary, 2, ',', '.') }}</b></td>
-                            <td style="text-align: right">{{ $item->seniority_bonus_percentage }}%</td>
+                            <td style="text-align: right">{{ number_format($item->seniority_bonus_percentage, 2, ',', '.') }}%</td>
                             <td style="text-align: right">{{ number_format($item->seniority_bonus_amount, 2, ',', '.') }}</td>
                             <td style="text-align: right"><b>{{ number_format($item->partial_salary + $item->seniority_bonus_amount, 2, ',', '.') }}</b></td>
                             <td style="text-align: right">{{ number_format($item->solidary, 2, ',', '.') }}</td>
@@ -141,7 +143,7 @@
                             <td style="text-align: right">{{ number_format($item->labor_total + $item->rc_iva_amount + $item->faults_amount, 2, ',', '.') }}</td>
                             <td style="text-align: right"><b>{{ number_format($item->liquid_payable, 2, ',', '.') }}</b></td>
                             <td style="width: 200px; height: 50px"></td>
-                            <td>{{ $item->item }}</td>
+                            <td>{{ $item->centralize_code ? $item->item : $cont }}</td>
                         </tr>
                     @empty
                         

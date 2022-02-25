@@ -63,7 +63,7 @@ class DataTypesTableSeeder extends Seeder
                 'display_name_singular' => 'Rol',
                 'display_name_plural' => 'Roles',
                 'icon' => 'voyager-lock',
-                'model_name' => 'TCG\\Voyager\\Models\\Role',
+                'model_name' => 'App\\Models\\Role',
                 'policy_name' => NULL,
                 'controller' => 'TCG\\Voyager\\Http\\Controllers\\VoyagerRoleController',
                 'description' => NULL,
@@ -71,7 +71,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"name","order_display_column":"name","order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2021-06-02 17:55:31',
-                'updated_at' => '2021-09-23 09:28:28',
+                'updated_at' => '2022-02-25 12:53:46',
             ),
             3 => 
             array (

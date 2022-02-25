@@ -113,12 +113,14 @@
                                             // Calcular bono antigüedad
                                             $minimum_salary = setting('planillas.minimum_salary') ?? 2164;
                                             $seniority_bonus_percentage = 0;
+                                            $minimum_salary_quantity = 1;
                                             if(count($item->person->seniority_bonus) > 0){
                                                 if(date('Ym', strtotime($item->person->seniority_bonus->first()->start)) <= $period->name){
                                                     $seniority_bonus_percentage = $item->person->seniority_bonus->first()->type->percentage;
+                                                    $minimum_salary_quantity = $item->person->seniority_bonus->first()->quantity;
                                                 }
                                             }
-                                            $seniority_bonus_amount = (($minimum_salary * ($seniority_bonus_percentage /100)) /30) * $days_enabled_worker;
+                                            $seniority_bonus_amount = ((($minimum_salary * $minimum_salary_quantity) * ($seniority_bonus_percentage /100)) /30) * $days_enabled_worker;
 
                                             // Total ganado
                                             $total_amout = $partial_salary + $seniority_bonus_amount;

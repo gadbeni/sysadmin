@@ -231,7 +231,7 @@
                                             <td><b>{{ $item->worked_days }}</b></td>
                                             <td class="text-right">{{ number_format($item->salary, 2, ',', '.') }}</td>
                                             <td class="text-right"><b>{{ number_format($item->partial_salary, 2, ',', '.') }}</b></td>
-                                            <td class="text-right">{{ $item->seniority_bonus_percentage }}%</td>
+                                            <td class="text-right">{{ number_format($item->seniority_bonus_percentage, 2, ',', '.') }}%</td>
                                             <td class="text-right">{{ number_format($item->seniority_bonus_amount, 2, ',', '.') }}</td>
                                             <td class="text-right"><b>{{ number_format($item->partial_salary + $item->seniority_bonus_amount, 2, ',', '.') }}</b></td>
                                             <td class="text-right">{{ number_format($item->solidary, 2, ',', '.') }}</td>

@@ -40,6 +40,7 @@
                 <th>Fin</th>
                 <th>Programa</th>
                 <th>Categoría programática</th>
+                <th>Estado</th>
             </tr>
         </thead>
         <tbody>
@@ -63,7 +64,7 @@
                     <td>{{ date('d/m/Y', strtotime($item->finish)) }}</td>
                     <td>{{ $item->program->name }}</td>
                     <td>{{ $item->program->programatic_category }}</td>
-
+                    <td>{{ $item->status }}</td>
                 </tr>
                 @php
                     $cont++;
