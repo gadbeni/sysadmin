@@ -1,4 +1,4 @@
-@if($paymentschedule->status != 'borrador')
+@if($paymentschedule)
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-bordered">
@@ -12,7 +12,9 @@
 @else    
     <form action="{{ route('paymentschedules.store') }}" method="POST">
         @csrf
-        <input type="hidden" name="paymentschedule_id" value="{{ $paymentschedule->id }}">
+        <input type="hidden" name="direccion_administrativa_id" value="{{ $direccion_administrativa_id }}">
+        <input type="hidden" name="period_id" value="{{ $period_id }}">
+        <input type="hidden" name="procedure_type_id" value="{{ $procedure_type_id }}">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-bordered">

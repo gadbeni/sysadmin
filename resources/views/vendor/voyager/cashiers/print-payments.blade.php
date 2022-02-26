@@ -121,6 +121,8 @@
                                 {{ $payment->aguinaldo->funcionario }}
                             @elseif($payment->stipend_id)
                                 {{ $payment->stipend->funcionario }}
+                            @elseif($payment->paymentschedulesdetail)
+                                {{ $payment->paymentschedulesdetail->contract->person->first_name }} {{ $payment->paymentschedulesdetail->contract->person->last_name }}
                             @endif
                             <br>
                             @if ($payment->deleted_at)
@@ -134,6 +136,8 @@
                                 {{ $payment->aguinaldo->ci }}
                             @elseif($payment->stipend_id)
                                 {{ $payment->stipend->ci }}
+                            @elseif($payment->paymentschedulesdetail)
+                                {{ $payment->paymentschedulesdetail->contract->person->ci }}
                             @endif
                         </td>
                         <td>
@@ -143,6 +147,8 @@
                                 Aguinaldo
                             @elseif($payment->stipend_id)
                                 Estipendio
+                            @elseif($payment->paymentschedulesdetail)
+                                {{ str_pad($payment->paymentschedulesdetail->paymentschedule->centralize_code ?? $payment->paymentschedulesdetail->paymentschedule->id, 6, "0", STR_PAD_LEFT) }}
                             @endif
                         </td>
                         <td>{{ $payment->created_at->format('d/m/Y H:i') }}</td>

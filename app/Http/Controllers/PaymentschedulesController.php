@@ -55,6 +55,7 @@ class PaymentschedulesController extends Controller
                         }
                     })
                     ->where('status', '!=', 'borrador')
+                    ->where('status', '!=', 'anulada')
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
         // dd($data);
         return view('paymentschedules.list', compact('data', 'search'));
@@ -73,35 +74,37 @@ class PaymentschedulesController extends Controller
     }
 
     public function generate(Request $request){
+        $direccion_administrativa_id =  $request->da_id;
         $period_id = $request->period_id;
+        $procedure_type_id = $request->procedure_type_id;
+
+        // Verificar si no existe una planilla generada para la DA, el periodo y tipo de planilla
+        $paymentschedule = Paymentschedule::where([
+            'direccion_administrativa_id' =>  $request->da_id,
+            'period_id' => $request->period_id,
+            'procedure_type_id' => $request->procedure_type_id,
+            'deleted_at' => NULL,
+        ])->first();
+        if($paymentschedule){
+            return view('paymentschedules.generate', compact('paymentschedule'));
+        }
+
         $contracts = Contract::with(['user', 'person.seniority_bonus.type', 'person.seniority_bonus' => function($q){
                             $q->where('deleted_at', NULL)->where('status', 1);
                         }, 'program', 'cargo.nivel' => function($q){
                             $q->where('Estado', 1);
                         }, 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
-                        ->where('direccion_administrativa_id', $request->da_id)
-                        ->where('procedure_type_id', $request->procedure_type_id)
+                        ->where('direccion_administrativa_id', $direccion_administrativa_id)
+                        ->where('procedure_type_id', $procedure_type_id)
                         ->where('status', 'firmado')
                         ->where('deleted_at', NULL)->get();
         $paymentschedules_file = PaymentschedulesFile::with(['details'])
-                                    ->where('direccion_administrativa_id', $request->da_id)
-                                    ->where('period_id', $request->period_id)
-                                    ->where('procedure_type_id', $request->procedure_type_id)
+                                    ->where('direccion_administrativa_id', $direccion_administrativa_id)
+                                    ->where('period_id', $period_id)
+                                    ->where('procedure_type_id', $procedure_type_id)
                                     ->where('status', 'cargado')->get();
 
-        $paymentschedule = Paymentschedule::firstOrCreate([
-            'direccion_administrativa_id' =>  $request->da_id,
-            'period_id' => $request->period_id,
-            'procedure_type_id' => $request->procedure_type_id,
-            'deleted_at' => NULL,
-        ]);
-
-        if($paymentschedule->status == NULL){
-            $paymentschedule->status = 'borrador';
-            $paymentschedule->save();
-        }
-
-        return view('paymentschedules.generate', compact('contracts', 'period_id', 'paymentschedule', 'paymentschedules_file'));
+        return view('paymentschedules.generate', compact('paymentschedule', 'contracts', 'direccion_administrativa_id', 'period_id', 'procedure_type_id', 'paymentschedules_file'));
     }
 
     /**
@@ -112,34 +115,35 @@ class PaymentschedulesController extends Controller
      */
     public function store(Request $request)
     {
-        $payment_schedule = Paymentschedule::where('id', $request->paymentschedule_id)->first();
-        if($payment_schedule->status != 'borrador'){
-            return redirect()->back()->with(['message' => 'La planilla ya ha sido generada.', 'alert-type' => 'error']);
-        }
-
         DB::beginTransaction();
         try {
-            // Obtener datos de la planilla actual
-            $centralize_code = NULL;
-            if($request->centralize){
-                $centralize_code = $request->paymentschedule_id.'-c';
-                $current_paymentschedule = Paymentschedule::find($request->paymentschedule_id);
-                $paymentschedule = Paymentschedule::where('period_id', $current_paymentschedule->period_id)
-                                        ->where('procedure_type_id', $current_paymentschedule->procedure_type_id)
-                                        ->where('centralize', 1)->where('deleted_at', NULL)->first();
-                if($paymentschedule){
-                    $centralize_code = $paymentschedule->centralize_code ?? $request->paymentschedule_id.'-c';
-                }
-            }
-
-            Paymentschedule::where('id', $request->paymentschedule_id)->update([
+            // Registrar nueva planilla
+            $paymentschedule = Paymentschedule::create([
+                'direccion_administrativa_id' =>  $request->direccion_administrativa_id,
+                'period_id' => $request->period_id,
+                'procedure_type_id' => $request->procedure_type_id,
                 'centralize' => $request->centralize,
-                'centralize_code' => $centralize_code,
                 'observations' => $request->observations,
                 'status' => 'procesada',
                 'user_id' => Auth::user()->id,
             ]);
+            // dd($paymentschedule);
 
+            // En caso de ser centralizada asignarle el número correspondiente
+            if($request->centralize){
+                $centralize_paymentschedule = Paymentschedule::where('period_id', $request->period_id)
+                                                    ->where('procedure_type_id', $request->procedure_type_id)
+                                                    ->where('centralize', 1)->where('id', '<>', $paymentschedule->id)->where('deleted_at', NULL)->first();
+                // Si ya existen planillas centralizadas para ese periodo y tipo de planilla
+                if($centralize_paymentschedule){
+                    $paymentschedule->centralize_code = $centralize_paymentschedule->centralize_code;
+                    $paymentschedule->save();
+                }else{
+                    $paymentschedule->centralize_code = $paymentschedule->id.'-c';
+                    $paymentschedule->save();
+                }
+            }
+        
             $contract_id = json_decode($request->contract_id);
             $worked_days = json_decode($request->worked_days);
             $salary = json_decode($request->salary);
@@ -164,7 +168,7 @@ class PaymentschedulesController extends Controller
             
             for ($i=0; $i < count($contract_id); $i++) {
                 PaymentschedulesDetail::create([
-                    'paymentschedule_id' => $request->paymentschedule_id,
+                    'paymentschedule_id' => $paymentschedule->id,
                     'contract_id' => $contract_id[$i],
                     'worked_days' => $worked_days[$i],
                     'salary' => $salary[$i],
@@ -265,26 +269,51 @@ class PaymentschedulesController extends Controller
 
     public function update_status(Request $request)
     {
+        DB::beginTransaction();
         try {
             $paymentschedule = Paymentschedule::findOrFail($request->id);
             // Si es centralizada, se debe actualizar el estado de todas las planillas que están asociadas a la centralización
             if($paymentschedule->centralize_code){
+                // Actualizar estado de todas las planillas que pertecencen al grupo centralizado
                 Paymentschedule::where('centralize_code', $paymentschedule->centralize_code)->where('deleted_at', NULL)->update(['status' => $request->status]);
-                $paymentschedules = Paymentschedule::with(['details' => function($query){
-                    $query->where('deleted_at', NULL);
-                }])
-                ->orderBy('direccion_administrativa_id', 'ASC')
-                ->where('deleted_at', NULL)->get();
+                
+                if($request->status == 'enviada'){
+                    // Obtener el detalle de las planillas que pertenecen al grupo de planillas centralizadas
+                    // y actualizar su item
+                    $paymentschedules = Paymentschedule::with(['details' => function($query){
+                        $query->where('deleted_at', NULL);
+                    }])
+                    ->where('centralize_code', $paymentschedule->centralize_code)
+                    ->where('deleted_at', NULL)->orderBy('direccion_administrativa_id', 'ASC')->get();
 
-                $cont = 1;
-                foreach ($paymentschedules as $paymentschedule) {
-                    foreach ($paymentschedule->details as $item) {
-                        PaymentschedulesDetail::where('id', $item->id)->update(['item' => $cont]);
-                        $cont++;
+                    $cont = 1;
+                    foreach ($paymentschedules as $paymentschedule) {
+                        foreach ($paymentschedule->details as $item) {
+                            PaymentschedulesDetail::where('id', $item->id)->update(['item' => $cont]);
+                            $cont++;
+                        }
                     }
                 }
+
+                if($request->status == 'habilitada'){
+                    $paymentschedules = Paymentschedule::with(['details' => function($query){
+                        $query->where('deleted_at', NULL);
+                    }])
+                    ->where('centralize_code', $paymentschedule->centralize_code)
+                    ->where('deleted_at', NULL)->orderBy('direccion_administrativa_id', 'ASC')->get();
+                    foreach ($paymentschedules as $paymentschedule) {
+                        foreach ($paymentschedule->details->where('status', 'procesado') as $item) {
+                            $detail = PaymentschedulesDetail::where('id', $item->id)->first();
+                            if(!$request->afp || $request->afp == $detail->contract->person->afp){
+                                $detail->update(['status' => 'habilitado']);
+                            }
+                        }
+                    }
+                }
+
             }else{
                 $paymentschedule->update(['status' => $request->status]);
+
                 if($request->status == 'enviada'){
                     $cont = 1;
                     foreach ($paymentschedule->details as $item) {
@@ -292,10 +321,23 @@ class PaymentschedulesController extends Controller
                         $cont++;
                     }
                 }
+                
+                if($request->status == 'habilitada'){
+                    $cont = 1;
+                    foreach ($paymentschedule->details->where('status', 'procesado') as $item) {
+                        $detail = PaymentschedulesDetail::where('id', $item->id)->first();
+                        if(!$request->afp || $request->afp == $detail->contract->person->afp){
+                            $detail->update(['status' => 'habilitado']);
+                        }
+                    }
+                }
             }
-
+            
+            DB::commit();
             return redirect()->route('paymentschedules.index')->with(['message' => 'Estado actualizado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
+            DB::rollback();
+            dd($th);
             return redirect()->route('paymentschedules.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
@@ -303,20 +345,18 @@ class PaymentschedulesController extends Controller
     public function cancel(Request $request){
         DB::beginTransaction();
         try {
-            if($request->observations == ''){
-                return redirect()->route('paymentschedules.index')->with(['message' => 'Debe describir un motivo.', 'alert-type' => 'error']); 
-            }
-            $aymentschedules = Paymentschedule::where('id', $request->id)->where('deleted_at', NULL)->get();
-            foreach ($aymentschedules as $item) {
-                Paymentschedule::where('id', $item->id)->update([
-                    'status' => 'anulada',
-                    'deleted_at' => Carbon::now()
-                ]);
-                PaymentschedulesDetail::where('paymentschedule_id', $item->id)->delete();
+            $paymentschedule = Paymentschedule::findOrFail($request->id);
+            $paymentschedule->status = 'anulada';
+            $paymentschedule->update();
+            $paymentschedule->delete();
+            if($paymentschedule->centralize_code){
+                // Actualizar estado de todas las planillas que pertecencen al grupo centralizado
+                Paymentschedule::where('centralize_code', $paymentschedule->centralize_code)
+                                ->where('id', '<>', $paymentschedule->id)->where('deleted_at', NULL)->update(['status' => 'procesada']);
             }
             
             DB::commit();
-            return redirect()->route('paymentschedules.index')->with(['message' => 'Planilla revertida correctamente.', 'alert-type' => 'success']);
+            return redirect()->route('paymentschedules.index')->with(['message' => 'Planilla Anulada correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);

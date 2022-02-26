@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 use DataTables;
 
@@ -16,6 +17,8 @@ use App\Models\PlanillasHistory;
 use App\Models\Aguinaldo;
 use App\Models\Stipend;
 use App\Models\PaymentschedulesDetail;
+use App\Models\Period;
+use App\Models\ProcedureType;
 
 class PlanillasController extends Controller
 {
@@ -33,6 +36,7 @@ class PlanillasController extends Controller
         $title = '';
         $aguinaldo = [];
         $stipend = [];
+        $paymentschedule;
         switch ($tipo_planilla) {
             case '0':
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
@@ -43,7 +47,21 @@ class PlanillasController extends Controller
                                 ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
                                 ->orderByRaw("FIELD(p.idDa, '9','16','10','15','8','13','37','41','42','50','55','61','64','6','62','69','5','17','48','53')")
                                 ->get();
-                $title = 'Planilla '.$request->planilla_id.($request->afp_no_centralizada ? ($request->afp_no_centralizada == 1 ? ' - Futuro' : ' - Previsión') : '');
+
+                // Nuevas planillas
+                $afp = $request->afp_no_centralizada ?? NULL;
+                $planilla_id = intval($request->planilla_id);
+                $paymentschedule = PaymentschedulesDetail::with(['contract', 'paymentschedule'])
+                                        ->whereHas('paymentschedule', function($q) use($planilla_id){
+                                            $q->where('id', $planilla_id)->whereRaw('(status = "enviada" or status = "habilitada")')->where('deleted_at', NULL)->where('centralize', 0);
+                                        })
+                                        ->whereHas('contract.person', function($q) use($afp){
+                                            $q->whereRaw($afp ? "afp = $afp" : 1);
+                                        })
+                                        ->where('deleted_at', NULL)->orderBy('item', 'ASC')->get();
+                // dd($paymentschedule);
+
+                $title = 'Planilla '.str_pad($planilla_id, 6, "0", STR_PAD_LEFT).($afp ? ($afp == 1 ? ' | Futuro' : ' | Previsión') : '');
                 break;
             case '1':
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
@@ -59,14 +77,33 @@ class PlanillasController extends Controller
                                 ->orderByRaw("FIELD (p.idDa,'9','16','10','15','8','13','37','41','42','50','55','61','64','6','62','69','5','17','48','53'), p.Nivel")
                                 ->get();
 
-                // $paymentschedule = PaymentschedulesDetail::with(['contract'])
-                //                         ->whereHas('paymentschedule', function($q){
-                //                             $q->where('')->where('centralize_code', '<>', NULL);
-                //                         })
-                //                         ->where('deleted_at', NULL)->orderBy('item', 'ASC')->get();
-                // dd($paymentschedule);
+                // Nuevas planillas
+                $afp = $request->afp ?? NULL;
+                $period = Period::where('name', $request->periodo)->where('deleted_at', NULL)->first();
+                $period_id = $period ? $period->id : 0;
+                $procedure_type = ProcedureType::where('planilla_id', $request->t_planilla)->where('deleted_at', NULL)->first();
+                $procedure_type_id = $procedure_type ? $procedure_type->id : 0;
 
-                $title = ($request->t_planilla ? ($request->t_planilla == 1 ? 'Funcionamiento ' : 'Inversión ') : '').($request->periodo ?? ' ').' '.($request->afp ? ($request->afp == 1 ? ' - Futuro' : ' - Previsión') : '');
+                $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                $period = $request->periodo;
+                $year = Str::substr($period, 0, 4);
+                $month = Str::substr($period, 5, 2);
+
+                $paymentschedule = PaymentschedulesDetail::with(['contract', 'paymentschedule'])
+                                        ->whereHas('paymentschedule', function($q){
+                                            $q->whereRaw('(status = "enviada" or status = "habilitada")')->where('centralize', 1)->where('deleted_at', NULL);
+                                        })
+                                        ->whereHas('paymentschedule', function($q) use($period_id){
+                                            $q->where('period_id', $period_id);
+                                        })
+                                        ->whereHas('paymentschedule', function($q) use($procedure_type_id){
+                                            $q->where('procedure_type_id', $procedure_type_id);
+                                        })
+                                        ->whereHas('contract.person', function($q) use($afp){
+                                            $q->whereRaw($afp ? "afp = $afp" : 1);
+                                        })
+                                        ->where('deleted_at', NULL)->orderBy('item', 'ASC')->get();
+                $title = ucfirst($procedure_type->name).' | '.$months[intval($month)].' de '.$year.' '.($request->afp ? ($request->afp == 1 ? ' | Futuro' : ' | Previsión') : '');
                 break;
             case '2':
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
@@ -79,12 +116,26 @@ class PlanillasController extends Controller
                                 ->get();
                 $aguinaldo = Aguinaldo::with('payment.cashier.user')->where('ci', 'like', '%'. $request->ci.'%')->where('deleted_at', NULL)->get();
                 $stipend = Stipend::with('payment.cashier.user')->where('ci', 'like', '%'. $request->ci.'%')->where('deleted_at', NULL)->get();
+
+                $ci = $request->ci;
+                $paymentschedule = PaymentschedulesDetail::with(['contract', 'paymentschedule.period'])
+                                        ->whereHas('paymentschedule', function($q){
+                                            $q->where('deleted_at', NULL);
+                                        })
+                                        ->whereHas('contract.person', function($q) use($ci){
+                                            $q->where('ci', $ci);
+                                        })
+                                        ->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
+                // dd($paymentschedule);
                 
                 $title = '';
                 break;
         }
-        // 10838067
-        return view('planillas.procesadas-search', compact('planilla', 'tipo_planilla', 'title', 'aguinaldo', 'stipend'));
+        if($request->type_system == 1 || $request->type_system_alt == 1 || $request->type_system_ci == 1){
+            return view('planillas.procesadas-search-alt', compact('paymentschedule', 'title', 'tipo_planilla'));
+        }else{
+            return view('planillas.procesadas-search', compact('planilla', 'tipo_planilla', 'title', 'aguinaldo', 'stipend', 'paymentschedule'));
+        }
     }
 
     public function planillas_pagos_search_by_id(){
@@ -160,6 +211,25 @@ class PlanillasController extends Controller
                     $payment = CashiersPayment::create([
                         'cashier_id' => $request->cashier_id,
                         'planilla_haber_id' => $request->id,
+                        'amount' => $request->amount,
+                        'description' => 'Pago a '.$request->name.'.',
+                        'observations' => $request->observations
+                    ]);
+                }else{
+                    return response()->json(['error' => 1]);
+                }
+            }
+
+            // Pago de sueldo con la nueva base de datos
+            if($request->paymentschedules_detail_id){
+                $paymentschedules_detail = PaymentschedulesDetail::find($request->paymentschedules_detail_id);
+                if($paymentschedules_detail->status == 'habilitado'){
+                    $paymentschedules_detail->status = 'pagado';
+                    $paymentschedules_detail->update();
+
+                    $payment = CashiersPayment::create([
+                        'cashier_id' => $request->cashier_id,
+                        'paymentschedules_detail_id' => $paymentschedules_detail->id,
                         'amount' => $request->amount,
                         'description' => 'Pago a '.$request->name.'.',
                         'observations' => $request->observations

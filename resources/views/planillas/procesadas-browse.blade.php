@@ -33,6 +33,10 @@
                                             <option value="2">Previsión</option>
                                         </select>
                                     </div>
+                                    <div class="form-group text-right">
+                                        <label class="radio-inline"><input type="radio" name="type_system_alt" value="0" checked>Actual sistema</label>
+                                        <label class="radio-inline"><input type="radio" name="type_system_alt" value="1">Nuevo sistema</label>
+                                    </div>
                                     <div class="text-right">
                                         <button type="submit" class="btn btn-info" style="margin-top: 0px; padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
                                     </div>
@@ -49,18 +53,23 @@
                                         <option value="">Todos</option>
                                         <option value="1">Pagos pendientes</option>
                                     </select>
+                                    <div class="form-group text-right">
+                                        <label class="radio-inline"><input type="radio" name="type_system_ci" value="0" checked>Actual sistema</label>
+                                        <label class="radio-inline"><input type="radio" name="type_system_ci" value="1">Nuevo sistema</label>
+                                    </div>
                                     <div class="clearfix"></div>
                                     <br>
                                 </div>
                                 
-                                {{-- Opciones que se despliegan cuando se hace check en la opción "No centralizada" --}}
+                                {{-- Opciones que se despliegan cuando se hace check en la opción "Centralizada" --}}
                                 <div class="input-centralizada">
                                     <div class="form-group">
                                         {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
                                         <select name="t_planilla" class="form-control select2">
                                             <option selected disabled>Tipo de planilla</option>
-                                            <option value="1">Funcionamiento</option>
-                                            <option value="2">Inversión</option>
+                                            @foreach (\App\Models\ProcedureType::where('deleted_at', NULL)->get() as $item)
+                                            <option value="{{ $item->planilla_id }}">{{ $item->name }}</option>    
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -72,6 +81,10 @@
                                             <option value="1">Futuro</option>
                                             <option value="2">Previsión</option>
                                         </select>
+                                    </div>
+                                    <div class="form-group text-right">
+                                        <label class="radio-inline"><input type="radio" name="type_system" value="0" checked>Actual sistema</label>
+                                        <label class="radio-inline"><input type="radio" name="type_system" value="1">Nuevo sistema</label>
                                     </div>
                                     <div class="text-right">
                                         <button type="submit" class="btn btn-info" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
@@ -126,10 +139,11 @@
         @csrf
         <input type="hidden" name="cashier_id">
         <input type="hidden" name="id">
+        <input type="hidden" name="paymentschedules_detail_id">
         <input type="hidden" name="name">
         <input type="hidden" name="amount">
-        <div class="modal modal-success fade" tabindex="-1" id="pagar-modal" role="dialog">
-            <div class="modal-dialog">
+        <div class="modal fade" tabindex="-1" id="pagar-modal" role="dialog">
+            <div class="modal-dialog modal-success">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
@@ -169,7 +183,7 @@
                             <tr>
                                 <td colspan="2">
                                     <div class="form-group text-right" style="margin-top: 20px">
-                                        <label class="checkbox-inline"><input type="checkbox" id="check-print" value="1" required>Imprimir recibo</label>
+                                        <label class="checkbox-inline"><input type="checkbox" id="check-print" value="1">Imprimir recibo</label>
                                     </div>
                                 </td>
                             </tr>
@@ -182,7 +196,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        {{-- <button type="submit" class="btn btn-default">test</button> --}}
+                        <button type="submit" class="btn btn-default">test</button>
                         <button type="button" class="btn btn-success btn-submit" onclick="sendForm('form-pagar', 'Pago realizado exitosamente.')">Sí, pagar</button>
                     </div>
                 </div>
@@ -433,19 +447,23 @@
 
         
 
-        function setValuePay(data, cashier){
+        function setValuePay(data, cashier, newSystem = false){
             let months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            let full_name = newSystem ? data.contract.person.first_name+' '+data.contract.person.last_name : data.Nombre_Empleado;
+            let liquid_payable = newSystem ? parseFloat(data.liquid_payable).toFixed(2) : (data.Tplanilla == 3 ? data.Total_Ganado.toFixed(2) : data.Liquido_Pagable.toFixed(2));
+            
             $('#label-item').html(`N&deg; ${data.item}`);
-            $('#label-name').text(data.Nombre_Empleado);
-            $('#label-afp').html(data.Afp == 1 ? '<label class="label label-danger">Futuro</label>' : '<label class="label label-primary">Previsión</label>');
-            $('#label-salary').html(`${data.Sueldo_Mensual.toFixed(2)} <small>Bs.</small>`);
-            $('#label-month').text(months[parseInt(data.Mes)]);
-            $('#label-days').html(`${data.Dias_Trabajado} <small>Días</small>`);
-            $('#label-amount').html(`${data.Tplanilla == 3 ? data.Total_Ganado.toFixed(2) : data.Liquido_Pagable.toFixed(2)} <small>Bs.</small>`);
-            $('#form-pagar input[name="id"]').val(data.ID);
-            $('#form-pagar input[name="name"]').val(data.Nombre_Empleado);
-            $('#form-pagar input[name="amount"]').val(data.Tplanilla == 3 ? data.Total_Ganado : data.Liquido_Pagable);
-            $('#form-pagar input[name="cashier_id"]').val(cashier.id);
+            $('#label-name').text(full_name);
+            $('#label-afp').html((newSystem ? data.contract.person.afp : data.Afp) == 1 ? '<label class="label label-danger">Futuro</label>' : '<label class="label label-primary">Previsión</label>');
+            $('#label-salary').html(`${newSystem ? parseFloat(data.salary).toFixed(2) : data.Sueldo_Mensual.toFixed(2)} <small>Bs.</small>`);
+            $('#label-month').text(months[parseInt(newSystem ? parseInt(data.paymentschedule.period.name.substr(5, 2)) : data.Mes)]);
+            $('#label-days').html(`${newSystem ? data.worked_days : data.Dias_Trabajado} <small>Días</small>`);
+            $('#label-amount').html(`${liquid_payable} <small>Bs.</small>`);
+            $('#form-pagar input[name="id"]').val(newSystem ? '' : data.ID);
+            $('#form-pagar input[name="paymentschedules_detail_id"]').val(newSystem ? data.id : '');
+            $('#form-pagar input[name="name"]').val(full_name);
+            $('#form-pagar input[name="amount"]').val(liquid_payable);
+            $('#form-pagar input[name="cashier_id"]').val(cashier ? cashier.id : 0);
         }
 
         function setValuePayBonus(data, cashier){

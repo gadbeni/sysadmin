@@ -627,14 +627,14 @@ class ReportsController extends Controller
         $user_id = $request->user_id;
         // dd($user_id);
         if($user_id){
-            $payments = CashiersPayment::with(['deletes', 'cashier.user', 'planilla', 'aguinaldo', 'stipend'])
+            $payments = CashiersPayment::with(['deletes', 'cashier.user', 'planilla', 'aguinaldo', 'stipend', 'paymentschedulesdetail'])
                             ->whereHas('cashier.user', function($query) use ($user_id){
                                 $query->where('id', $user_id);
                             })
                             ->whereDate('created_at', '>=', date('Y-m-d', strtotime($request->start)))
                             ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->finish)))->get();
         }else{
-            $payments = CashiersPayment::with(['deletes', 'cashier.user', 'planilla', 'aguinaldo', 'stipend'])
+            $payments = CashiersPayment::with(['deletes', 'cashier.user', 'planilla', 'aguinaldo', 'stipend', 'paymentschedulesdetail'])
                             ->whereDate('created_at', '>=', date('Y-m-d', strtotime($request->start)))
                             ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->finish)))->get();
         }

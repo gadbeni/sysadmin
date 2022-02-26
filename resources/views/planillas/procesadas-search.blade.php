@@ -265,16 +265,16 @@
                                             <label class="label label-danger">Pendiente</label>
                                             @break
                                         @case(2)
-                                            <label class="label label-success">Pagada</label> <br>
+                                            <label class="label label-success">Pagado</label> <br>
                                             @php
-                                                $detalle_pago = \App\Models\CashiersPayment::with('cashier.user')->where('planilla_haber_id', $item->ID)->first();
+                                                $detalle_pago = \App\Models\CashiersPayment::with('cashier.user')->where('planilla_haber_id', $item->ID)->where('deleted_at', NULL)->first();
                                             @endphp
                                             @if ($detalle_pago)
                                                 <small>Por {{ $detalle_pago->cashier->user->name }} <br> {{ date('d-m-Y', strtotime($detalle_pago->created_at)) }} <br> {{ date('H:i:s', strtotime($detalle_pago->created_at)) }} </small>
                                             @endif
                                             @break
                                         @default
-                                            <label class="label label-default">inhabilitada</label>
+                                            <label class="label label-default">procesado</label>
                                     @endswitch
                                 </td>
                                 @if ($cashier || Auth::user()->role_id == 1)
@@ -297,11 +297,11 @@
                             </tr>
                             @empty
                                 <tr>
-                                    <td @if (Auth::user()->role_id == 1) colspan="14" @else colspan="13" @endif><h4 class="text-center">No hay registros</h4></td>
+                                    <td @if (Auth::user()->role_id == 1) colspan="15" @else colspan="14" @endif><h4 class="text-center">No hay registros</h4></td>
                                 </tr>
                             @endforelse
                             <tr>
-                                <td @if (Auth::user()->role_id == 1) colspan="11" @else colspan="10" @endif><h5>TOTAL</h5></td>
+                                <td @if (Auth::user()->role_id == 1) colspan="12" @else colspan="11" @endif><h5>TOTAL</h5></td>
                                 <td><h5 class="text-right">{{ number_format($total, 2, ',', '.') }}</h3></td>
                                 <td colspan="2"></td>
                             </tr>
