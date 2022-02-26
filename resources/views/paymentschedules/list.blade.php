@@ -19,7 +19,7 @@
                     <tr>
                         <td>
                             {{ str_pad($item->id, 6, "0", STR_PAD_LEFT) }} <br>
-                            @if ($item->centralize_code)
+                            @if ($item->centralize)
                                 <label class="label label-danger" title="{{ str_pad($item->centralize_code, 6, "0", STR_PAD_LEFT) }}">centralizada</label>
                                 
                             @endif
@@ -63,15 +63,13 @@
                             <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
                         </td>
                         <td class="no-sort no-click bread-actions text-right">
-                            @if ($item->status == 'procesada')
-                                <button type="button" data-id="{{ $item->id }}" class="btn btn-dark btn-send" data-toggle="modal" data-target="#send_modal"><i class="glyphicon glyphicon-ok-circle"></i> Enviar</button>
-                            @endif
 
                             @if ($item->status != 'borrador')
                                 @if ($item->centralize_code)
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
-                                            <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver <span class="caret"></span>
+                                            {{-- <i class="voyager-eye"></i> --}}
+                                            <span class="hidden-xs hidden-sm">Ver <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
                                             <li><a href="{{ route('paymentschedules.show', ['paymentschedule' => $item->id]) }}">Sola</a></li>
@@ -80,11 +78,16 @@
                                     </div>
                                 @else
                                     <a href="{{ route('paymentschedules.show', ['paymentschedule' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
-                                        <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
+                                        <i class="voyager-eye"></i><span class="hidden-xs hidden-sm">Ver</span>
                                     </a>
                                 @endif
                             @endif
-                            @if ($item->status != 'pagada' && Auth::user()->hasPermission('delete_paymentschedules') )
+
+                            @if ($item->status == 'procesada')
+                                <button type="button" data-id="{{ $item->id }}" class="btn btn-dark btn-send" data-toggle="modal" data-target="#send_modal"><i class="glyphicon glyphicon-ok-circle"></i> Enviar</button>
+                            @endif
+                            
+                            @if ($item->status != 'habilitada' && $item->status != 'pagada' && Auth::user()->hasPermission('delete_paymentschedules') )
                                 <button type="button" data-id="{{ $item->id }}" data-toggle="modal" data-target="#cancel-modal" title="Anular" class="btn btn-sm btn-danger btn-cancel edit">
                                     <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Anular</span>
                                 </button>
@@ -136,12 +139,12 @@
 
 {{-- Modal cancel --}}
 <form id="form-cancel" action="{{ route('paymentschedules.cancel') }}" method="post">
-    <div class="modal modal-primary fade" tabindex="-1" id="cancel-modal" role="dialog">
+    <div class="modal modal-danger fade" tabindex="-1" id="cancel-modal" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title"><i class="glyphicon glyphicon-retweet"></i> Desea revertir la siguiente planilla?</h4>
+                    <h4 class="modal-title"><i class="glyphicon glyphicon-retweet"></i> Desea anular la siguiente planilla?</h4>
                 </div>
                 <div class="modal-body">
                     @csrf
@@ -153,7 +156,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <input type="submit" class="btn btn-dark" value="Revertir">
+                    <input type="submit" class="btn btn-danger" value="Anular">
                 </div>
             </div>
         </div>

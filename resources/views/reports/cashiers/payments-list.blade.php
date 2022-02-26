@@ -43,6 +43,8 @@
                                         {{ $item->aguinaldo->ci }}
                                     @elseif($item->stipend)
                                         {{ $item->stipend->ci }}
+                                    @elseif($item->paymentschedulesdetail)
+                                        {{ $item->paymentschedulesdetail->contract->person->ci }}
                                     @endif
                                 </td>
                                 <td>{{ $item->planilla ? $item->planilla->Periodo : '' }}</td>

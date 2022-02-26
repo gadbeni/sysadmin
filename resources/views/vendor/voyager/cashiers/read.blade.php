@@ -6,11 +6,12 @@
     $url = $_SERVER['REQUEST_URI'];
     $url_array = explode('/', $url);
     $id = $url_array[count($url_array)-1];
-    $cashier = \App\Models\Cashier::with(['payments.aguinaldo', 'user', 'payments.stipend','payments.deletes' => function($q){
+    $cashier = \App\Models\Cashier::with(['payments.aguinaldo', 'user', 'payments.stipend', 'payments.paymentschedulesdetail','payments.deletes' => function($q){
         $q->where('deleted_at', NULL);
     }, 'movements' => function($q){
         $q->where('deleted_at', NULL);
     }, 'movements.cashier_from', 'movements.cashier_to'])->where('id', $id)->first();
+
     $payments_id = [];
     foreach ($cashier->payments as $payment) {
         array_push($payments_id, $payment->planilla_haber_id);
@@ -177,7 +178,6 @@
                                         @endphp
                                         <tr>
                                             <td>{{ $cont }}</td>
-
                                             <td>
                                                 @if ($payment->planilla_haber_id)
                                                     {{ $data->Nombre_Empleado  }} <br> <small>{{ $data->Direccion_Administrativa }}</small>
@@ -185,6 +185,8 @@
                                                     {{ $payment->aguinaldo->funcionario }}
                                                 @elseif($payment->stipend_id)
                                                     {{ $payment->stipend->funcionario }}
+                                                @elseif($payment->paymentschedulesdetail)
+                                                    {{ $payment->paymentschedulesdetail->contract->person->first_name }} {{ $payment->paymentschedulesdetail->contract->person->last_name }}
                                                 @endif
                                                 <br>
                                                 @if ($payment->deleted_at)
@@ -198,6 +200,8 @@
                                                     {{ $payment->aguinaldo->ci }}
                                                 @elseif($payment->stipend_id)
                                                     {{ $payment->stipend->ci }}
+                                                @elseif($payment->paymentschedulesdetail)
+                                                    {{ $payment->paymentschedulesdetail->contract->person->ci }}
                                                 @endif
                                             </td>
                                             <td>
@@ -207,6 +211,8 @@
                                                     Aguinaldo
                                                 @elseif($payment->stipend_id)
                                                     Estipendio
+                                                @elseif($payment->paymentschedulesdetail)
+                                                    {{ str_pad($payment->paymentschedulesdetail->paymentschedule->centralize_code ?? $payment->paymentschedulesdetail->paymentschedule->id, 6, "0", STR_PAD_LEFT) }}
                                                 @endif
                                             </td>
                                             <td>{{ $payment->created_at->format('d/m/Y H:i') }}</td>

@@ -33,6 +33,10 @@
                 </ul>
             </div>
         @endif
+
+        @if ($data->status == 'enviada' || $data->details->where('status', 'procesado')->where('deleted_at', NULL)->count() > 0)
+            <button type="button" data-toggle="modal" data-target="#enable-modal" class="btn btn-success" style="margin-left: -10px; padding: 7px 15px"><i class="voyager-dollar"></i> Habilitar</button>
+        @endif
     </h1>
 @stop
 
@@ -578,6 +582,39 @@
         </div>
     </div>
 
+    {{-- send modal --}}
+    <form id="form-send" action="{{ route('paymentschedules.update.status') }}" method="POST">
+        @csrf
+        <input type="hidden" name="id" value="{{ $data->id }}">
+        <input type="hidden" name="status" value="habilitada">
+        <div class="modal fade" tabindex="-1" id="enable-modal" role="dialog">
+            <div class="modal-dialog modal-success">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-dollar"></i> Desea habilitar la siguiente planilla para pago?</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="afp">AFP</label>
+                            <select name="afp" class="form-control select2">
+                                <option value="">Todas las AFP</option>
+                                <option @if($afp == 1) selected @endif value="1">Futuro</option>
+                                <option @if($afp == 2) selected @endif value="2">Previsón</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="observations" class="form-control" rows="5" placeholder="Observaciones"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-success" value="Sí, Habilitar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
     
 @stop
 

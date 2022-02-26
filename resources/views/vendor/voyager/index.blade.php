@@ -135,6 +135,8 @@
                                                                 {{ $payment->aguinaldo->funcionario }}
                                                             @elseif($payment->stipend_id)
                                                                 {{ $payment->stipend->funcionario }}
+                                                            @elseif($payment->paymentschedulesdetail)
+                                                                {{ $payment->paymentschedulesdetail->contract->person->first_name }} {{ $payment->paymentschedulesdetail->contract->person->last_name }}
                                                             @endif
                                                             <br>
                                                             @if ($payment->deleted_at)
@@ -148,6 +150,8 @@
                                                                 {{ $payment->aguinaldo->ci }}
                                                             @elseif($payment->stipend_id)
                                                                 {{ $payment->stipend->ci }}
+                                                            @elseif($payment->paymentschedulesdetail)
+                                                                {{ $payment->paymentschedulesdetail->contract->person->ci }}
                                                             @endif
                                                         </td>
                                                         <td>
@@ -157,6 +161,8 @@
                                                                 Aguinaldo
                                                             @elseif($payment->stipend_id)
                                                                 Estipendio
+                                                            @elseif($payment->paymentschedulesdetail)
+                                                                {{ str_pad($payment->paymentschedulesdetail->paymentschedule->centralize_code ?? $payment->paymentschedulesdetail->paymentschedule->id, 6, "0", STR_PAD_LEFT) }}
                                                             @endif
                                                         </td>
                                                         <td>{{ $payment->created_at->format('d/m/Y H:i') }}</td>
@@ -240,8 +246,8 @@
                             <input type="hidden" name="id" value="{{ $cashier->id }}">
                             <input type="hidden" name="redirect" value="voyager.dashboard">
                             @endif
-                            <div class="modal modal-success fade" tabindex="-1" id="transfer-modal" role="dialog">
-                                <div class="modal-dialog">
+                            <div class="modal fade" tabindex="-1" id="transfer-modal" role="dialog">
+                                <div class="modal-dialog modal-success">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
@@ -344,8 +350,8 @@
                         <form action="{{ route('cashiers.change.status', ['cashier' => $cashier->id]) }}" method="post">
                             @csrf
                             <input type="hidden" name="status" value="abierta">
-                            <div class="modal modal-success fade" tabindex="-1" id="open_cashier-modal" role="dialog">
-                                <div class="modal-dialog">
+                            <div class="modal fade" tabindex="-1" id="open_cashier-modal" role="dialog">
+                                <div class="modal-dialog modal-success">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
@@ -400,8 +406,8 @@
 
                     <form action="{{ route('cashiers.close.revert', ['cashier' => $cashier->id]) }}" method="post">
                         @csrf
-                        <div class="modal modal-success fade" tabindex="-1" id="cashier-revert-modal" role="dialog">
-                            <div class="modal-dialog">
+                        <div class="modal fade" tabindex="-1" id="cashier-revert-modal" role="dialog">
+                            <div class="modal-dialog modal-success">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
