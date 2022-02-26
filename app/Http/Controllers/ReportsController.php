@@ -658,7 +658,7 @@ class ReportsController extends Controller
             $cat ='=';
         }
 
-        if($request->tipo == 0)
+        if($request->tipo == "0")
         {
             $tip ='!=';
         }
@@ -667,45 +667,36 @@ class ReportsController extends Controller
             $tip ='=';
         }
 
-        $detalle = DB::table('checks as c')
+        // return $request;
+// dd($request);
+        if($request->tipo == 'registrado')
+        {
+            
+            $detalle = DB::table('checks as c')
                 ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
                 ->select('cc.name', 'c.resumen')
-                ->where('c.status', $tip, $request->tipo)
+                ->where('c.status','!=', '0')
                 ->where('c.checkcategoria_id',$cat, $request->categoria_id)
                 ->where('c.deleted_at', null)
                 ->get();
+                
+        }
+        else
+        {
+            $detalle = DB::table('checks as c')
+                ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
+                ->select('cc.name', 'c.resumen')
+                // ->where('c.status', $tip, $request->tipo)
+                ->where('c.status', $request->tipo)
+                ->where('c.checkcategoria_id',$cat, $request->categoria_id)
+                ->where('c.deleted_at',$tip, null)
+                ->get();
+        }
+        
 
-        // if($request->tipo == 1)
-        // {
-        //     $detalle = DB::table('checks as c')
-        //         ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
-        //         ->select('cc.name', 'c.resumen')
-        //         ->where('c.status', '!=', 0)
-        //         ->where('c.checkcategoria_id',$cat, $request->categoria_id)
-        //         ->get();
-        //         // return 2;
-        // }
-        // else
-        // {          
-        //     if($request->tipo == 2)
-        //     {
-        //         $detalle = DB::table('checks as c')
-        //         ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
-        //         ->select('cc.name', 'c.resumen')
-        //         ->where('c.status', 2)
-        //         ->where('c.checkcategoria_id',$cat, $request->categoria_id)
-        //         ->get();
-        //     }
-        //     else
-        //     {                
-        //             $detalle = DB::table('checks as c')
-        //             ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
-        //             ->select('cc.name', 'c.resumen')
-        //             // ->where('c.deleted_at','!=', null)
-        //             ->where('c.status', 3)
-        //             ->get();
-        //     }
-        // }
+        
+                // dd($detalle);
+  
         $inicio = $request->start;
         $fin = $request->finish;
         // dd($inicio);

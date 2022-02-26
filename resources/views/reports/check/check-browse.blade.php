@@ -39,10 +39,10 @@
                                 <div class="form-group">
                                     <select name="tipo" class="form-control select2">
                                         <!-- <option value="0">Todos</option> -->
-                                        <option value="0">Ingresado</option>
-                                        <option value="2">Entregado</option>
+                                        <option value="registrado">Ingresado</option>
+                                        <option value="entregado">Entregado</option>
                                         <!-- <option value="3">Devolvido</option> -->
-                                        <option value="3">Anulado</option>
+                                        <option value="0">Anulado</option>
                                     </select>
                                 </div>
                                 <div class="text-right">
