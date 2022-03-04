@@ -695,17 +695,17 @@ class MenuItemsTableSeeder extends Seeder
             array (
                 'id' => 44,
                 'menu_id' => 1,
-                'title' => 'Personas',
+                'title' => 'Datos Personales',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-people',
-                'color' => NULL,
+                'color' => '#000000',
                 'parent_id' => 45,
                 'order' => 1,
                 'created_at' => '2021-12-29 16:09:13',
-                'updated_at' => '2021-12-30 09:23:14',
+                'updated_at' => '2022-03-04 12:32:09',
                 'route' => 'voyager.people.index',
-                'parameters' => NULL,
+                'parameters' => 'null',
             ),
             43 => 
             array (
@@ -775,17 +775,17 @@ class MenuItemsTableSeeder extends Seeder
             array (
                 'id' => 49,
                 'menu_id' => 1,
-                'title' => 'Tipos de trámite',
+                'title' => 'Tipos de Planillas',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-documentation',
-                'color' => NULL,
+                'color' => '#000000',
                 'parent_id' => 45,
                 'order' => 4,
                 'created_at' => '2022-01-17 16:09:20',
-                'updated_at' => '2022-02-21 12:19:31',
+                'updated_at' => '2022-03-04 12:32:25',
                 'route' => 'voyager.procedure-types.index',
-                'parameters' => NULL,
+                'parameters' => 'null',
             ),
             48 => 
             array (

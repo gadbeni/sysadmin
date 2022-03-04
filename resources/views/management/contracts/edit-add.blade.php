@@ -23,9 +23,9 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label for="procedure_type_id">Tipo de trámite</label>
+                                    <label for="procedure_type_id">Tipo de planilla</label>
                                     <select name="procedure_type_id" id="select-procedure_type_id" class="form-control" required>
-                                        <option value="">-- Selecciona el tipo de trámite --</option>
+                                        <option value="">-- Selecciona el tipo de planilla --</option>
                                         @foreach ($procedure_type as $item)
                                         <option value="{{ $item->id }}" data-planilla_id="{{ $item->planilla_id }}">{{ $item->name }}</option>
                                         @endforeach
@@ -394,8 +394,7 @@
                 $('#select-workers_memo').val(workers_memo);
                 $('.div-{{ $contract->procedure_type_id }}').fadeIn('fast');
                 setTimeout(() => {
-                    $('#select-procedure_type_id').val("{{ $contract->procedure_type_id }}");
-                    $('#select-procedure_type_id').trigger('change');
+                    $('#select-procedure_type_id').val("{{ $contract->procedure_type_id }}").trigger('change');
                 }, 0);
             @endisset
             $('#select-workers_memo').select2();
@@ -439,10 +438,9 @@
                             $('#select-program_id').append(`<option value="${item.id}">${item.name}</option>`);
                         }
                     });
-                    $('#select-procedure_type_id').val("{{ isset($contract) ? $contract->procedure_type_id : '' }}");
 
                     jobs.map(item => {
-                        $('#select-cargo_id').append(`<option value="${item.id}">Item: ${item.id} - ${item.name}</option>`);
+                        $('#select-cargo_id').append(`<option value="${item.id}">Item ${item.item} - ${item.name}</option>`);
                     });
                     $('#select-cargo_id').val("{{ isset($contract) ? $contract->job_id : '' }}");
                 }else{

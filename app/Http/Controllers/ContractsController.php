@@ -166,14 +166,15 @@ class ContractsController extends Controller
     {
         $contract = Contract::with(['user', 'person', 'program'])->where('id', $id)->first();
         $role_id = Auth::user()->role_id;
+        $direccion_administrativa_id = Auth::user()->direccion_administrativa_id;
         $ids = '';
 
         // Recursos humanos
-        if($role_id >= 9 && $role_id <= 12) $ids .= "1,";
-        // Administrativo
-        if($role_id >= 13 && $role_id <= 15) $ids .= "2,";
+        if(($role_id >= 9 && $role_id <= 12) || $direccion_administrativa_id) $ids .= "1,";
+        // Administrativo o direcciones desconcentradas
+        if(($role_id >= 13 && $role_id <= 15) || $direccion_administrativa_id) $ids .= "2,";
         // Contrataciones
-        if(($role_id >= 9 && $role_id <= 12) || ($role_id >= 16 && $role_id <= 18)) $ids .= "5,";
+        if(($role_id >= 9 && $role_id <= 12) || ($role_id >= 16 && $role_id <= 18) || $direccion_administrativa_id) $ids .= "5,";
 
         $ids = substr($ids, 0, -1);
         $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw($ids ? "id in ($ids)" : 1)->get();
@@ -203,6 +204,7 @@ class ContractsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // dd($request->all());
         try {
             $contract = Contract::where('id', $id)->update([
                 'person_id' => $request->person_id,

@@ -369,12 +369,8 @@ class PaymentschedulesController extends Controller
 
             if($paymentschedule->centralize_code){
                 // Actualizar estado de todas las planillas que pertecencen al grupo centralizado
-                $paymentschedules = Paymentschedule::where('centralize_code', $paymentschedule->centralize_code)->where('id', '<>', $paymentschedule->id)->where('deleted_at', NULL)->get();
-                foreach ($paymentschedules as $item) {
-                    $item->update(['status' => 'anulada', 'deleted_at' => Carbon::now()]);
-                    PaymentschedulesDetail::where('paymentschedule_id', $item->id)->where('deleted_at', NULL)
-                        ->update(['status' => 'anulado', 'deleted_at' => Carbon::now()]);
-                }
+                Paymentschedule::where('centralize_code', $paymentschedule->centralize_code)
+                                ->where('id', '<>', $paymentschedule->id)->where('deleted_at', NULL)->update(['status' => 'procesada']);
             }
 
             PaymentschedulesHistory::create([
