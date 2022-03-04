@@ -20,8 +20,8 @@
                     <p style="position:absolute; bottom: 10px">Santísima Trinidad, {{ date('d', strtotime($contract->date_memo)) }} de {{ $months[intval(date('m', strtotime($contract->date_memo)))] }} de {{ date('Y', strtotime($contract->date_memo)) }}</p>
                 </div>
                 <div class="border-left">
-                    <b>DE:</b> {{ setting('firma-autorizada.name') }} <br>
-                    <b>RESP. DE PROCESO DE CONTRATACION APOYO NACIONAL A LA PRODUCCION Y EMPLEO – RPA</b> <br> <br>
+                    <b>DE:</b> {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
+                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }}</b> <br> <br>
                     @forelse ($contract->workers as $item)
                         <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
                         <b>{{ $item->Cargo }}</b> <br> <br>

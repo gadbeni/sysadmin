@@ -80,10 +80,8 @@
 
             <div style="margin-top: 100px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
-                    {{ setting('firma-autorizada.name') }} <br>
-                    <b>RESPONSABLE DEL PROCESO DE CONTRATACIÓN <br>
-                        DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO – RPA <br>
-                        GAD - BENI</b>
+                    {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
+                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }}</b>
                 </p>
             </div>
 

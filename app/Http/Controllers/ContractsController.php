@@ -52,20 +52,21 @@ class ContractsController extends Controller
     public function create()
     {
         $role_id = Auth::user()->role_id;
+        $direccion_administrativa_id = Auth::user()->direccion_administrativa_id;
         $ids = '';
 
         // Recursos humanos
-        if($role_id >= 9 && $role_id <= 12) $ids .= "1,";
-        // Administrativo
-        if($role_id >= 13 && $role_id <= 15) $ids .= "2,";
+        if(($role_id >= 9 && $role_id <= 12) || $direccion_administrativa_id) $ids .= "1,";
+        // Administrativo o direcciones desconcentradas
+        if(($role_id >= 13 && $role_id <= 15) || $direccion_administrativa_id) $ids .= "2,";
         // Contrataciones
-        if(($role_id >= 9 && $role_id <= 12) || ($role_id >= 16 && $role_id <= 18)) $ids .= "5,";
+        if(($role_id >= 9 && $role_id <= 12) || ($role_id >= 16 && $role_id <= 18) || $direccion_administrativa_id) $ids .= "5,";
 
         $ids = substr($ids, 0, -1);
         $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw($ids ? "id in ($ids)" : 1)->get();
 
         $people = Person::whereRaw("id not in (select person_id from contracts where status <> 'finalizado' and deleted_at is null)")->where('deleted_at', NULL)->get();
-        $direccion_administrativas = DireccionAdministrativa::whereRaw(Auth::user()->direccion_administrativa_id ? "ID = ".Auth::user()->direccion_administrativa_id : 1)->get();
+        $direccion_administrativas = DireccionAdministrativa::whereRaw($direccion_administrativa_id ? "ID = $direccion_administrativa_id" : 1)->get();
         $unidad_administrativas = UnidadAdministrativa::get();
         $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $programs = Program::where('deleted_at', NULL)->get();
