@@ -13,7 +13,7 @@
     <form action="{{ route('paymentschedules.store') }}" method="POST">
         @csrf
         <input type="hidden" name="direccion_administrativa_id" value="{{ $direccion_administrativa_id }}">
-        <input type="hidden" name="period_id" value="{{ $period_id }}">
+        <input type="hidden" name="period_id" value="{{ $period->id }}">
         <input type="hidden" name="procedure_type_id" value="{{ $procedure_type_id }}">
         <div class="row">
             <div class="col-md-12">
@@ -89,9 +89,6 @@
                                     @endphp
                                     @forelse ($contracts as $item)
                                         @php
-                                            // Periodo de la planilla
-                                            $period = \App\Models\Period::find($period_id);
-
                                             // Periodo de inicio de contrato
                                             $period_start = date('Ym', strtotime($item->start));
 

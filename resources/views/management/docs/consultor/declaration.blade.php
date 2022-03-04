@@ -17,9 +17,9 @@
             <br>
             <p style="text-align: left">
                 Señor: <br>
-                {{ setting('firma-autorizada.name') }} <br>
-                <b>RESPONSABLE DEL PROCESO DE CONTRATACIÓN DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO - RPA</b> <br>
-                Presente. –
+                {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
+                <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }}</b> <br>
+                Presente.–
             </p>
         </div>
         <div class="page-title">

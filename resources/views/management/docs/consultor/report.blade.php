@@ -24,8 +24,8 @@
                         <td style="width: 100px">A</td>
                         <td style="width: 100px">:</td>
                         <td>
-                            {{ setting('firma-autorizada.name') }} <br>
-                            <b>RESPONSABLE DEL PROCESO DE CONTRATACIÓN DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO - RPA</b>
+                            {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
+                            <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }}</b>
                         </td>
                     </tr>
                     <tr>
@@ -61,7 +61,7 @@
                     De mi mayor consideración: <br> <br>
                     El objeto del presente informe, es la evaluación y recomendación de adjudicación o declaratoria desierta del Proceso de Contratación, en la modalidad contratación menor consultoría, <b>GAD-BENI/MC N° {{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}”</b>. <br> <br>
                     <b>1. ANTECEDENTES</b> <br>
-                    El Gobierno Autónomo Departamental del Beni, a través de la Secretaría de Administración y Finanzas, cuenta con diferentes programas y para la ejecución de los mismos, mediante Resolución Administrativa de Gobernación N° 074/2021 de fecha 30 de agosto del 2021, el Gobernador del Departamento del Beni en el marco de sus funciones, designa como Responsable del Proceso de Contratación al {{ setting('firma-autorizada.name') }}, {{ setting('firma-autorizada.job') }}, en el marco del Decreto Supremo N° 0181 de fecha 28 de junio de 2009. <br> <br>
+                    El Gobierno Autónomo Departamental del Beni, a través de la Secretaría de Administración y Finanzas, cuenta con diferentes programas y para la ejecución de los mismos, mediante Resolución Administrativa de Gobernación N° 074/2021 de fecha 30 de agosto del 2021, el Gobernador del Departamento del Beni en el marco de sus funciones, designa como Responsable del Proceso de Contratación al {{ $signature ? $signature->name : setting('firma-autorizada.name') }}, {{ $signature ? $signature->job : setting('firma-autorizada.job') }}, en el marco del Decreto Supremo N° 0181 de fecha 28 de junio de 2009. <br> <br>
                     La {{ Str::upper($contract->unidad_administrativa->NOMBRE) }}, mediante solicitud de fecha {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }}, requiere la contratación de un Consultor Individual de Línea, para el cargo de {{ Str::upper($contract->cargo->Descripcion) }}, con cargo al Programa: “{{ Str::upper($contract->program->name) }}”, para tal efecto adjunta al requerimiento los Términos de Referencia, Certificación Presupuestaria. <br> <br>
                     <b>2. EVALUACIÓN</b> <br>
                     La evaluación de la documentación presentada por {{ $contract->person->gender == 'masculino' ? 'el' : 'la' }} postulante <b>{{ $contract->person->first_name }} {{ $contract->person->last_name }}</b>, para el Proceso de Contratación <b>“GAD-BENI/MC N° {{ $code }}”</b> para la prestación de servicios de un <b>CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}</b>, se detalla en el siguiente cuadro: <br> <br>
@@ -78,7 +78,7 @@
 
                 <br>
                 <p>
-                    Por lo anteriormente expuesto y en cumplimiento a lo establecido en el D.S. N° 0181 Art. 38, Parágrafo III, Inciso e), <u><i>se recomienda</i></u> al {{ setting('firma-autorizada.name') }} – Responsable del Proceso de Contratación de Apoyo Nacional a la Producción y Empleo, <b>adjudicar</b> el Proceso de Contratación <b>GAD-BENI/MC N° 190/2021 “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}”</b>, bajo el siguiente detalle:
+                    Por lo anteriormente expuesto y en cumplimiento a lo establecido en el D.S. N° 0181 Art. 38, Parágrafo III, Inciso e), <u><i>se recomienda</i></u> al {{ $signature ? $signature->name : setting('firma-autorizada.name') }} – {{ $signature ? $signature->job : setting('firma-autorizada.job') }}, <b>adjudicar</b> el Proceso de Contratación <b>GAD-BENI/MC N° 190/2021 “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}”</b>, bajo el siguiente detalle:
                 </p>
                 <br>
 
@@ -145,11 +145,8 @@
 
             <div style="margin-top: 120px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
-                    {{ setting('firma-autorizada.name') }} <br>
-                    <b>RESPONSABLE DEL PROCESO DE CONTRATACIÓN <br>
-                        DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO – RPA <br>
-                        GAD - BENI
-                    </b>
+                    {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
+                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }}</b>
                 </p>
             </div>
         </div>

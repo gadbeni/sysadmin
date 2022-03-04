@@ -87,7 +87,7 @@
                                 <button type="button" data-id="{{ $item->id }}" class="btn btn-dark btn-send" data-toggle="modal" data-target="#send_modal"><i class="glyphicon glyphicon-ok-circle"></i> Enviar</button>
                             @endif
                             
-                            @if ($item->status != 'habilitada' && $item->status != 'pagada' && Auth::user()->hasPermission('delete_paymentschedules') )
+                            @if (($item->status != 'habilitada' && $item->status != 'pagada' && Auth::user()->hasPermission('delete_paymentschedules')) || Auth::user()->role_id == 1 )
                                 <button type="button" data-id="{{ $item->id }}" data-toggle="modal" data-target="#cancel-modal" title="Anular" class="btn btn-sm btn-danger btn-cancel edit">
                                     <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Anular</span>
                                 </button>

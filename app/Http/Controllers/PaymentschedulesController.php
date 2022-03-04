@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -19,6 +20,8 @@ use App\Models\PaymentschedulesFile;
 use App\Models\PaymentschedulesFilesDetails;
 use App\Models\Paymentschedule;
 use App\Models\PaymentschedulesDetail;
+use App\Models\Period;
+use App\Models\PaymentschedulesHistory;
 
 
 class PaymentschedulesController extends Controller
@@ -75,7 +78,6 @@ class PaymentschedulesController extends Controller
 
     public function generate(Request $request){
         $direccion_administrativa_id =  $request->da_id;
-        $period_id = $request->period_id;
         $procedure_type_id = $request->procedure_type_id;
 
         // Verificar si no existe una planilla generada para la DA, el periodo y tipo de planilla
@@ -89,6 +91,10 @@ class PaymentschedulesController extends Controller
             return view('paymentschedules.generate', compact('paymentschedule'));
         }
 
+        $period = Period::findOrFail($request->period_id);
+        $year = Str::substr($period->name, 0, 4);
+        $month = Str::substr($period->name, 5, 2);
+
         $contracts = Contract::with(['user', 'person.seniority_bonus.type', 'person.seniority_bonus' => function($q){
                             $q->where('deleted_at', NULL)->where('status', 1);
                         }, 'program', 'cargo.nivel' => function($q){
@@ -96,15 +102,20 @@ class PaymentschedulesController extends Controller
                         }, 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
                         ->where('direccion_administrativa_id', $direccion_administrativa_id)
                         ->where('procedure_type_id', $procedure_type_id)
+                        ->whereRaw('CONCAT(YEAR(start), MONTH(start)) <= "'.$year.intval($month).'"')
+                        ->whereRaw('IF(finish IS NOT NULL, CONCAT(YEAR(finish), MONTH(finish)), "'.$year.'12") >= "'.$year.intval($month).'"')
+                        ->whereRaw("id not in (select pd.contract_id from paymentschedules as p, paymentschedules_details as pd
+                                                    where p.id = pd.paymentschedule_id and p.period_id = ".$period->id." and p.deleted_at is null and pd.deleted_at is null)")
                         ->where('status', 'firmado')
                         ->where('deleted_at', NULL)->get();
+
         $paymentschedules_file = PaymentschedulesFile::with(['details'])
                                     ->where('direccion_administrativa_id', $direccion_administrativa_id)
-                                    ->where('period_id', $period_id)
+                                    ->where('period_id', $period->id)
                                     ->where('procedure_type_id', $procedure_type_id)
                                     ->where('status', 'cargado')->get();
 
-        return view('paymentschedules.generate', compact('paymentschedule', 'contracts', 'direccion_administrativa_id', 'period_id', 'procedure_type_id', 'paymentschedules_file'));
+        return view('paymentschedules.generate', compact('paymentschedule', 'contracts', 'direccion_administrativa_id', 'period', 'procedure_type_id', 'paymentschedules_file'));
     }
 
     /**
@@ -345,15 +356,33 @@ class PaymentschedulesController extends Controller
     public function cancel(Request $request){
         DB::beginTransaction();
         try {
+            if($request->observations == ''){
+                return redirect()->route('paymentschedules.index')->with(['message' => 'Debe describir un motivo de anulación.', 'alert-type' => 'error']); 
+            }
+
             $paymentschedule = Paymentschedule::findOrFail($request->id);
             $paymentschedule->status = 'anulada';
             $paymentschedule->update();
             $paymentschedule->delete();
+            PaymentschedulesDetail::where('paymentschedule_id', $paymentschedule->id)->where('deleted_at', NULL)
+                ->update(['status' => 'anulado', 'deleted_at' => Carbon::now()]);
+
             if($paymentschedule->centralize_code){
                 // Actualizar estado de todas las planillas que pertecencen al grupo centralizado
-                Paymentschedule::where('centralize_code', $paymentschedule->centralize_code)
-                                ->where('id', '<>', $paymentschedule->id)->where('deleted_at', NULL)->update(['status' => 'procesada']);
+                $paymentschedules = Paymentschedule::where('centralize_code', $paymentschedule->centralize_code)->where('id', '<>', $paymentschedule->id)->where('deleted_at', NULL)->get();
+                foreach ($paymentschedules as $item) {
+                    $item->update(['status' => 'anulada', 'deleted_at' => Carbon::now()]);
+                    PaymentschedulesDetail::where('paymentschedule_id', $item->id)->where('deleted_at', NULL)
+                        ->update(['status' => 'anulado', 'deleted_at' => Carbon::now()]);
+                }
             }
+
+            PaymentschedulesHistory::create([
+                'paymentschedule_id' => $paymentschedule->id,
+                'user_id' => Auth::user()->id,
+                'type' => 'anulación',
+                'observations' => $request->observations
+            ]);
             
             DB::commit();
             return redirect()->route('paymentschedules.index')->with(['message' => 'Planilla Anulada correctamente.', 'alert-type' => 'success']);

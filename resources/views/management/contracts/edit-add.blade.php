@@ -410,7 +410,7 @@
                 $('#select-program_id').html(`<option value="">Seleccione un programa</option>`);
                 programs.map(item => {
                     if($('#select-direccion_administrativa_id option:selected').val() == item.direccion_administrativa_id && $('#select-procedure_type_id option:selected').val() == item.procedure_type_id){
-                        $('#select-program_id').append(`<option value="${item.id}">${item.name}</option>`);
+                        $('#select-program_id').append(`<option value="${item.id}">${item.name} - ${item.programatic_category}</option>`);
                     }
                 });
             });
