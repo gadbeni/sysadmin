@@ -395,6 +395,7 @@
                 $('.div-{{ $contract->procedure_type_id }}').fadeIn('fast');
                 setTimeout(() => {
                     $('#select-procedure_type_id').val("{{ $contract->procedure_type_id }}").trigger('change');
+                    $('#select-cargo_id').val("{{ $contract->job_id ?? $contract->cargo_id }}");
                 }, 0);
             @endisset
             $('#select-workers_memo').select2();
@@ -442,7 +443,6 @@
                     jobs.map(item => {
                         $('#select-cargo_id').append(`<option value="${item.id}">Item ${item.item} - ${item.name}</option>`);
                     });
-                    $('#select-cargo_id').val("{{ isset($contract) ? $contract->job_id : '' }}");
                 }else{
                     $('#select-direccion_administrativa_id').attr('disabled', false);
                     $('#select-direccion_administrativa_id').attr('required', true);
@@ -477,9 +477,7 @@
                             });
                             $('#select-cargo_id').append(`<option value="${item.ID}">${item.Descripcion} | Nivel ${nivel.NumNivel} | Bs. ${nivel.Sueldo}</option>`);
                         }
-                            
                     });
-                    $('#select-cargo_id').val("{{ isset($contract) ? $contract->cargo_id : '' }}");
                 }
             });
         });

@@ -89,6 +89,7 @@ class ContractsController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         try {
 
             $contract_person = Contract::where('person_id', $request->person_id)->where('status', '<>', 'finalizado')->where('deleted_at', NULL)->first();
@@ -167,17 +168,7 @@ class ContractsController extends Controller
         $contract = Contract::with(['user', 'person', 'program'])->where('id', $id)->first();
         $role_id = Auth::user()->role_id;
         $direccion_administrativa_id = Auth::user()->direccion_administrativa_id;
-        $ids = '';
-
-        // Recursos humanos
-        if(($role_id >= 9 && $role_id <= 12) || $direccion_administrativa_id) $ids .= "1,";
-        // Administrativo o direcciones desconcentradas
-        if(($role_id >= 13 && $role_id <= 15) || $direccion_administrativa_id) $ids .= "2,";
-        // Contrataciones
-        if(($role_id >= 9 && $role_id <= 12) || ($role_id >= 16 && $role_id <= 18) || $direccion_administrativa_id) $ids .= "5,";
-
-        $ids = substr($ids, 0, -1);
-        $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw($ids ? "id in ($ids)" : 1)->get();
+        $procedure_type = ProcedureType::where('deleted_at', NULL)->where('id', $contract->procedure_type_id)->get();
 
         $people = Person::where('id', $contract->person->id)->where('deleted_at', NULL)->get();
         $direccion_administrativas = DireccionAdministrativa::whereRaw(Auth::user()->direccion_administrativa_id ? "ID = ".Auth::user()->direccion_administrativa_id : 1)->get();
@@ -206,7 +197,21 @@ class ContractsController extends Controller
     {
         // dd($request->all());
         try {
-            $contract = Contract::where('id', $id)->update([
+            $contract = Contract::find($id);
+            // Si se cambia el año de inicio o la dirección administrativa se debe actualizar el código
+            if(date('Y', strtotime($contract->start)) != date('Y', strtotime($request->start)) || $contract->unidad_administrativa_id != $request->unidad_administrativa_id){
+                $older_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
+                            ->where('procedure_type_id', $request->procedure_type_id)
+                            ->whereHas('user', function($q){
+                                $q->where('direccion_administrativa_id', Auth::user()->direccion_administrativa_id);
+                            })->count();
+                $d_a = DireccionAdministrativa::find(Auth::user()->direccion_administrativa_id);
+                $code = ($d_a ? $d_a->Sigla.'-' : '').str_pad($older_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
+            }else{
+                $code = $contract->code;
+            }
+
+            Contract::where('id', $id)->update([
                 'person_id' => $request->person_id,
                 'program_id' => $request->program_id,
                 // Si es un contrato de consultor o inversion
@@ -216,7 +221,7 @@ class ContractsController extends Controller
                 // Si es un contrato permanente se el id_da se obtiene de la tabal jobs, sino se obtiene del request
                 'direccion_administrativa_id' => $request->procedure_type_id == 1 ? Job::find($request->cargo_id)->direccion_administrativa_id : $request->direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
-                'procedure_type_id' => $request->procedure_type_id,
+                'code' => $code,
                 'details_work' => $request->details_work,
                 'start' => $request->start,
                 'finish' => $request->finish,
