@@ -132,6 +132,9 @@
                             $('#div-results').html(res);
                         }
                         $('#div-results').loading('toggle');
+                    },
+                    error: function() {
+                        toastr.error('Ocurrió un error al cargar el archivo', 'Error');
                     }
                 })
             });

@@ -91,6 +91,7 @@
                                         @php
                                             // Periodo de inicio de contrato
                                             $period_start = date('Ym', strtotime($item->start));
+                                            $period_finish = date('Ym', strtotime($item->finish));
 
                                             // Días que el trabajador debió haber trabajado
                                             $days_enabled_worker = 30;
@@ -98,6 +99,13 @@
                                                 $start_day = date('d', strtotime($item->start));
                                                 if($start_day > 0){
                                                     $days_enabled_worker = 30 - ($start_day - 1);
+                                                }
+                                            }
+
+                                            if($period_finish == $period->name){
+                                                $finish_day = date('d', strtotime($item->finish));
+                                                if($finish_day < 30){
+                                                    $days_enabled_worker -= 30 - $finish_day;
                                                 }
                                             }
 
