@@ -39,15 +39,39 @@
                         {{-- {{ dd($item) }} --}}
                         <tr>
                             <td>{{ $cont }}</td>
-                            <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
+                            <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->NOMBRE : 'No definida' }}</td>
                             <td>{{ $item->code }}</td>
                             <td>{{ $item->type->name }}</td>
                             <td>{{ $item->person->first_name }} </td>
                             <td>{{ $item->person->last_name }}</td>
                             <td>{{ $item->person->ci }}</td>
-                            <td>{{ $item->cargo ? $item->cargo->Descripcion : $item->job->name }}</td>
-                            <td>{{ $item->cargo ? $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->NumNivel : $item->job->level }}</td>
-                            <td>{{ number_format($item->cargo ? $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo : $item->job->salary, 2, ',', '.') }}</td>
+                            <td>
+                                @if ($item->cargo)
+                                    {{ $item->cargo->Descripcion }}
+                                @elseif ($item->job)
+                                    {{ $item->job->name }}
+                                @else
+                                    No definio
+                                @endif
+                            </td>
+                            <td>
+                                @if ($item->cargo)
+                                    {{ $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->NumNivel }}
+                                @elseif ($item->job)
+                                    {{ $item->job->level }}
+                                @else
+                                    No definido
+                                @endif
+                            </td>
+                            <td>
+                                @if ($item->cargo)
+                                    {{ number_format($item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.') }}
+                                @elseif ($item->job)
+                                    {{ number_format($item->job->salary, 2, ',', '.') }}
+                                @else
+                                    0.00
+                                @endif
+                            </td>
                             <td>{{ date('d/m/Y', strtotime($item->start)) }}</td>
                             <td>{{ date('d/m/Y', strtotime($item->finish)) }}</td>
                             <td>{{ $item->program->name }}</td>
