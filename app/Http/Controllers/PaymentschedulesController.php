@@ -104,7 +104,7 @@ class PaymentschedulesController extends Controller
                         ->where('direccion_administrativa_id', $direccion_administrativa_id)
                         ->where('procedure_type_id', $procedure_type_id)
                         ->whereRaw('CONCAT(YEAR(start), MONTH(start)) <= "'.$year.intval($month).'"')
-                        ->whereRaw('IF(finish IS NOT NULL, CONCAT(YEAR(finish), MONTH(finish)), "202312") >= "'.$year.intval($month).'"')
+                        // ->whereRaw('CONCAT(YEAR(finish), MONTH(finish)) >= "'.$year.$month.'"')
                         ->whereRaw("id not in (select pd.contract_id from paymentschedules as p, paymentschedules_details as pd
                                                     where p.id = pd.paymentschedule_id and p.period_id = ".$period->id." and p.deleted_at is null and pd.deleted_at is null)")
                         ->where('status', 'firmado')
@@ -115,7 +115,7 @@ class PaymentschedulesController extends Controller
                                     ->where('period_id', $period->id)
                                     ->where('procedure_type_id', $procedure_type_id)
                                     ->where('status', 'cargado')->get();
-        // dd($contracts);
+        dd($contracts);
 
         return view('paymentschedules.generate', compact('paymentschedule', 'contracts', 'direccion_administrativa_id', 'period', 'procedure_type_id', 'paymentschedules_file'));
     }

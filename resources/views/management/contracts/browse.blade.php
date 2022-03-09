@@ -150,7 +150,7 @@
                                                             @break
                                                         @case(5)
                                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract']) }}" target="_blank">Contrato</a></li>
-                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-reasigancion']) }}" target="_blank">Memorandum</a></li>
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-desigancion']) }}" target="_blank">Memorandum</a></li>
                                                             @break
                                                         @default
                                                             

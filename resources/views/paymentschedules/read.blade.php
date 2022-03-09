@@ -39,7 +39,8 @@
                     <li><a href="?afp=2{{ $centralize ? '&centralize=true' : '' }}&print=true" target="_blank">AFP BBVA Previsión</a></li>
                     <li class="divider"></li>
                     @foreach ($contracts->groupBy('program_id') as $item)
-                    <li><a href="?program={{ $item[0]->program->id }}{{ $centralize ? '&centralize=true' : '' }}&print=true" target="_blank">{{ $item[0]->program->name }}</a></li>
+                    <li><a href="?program={{ $item[0]->program->id }}{{ $centralize ? '&centralize=true' : '' }}&print=true&afp=1" target="_blank">{{ $item[0]->program->name }} - Futuro</a></li>
+                    <li><a href="?program={{ $item[0]->program->id }}{{ $centralize ? '&centralize=true' : '' }}&print=true&afp=2" target="_blank">{{ $item[0]->program->name }} - Previsión</a></li>
                     @endforeach
                 </ul>
             </div>

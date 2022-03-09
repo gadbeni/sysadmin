@@ -55,7 +55,7 @@ class AuxiliarImport implements ToModel
                 $birthday = $start = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($row[10]))->format('Y-m-d');
                 $person = Person::create([
                     'first_name' => $row[0],
-                    'last_name' => $row[1].''.$row[2],
+                    'last_name' => $row[1].' '.$row[2],
                     'ci' => $row[3],
                     'profession' => $row[4],
                     'phone' => $row[5],
