@@ -169,7 +169,7 @@ class DataTypesTableSeeder extends Seeder
                 'name' => 'people',
                 'slug' => 'people',
                 'display_name_singular' => 'Persona',
-                'display_name_plural' => 'Datos Personales',
+                'display_name_plural' => 'Personas',
                 'icon' => 'voyager-people',
                 'model_name' => 'App\\Models\\Person',
                 'policy_name' => NULL,
@@ -179,7 +179,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"last_name","order_display_column":"first_name","order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2021-12-29 16:09:12',
-                'updated_at' => '2022-03-04 12:33:42',
+                'updated_at' => '2022-03-09 05:18:47',
             ),
             9 => 
             array (
@@ -204,8 +204,8 @@ class DataTypesTableSeeder extends Seeder
                 'id' => 12,
                 'name' => 'procedure_types',
                 'slug' => 'procedure-types',
-                'display_name_singular' => 'Tipo de planilla',
-                'display_name_plural' => 'Tipos de planilla',
+                'display_name_singular' => 'Tipo de trámite',
+                'display_name_plural' => 'Tipos de trámite',
                 'icon' => 'voyager-documentation',
                 'model_name' => 'App\\Models\\ProcedureType',
                 'policy_name' => NULL,
@@ -215,7 +215,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-01-17 16:09:20',
-                'updated_at' => '2022-03-04 12:34:03',
+                'updated_at' => '2022-02-03 16:03:59',
             ),
             11 => 
             array (
@@ -377,7 +377,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"id","order_display_column":"id","order_direction":"desc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-02-17 14:59:11',
-                'updated_at' => '2022-02-17 15:18:48',
+                'updated_at' => '2022-03-09 05:16:52',
             ),
         ));
         

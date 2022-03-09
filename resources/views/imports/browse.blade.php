@@ -26,6 +26,7 @@
                                     <label for="type">Tipo de archivo</label>
                                     <select name="type" class="form-control select2" required>
                                         <option value="">--Seleccione el tipo de archivo--</option>
+                                        <option value="funcionamiento">Personal de funcionamiento</option>
                                         <option value="bono antiguedad">Bono antigüedad</option>
                                     </select>
                                 </div>

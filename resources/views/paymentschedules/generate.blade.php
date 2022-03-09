@@ -102,6 +102,7 @@
                                                 }
                                             }
 
+                                            // Si el fin su contrato finaliza el mes actual
                                             if($period_finish == $period->name){
                                                 $finish_day = date('d', strtotime($item->finish));
                                                 if($finish_day < 30){
@@ -187,7 +188,12 @@
                                             $faults_amount = ($salary / 30) * $faults_quantity;
 
                                             // Descuentos
-                                            $total_discount = $labor_total + $faults_amount + $rc_iva_amount;
+                                            // Si el planilla es permanenteo eventual restamos el total de aportes laborales al líquido pagable
+                                            if($procedure_type_id == 1 || $procedure_type_id == 5){
+                                                $total_discount = $labor_total + $faults_amount + $rc_iva_amount;
+                                            }else{
+                                                $total_discount = $faults_amount + $rc_iva_amount;
+                                            }
 
                                             // Líquido pagable
                                             $liquid_payable = $total_amout - $total_discount;
@@ -267,7 +273,16 @@
                                         <td class="text-right"><b>{{ number_format(collect($array_rc_iva_amount)->sum(), 2, ',', '.') }}</b></td>
                                         <td></td>
                                         <td class="text-right"><b>{{ number_format(collect($array_faults_amount)->sum(), 2, ',', '.') }}</b></td>
-                                        <td class="text-right"><b>{{ number_format(collect($array_labor_total)->sum() + collect($array_faults_amount)->sum() + collect($array_rc_iva_amount)->sum(), 2, ',', '.') }}</b></td>
+                                        <td class="text-right">
+                                            @php
+                                                // Si el planilla es permanenteo eventual restamos el total de aportes laborales al líquido pagable
+                                                $labor_total = 0;
+                                                if($procedure_type_id == 1 || $procedure_type_id == 5){
+                                                    $labor_total = collect($array_labor_total)->sum();
+                                                }
+                                            @endphp
+                                            <b>{{ number_format($labor_total + collect($array_faults_amount)->sum() + collect($array_rc_iva_amount)->sum(), 2, ',', '.') }}</b>
+                                        </td>
                                         <td class="text-right"><b>{{ number_format(collect($array_liquid_payable)->sum(), 2, ',', '.') }}</b></td>
                                     </tr>
                                 </tfoot>

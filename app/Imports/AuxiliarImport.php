@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 // Models
 use App\Models\SeniorityBonusPerson;
 use App\Models\Person;
+use App\Models\Contract;
+use App\Models\DireccionAdministrativa;
 
 class AuxiliarImport implements ToModel
 {
@@ -44,6 +46,39 @@ class AuxiliarImport implements ToModel
                     'quantity' => 1,
                     'start' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($start)->format('Y-m-d')    
                 ]);   
+            }
+        }
+
+        if($this->type == 'funcionamiento'){
+            $person = Person::where('ci', $row[3])->first();
+            if(!$person){
+                $birthday = $start = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($row[10]))->format('Y-m-d');
+                $person = Person::create([
+                    'first_name' => $row[0],
+                    'last_name' => $row[1].''.$row[2],
+                    'ci' => $row[3],
+                    'profession' => $row[4],
+                    'phone' => $row[5],
+                    'address' => $row[6],
+                    'email' => $row[7],
+                    'afp' => $row[8],
+                    'gender' => $row[9],
+                    'birthday' => $birthday,
+                    'civil_status' => 1,
+                    'nua_cua' => $row[11],
+                    'user_id' => Auth::user()->id,
+                ]);
+
+                $start = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(intval($row[13]))->format('Y-m-d');
+
+                Contract::create([
+                    'person_id' => $person->id,
+                    'program_id' => 1,
+                    'procedure_type_id' => 1,
+                    'user_id' => Auth::user()->id,
+                    'code' => $row[12],
+                    'start' => $start
+                ]);
             }
         }
     }

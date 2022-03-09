@@ -28,7 +28,7 @@
         <div class="page-body">
             <p>
                 De mi mayor consideración: <br> <br>
-                Mediante la presente, declaro bajo juramento que mi persona no se encuentra dentro de las incompatibilidades legales para la Prestación de Servicios de Consultoría Individual de Línea, en el Gobierno Autónomo Departamental del Beni, asumiendo la responsabilidad de la veracidad de la presente declaración para los fines legales que correspondan. <br> <br>
+                Mediante la presente, declaro bajo juramento que mi persona no se encuentra dentro de las incompatibilidades legales para la Prestación de Servicios de Consultoría Individual de Línea, en el <b>Gobierno Autónomo Departamental del Beni</b>, asumiendo la responsabilidad de la veracidad de la presente declaración para los fines legales que correspondan. <br> <br>
                 Fraternalmente,
             </p>
 

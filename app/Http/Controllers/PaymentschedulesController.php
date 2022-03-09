@@ -22,6 +22,7 @@ use App\Models\Paymentschedule;
 use App\Models\PaymentschedulesDetail;
 use App\Models\Period;
 use App\Models\PaymentschedulesHistory;
+use App\Models\Program;
 
 
 class PaymentschedulesController extends Controller
@@ -129,6 +130,18 @@ class PaymentschedulesController extends Controller
     {
         DB::beginTransaction();
         try {
+
+            // Verificar si no existe una planilla generada para la DA, el periodo y tipo de planilla
+            $paymentschedule = Paymentschedule::where([
+                'direccion_administrativa_id' =>  $request->direccion_administrativa_id,
+                'period_id' => $request->period_id,
+                'procedure_type_id' => $request->procedure_type_id,
+                'deleted_at' => NULL,
+            ])->first();
+            if($paymentschedule){
+                return redirect()->route('paymentschedules.index')->with(['message' => 'Ya se generó una planilla con los datos ingresados.', 'alert-type' => 'error']);
+            }
+
             // Registrar nueva planilla
             $paymentschedule = Paymentschedule::create([
                 'direccion_administrativa_id' =>  $request->direccion_administrativa_id,
@@ -226,6 +239,8 @@ class PaymentschedulesController extends Controller
         $afp = request('afp');
         $print = request('print');
         $centralize = request('centralize');
+        $program = request('program');
+
         $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract' => function($q){
                         $q->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
                     }])
@@ -233,7 +248,7 @@ class PaymentschedulesController extends Controller
         
         if($centralize){
             $centralize_code = $data->centralize_code;
-            $data->details = PaymentschedulesDetail::with(['contract'])
+            $data->details = PaymentschedulesDetail::with(['contract.program'])
                             ->whereHas('paymentschedule', function($q) use($centralize_code){
                                 $q->where('centralize_code', $centralize_code);
                             })
@@ -250,8 +265,21 @@ class PaymentschedulesController extends Controller
             }
             $data->details = $details;
         }
+
+        // Si se elije un programa se debe filtrar todos los contratos que pertenecen a ese programa
+        if($program){
+            $details = collect();
+            foreach($data->details as $detail){
+                if($detail->contract->program_id == $program){
+                    $details->push($detail);
+                }
+            }
+            $data->details = $details;
+            $program = Program::findOrFail($program);
+        }
+
         if($print){
-            return view('paymentschedules.print', compact('data', 'afp', 'centralize'));
+            return view('paymentschedules.print', compact('data', 'afp', 'centralize', 'program'));
         }
         return view('paymentschedules.read', compact('data', 'afp', 'centralize'));
     }
@@ -337,7 +365,7 @@ class PaymentschedulesController extends Controller
                 if($request->status == 'habilitada'){
                     $cont = 1;
                     foreach ($paymentschedule->details->where('status', 'procesado') as $item) {
-                        $detail = PaymentschedulesDetail::where('id', $item->id)->first();
+                        $detail = PaymentschedulesDetail::where('id', $item->id)->where('deleted_at', NULL)->first();
                         if(!$request->afp || $request->afp == $detail->contract->person->afp){
                             $detail->update(['status' => 'habilitado']);
                         }

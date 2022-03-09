@@ -9,7 +9,7 @@
 
 @section('qr_code')
     <div id="qr_code">
-        {!! QrCode::size(80)->generate('Personal permanente '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)).' con un sueldo de '.number_format($contract->job->salary, 2, ',', '.').' Bs.'); !!}
+        {!! QrCode::size(80)->generate('Personal permanente '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)).' con un sueldo de '.number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.').' Bs.'); !!}
     </div>
 @endsection
 
@@ -27,8 +27,10 @@
                     <p style="position:absolute; bottom: 10px">Santísima Trinidad, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}</p>
                 </div>
                 <div class="border-left">
-                    <b>DE:</b> {{ Str::upper($signature ? $signature->name : setting('firma-autorizada.name')) }} <br>
-                    <b>{{ Str::upper($signature ? $signature->job : setting('firma-autorizada.job')) }}</b> <br> <br> <br>
+                    {{-- <b>DE:</b> {{ Str::upper($signature ? $signature->name : setting('firma-autorizada.name')) }} <br>
+                    <b>{{ Str::upper($signature ? $signature->job : setting('firma-autorizada.job')) }}</b> <br> <br> <br> --}}
+                    <b>DE:</b> ING. PAUL STEVE CURCUY ITURRI <br>
+                    <b>Director Departamental de Recursos Humanos GAD-BENI</b> <br> <br> <br>
                     <b>A:</b> {{ Str::upper($contract->person->first_name.' '.$contract->person->last_name) }} <br>
                     <b>CI: {{ $contract->person->ci }}</b> <br> <br>
                 </div>
@@ -36,13 +38,13 @@
             <br>
             <p style="text-align: center"><u><b>DESIGNACIÓN</b></u></p>
             <p>
-                Mediante el presente comunico a Usted que, a partir de la fecha, es designado para ejercer el cargo de <b>{{ Str::upper($contract->job->name) }}</b>, dependiente de la/el <b>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }}</b> con el Nivel Salarial <b>{{ $contract->job->level }}</b> de <b>PERSONAL PERMANENTE</b>.
+                Mediante el presente comunico a Usted que, a partir de la fecha y hasta el {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}, es {{ $contract->person->gender == 'masculino' ? 'desigando' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b>, bajo la dependincia de la/el <b>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }}</b> con el nivel salarial <b>{{ $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->NumNivel }}</b> de la <b>Planilla de Inversión (Personal Eventual)</b>, según clasificador presupuestario partida 12100. Designación que conlleva todas las implicancias y efectos de la Ley 2027 y 1178, Ley 1413 del PGE  2022 y su respectivo D.S. 4646.
             </p>
             <p>
                 De acuerdo a normas vigentes deberá recibir bajo inventario del Responsable de Registro y Control de Bienes Públicos los activos que serán asignados a su persona.
             </p>
             <p>
-                Deseándole éxito en sus funciones y responsabilidades que devengan de la prestación de sus servicios, de conformidad del art. 28 de la ley Nº 1178 y esperando contar con su valioso aporte y participación en el logro de los objetivos del Gobierno Autónomo Departamental del Beni, saludo a Usted.
+                Deseándole éxito en sus funciones y responsabilidades que devengan de la prestación de sus servicios, de conformidad del art. 28 de la ley Nº 1178 y esperando contar con su valioso aporte y participación en el logro de los objetivos del <b>Gobierno Autónomo Departamental del Beni</b>, saludo a usted.
             </p>
         </div>
     </div>
