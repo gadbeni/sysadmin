@@ -64,11 +64,10 @@
                         </td>
                         <td class="no-sort no-click bread-actions text-right">
 
-                            @if ($item->status != 'borrador')
-                                @if ($item->centralize_code)
+                            @if ($item->status != 'borrador' && auth()->user()->hasPermission('read_paymentschedules'))
+                                @if ($item->centralize_code && auth()->user()->hasPermission('enable_paymentschedules'))
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
-                                            {{-- <i class="voyager-eye"></i> --}}
                                             <span class="hidden-xs hidden-sm">Ver <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
@@ -83,11 +82,11 @@
                                 @endif
                             @endif
 
-                            @if ($item->status == 'procesada')
+                            @if ($item->status == 'procesada' && auth()->user()->hasPermission('edit_paymentschedules'))
                                 <button type="button" data-id="{{ $item->id }}" class="btn btn-dark btn-send" data-toggle="modal" data-target="#send_modal"><i class="glyphicon glyphicon-ok-circle"></i> Enviar</button>
                             @endif
                             
-                            @if (($item->status != 'habilitada' && $item->status != 'pagada' && Auth::user()->hasPermission('delete_paymentschedules')) || Auth::user()->role_id == 1 )
+                            @if (($item->status != 'habilitada' && $item->status != 'pagada' && auth()->user()->hasPermission('delete_paymentschedules')) || Auth::user()->role_id == 1 )
                                 <button type="button" data-id="{{ $item->id }}" data-toggle="modal" data-target="#cancel-modal" title="Anular" class="btn btn-sm btn-danger btn-cancel edit">
                                     <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Anular</span>
                                 </button>

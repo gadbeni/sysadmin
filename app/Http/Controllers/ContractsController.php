@@ -58,7 +58,7 @@ class ContractsController extends Controller
         // Recursos humanos
         if(($role_id >= 9 && $role_id <= 12) || $direccion_administrativa_id) $ids .= "1,";
         // Administrativo o direcciones desconcentradas
-        if(($role_id >= 13 && $role_id <= 15) || $direccion_administrativa_id) $ids .= "2,";
+        if(($role_id >= 9 && $role_id <= 15) || $direccion_administrativa_id) $ids .= "2,";
         // Contrataciones
         if(($role_id >= 9 && $role_id <= 12) || ($role_id >= 16 && $role_id <= 18) || $direccion_administrativa_id) $ids .= "5,";
 

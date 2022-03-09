@@ -34,15 +34,15 @@
                 </div>
             </div>
             <br>
-            <p style="text-align: center"><u><b>REASIGNACIÓN DE CARGO</b></u></p>
+            <p style="text-align: center"><u><b>DESIGNACIÓN</b></u></p>
             <p>
-                Mediante el presente comunico a Usted que, a partir de la fecha, es {{ $contract->person->gender == 'masculino' ? 'desigando' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->job->name) }}</b>, bajo la dependincia de la/el <b>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }}</b> con el Nivel Salarial <b>{{ $contract->job->level }}</b> de <b>PERSONAL PERMANENTE</b>.
+                Mediante el presente comunico a Usted que, a partir de la fecha, es {{ $contract->person->gender == 'masculino' ? 'desigando' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->job->name) }}</b>, dependiente de la/el <b>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }}</b> con el nivel salarial <b>{{ $contract->job->level }}</b> de <b>PERSONAL PERMANENTE</b>.
             </p>
             <p>
                 De acuerdo a normas vigentes deberá recibir bajo inventario del Responsable de Registro y Control de Bienes Públicos los activos que serán asignados a su persona.
             </p>
             <p>
-                Deseándole éxito en sus funciones y responsabilidades que devengan de la prestación de sus servicios, de conformidad del art. 28 de la ley Nº 1178 y esperando contar con su valioso aporte y participación en el logro de los objetivos del Gobierno Autónomo Departamental del Beni, saludo a Usted.
+                Deseándole éxito en sus funciones y responsabilidades que devengan de la prestación de sus servicios, de conformidad del art. 28 de la ley Nº 1178 y esperando contar con su valioso aporte y participación en el logro de los objetivos del Gobierno Autónomo Departamental del Beni, saludo a usted.
             </p>
         </div>
     </div>

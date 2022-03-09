@@ -24,7 +24,7 @@ class PaymentschedulesFilesImport implements ToModel
     */
     public function model(array $row)
     {
-        $person = Person::where('ci', $row[2])->where('deleted_at', NULL)->first();
+        $person = Person::where('ci', $row[1])->where('deleted_at', NULL)->first();
         if($person){
             $details = '';
             if($this->type == 'rc-iva'){

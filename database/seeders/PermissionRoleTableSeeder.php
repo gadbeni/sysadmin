@@ -28,6 +28,9 @@ class PermissionRoleTableSeeder extends Seeder
                                                 table_name = "cashiers" or
                                                 table_name = "vaults" or
                                                 `key` = "browse_planillaspagos" or
+                                                `key` = "browse_paymentschedules" or
+                                                `key` = "read_paymentschedules" or
+                                                `key` = "enable_paymentschedules" or
                                                 table_name = "plugins" or
                                                 table_name = "planillas_adicionales" or
                                                 table_name = "reports_cachiers"')->get();
@@ -38,6 +41,9 @@ class PermissionRoleTableSeeder extends Seeder
                                                 table_name = "cashiers" or
                                                 table_name = "vaults" or
                                                 `key` = "browse_planillaspagos" or
+                                                `key` = "browse_paymentschedules" or
+                                                `key` = "read_paymentschedules" or
+                                                `key` = "enable_paymentschedules" or
                                                 table_name = "plugins" or
                                                 table_name = "planillas_adicionales" or
                                                 `key` = "browse_reportscashiervaults"')->get();

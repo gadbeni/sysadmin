@@ -25,7 +25,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="procedure_type_id">Tipo de planilla</label>
                                     <select name="procedure_type_id" id="select-procedure_type_id" class="form-control" required>
-                                        <option value="">-- Selecciona el tipo de planilla --</option>
+                                        <option value="" disabled selected>-- Selecciona el tipo de planilla --</option>
                                         @foreach ($procedure_type as $item)
                                         <option value="{{ $item->id }}" data-planilla_id="{{ $item->planilla_id }}">{{ $item->name }}</option>
                                         @endforeach
@@ -34,7 +34,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="person_id">Persona</label>
                                     <select name="person_id" class="form-control select2" required>
-                                        <option value="">-- Selecciona a la persona --</option>
+                                        <option value="" disabled>-- Selecciona a la persona --</option>
                                         @foreach ($people as $item)
                                         <option @if(isset($contract) && $contract->person->id == $item->id) selected @endif value="{{ $item->id }}">{{ $item->first_name }} {{ $item->last_name }} - {{ $item->ci }}</option>
                                         @endforeach
