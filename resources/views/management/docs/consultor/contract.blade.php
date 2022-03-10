@@ -152,7 +152,31 @@
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA NOVENA</strong></span><strong>. - (CONSENTIMIENTO) </strong></p>
         <p>En se&ntilde;al de conformidad y para su fiel y estricto cumplimiento, firmamos el presente Contrato en cuatro ejemplares de un mismo tenor y validez el <strong>{{ $signature ? $signature->name : setting('firma-autorizada.name') }}</strong>, {{ $signature ? $signature->job : setting('firma-autorizada.job') }}, en representaci&oacute;n legal de <strong>LA ENTIDAD</strong>, y <strong>{{ $contract->person->gender == 'masculino' ? 'el señor' : 'la señora' }} {{ $contract->person->first_name }} {{ $contract->person->last_name }}</strong>, como <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>.</p>
         <p>Este documento, conforme a disposiciones legales de control fiscal vigentes, ser&aacute; registrado ante la Contralor&iacute;a General del Estado en idioma espa&ntilde;ol.</p>
-        <p style="text-align: right;">Sant&iacute;sima Trinidad, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}</p>
+        <p style="text-align: right;">
+            <select id="location-id">
+                <option value="Santísima Trinidad">Santísima Trinidad</option>
+                <option value="Guayaramerín">Guayaramerín</option>
+                <option value="Riberalta">Riberalta</option>
+                <option value="Santa Rosa">Santa Rosa</option>
+                <option value="Reyes">Reyes</option>
+                <option value="Rurrenabaque">Rurrenabaque</option>
+                <option value="Yucumo">Yucumo</option>
+                <option value="San Borja">San Borja</option>
+                <option value="San Ignacio">San Ignacio</option>
+                <option value="San Ramón">San Ramón</option>
+                <option value="San Joaquín">San Joaquín</option>
+                <option value="Puerto Siles">Puerto Siles</option>
+                <option value="Santa Ana">Santa Ana</option>
+                <option value="Magdalena">Magdalena</option>
+                <option value="Baures">Baures</option>
+                <option value="Huacaraje">Huacaraje</option>
+                <option value="Exaltación">Exaltación</option>
+                <option value="San Javier">San Javier</option>
+                <option value="Loreto">Loreto</option>
+                <option value="San Andrés">San Andrés</option>
+            </select>
+            <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
+        </p>
         
         <br>
 

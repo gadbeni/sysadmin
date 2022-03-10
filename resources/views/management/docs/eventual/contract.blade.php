@@ -111,7 +111,30 @@
         </ul>
         <p><em><strong>CLÁUSULA D&Eacute;CIMA SEGUNDA: (ACEPTACI&Oacute;N)</strong></em></p>
         <p><em>En se&ntilde;al de aceptaci&oacute;n y estricto cumplimiento firman el presente Contrato en tres ejemplares de un mismo tenor y validez, la/el <b>{{ $signature ? $signature->name : setting('firma-autorizada.name') }}</b>, en su calidad de <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }} GAD-BENI </b>y por otra parte {{ $contract->person->gender == 'masculino' ? 'el Sr.' : 'la Sra.' }} <b>{{ $contract->person->first_name }} {{ $contract->person->last_name }}</b>, en calidad de <b>{{ $contract->person->gender == 'masculino' ? 'CONTRATADO' : 'CONTRATADA' }}</b>.</em></p>
-        <p style="text-align: right;">Sant&iacute;sima Trinidad, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}</p>
+        <p style="text-align: right;">
+            <select id="location-id">
+                <option value="Santísima Trinidad">Santísima Trinidad</option>
+                <option value="Guayaramerín">Guayaramerín</option>
+                <option value="Riberalta">Riberalta</option>
+                <option value="Santa Rosa">Santa Rosa</option>
+                <option value="Reyes">Reyes</option>
+                <option value="Rurrenabaque">Rurrenabaque</option>
+                <option value="Yucumo">Yucumo</option>
+                <option value="San Borja">San Borja</option>
+                <option value="San Ignacio">San Ignacio</option>
+                <option value="San Ramón">San Ramón</option>
+                <option value="San Joaquín">San Joaquín</option>
+                <option value="Puerto Siles">Puerto Siles</option>
+                <option value="Santa Ana">Santa Ana</option>
+                <option value="Magdalena">Magdalena</option>
+                <option value="Baures">Baures</option>
+                <option value="Huacaraje">Huacaraje</option>
+                <option value="Exaltación">Exaltación</option>
+                <option value="San Javier">San Javier</option>
+                <option value="Loreto">Loreto</option>
+                <option value="San Andrés">San Andrés</option>
+            </select>
+            <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}</p>
         <table width="100%" style="text-align: center; margin-top: 120px;">
             <tr>
                 <td style="width: 50%">

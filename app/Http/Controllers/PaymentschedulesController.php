@@ -115,7 +115,7 @@ class PaymentschedulesController extends Controller
                                     ->where('period_id', $period->id)
                                     ->where('procedure_type_id', $procedure_type_id)
                                     ->where('status', 'cargado')->get();
-        dd($contracts);
+        // dd($contracts);
 
         return view('paymentschedules.generate', compact('paymentschedule', 'contracts', 'direccion_administrativa_id', 'period', 'procedure_type_id', 'paymentschedules_file'));
     }

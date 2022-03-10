@@ -17,7 +17,31 @@
         <div class="page-body">
             <div class="page-head" style="width: 100%">
                 <div class="border-right">
-                    <p style="position:absolute; bottom: 10px">Santísima Trinidad, {{ date('d', strtotime($contract->date_memo)) }} de {{ $months[intval(date('m', strtotime($contract->date_memo)))] }} de {{ date('Y', strtotime($contract->date_memo)) }}</p>
+                    <p style="position:absolute; bottom: 10px">
+                        <select id="location-id">
+                            <option value="Santísima Trinidad">Santísima Trinidad</option>
+                            <option value="Guayaramerín">Guayaramerín</option>
+                            <option value="Riberalta">Riberalta</option>
+                            <option value="Santa Rosa">Santa Rosa</option>
+                            <option value="Reyes">Reyes</option>
+                            <option value="Rurrenabaque">Rurrenabaque</option>
+                            <option value="Yucumo">Yucumo</option>
+                            <option value="San Borja">San Borja</option>
+                            <option value="San Ignacio">San Ignacio</option>
+                            <option value="San Ramón">San Ramón</option>
+                            <option value="San Joaquín">San Joaquín</option>
+                            <option value="Puerto Siles">Puerto Siles</option>
+                            <option value="Santa Ana">Santa Ana</option>
+                            <option value="Magdalena">Magdalena</option>
+                            <option value="Baures">Baures</option>
+                            <option value="Huacaraje">Huacaraje</option>
+                            <option value="Exaltación">Exaltación</option>
+                            <option value="San Javier">San Javier</option>
+                            <option value="Loreto">Loreto</option>
+                            <option value="San Andrés">San Andrés</option>
+                        </select>
+                        <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->date_memo)) }} de {{ $months[intval(date('m', strtotime($contract->date_memo)))] }} de {{ date('Y', strtotime($contract->date_memo)) }}
+                    </p>
                 </div>
                 <div class="border-left">
                     <b>DE:</b> {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
@@ -35,7 +59,7 @@
             <br>
             <p>
                 De mi consideración: <br> <br>
-                En uso de las atribuciones que me confiere el Decreto Supremo 0181 y la Resolución Administrativa de Gobernación N° 074/2021, de fecha 30 de agosto del 2021, bajo la Modalidad de Contratación Menor, transfiero a ustedes como <b>RESPONSABLE DE EVALUACIÓN</b>, el siguiente proceso de contratación: <br>
+                En uso de las atribuciones que me confiere el Decreto Supremo 0181 y la Resolución Administrativa de Gobernación N° 04/2022, de fecha 01 de febrero del 2022, bajo la Modalidad de Contratación Menor, transfiero a ustedes como <b>RESPONSABLE DE EVALUACIÓN</b>, el siguiente proceso de contratación: <br>
             </p>
             <table border="1" cellspacing="0" cellpadding="10">
                 <thead>

@@ -10,7 +10,29 @@
                 $code = $contract->code;
             @endphp
             <p>
-                Santísima Trinidad, {{ date('d', strtotime($contract->date_note)) }} de {{ $months[intval(date('m', strtotime($contract->date_note)))] }} de {{ date('Y', strtotime($contract->date_note)) }} <br>
+                <select id="location-id">
+                    <option value="Santísima Trinidad">Santísima Trinidad</option>
+                    <option value="Guayaramerín">Guayaramerín</option>
+                    <option value="Riberalta">Riberalta</option>
+                    <option value="Santa Rosa">Santa Rosa</option>
+                    <option value="Reyes">Reyes</option>
+                    <option value="Rurrenabaque">Rurrenabaque</option>
+                    <option value="Yucumo">Yucumo</option>
+                    <option value="San Borja">San Borja</option>
+                    <option value="San Ignacio">San Ignacio</option>
+                    <option value="San Ramón">San Ramón</option>
+                    <option value="San Joaquín">San Joaquín</option>
+                    <option value="Puerto Siles">Puerto Siles</option>
+                    <option value="Santa Ana">Santa Ana</option>
+                    <option value="Magdalena">Magdalena</option>
+                    <option value="Baures">Baures</option>
+                    <option value="Huacaraje">Huacaraje</option>
+                    <option value="Exaltación">Exaltación</option>
+                    <option value="San Javier">San Javier</option>
+                    <option value="Loreto">Loreto</option>
+                    <option value="San Andrés">San Andrés</option>
+                </select>
+                <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->date_note)) }} de {{ $months[intval(date('m', strtotime($contract->date_note)))] }} de {{ date('Y', strtotime($contract->date_note)) }} <br>
                 <b>INV/CI/GAD BENI/MCD N° {{ $code }}</b>
             </p>
             <br>
@@ -73,7 +95,7 @@
             </table>
 
             <p>
-                Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la Dirección Administrativa dependiente de la Secretaría Dptal. de Administración y Finanzas, ubicada en la Plaza Principal, hasta el día {{ date('d', strtotime($contract->date_limit_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_limit_invitation)))] }} de {{ date('Y', strtotime($contract->date_limit_invitation)) }} , deberá presentar la siguiente documentación:
+                Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la Unidad de Contrataciones de Bienes y Servicios, dependiente de la Secretaría Dptal. de Administración y Finanzas, ubicada en edificio ex CORDEBENI Calle Joaquín de Sierra esq. C/ La Paz, con un plazo de 48 horas a partir la fecha, deberá presentar la siguiente documentación:
             </p>
 
             <table align="center">

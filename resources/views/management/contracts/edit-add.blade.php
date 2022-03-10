@@ -226,7 +226,7 @@
                                     <input type="date" name="date_note"  value="{{ isset($contract) ? $contract->date_note : '' }}" class="form-control">
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="date_report">Fecha de informe</label>
+                                    <label for="date_report">Fecha de informe de evaluación</label>
                                     <input type="date" name="date_report" value="{{ isset($contract) ? $contract->date_report : '' }}" class="form-control">
                                 </div>
                                 <div class="form-group col-md-4">

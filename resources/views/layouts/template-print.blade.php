@@ -47,6 +47,10 @@
             display: none;
         }
 
+        #label-location{
+            display: none;
+        }
+
         @page {
             size: letter;
             margin: 10mm 0mm 0mm 0mm;
@@ -77,6 +81,12 @@
             }
             #qr_code{
                 display: block;
+            }
+            #location-id{
+                display: none;
+            }
+            #label-location{
+                display: inline;
             }
         }
     </style>
@@ -110,6 +120,14 @@
         });
     </script>
 
+    <script type="text/javascript" src="{{ voyager_asset('js/app.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#location-id').change(function () {
+                $('#label-location').html($(this).val());
+            });
+        });
+    </script>
     @yield('script')
 </body>
 </html>

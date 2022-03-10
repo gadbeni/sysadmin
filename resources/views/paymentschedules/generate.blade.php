@@ -35,7 +35,10 @@
                                         <th rowspan="3">%</th>
                                         <th style="text-align: right" rowspan="3">BONO ANTIG.</th>
                                         <th style="text-align: right" rowspan="3">TOTAL GANADO</th>
-                                        <th style="text-align: center" colspan="5">APORTES LABORALES</th>
+                                        
+                                        {{-- Si es planilla de consultoría se agrega una columna--}}
+                                        <th style="text-align: center" colspan="{{ $procedure_type_id == 2 ? 6 : 5 }}">APORTES LABORALES</th>
+
                                         <th rowspan="3">TOTAL APORTES AFP</th>
                                         <th rowspan="3">RC-IVA</th>
                                         <th colspan="2">FONDO SOCIAL</th>
@@ -45,6 +48,12 @@
                                     <tr>
                                         <th>APORTE SOLIDARIO</th>
                                         <th>RIESGO COMÚN</th>
+
+                                        {{-- Si es planilla de consultoría --}}
+                                        @if ($procedure_type_id == 2)
+                                        <th>RIESGO LABORAL</th>
+                                        @endif
+
                                         <th>COMISIÓN AFP</th>
                                         <th>APORTE JUBILACIÓN</th>
                                         <th>APORTE NAL. SOLIDARIO</th>
@@ -54,6 +63,12 @@
                                     <tr>
                                         <th>0.5%</th>
                                         <th>1.71%</th>
+
+                                        {{-- Si es planilla de consultoría --}}
+                                        @if ($procedure_type_id == 2)
+                                        <th>1.71%</th>
+                                        @endif
+
                                         <th>0.5%</th>
                                         <th>10%</th>
                                         <th>1%</th>
@@ -139,44 +154,56 @@
                                             $age = $birthday->diffInYears($now);
 
                                             // Calcular aportes AFP
-                                            $solidary = $total_amout * 0.005;
-                                            $retirement = $total_amout * 0.1;
-                                            $common_risk = $total_amout *0.0171;   
-                                            
-                                            // Si es mayor a 57 y menos a 65 años y tiene su AFP inactiva no paga jubilación
-                                            if($age >= 58 && $age < 65 && $item->person->afp_status == 0){
-                                                $retirement = 0;
-                                            }
-
-                                            // Si es mayor a 64 años y tiene su AFP activa no paga riesgo común
-                                            if($age >= 65 && $item->person->afp_status == 1){
-                                                $common_risk = 0;
-                                            }
-
-                                            // Si es mayor a 64 años y tiene su AFP inactiva no paga jubilación ni riesgo común
-                                            if($age >= 65 && $item->person->afp_status == 0){
-                                                $retirement = 0;
-                                                $common_risk = 0;
-                                            }
-
-                                            $afp_commission = $total_amout * 0.005;
-
+                                            $solidary = 0;
+                                            $common_risk = 0;
+                                            $afp_commission = 0;
+                                            $retirement = 0;
                                             $solidary_national = 0;
-                                            if($total_amout >= 13000){
-                                                $solidary_national = ($total_amout - 13000) *0.01;
-                                            }
-                                            if ($total_amout >= 25000) {
-                                                $solidary_national = ($total_amout - 25000) *0.05;
-                                            }
-                                            if ($total_amout >= 35000) {
-                                                $solidary_national = ($total_amout - 35000) *0.1;
+                                            $solidary_employer = 0;
+                                            $housing_employer = 0;
+                                            $health = 0;
+
+                                            // Si los días trabajados son >= 20
+                                            if($days_enabled_worker >= 20){
+                                                $solidary = $total_amout * 0.005;
+                                                $common_risk = $total_amout *0.0171;
+                                                $retirement = $total_amout * 0.1;
+                                                
+                                                // Si es mayor a 57 y menos a 65 años y tiene su AFP inactiva no paga jubilación
+                                                if($age >= 58 && $age < 65 && $item->person->afp_status == 0){
+                                                    $retirement = 0;
+                                                }
+
+                                                // Si es mayor a 64 años y tiene su AFP activa no paga riesgo común
+                                                if($age >= 65 && $item->person->afp_status == 1){
+                                                    $common_risk = 0;
+                                                }
+
+                                                // Si es mayor a 64 años y tiene su AFP inactiva no paga jubilación ni riesgo común
+                                                if($age >= 65 && $item->person->afp_status == 0){
+                                                    $retirement = 0;
+                                                    $common_risk = 0;
+                                                }
+
+                                                $afp_commission = $total_amout * 0.005;
+
+                                                
+                                                if($total_amout >= 13000){
+                                                    $solidary_national = ($total_amout - 13000) *0.01;
+                                                }
+                                                if ($total_amout >= 25000) {
+                                                    $solidary_national = ($total_amout - 25000) *0.05;
+                                                }
+                                                if ($total_amout >= 35000) {
+                                                    $solidary_national = ($total_amout - 35000) *0.1;
+                                                }
+
+                                                $solidary_employer = $total_amout * 0.03;
+                                                $housing_employer = $total_amout * 0.02;
+                                                $health = $total_amout * 0.1;
                                             }
 
                                             $labor_total = $solidary + $common_risk + $afp_commission + $retirement + $solidary_national;
-
-                                            $solidary_employer = $total_amout * 0.03;
-                                            $housing_employer = $total_amout * 0.02;
-                                            $health = $total_amout * 0.1;
 
                                             // Calcular RC-IVA
                                             $rc_iva = $contracts_rc_iva ? $contracts_rc_iva->details->where('person_id', $item->person->id)->first() : null;
@@ -239,10 +266,19 @@
                                             <td class="text-right"><b>{{ number_format($total_amout, 2, ',', '.') }}</b></td>
                                             <td class="text-right">{{ number_format($solidary, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($common_risk, 2, ',', '.') }}</td>
+
+                                            {{-- Si es planilla de consultoría --}}
+                                            @if ($procedure_type_id == 2)
+                                            <td class="text-right">{{ number_format($common_risk, 2, ',', '.') }}</td>
+                                            @endif
+
                                             <td class="text-right">{{ number_format($afp_commission, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($retirement, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($solidary_national, 2, ',', '.') }}</td>
-                                            <td class="text-right"><b>{{ number_format($labor_total, 2, ',', '.') }}</b></td>
+
+                                            {{-- Si la planilla es de consultoría al total aporte afp le sumamos el riego laboral (que es el mismo monto del riesgo común) --}}
+                                            <td class="text-right"><b>{{ number_format($labor_total + ($procedure_type_id == 2 ? $common_risk : 0 ), 2, ',', '.') }}</b></td>
+
                                             <td class="text-right">{{ number_format($rc_iva_amount, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($faults_quantity, floor($faults_quantity) < $faults_quantity ? 1 : 0, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($faults_amount, 2, ',', '.') }}</td>
@@ -266,10 +302,16 @@
                                         <td class="text-right"><b>{{ number_format(collect($array_partial_salary)->sum() + collect($array_seniority_bonus_amount)->sum(), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format(collect($array_solidary)->sum(), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format(collect($array_common_risk)->sum(), 2, ',', '.') }}</b></td>
+
+                                        {{-- Si es planilla de consultoría --}}
+                                        @if ($procedure_type_id == 2)
+                                        <td class="text-right"><b>{{ number_format(collect($array_common_risk)->sum(), 2, ',', '.') }}</b></td>
+                                        @endif
+
                                         <td class="text-right"><b>{{ number_format(collect($array_afp_commission)->sum(), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format(collect($array_retirement)->sum(), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format(collect($array_solidary_national)->sum(), 2, ',', '.') }}</b></td>
-                                        <td class="text-right"><b>{{ number_format(collect($array_labor_total)->sum(), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format(collect($array_labor_total)->sum() + ($procedure_type_id == 2 ? collect($array_common_risk)->sum() : 0), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format(collect($array_rc_iva_amount)->sum(), 2, ',', '.') }}</b></td>
                                         <td></td>
                                         <td class="text-right"><b>{{ number_format(collect($array_faults_amount)->sum(), 2, ',', '.') }}</b></td>
