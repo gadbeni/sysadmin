@@ -19,32 +19,15 @@
             </ul>
         </div>
 
-        @php
-            $contracts = collect();
-            foreach($data->details as $item){
-                $contracts->push($item->contract);
-            }
-        @endphp
-
-        {{-- Si se eligió una afp se mostrará un solo botón --}}
-        @if ($afp)
-            <a href="?afp={{ $afp }}{{ $centralize ? '&centralize=true' : '' }}&print=true" class="btn btn-danger" target="_blank"><i class="glyphicon glyphicon-print"></i> Imprimir</a>
-        @else
-            <div class="btn-group">
-                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-print"></span>&nbsp; Imprimir <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="?afp=1{{ $centralize ? '&centralize=true' : '' }}&print=true" target="_blank">AFP Futuro</a></li>
-                    <li><a href="?afp=2{{ $centralize ? '&centralize=true' : '' }}&print=true" target="_blank">AFP BBVA Previsión</a></li>
-                    <li class="divider"></li>
-                    @foreach ($contracts->groupBy('program_id') as $item)
-                    <li><a href="?program={{ $item[0]->program->id }}{{ $centralize ? '&centralize=true' : '' }}&print=true&afp=1" target="_blank">{{ $item[0]->program->name }} - Futuro</a></li>
-                    <li><a href="?program={{ $item[0]->program->id }}{{ $centralize ? '&centralize=true' : '' }}&print=true&afp=2" target="_blank">{{ $item[0]->program->name }} - Previsión</a></li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        <div class="btn-group">
+            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                <span class="glyphicon glyphicon-print"></span>&nbsp; Imprimir <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#" data-afp="1" data-toggle="modal" data-target="#print-modal" class="btn-afp">AFP Futuro</a></li>
+                <li><a href="#" data-afp="2" data-toggle="modal" data-target="#print-modal" class="btn-afp">AFP BBVA Previsión</a></li>
+            </ul>
+        </div>
 
         {{-- Si la planilla está enviada o parte de la planilla no ha sido habilitada se mouestra el botón de habilitación --}}
         @if (($data->status == 'enviada' || $data->details->where('status', 'procesado')->where('deleted_at', NULL)->count() > 0) && auth()->user()->hasPermission('enable_paymentschedules'))
@@ -174,7 +157,10 @@
                                         <th rowspan="3">%</th>
                                         <th rowspan="3">BONO ANTIG.</th>
                                         <th rowspan="3">TOTAL GANADO</th>
-                                        <th style="text-align: center" colspan="5">APORTES LABORALES</th>
+
+                                        {{-- Si es planilla de consultoría se agrega una columna--}}
+                                        <th style="text-align: center" colspan="{{ $data->procedure_type_id == 2 ? 6 : 5 }}">APORTES LABORALES</th>
+                                        
                                         <th rowspan="3">TOTAL APORTES AFP</th>
                                         <th rowspan="3">RC-IVA</th>
                                         <th colspan="2">FONDO SOCIAL</th>
@@ -184,15 +170,27 @@
                                     <tr>
                                         <th>APORTE SOLIDARIO</th>
                                         <th>RIESGO COMÚN</th>
+
+                                        {{-- Si es planilla de consultoría --}}
+                                        @if ($data->procedure_type_id == 2)
+                                        <th>RIESGO LABORAL</th>
+                                        @endif
+
                                         <th>COMISIÓN AFP</th>
                                         <th>APORTE JUBILACIÓN</th>
-                                        <th>APORTE NACIONAL SOLIDARIO</th>
+                                        <th>APORTE NAL. SOLIDARIO</th>
                                         <th rowspan="2">DÍAS</th>
                                         <th rowspan="2">MULTAS</th>
                                     </tr>
                                     <tr>
                                         <th>0.5%</th>
                                         <th>1.71%</th>
+
+                                        {{-- Si es planilla de consultoría --}}
+                                        @if ($data->procedure_type_id == 2)
+                                        <th>1.71%</th>
+                                        @endif
+                                        
                                         <th>0.5%</th>
                                         <th>10%</th>
                                         <th>1%</th>
@@ -253,10 +251,19 @@
                                             <td class="text-right"><b>{{ number_format($item->partial_salary + $item->seniority_bonus_amount, 2, ',', '.') }}</b></td>
                                             <td class="text-right">{{ number_format($item->solidary, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($item->common_risk, 2, ',', '.') }}</td>
+                                            
+                                            {{-- Si es planilla de consultoría --}}
+                                            @if ($data->procedure_type_id == 2)
+                                            <td class="text-right">{{ number_format($item->common_risk, 2, ',', '.') }}</td>
+                                            @endif
+
                                             <td class="text-right">{{ number_format($item->afp_commission, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($item->retirement, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($item->solidary_national, 2, ',', '.') }}</td>
-                                            <td class="text-right"><b>{{ number_format($item->labor_total, 2, ',', '.') }}</b></td>
+                                            
+                                            {{-- Si la planilla es de consultoría al total aporte afp le sumamos el riego laboral (que es el mismo monto del riesgo común) --}}
+                                            <td class="text-right"><b>{{ number_format($item->labor_total + ($data->procedure_type_id == 2 ? $item->common_risk : 0 ), 2, ',', '.') }}</b></td>
+                                            
                                             <td class="text-right">{{ number_format($item->rc_iva_amount, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($item->faults_quantity, floor($item->faults_quantity) < $item->faults_quantity ? 1 : 0, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($item->faults_amount, 2, ',', '.') }}</td>
@@ -292,16 +299,25 @@
                                         <td class="text-right"><b>{{ number_format($total_amount, 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('solidary'), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($total_common_risk, 2, ',', '.') }}</b></td>
+                                        
+                                        {{-- Si es planilla de consultoría --}}
+                                        @if ($data->procedure_type_id == 2)
+                                        <td class="text-right"><b>{{ number_format($total_common_risk, 2, ',', '.') }}</b></td>
+                                        @endif
+
                                         <td class="text-right"><b>{{ number_format($data->details->sum('afp_commission'), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('retirement'), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('solidary_national'), 2, ',', '.') }}</b></td>
-                                        <td class="text-right"><b>{{ number_format($data->details->sum('labor_total'), 2, ',', '.') }}</b></td>
+                                        
+                                        {{-- Si la planilla es de consultoría al total aporte afp le sumamos el riego laboral (que es el mismo monto del riesgo común) --}}
+                                        <td class="text-right"><b>{{ number_format($data->details->sum('labor_total') + ($data->procedure_type_id == 2 ? $total_common_risk : 0), 2, ',', '.') }}</b></td>
+                                        
                                         <td class="text-right"><b>{{ number_format($data->details->sum('rc_iva_amount'), 2, ',', '.') }}</b></td>
                                         <td></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('faults_amount'), 2, ',', '.') }}</b></td>
                                         <td class="text-right">
                                                 @php
-                                                    // Si el planilla es permanenteo eventual restamos el total de aportes laborales al líquido pagable
+                                                    // Si el planilla es permanente o eventual restamos el total de aportes laborales al líquido pagable
                                                     $labor_total = 0;
                                                     if($data->procedure_type_id == 1 || $data->procedure_type_id == 5){
                                                         $labor_total = $data->details->sum('labor_total');
@@ -648,6 +664,39 @@
             </div>
         </div>
     </form>
+
+    {{-- print modal --}}
+    <div class="modal modal-danger fade" tabindex="-1" id="print-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="glypicon glypicon-print"></i> Imprimir planilla</h4>
+                </div>
+                <div class="modal-body">
+                    @php
+                        $contracts = collect();
+                        foreach($data->details as $item){
+                            $contracts->push($item->contract);
+                        }
+                    @endphp
+                    <div class="form-group">
+                        <label for="program_id">Programa/Proyecto</label>
+                        <select name="program_id" class="form-control select2">
+                            <option value="">Todos</option>
+                            @foreach ($contracts->groupBy('program_id') as $item)
+                                <option value="{{ $item[0]->program->id }}">{{ $item[0]->program->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <input type="button" class="btn btn-danger btn-print" value="Aceptar">
+                </div>
+            </div>
+        </div>
+    </div>
     
 @stop
 
@@ -668,7 +717,18 @@
 @section('javascript')
     <script>
         $(document).ready(function () {
-            
+            var centralize = "{{ $centralize ? '?centralize=true' : '?' }}";
+            var afp;
+
+            $('.btn-afp').click(function(){
+                afp = '&afp='+$(this).data('afp');
+            });
+
+            $('.btn-print').click(function(){
+                $('#print-modal').modal('toggle');
+                let program = '&program='+$('select[name="program_id"]').val();
+                window.open(centralize+afp+program+'&print=true', '_blank');
+            });
         });
     </script>
 @stop

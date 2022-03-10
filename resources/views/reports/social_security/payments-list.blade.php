@@ -36,7 +36,7 @@
                             <th>RIESGO COMÚN</th>
                             <th>COMISIÓN AFP</th>
                             <th>APORTE JUBILACIÓN</th>
-                            <th>APORTE NACIONAL SOLIDARIO</th>
+                            <th>APORTE NAL. SOLIDARIO</th>
                             <th rowspan="2">DÍAS</th>
                             <th rowspan="2">MULTAS</th>
                         </tr>
