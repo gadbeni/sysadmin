@@ -63,6 +63,19 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('checks');
         Permission::generateFor('periods');
 
+        // checkes
+        $keys = [
+            'payment_checks',
+            'success_checks',
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'checks',
+            ]);
+        }
+
         // Pago de planillas
         $keys = [
             'browse_planillaspagos',

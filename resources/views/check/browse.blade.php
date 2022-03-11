@@ -2,7 +2,7 @@
 
 @section('page_title', 'Viendo Cheques')
 
-@if(auth()->user()->hasPermission('browse_planillas_adicionales'))
+@if(auth()->user()->hasPermission('browse_checks')))
 
     @section('page_header')
         <div class="container-fluid">
@@ -20,14 +20,14 @@
                                     <p>Puede obtener el valor de cada parámetro en cualquier lugar de su sitio llamando <code>setting('group.key')</code></p>
                                 </div> --}}
                             </div>
-                            @if(auth()->user()->hasPermission('add_planillas_adicionales'))
-                            @endif
+                            @if(auth()->user()->hasPermission('add_checks'))
+                            
                                 <div class="col-md-4 text-right" style="margin-top: 30px">
                                     <a type="button" data-toggle="modal" data-target="#modalRegistrar" class="btn btn-success">
                                         <i class="voyager-plus"></i> <span>Crear</span>
                                     </a>
                                 </div>
-                           
+                                @endif
                         </div>
                     </div>
                 </div>
@@ -97,23 +97,30 @@
                                             </td>
                                             <td class="actions text-right dt-not-orderable sorting_disabled">
                                                 @if ($item->status == "registrado" || $item->status == "habilitado")
-                                                    <a type="button" data-toggle="modal" data-target="#modal_aprobar" data-id="{{ $item->id}}"  class="btn btn-success"><i class="voyager-check"></i> <span class="hidden-xs hidden-sm">Aprobar</span></a>
-                                                    <!-- <a type="button" data-toggle="modal" data-target="#modal_devolver" data-id="{{ $item->id}}"  class="btn btn-warning"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Devolver</span></a> -->
+                                                    @if(auth()->user()->hasPermission('success_checks'))
+                                                        <a type="button" data-toggle="modal" data-target="#modal_aprobar" data-id="{{ $item->id}}"  class="btn btn-success"><i class="voyager-check"></i> <span class="hidden-xs hidden-sm">Aprobar</span></a>
+                                                    @endif
+                                                        <!-- <a type="button" data-toggle="modal" data-target="#modal_devolver" data-id="{{ $item->id}}"  class="btn btn-warning"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Devolver</span></a> -->
+                                                    @if(auth()->user()->hasPermission('edit_checks'))
                                                     <a type="button" data-toggle="modal" data-target="#edit_modal" data-id="{{ $item->id}}" data-items="{{$item->resumen}}"  class="btn btn-primary"><i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span></a>
-                                                    <a type="button" data-toggle="modal" data-target="#delete_modal" data-id="{{ $item->id}}" class="btn btn-danger"><i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span></a>
+                                                    @endif
+                                                    @if(auth()->user()->hasPermission('delete_checks'))
+                                                        <a type="button" data-toggle="modal" data-target="#delete_modal" data-id="{{ $item->id}}" class="btn btn-danger"><i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span></a>
+                                                    @endif
                                                 @endif  
-
-                                                @if ($item->status == "aprobado")
-                                                    <a type="button" data-toggle="modal" data-target="#modal_entregar" data-id="{{ $item->id}}"  class="btn btn-dark"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Entregar</span></a>
-                                                    <!-- <a type="button" data-toggle="modal" data-target="#edit_modal" data-id="{{ $item->id}}" data-items="{{$item->resumen}}"  class="btn btn-primary"><i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span></a>
-                                                    <a type="button" data-toggle="modal" data-target="#delete_modal" data-id="{{ $item->id}}" class="btn btn-danger"><i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span></a> -->
-                                                @endif  
-                                                @if ($item->status == "entregado")
-                                                    <a type="button" data-toggle="modal" data-target="#modal_devolver" data-id="{{ $item->id}}"  class="btn btn-warning"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Devolver</span></a>
-                                                @endif  
-                                                @if ($item->status == "observado")
-                                                    <a type="button" data-toggle="modal" data-target="#modal_habilitar" data-id="{{ $item->id}}"  class="btn btn-info"><i class="voyager-exclamation"></i> <span class="hidden-xs hidden-sm">Habilitar</span></a>
-                                                @endif  
+                                                @if(auth()->user()->hasPermission('payment_checks'))
+                                                    @if ($item->status == "aprobado")
+                                                        <a type="button" data-toggle="modal" data-target="#modal_entregar" data-id="{{ $item->id}}"  class="btn btn-dark"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Entregar</span></a>
+                                                        <!-- <a type="button" data-toggle="modal" data-target="#edit_modal" data-id="{{ $item->id}}" data-items="{{$item->resumen}}"  class="btn btn-primary"><i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span></a>
+                                                        <a type="button" data-toggle="modal" data-target="#delete_modal" data-id="{{ $item->id}}" class="btn btn-danger"><i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span></a> -->
+                                                    @endif  
+                                                    @if ($item->status == "entregado")
+                                                        <a type="button" data-toggle="modal" data-target="#modal_devolver" data-id="{{ $item->id}}"  class="btn btn-warning"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Devolver</span></a>
+                                                    @endif  
+                                                    @if ($item->status == "observado")
+                                                        <a type="button" data-toggle="modal" data-target="#modal_habilitar" data-id="{{ $item->id}}"  class="btn btn-info"><i class="voyager-exclamation"></i> <span class="hidden-xs hidden-sm">Habilitar</span></a>
+                                                    @endif  
+                                                @endif
                                             </td>
                                         </tr>
                                         @empty
