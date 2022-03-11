@@ -120,7 +120,7 @@
                                             // Si el fin su contrato finaliza el mes actual
                                             if($period_finish == $period->name){
                                                 $finish_day = date('d', strtotime($item->finish));
-                                                if($finish_day < 30 && date('m', strtotime($item->finish)) != 2){
+                                                if($finish_day < 30 || date('m', strtotime($item->finish)) != 2){
                                                     $days_enabled_worker -= 30 - $finish_day;
                                                 }
                                             }

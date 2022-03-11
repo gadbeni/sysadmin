@@ -94,8 +94,7 @@ class PaymentschedulesController extends Controller
 
         $period = Period::findOrFail($request->period_id);
         $year = Str::substr($period->name, 0, 4);
-        $month = Str::substr($period->name, 5, 2);
-
+        $month = Str::substr($period->name, 4, 2);
         $contracts = Contract::with(['user', 'person.seniority_bonus.type', 'person.seniority_bonus' => function($q){
                             $q->where('deleted_at', NULL)->where('status', 1);
                         }, 'program', 'cargo.nivel' => function($q){
@@ -103,8 +102,8 @@ class PaymentschedulesController extends Controller
                         }, 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
                         ->where('direccion_administrativa_id', $direccion_administrativa_id)
                         ->where('procedure_type_id', $procedure_type_id)
-                        ->whereRaw('CONCAT(YEAR(start), MONTH(start)) <= "'.$year.intval($month).'"')
-                        // ->whereRaw('CONCAT(YEAR(finish), MONTH(finish)) >= "'.$year.$month.'"')
+                        ->whereRaw('CONCAT(YEAR(start), IF( LENGTH(MONTH(start)) > 1, MONTH(start), CONCAT("0", MONTH(start)) )) <= "'.$year.$month.'"')
+                        ->whereRaw('(CONCAT(YEAR(finish), IF( LENGTH(MONTH(finish)) > 1, MONTH(finish), CONCAT("0", MONTH(finish)) )) >= "'.$year.$month.'" or finish is null)')
                         ->whereRaw("id not in (select pd.contract_id from paymentschedules as p, paymentschedules_details as pd
                                                     where p.id = pd.paymentschedule_id and p.period_id = ".$period->id." and p.deleted_at is null and pd.deleted_at is null)")
                         ->where('status', 'firmado')
@@ -115,7 +114,6 @@ class PaymentschedulesController extends Controller
                                     ->where('period_id', $period->id)
                                     ->where('procedure_type_id', $procedure_type_id)
                                     ->where('status', 'cargado')->get();
-        // dd($contracts);
 
         return view('paymentschedules.generate', compact('paymentschedule', 'contracts', 'direccion_administrativa_id', 'period', 'procedure_type_id', 'paymentschedules_file'));
     }
