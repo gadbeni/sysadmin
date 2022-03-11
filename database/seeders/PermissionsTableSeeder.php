@@ -67,6 +67,20 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('paymentschedules');
         Permission::generateFor('imports');
 
+        // checkes
+        $keys = [
+            'payment_checks',
+            'success_checks',
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'checks',
+            ]);
+        }
+
+  
         // Planillas
         $keys = [
             'enable_paymentschedules',
@@ -80,7 +94,7 @@ class PermissionsTableSeeder extends Seeder
                 'table_name' => 'paymentschedules',
             ]);
         }
-        
+  
         // Pago de planillas
         $keys = [
             'browse_planillaspagos',

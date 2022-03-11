@@ -662,4 +662,70 @@ class ReportsController extends Controller
             return view('reports.cashiers.vaults-list', compact('closure'));
         }
     }
+
+
+
+    public function check_list(Request $request){
+        $cat ='';
+        $tip ='';
+        if($request->categoria_id == 0)
+        {
+            $cat ='!=';
+        }
+        else
+        {
+            $cat ='=';
+        }
+
+        if($request->tipo == "0")
+        {
+            $tip ='!=';
+        }
+        else
+        {
+            $tip ='=';
+        }
+
+        // return $request;
+// dd($request);
+        if($request->tipo == 'registrado')
+        {
+            
+            $detalle = DB::table('checks as c')
+                ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
+                ->select('cc.name', 'c.resumen')
+                ->where('c.status','!=', '0')
+                ->where('c.checkcategoria_id',$cat, $request->categoria_id)
+                ->where('c.deleted_at', null)
+                ->get();
+                
+        }
+        else
+        {
+            $detalle = DB::table('checks as c')
+                ->join('checks_categories as cc', 'cc.id', 'c.checkcategoria_id')
+                ->select('cc.name', 'c.resumen')
+                // ->where('c.status', $tip, $request->tipo)
+                ->where('c.status', $request->tipo)
+                ->where('c.checkcategoria_id',$cat, $request->categoria_id)
+                ->where('c.deleted_at',$tip, null)
+                ->get();
+        }
+        
+
+        
+                // dd($detalle);
+  
+        $inicio = $request->start;
+        $fin = $request->finish;
+        // dd($inicio);
+    
+        if($request->print){
+            return view('reports.check.check-print', compact('detalle', 'inicio', 'fin'));
+
+        }else{
+            return view('reports.check.check-list', compact('detalle', 'inicio', 'fin'));
+
+        }
+    }
 }

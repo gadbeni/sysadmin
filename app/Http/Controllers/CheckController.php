@@ -31,13 +31,37 @@ class CheckController extends Controller
 
     public function store(Request $request)
     {
+        // return $request;
         DB::beginTransaction();
         try {
-            // return $request;
-           
-            $check = Check::create(['user_id' => Auth::user()->id, 'checkcategoria_id'=> $request->checkcategoria_id, 'resumen'=> json_encode($request->all())]);
-            ChecksHistory::create(['check_id' => $check->id, 'office_id' => 1,'user_id' => Auth::user()->id]);
+            // return count($request->nrocheque);
+            $i=0;
 
+            // $arr = array('checkcategoria_id' => $request->checkcategoria_id, 'nrocheque' => $request->nrocheque[$i],
+            //                 'resumen' => $request->resumen[$i], 'nromemo' => $request->nromemo, 'nroprev' => $request->nroprev, 'nrodev' => $request->nrodev,
+            //                 'deposito' => $request->deposito, 'fechacheque' => $request->fechacheque, 'monto' => $request->monto[$i], 'observacion' => $request->observacion);
+
+            //                 // return json_encode($arr);
+
+            // $check = Check::create(['user_id' => Auth::user()->id, 'checkcategoria_id'=> $request->checkcategoria_id, 
+            //                     'resumen' => json_encode( ['checkcategoria_id' => $request->checkcategoria_id, 'nrocheque' => $request->nrocheque[$i],
+            //                     'resumen' => $request->resumen[$i], 'nromemo' => $request->nromemo, 'nroprev' => $request->nroprev, 'nrodev' => $request->nrodev,
+            //                     'deposito' => $request->deposito, 'fechacheque' => $request->fechacheque, 'monto' => $request->monto[$i], 'observacion' => $request->observacion])]);
+            // return $check;
+            
+
+            while($i < count($request->nrocheque))   
+            {     
+                $check = Check::create(['user_id' => Auth::user()->id, 'checkcategoria_id'=> $request->checkcategoria_id, 
+                                'resumen' => json_encode( ['checkcategoria_id' => $request->checkcategoria_id, 'nrocheque' => $request->nrocheque[$i],
+                                'resumen' => $request->resumen[$i], 'nromemo' => $request->nromemo, 'nroprev' => $request->nroprev, 'nrodev' => $request->nrodev,
+                                'deposito' => $request->deposito, 'fechacheque' => $request->fechacheque, 'monto' => $request->monto[$i], 'observacion' => $request->observacion])]);
+                
+
+                ChecksHistory::create(['check_id' => $check->id, 'office_id' => 1,'user_id' => Auth::user()->id]);
+                $i++;
+            }
+            // return $check;
 
             DB::commit();
             return redirect()->route('checks.index')->with(['message' => 'Cheque Registrado Correctamente.', 'alert-type' => 'success']);
@@ -69,28 +93,52 @@ class CheckController extends Controller
 
     public function devolver_checks(Request $request)
     {
-        Check::where('id',$request->id)->update(['status' => 1]);
-        ChecksHistory::create(['check_id' => $request->id, 'office_id' => 1, 'status' => 3, 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
+        Check::where('id',$request->id)->update(['status' => 'observado']);
+        ChecksHistory::create(['check_id' => $request->id, 'office_id' => 1, 'status' => 'observado', 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
 
         return redirect()->route('checks.index')->with(['message' => 'Cheque Devolvido Exitosamente.', 'alert-type' => 'success']);
     }   
 
+    public function aprobar_checks(Request $request)
+    {
+
+        Check::where('id',$request->id)->update(['status' => 'aprobado']);
+
+        ChecksHistory::create(['check_id' => $request->id, 'status' => 'aprobado', 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
+
+        return redirect()->route('checks.index')->with(['message' => 'Cheque Aprobado Exitosamente.', 'alert-type' => 'success']);
+    }
+
     public function entregar_checks(Request $request)
     {
 
-        Check::where('id',$request->id)->update(['status' => 2]);
+        Check::where('id',$request->id)->update(['status' => 'entregado']);
 
-        ChecksHistory::create(['check_id' => $request->id, 'status' => 2, 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
+        ChecksHistory::create(['check_id' => $request->id, 'status' => 'entregado', 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
 
         return redirect()->route('checks.index')->with(['message' => 'Cheque Entregado Exitosamente.', 'alert-type' => 'success']);
+    }
+    public function habilitar_checks(Request $request)
+    {
+
+        Check::where('id',$request->id)->update(['status' => 'habilitado']);
+
+        ChecksHistory::create(['check_id' => $request->id, 'status' => 'habilitado', 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
+
+        return redirect()->route('checks.index')->with(['message' => 'Cheque Habilitado Exitosamente.', 'alert-type' => 'success']);
     }
 
     public function destroy(Request $request)
     {
         // return $request;
-        Check::where('id',$request->id)->update(['deleted_at' => Carbon::now()]);
+        Check::where('id',$request->id)->update(['deleted_at' => Carbon::now(),'status' => 0 ]);
         ChecksHistory::create(['check_id' => $request->id, 'status' => 0, 'office_id' => 1,'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
 
         return redirect()->route('checks.index')->with(['message' => 'Cheque Eliminado Exitosamente.', 'alert-type' => 'success']);
+    }
+
+    protected function report_view()
+    {
+        return view('reports.check.check-browse');
     }
 }

@@ -2,7 +2,7 @@
 
 @section('page_title', 'Viendo Cheques')
 
-@if(auth()->user()->hasPermission('browse_planillas_adicionales'))
+@if(auth()->user()->hasPermission('browse_checks')))
 
     @section('page_header')
         <div class="container-fluid">
@@ -13,20 +13,21 @@
                             <div class="col-md-8" style="padding: 0px">
                                 <h1 class="page-title">
                                 <i class="voyager-certificate"></i> Cheques
+                                
                                 </h1>
                                 {{-- <div class="alert alert-info">
                                     <strong>Información:</strong>
                                     <p>Puede obtener el valor de cada parámetro en cualquier lugar de su sitio llamando <code>setting('group.key')</code></p>
                                 </div> --}}
                             </div>
-                            @if(auth()->user()->hasPermission('add_planillas_adicionales'))
-                            @endif
+                            @if(auth()->user()->hasPermission('add_checks'))
+                            
                                 <div class="col-md-4 text-right" style="margin-top: 30px">
                                     <a type="button" data-toggle="modal" data-target="#modalRegistrar" class="btn btn-success">
                                         <i class="voyager-plus"></i> <span>Crear</span>
                                     </a>
                                 </div>
-                           
+                                @endif
                         </div>
                     </div>
                 </div>
@@ -80,23 +81,46 @@
                                             
                                             <td>{{ json_decode($item->resumen)->observacion }}</td>
                                             <td>
-                                                @if ($item->status == 1)
+                                                @if ($item->status == "registrado" || $item->status == "habilitado")
                                                     <label class="label label-danger">Pendiente</label>
                                                 @endif
 
-                                                @if ($item->status == 2)
+                                                @if ($item->status == "aprobado")
+                                                    <label class="label label-success">Aprobado</label>
+                                                @endif
+                                                @if ($item->status == "entregado")
                                                     <label class="label label-success">Entregado</label>
+                                                @endif
+                                                @if ($item->status == "observado")
+                                                    <label class="label label-warning">Observado</label>
                                                 @endif
                                             </td>
                                             <td class="actions text-right dt-not-orderable sorting_disabled">
-                                                @if ($item->status != 2)
-                                                    <a type="button" data-toggle="modal" data-target="#modal_entregar" data-id="{{ $item->id}}"  class="btn btn-dark"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Entregar</span></a>
+                                                @if ($item->status == "registrado" || $item->status == "habilitado")
+                                                    @if(auth()->user()->hasPermission('success_checks'))
+                                                        <a type="button" data-toggle="modal" data-target="#modal_aprobar" data-id="{{ $item->id}}"  class="btn btn-success"><i class="voyager-check"></i> <span class="hidden-xs hidden-sm">Aprobar</span></a>
+                                                    @endif
+                                                        <!-- <a type="button" data-toggle="modal" data-target="#modal_devolver" data-id="{{ $item->id}}"  class="btn btn-warning"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Devolver</span></a> -->
+                                                    @if(auth()->user()->hasPermission('edit_checks'))
                                                     <a type="button" data-toggle="modal" data-target="#edit_modal" data-id="{{ $item->id}}" data-items="{{$item->resumen}}"  class="btn btn-primary"><i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span></a>
-                                                    <a type="button" data-toggle="modal" data-target="#delete_modal" data-id="{{ $item->id}}" class="btn btn-danger"><i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span></a>
+                                                    @endif
+                                                    @if(auth()->user()->hasPermission('delete_checks'))
+                                                        <a type="button" data-toggle="modal" data-target="#delete_modal" data-id="{{ $item->id}}" class="btn btn-danger"><i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span></a>
+                                                    @endif
                                                 @endif  
-                                                @if ($item->status == 2)
-                                                    <a type="button" data-toggle="modal" data-target="#modal_devolver" data-id="{{ $item->id}}"  class="btn btn-warning"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Devolver</span></a>
-                                                @endif  
+                                                @if(auth()->user()->hasPermission('payment_checks'))
+                                                    @if ($item->status == "aprobado")
+                                                        <a type="button" data-toggle="modal" data-target="#modal_entregar" data-id="{{ $item->id}}"  class="btn btn-dark"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Entregar</span></a>
+                                                        <!-- <a type="button" data-toggle="modal" data-target="#edit_modal" data-id="{{ $item->id}}" data-items="{{$item->resumen}}"  class="btn btn-primary"><i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span></a>
+                                                        <a type="button" data-toggle="modal" data-target="#delete_modal" data-id="{{ $item->id}}" class="btn btn-danger"><i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span></a> -->
+                                                    @endif  
+                                                    @if ($item->status == "entregado")
+                                                        <a type="button" data-toggle="modal" data-target="#modal_devolver" data-id="{{ $item->id}}"  class="btn btn-warning"><i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Devolver</span></a>
+                                                    @endif  
+                                                    @if ($item->status == "observado")
+                                                        <a type="button" data-toggle="modal" data-target="#modal_habilitar" data-id="{{ $item->id}}"  class="btn btn-info"><i class="voyager-exclamation"></i> <span class="hidden-xs hidden-sm">Habilitar</span></a>
+                                                    @endif  
+                                                @endif
                                             </td>
                                         </tr>
                                         @empty
@@ -143,6 +167,43 @@
                 </div>
             </div>
         </div>
+        <!-- aprobar -->
+        <div class="modal modal-primary fade" tabindex="-1" id="modal_aprobar" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    {!! Form::open(['route' => 'checks.aprobar', 'method' => 'POST']) !!}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-dollar"></i> Aprobar Cheque</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="id">
+
+                        <div class="text-center" style="text-transform:uppercase">
+                            <i class="voyager-dollar" style="color: green; font-size: 5em;"></i>
+                            <br>
+                            <p><b>Aprobar el cheque....!</b></p>
+                        </div>
+
+                        <div class="row">   
+                            <div class="col-md-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Observacion:</b></span>
+                                </div>
+                                <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
+                            </div>                
+                        </div>
+                    </div>                
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark" value="Sí, APROBAR">
+                    </div>
+                    {!! Form::close()!!} 
+                </div>
+            </div>
+        </div>
+
+        <!-- entregar  -->
         <div class="modal modal-primary fade" tabindex="-1" id="modal_entregar" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -177,9 +238,44 @@
                 </div>
             </div>
         </div>
+        <!-- habilitar cheque -->
+        <div class="modal modal-info fade" tabindex="-1" id="modal_habilitar" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    {!! Form::open(['route' => 'checks.habilitar', 'method' => 'POST']) !!}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-exclamation"></i> Habilitar Cheque</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="id">
+
+                        <div class="text-center" style="text-transform:uppercase">
+                            <i class="voyager-dollar" style="color: green; font-size: 5em;"></i>
+                            <br>
+                            <p><b>Habilitar cheque....!</b></p>
+                        </div>
+
+                        <div class="row">   
+                            <div class="col-md-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><b>Observacion:</b></span>
+                                </div>
+                                <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
+                            </div>                
+                        </div>
+                    </div>                
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-info" value="Sí, Habilitar">
+                    </div>
+                    {!! Form::close()!!} 
+                </div>
+            </div>
+        </div>
         <!-- The Modal -->
         <div class="modal fade" role="dialog" id="modalRegistrar">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">                
                     <!-- Modal Header -->
                     <div class="modal-header modal-success">
@@ -205,20 +301,51 @@
                             <div class="row" id="tip">
                                 
                             </div>
+                            <div class="row" id="div_ci">
+                                
+                            </div>
+
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-12">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text"><b>Nro Cheque:</b></span>
+                                        <span class="input-group-text"><b>Cantidad de Cheque:</b></span>
                                     </div>
-                                    <input type="text" class="form-control" name="nrocheque"required>
-                                </div>
-                                <div class="col-md-8">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><b>Resumen:</b></span>
-                                </div>
-                                <input type="text" class="form-control" name="resumen" required>
+                                    <select id="numerocheque" class="form-control select2" required>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                    </select>
                                 </div>
                             </div>
+                            
+                            <div id="cantcheque">                                   
+                                <div class="row" >
+                                    <div class="col-md-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><b>Nro Cheque:</b></span>
+                                        </div>
+                                        <input type="text" class="form-control" name="nrocheque[]" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><b>Monto:</b></span>
+                                        </div>
+                                        <input type="number" step="any" class="form-control" id="monto" name="monto[]" required>
+                                    </div> 
+                                    <div class="col-md-6">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><b>Resumen:</b></span>
+                                        </div>
+                                        <input type="text" class="form-control" name="resumen[]" required>
+                                    </div>                                 
+                                </div>
+                            </div>
+
+                            <hr>
+                            <p>Detalle</p>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="input-group-prepend">
@@ -252,12 +379,7 @@
                                     </div>
                                     <input type="date" step="any" class="form-control" id="fechacheque" name="fechacheque" required>
                                 </div> 
-                                <div class="col-md-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><b>Monto:</b></span>
-                                    </div>
-                                    <input type="number" step="any" class="form-control" id="monto" name="monto" required>
-                                </div>                                             
+                                                                           
                             </div>
                             <div class="row">    
                                     
@@ -312,6 +434,9 @@
                             </div>
                         </div>
                         <div class="row" id="tips">
+                                
+                        </div>
+                        <div class="row" id="div_cis">
                                 
                         </div>
                         <div class="row">
@@ -479,6 +604,11 @@
                 $('#tipopagos').on('change', function_div);
 
                 $('#select-checkcategoria_id').on('change', function_divs);
+                $('#tipopagos').on('change', function_cis);
+
+
+                $('#numerocheque').on('change', function_cant);
+
             });
 
             $('#edit_modal').on('show.bs.modal', function (event) {
@@ -526,12 +656,39 @@
                 }
                 modal.find('.modal-body #select-tipo').val(item.tipopagos).trigger('change')   
                 
+                if(item.checkcategoria_id == 4 || item.tipopagos == 3)
+                {
+                    var div =   '<div class="col-md-12">'
+                        div+=           '<div class="input-group-prepend">'
+                        div+=                '<span class="input-group-text"><b>Ci:</b></span>'
+                        div+=            '</div>'
+                        div+=            '<input type="text" id="ci" class="form-control" name="ci" required>'
+                        div+=        '</div>'
+                    $('#div_cis').html(div);
+                }
+                else
+                {
+                    div ='';
+                    $('#div_cis').html(div);
+                }
+                modal.find('.modal-body #ci').val(item.ci)   
 
 
                 
             });
+
+
+            $('#modal_habilitar').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) 
+
+                var id = button.data('id')
+
+                var modal = $(this)
+                modal.find('.modal-body #id').val(id)
+                
+            });
             $('#modal_entregar').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget) //captura valor del data-empresa=""
+                var button = $(event.relatedTarget) 
 
                 var id = button.data('id')
 
@@ -540,6 +697,15 @@
                 
             });
             $('#modal_devolver').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) 
+
+                var id = button.data('id')
+
+                var modal = $(this)
+                modal.find('.modal-body #id').val(id)
+                
+            });
+            $('#modal_aprobar').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget) 
 
                 var id = button.data('id')
@@ -558,6 +724,41 @@
                 
             });
 
+            function function_cant()
+            {
+                var x =  $(this).val(); 
+                // alert(4)
+                var i=0;
+                var html_cant='';
+                for(i=1; i<=x; i++)
+                {                                       
+                    html_cant+=             '<hr>'
+                    html_cant+=             '<span><b>CHEQUE NRO '+i+'</b></span>'
+                    html_cant+=             '<div class="row">'
+                    html_cant+=                '<div class="col-md-3">'
+                    html_cant+=                     '<div class="input-group-prepend">'
+                    html_cant+=                         '<span class="input-group-text"><b>Nro Cheque:</b></span>'
+                    html_cant+=                     '</div>'
+                    html_cant+=                     '<input type="text" class="form-control" name="nrocheque[]" required>'
+                    html_cant+=                 '</div>'
+                    html_cant+=                 '<div class="col-md-3">'
+                    html_cant+=                     '<div class="input-group-prepend">'
+                    html_cant+=                         '<span class="input-group-text"><b>Monto:</b></span>'
+                    html_cant+=                     '</div>'
+                    html_cant+=                     '<input type="number" step="any" class="form-control" id="monto" name="monto[]" required>'
+                    html_cant+=                 '</div>' 
+                    html_cant+=                 '<div class="col-md-6">'
+                    html_cant+=                     '<div class="input-group-prepend">'
+                    html_cant+=                         '<span class="input-group-text"><b>Resumen:</b></span>'
+                    html_cant+=                     '</div>'
+                    html_cant+=                    '<input type="text" class="form-control" name="resumen[]" required>'
+                    html_cant+=                '</div>'                                 
+                    html_cant+=            '</div>'
+                }
+                // alert(html_cant)
+                $('#cantcheque').html(html_cant);
+            }
+
             function function_div()
             {
                 var id =  $(this).val();   
@@ -568,7 +769,7 @@
                         div+=           '<div class="input-group-prepend">'
                         div+=                '<span class="input-group-text"><b>Tipo:</b></span>'
                         div+=            '</div>'
-                        div+=            '<select name="tipopagos" id="tipopagos" class="form-control select2" required>'
+                        div+=            '<select name="tipopagos" id="tippago" class="form-control select2" required>'
                         div+=                '<option value="">Seleccione un tipo..</option>'
                         div+=                '<option value="1">Personal Eventual.</option>'
                         div+=                '<option value="2">Funcionamiento.</option>'
@@ -576,11 +777,47 @@
                         div+=            '</select>'
                         div+=        '</div>'
                     $('#tip').html(div);
+                    $('#tippago').on('change', function_ci);
                 }
                 else
                 {
                     div ='';
                     $('#tip').html(div);
+                }
+
+                if(id == 4)
+                {
+                    var div =        '<div class="col-md-12">'
+                        div+=           '<div class="input-group-prepend">'
+                        div+=                '<span class="input-group-text"><b>Ci:</b></span>'
+                        div+=            '</div>'                                
+                        div+=            '<input type="text" class="form-control" name="ci" required>'
+                        div+=        '</div>'
+                    $('#div_ci').html(div);
+                }
+                else
+                {
+                    div ='';
+                    $('#div_ci').html(div);
+                }
+            }
+            function function_ci()
+            {
+                var id =  $(this).val();   
+                if(id == 3)
+                {
+                    var div =   '<div class="col-md-12">'
+                        div+=           '<div class="input-group-prepend">'
+                        div+=                '<span class="input-group-text"><b>Ci:</b></span>'
+                        div+=            '</div>'                                
+                        div+=            '<input type="text" class="form-control" name="ci" required>'
+                        div+=        '</div>'
+                    $('#div_ci').html(div);
+                }
+                else
+                {
+                    div ='';
+                    $('#div_ci').html(div);
                 }
             }
 
@@ -596,7 +833,7 @@
                         div+=           '<div class="input-group-prepend">'
                         div+=                '<span class="input-group-text"><b>Tipo:</b></span>'
                         div+=            '</div>'
-                        div+=            '<select name="tipopagos" id="tipopagos" class="form-control select2" required>'
+                        div+=            '<select name="tipopagos" id="tippagos" class="form-control select2" required>'
                         div+=                '<option value="">Seleccione un tipo..</option>'
                         div+=                '<option value="1">Personal Eventual.</option>'
                         div+=                '<option value="2">Funcionamiento.</option>'
@@ -604,13 +841,58 @@
                         div+=            '</select>'
                         div+=        '</div>'
                     $('#tips').html(div);
+                    $('#tippagos').on('change', function_cis);
+
                 }
                 else
                 {
                     div ='';
                     $('#tips').html(div);
                 }
+
+                if(id == 4)
+                {
+                    var div =        '<div class="col-md-12">'
+                        div+=           '<div class="input-group-prepend">'
+                        div+=                '<span class="input-group-text"><b>Ci:</b></span>'
+                        div+=            '</div>'                                
+                        div+=            '<input type="text" class="form-control" name="ci" required>'
+                        div+=        '</div>'
+                    $('#div_cis').html(div);
+                }
+                else
+                {
+                    div ='';
+                    $('#div_cis').html(div);
+                }
             }
+            function function_cis()
+            {
+                var id =  $(this).val();   
+                if(id == 3)
+                {
+                    var div =   '<div class="col-md-12">'
+                        div+=           '<div class="input-group-prepend">'
+                        div+=                '<span class="input-group-text"><b>Ci:</b></span>'
+                        div+=            '</div>'                                
+                        div+=            '<input type="text" class="form-control" name="ci" required>'
+                        div+=        '</div>'
+                    $('#div_cis').html(div);
+                }
+                else
+                {
+                    div ='';
+                    $('#div_cis').html(div);
+                }
+            }
+
+
+
+
+
+
+
+            
 
         </script>
     @stop

@@ -136,13 +136,21 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     // CHECK
     Route::resource('checks', CheckController::class);
+    Route::post('check/aprobar', [CheckController::class, 'aprobar_checks'])->name('checks.aprobar');
     Route::post('check/entregar', [CheckController::class, 'entregar_checks'])->name('checks.entregar');
+    Route::post('check/habilitar', [CheckController::class, 'habilitar_checks'])->name('checks.habilitar');
     Route::post('check/update', [CheckController::class, 'update_checks'])->name('checks.updat');
     Route::post('check/devolver', [CheckController::class, 'devolver_checks'])->name('checks.devolver');
     Route::delete('check/delete', [CheckController::class, 'destroy'])->name('checks.delet');
 
     // Periods
     Route::get('periods/tipo_direccion_adminstrativa/{id}', [PeriodsController::class, 'periods_tipo_direccion_adminstrativa']);
+
+    Route::get('reports/check/check-browse', [CheckController::class, 'report_view'])->name('report.check.browse');
+    Route::post('reports/check/chek-list', [ReportsController::class, 'check_list'])->name('reports.check.list');
+
+
+
 
     // Administrativo
 
