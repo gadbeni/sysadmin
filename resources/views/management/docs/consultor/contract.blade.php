@@ -5,6 +5,9 @@
 @php
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
     $code = $contract->code;
+
+    $signature = \App\Models\Signature::with(['direccion_administrativa'])->where('direccion_administrativa_id', $contract->direccion_administrativa_id)->first();
+    // dd($signature);
 @endphp
 
 @section('qr_code')
@@ -15,8 +18,8 @@
 
 @section('content')
     <div class="content" style="text-align: justify">
-        <h2 class="text-center" style="font-size: 17px">CONTRATO ADMINISTRATIVO DE SERVICIO DE CONSULTORÍA DE LÍNEA <br> SECRETARÍA DEPARTAMENTAL DE ADMINSTRACIÓN Y FINANZAS <br> <small>UJ/SDAF/GAD-BENI N&deg; {{ $code }}</small> </h2>
-        <p>Conste por el presente Contrato Administrativo de prestaci&oacute;n de servicios de consultor&iacute;a de l&iacute;nea<em><strong>, </strong></em>que celebran por una parte la Gobernaci&oacute;n del Departamento Aut&oacute;nomo del Beni, a trav&eacute;s de su Secretar&iacute;a Departamental de Administraci&oacute;n y Finanzas, con <strong>NIT N&ordm; 177396029</strong>, con domicilio en el edificio de Gobernaci&oacute;n en Acera Sud de la Plaza Mariscal Jos&eacute; Ballivi&aacute;n, en la ciudad de la Sant&iacute;sima Trinidad, Provincia Cercado del Departamento del Beni, representado legalmente por el <strong>{{ setting('firma-autorizada.name') }}</strong>, con Cédula de Identidad <strong>N&deg; {{ setting('firma-autorizada.ci') }}</strong>, quien es RPC y RPA., conforme <strong>Resoluci&oacute;n Administrativa de Gobernaci&oacute;n {{ setting('firma-autorizada.designation') }},</strong> en calidad de {{ setting('firma-autorizada.job') }}, que en adelante se denominar&aacute; <strong>LA ENTIDAD</strong>; y de la otra parte, {{ $contract->person->gender == 'masculino' ? 'El Señor' : 'La Señora' }} </strong><strong>{{ $contract->person->first_name }} {{ $contract->person->last_name }}</strong>, con c&eacute;dula de Identidad <strong>N&deg; {{ $contract->person->ci }}</strong>, que en adelante se denominar&aacute; <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, quienes celebran y suscriben el presente Contrato Administrativo, de acuerdo a los t&eacute;rminos y condiciones siguientes:</p>
+        <h2 class="text-center" style="font-size: 17px">CONTRATO ADMINISTRATIVO DE SERVICIO DE CONSULTORÍA DE LÍNEA <br> {{ $signature ? $signature->direccion_administrativa->NOMBRE : 'SECRETARÍA DEPARTAMENTAL DE ADMINSTRACIÓN Y FINANZAS' }} <br> <small>{{ $signature ? $signature->direccion_administrativa->Sigla : 'UJ/SDAF' }}/GAD-BENI N&deg; {{ $code }}</small> </h2>
+        <p>Conste por el presente Contrato Administrativo de prestaci&oacute;n de servicios de consultor&iacute;a de l&iacute;nea<em><strong>, </strong></em>que celebran por una parte la Gobernaci&oacute;n del Departamento Aut&oacute;nomo del Beni, a trav&eacute;s de su Secretar&iacute;a Departamental de Administraci&oacute;n y Finanzas, con <strong>NIT N&ordm; 177396029</strong>, con domicilio en el edificio de Gobernaci&oacute;n en Acera Sud de la Plaza Mariscal Jos&eacute; Ballivi&aacute;n, en la ciudad de la Sant&iacute;sima Trinidad, Provincia Cercado del Departamento del Beni, representado legalmente por el/la <strong>{{ $signature ? $signature->name : setting('firma-autorizada.name') }}</strong>, con Cédula de Identidad <strong>N&deg; {{ $signature ? $signature->ci : setting('firma-autorizada.ci') }}</strong>, conforme <strong>Resoluci&oacute;n Administrativa de Gobernaci&oacute;n {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }},</strong> en calidad de {{ $signature ? $signature->job : setting('firma-autorizada.job') }}, que en adelante se denominar&aacute; <strong>LA ENTIDAD</strong>; y de la otra parte, {{ $contract->person->gender == 'masculino' ? 'El Señor' : 'La Señora' }} </strong><strong>{{ $contract->person->first_name }} {{ $contract->person->last_name }}</strong>, con c&eacute;dula de Identidad <strong>N&deg; {{ $contract->person->ci }}</strong>, que en adelante se denominar&aacute; <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, quienes celebran y suscriben el presente Contrato Administrativo, de acuerdo a los t&eacute;rminos y condiciones siguientes:</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA PRIMERA</strong></span><strong>. - (ANTECEDENTES) </strong></p>
         <p><strong>LA ENTIDAD</strong>, mediante la modalidad de contrataci&oacute;n menor,<strong> </strong>en proceso realizado bajo las normas y regulaciones de contrataci&oacute;n establecidas.</p>
         <p>En el Decreto Supremo N&deg; 0181, de 28 de junio de 2009, de las Normas B&aacute;sicas del Sistema de Administraci&oacute;n de Bienes y Servicios NB-SABS y los T&eacute;rminos de Referencia (TDR), invito {{ $contract->person->gender == 'masculino' ? 'al Señor' : 'a la Señora' }} </strong><strong>{{ $contract->person->first_name }} {{ $contract->person->last_name }}</strong>, para que preste los servicios de Consultor&iacute;a Individual de L&iacute;nea para el cargo de <strong>&ldquo;{{ Str::upper($contract->cargo->Descripcion) }}&rdquo;</strong>, con cargo al Programa <strong>&ldquo;{{ Str::upper($contract->program->name) }}&rdquo;</strong>, de la/el <strong>{{ Str::upper($contract->unidad_administrativa->Nombre) }} </strong>dependiente de la/el <strong>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }},</strong><strong> </strong>quien en adelante se denominara <strong>LA CONSULTORIA</strong>, provistos por <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong> de conformidad a t&eacute;rminos de referencia, con estricta y absoluta sujeci&oacute;n a este contrato.</p>
@@ -90,7 +93,7 @@
             </li>
         </ul>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA SEXTA. -</strong></span><strong> (VIGENCIA Y </strong><strong>TIEMPO DE PRESTACI&Oacute;N DEL SERVICIO</strong><strong>) </strong></p>
-        <p>El contrato, entrar&aacute; en vigencia desde el d&iacute;a siguiente h&aacute;bil de su suscripci&oacute;n, por ambas partes, hasta que las mismas hayan dado cumplimento a todas las cl&aacute;usulas contenidas en el presente contrato y el tiempo de la prestaci&oacute;n del servicio, se extender&aacute; desde el <strong>02 de diciembre hasta el 31 del 2021.</strong></p>
+        <p>El contrato, entrar&aacute; en vigencia desde el d&iacute;a siguiente h&aacute;bil de su suscripci&oacute;n, por ambas partes, hasta que las mismas hayan dado cumplimento a todas las cl&aacute;usulas contenidas en el presente contrato y el tiempo de la prestaci&oacute;n del servicio, se extender&aacute; desde el <strong>{{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} al {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->start)) }}.</strong></p>
         
         <div class="saltopagina"></div>
         <div class="pt"></div>
@@ -147,9 +150,33 @@
         
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA OCTAVA</strong></span><strong>. - (EL VINCULO). - </strong>Por la Naturaleza de la relaci&oacute;n contractual eventual y espec&iacute;fica queda establecido que <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong> no recibir&aacute; beneficio adicional alguno por parte de <strong>LA ENTIDAD.</strong></p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA NOVENA</strong></span><strong>. - (CONSENTIMIENTO) </strong></p>
-        <p>En se&ntilde;al de conformidad y para su fiel y estricto cumplimiento, firmamos el presente Contrato en cuatro ejemplares de un mismo tenor y validez el <strong>{{ setting('firma-autorizada.name') }}</strong>, Secretario Departamental de Administraci&oacute;n y Finanzas, en representaci&oacute;n legal de <strong>LA ENTIDAD</strong>, y <strong>{{ $contract->person->gender == 'masculino' ? 'el señor' : 'la señora' }} {{ $contract->person->first_name }} {{ $contract->person->last_name }}</strong>, como <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>.</p>
+        <p>En se&ntilde;al de conformidad y para su fiel y estricto cumplimiento, firmamos el presente Contrato en cuatro ejemplares de un mismo tenor y validez el <strong>{{ $signature ? $signature->name : setting('firma-autorizada.name') }}</strong>, {{ $signature ? $signature->job : setting('firma-autorizada.job') }}, en representaci&oacute;n legal de <strong>LA ENTIDAD</strong>, y <strong>{{ $contract->person->gender == 'masculino' ? 'el señor' : 'la señora' }} {{ $contract->person->first_name }} {{ $contract->person->last_name }}</strong>, como <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>.</p>
         <p>Este documento, conforme a disposiciones legales de control fiscal vigentes, ser&aacute; registrado ante la Contralor&iacute;a General del Estado en idioma espa&ntilde;ol.</p>
-        <p style="text-align: right;">Sant&iacute;sima Trinidad, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}</p>
+        <p style="text-align: right;">
+            <select id="location-id">
+                <option value="Santísima Trinidad">Santísima Trinidad</option>
+                <option value="Guayaramerín">Guayaramerín</option>
+                <option value="Riberalta">Riberalta</option>
+                <option value="Santa Rosa">Santa Rosa</option>
+                <option value="Reyes">Reyes</option>
+                <option value="Rurrenabaque">Rurrenabaque</option>
+                <option value="Yucumo">Yucumo</option>
+                <option value="San Borja">San Borja</option>
+                <option value="San Ignacio">San Ignacio</option>
+                <option value="San Ramón">San Ramón</option>
+                <option value="San Joaquín">San Joaquín</option>
+                <option value="Puerto Siles">Puerto Siles</option>
+                <option value="Santa Ana">Santa Ana</option>
+                <option value="Magdalena">Magdalena</option>
+                <option value="Baures">Baures</option>
+                <option value="Huacaraje">Huacaraje</option>
+                <option value="Exaltación">Exaltación</option>
+                <option value="San Javier">San Javier</option>
+                <option value="Loreto">Loreto</option>
+                <option value="San Andrés">San Andrés</option>
+            </select>
+            <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
+        </p>
         
         <br>
 
@@ -157,8 +184,8 @@
             <tr>
                 <td style="width: 50%">
                     ....................................................... <br>
-                    {{ setting('firma-autorizada.name') }} <br>
-                    <b>{{ setting('firma-autorizada.job') }}</b>
+                    {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
+                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }}</b>
                 </td>
                 <td style="width: 50%">
                     ....................................................... <br>

@@ -9,7 +9,7 @@ class CashiersPayment extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'cashier_id', 'planilla_haber_id', 'aguinaldo_id', 'amount', 'description', 'observations', 'stipend_id'
+        'cashier_id', 'planilla_haber_id', 'aguinaldo_id', 'stipend_id', 'paymentschedules_detail_id', 'amount', 'description', 'observations'
     ];
 
     public function planilla(){
@@ -28,6 +28,9 @@ class CashiersPayment extends Model
         return $this->belongsTo(Stipend::class);
     }
 
+    public function paymentschedulesdetail(){
+        return $this->belongsTo(PaymentschedulesDetail::class, 'paymentschedules_detail_id');
+    }
 
     public function deletes(){
         return $this->hasOne(CashiersPaymentsDelete::class);

@@ -12,14 +12,36 @@
             <h2 style="text-align: center">DECLARACIÓN JURADA DE NO INCOMPATIBILIDAD LEGAL</h2>
             <br>
             <p>
-                Santísima Trinidad, {{ date('d', strtotime($contract->date_statement)) }} de {{ $months[intval(date('m', strtotime($contract->date_statement)))] }} de {{ date('Y', strtotime($contract->date_statement)) }}
+                <select id="location-id">
+                    <option value="Santísima Trinidad">Santísima Trinidad</option>
+                    <option value="Guayaramerín">Guayaramerín</option>
+                    <option value="Riberalta">Riberalta</option>
+                    <option value="Santa Rosa">Santa Rosa</option>
+                    <option value="Reyes">Reyes</option>
+                    <option value="Rurrenabaque">Rurrenabaque</option>
+                    <option value="Yucumo">Yucumo</option>
+                    <option value="San Borja">San Borja</option>
+                    <option value="San Ignacio">San Ignacio</option>
+                    <option value="San Ramón">San Ramón</option>
+                    <option value="San Joaquín">San Joaquín</option>
+                    <option value="Puerto Siles">Puerto Siles</option>
+                    <option value="Santa Ana">Santa Ana</option>
+                    <option value="Magdalena">Magdalena</option>
+                    <option value="Baures">Baures</option>
+                    <option value="Huacaraje">Huacaraje</option>
+                    <option value="Exaltación">Exaltación</option>
+                    <option value="San Javier">San Javier</option>
+                    <option value="Loreto">Loreto</option>
+                    <option value="San Andrés">San Andrés</option>
+                </select>
+                <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->date_statement)) }} de {{ $months[intval(date('m', strtotime($contract->date_statement)))] }} de {{ date('Y', strtotime($contract->date_statement)) }}
             </p>
             <br>
             <p style="text-align: left">
                 Señor: <br>
-                {{ setting('firma-autorizada.name') }} <br>
-                <b>RESPONSABLE DEL PROCESO DE CONTRATACIÓN DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO - RPA</b> <br>
-                Presente. –
+                {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
+                <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }}</b> <br>
+                Presente.–
             </p>
         </div>
         <div class="page-title">
@@ -28,7 +50,7 @@
         <div class="page-body">
             <p>
                 De mi mayor consideración: <br> <br>
-                Mediante la presente, declaro bajo juramento que mi persona no se encuentra dentro de las incompatibilidades legales para la Prestación de Servicios de Consultoría Individual de Línea, en el Gobierno Autónomo Departamental del Beni, asumiendo la responsabilidad de la veracidad de la presente declaración para los fines legales que correspondan. <br> <br>
+                Mediante la presente, declaro bajo juramento que mi persona no se encuentra dentro de las incompatibilidades legales para la Prestación de Servicios de Consultoría Individual de Línea, en el <b>Gobierno Autónomo Departamental del Beni</b>, asumiendo la responsabilidad de la veracidad de la presente declaración para los fines legales que correspondan. <br> <br>
                 Fraternalmente,
             </p>
 

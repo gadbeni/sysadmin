@@ -18,7 +18,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-bordered">
-                    <form id="form-generate" action="{{ route('planillas.generate') }}" method="post">
+                    <form id="form-generate" action="{{ route('paymentschedules.generate') }}" method="post">
                         @csrf
                         <div class="panel-body">
                             <div class="row">
@@ -26,7 +26,7 @@
                                     <label for="tipo_da">Tipo de dirección administrativa</label>
                                     <select name="tipo_da" id="select-tipo_da" class="form-control select2" required>
                                         <option value="">--Seleccione tipo de dirección administrativa--</option>
-                                        @foreach ($tipo_planillas as $item)
+                                        @foreach ($tipo_da as $item)
                                             <option value="{{ $item->ID }}" data-da='@json($item->direcciones_administrativas)'>{{ $item->Nombre }}</option>
                                         @endforeach
                                     </select>
@@ -38,26 +38,19 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="periodo">Periodo</label>
-                                    <select name="periodo" id="select-periodo" class="form-control select2" required>
-                                        <option value="202201">202201</option>
+                                    <label for="period_id">Periodo</label>
+                                    <select name="period_id" id="select-period_id" class="form-control select2" required>
+                                        <option value="">--Seleccione el perido--</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="tipo_planilla">Tipo de planilla</label>
-                                    <select name="tipo_planilla" id="select-tipo_planilla" class="form-control select2" required>
+                                    <label for="procedure_type_id">Tipo de planilla</label>
+                                    <select name="procedure_type_id" id="select-procedure_type_id" class="form-control select2" required>
                                         <option value="">--Seleccione el tipo de planilla--</option>
                                     </select>
                                 </div>
-                                {{-- <div class="form-group col-md-6">
-                                    <label for="tipo_planilla">AFP</label>
-                                    <select name="afp" id="select-afp" class="form-control select2" required>
-                                        <option value="1">Futuro</option>
-                                        <option value="2">Previsión</option>
-                                    </select>
-                                </div> --}}
                                 <div class="form-group col-md-12 text-right">
-                                    <button type="submit" class="btn btn-primary">Generar</button>
+                                    <button type="submit" class="btn btn-success">Generar</button>
                                 </div>
                             </div>
                         </div>
@@ -66,7 +59,7 @@
             </div>
         </div>
 
-        <div id="result"></div>
+        <div id="div-results" style="min-height: 120px"></div>
     </div>
 @stop
 
@@ -74,29 +67,47 @@
     <script>
         $(document).ready(function(){
             $('#select-tipo_da').change(function(){
+                let type = $(this).find(':selected').val();
                 let da = $(this).find(':selected').data('da');
-                $('#select-da_id').html('<option value="">--Seleccione una dirección administrativa--</option>');
-                da.map(item => {
-                    $('#select-da_id').append(`<option value="${item.ID}">${item.NOMBRE}</option>`);
-                });
-                $('#select-tipo_planilla').html('<option value="">--Seleccione el tipo de planilla--</option>');
+                if(da){
+                    // Obtener DA
+                    $('#select-da_id').html('<option value="">--Seleccione una dirección administrativa--</option>');
+                    da.map(item => {
+                        $('#select-da_id').append(`<option value="${item.ID}">${item.NOMBRE}</option>`);
+                    });
+                    $('#select-procedure_type_id').html('<option value="">--Seleccione el tipo de planilla--</option>');
+
+                    // Obtener periodos
+                    $('#select-period_id').html('<option value="">--Seleccione el perido--</option>');
+                    $.get('{{ url("admin/periods/tipo_direccion_adminstrativa") }}/'+type, function(res){
+                        res.map(item => {
+                            $('#select-period_id').append(`<option value="${item.id}">${item.name}</option>`);
+                        });
+                    });
+                }else{
+                    $('#select-da_id').html('<option value="">--Seleccione una dirección administrativa--</option>');
+                    $('#select-period_id').html('<option value="">--Seleccione el perido--</option>');
+                }
             });
 
             $('#select-da_id').change(function(){
                 let da_id = $(this).find(':selected').val();
+                $('#select-procedure_type_id').html('<option value="">--Seleccione el tipo de planilla--</option>');
                 $.get('{{ url("admin/contracts/direccion-administrativa") }}/'+da_id, function(res){
                     res.map(item => {
-                        $('#select-tipo_planilla').append(`<option value="${item.id}">${item.name}</option>`);
+                        $('#select-procedure_type_id').append(`<option value="${item.id}">${item.name}</option>`);
                     });
                 });
             });
 
             $('#form-generate').submit(function(e){
+                $('#div-results').loading({message: 'Cargando...'});
                 e.preventDefault();
                 let form = $('#form-generate');
                 let data = form.serialize();
                 $.post(form.attr('action'), data, function(res){
-                    $('#result').html(res);
+                    $('#div-results').html(res);
+                    $('#div-results').loading('toggle');
                 });
             });
         });

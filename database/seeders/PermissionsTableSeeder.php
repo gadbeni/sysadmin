@@ -40,7 +40,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('permissions');
         Permission::generateFor('settings');
 
-        Permission::generateFor('planillas');
+        // Permission::generateFor('planillas');
         Permission::generateFor('cashiers');
         Permission::generateFor('vaults');
         Permission::generateFor('social_security_types');
@@ -62,6 +62,10 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('checks_categories');
         Permission::generateFor('checks');
         Permission::generateFor('periods');
+        Permission::generateFor('seniority_bonus_types');
+        Permission::generateFor('seniority_bonus_people');
+        Permission::generateFor('paymentschedules');
+        Permission::generateFor('imports');
 
         // checkes
         $keys = [
@@ -76,6 +80,21 @@ class PermissionsTableSeeder extends Seeder
             ]);
         }
 
+  
+        // Planillas
+        $keys = [
+            'enable_paymentschedules',
+            'browse_paymentschedulesfiles',
+            'browse_paymentschedulesfilescreate'
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'paymentschedules',
+            ]);
+        }
+  
         // Pago de planillas
         $keys = [
             'browse_planillaspagos',
@@ -109,6 +128,18 @@ class PermissionsTableSeeder extends Seeder
             Permission::firstOrCreate([
                 'key'        => $key,
                 'table_name' => 'reports_rrhh',
+            ]);
+        }
+
+        // Reports Contracts
+        $keys = [
+            'browse_reportscontractscontracts',
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'reports_contracts',
             ]);
         }
 

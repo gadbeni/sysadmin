@@ -23,9 +23,9 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label for="procedure_type_id">Tipo de trámite</label>
+                                    <label for="procedure_type_id">Tipo de planilla</label>
                                     <select name="procedure_type_id" id="select-procedure_type_id" class="form-control" required>
-                                        <option value="">-- Selecciona el tipo de trámite --</option>
+                                        <option value="" disabled selected>-- Selecciona el tipo de planilla --</option>
                                         @foreach ($procedure_type as $item)
                                         <option value="{{ $item->id }}" data-planilla_id="{{ $item->planilla_id }}">{{ $item->name }}</option>
                                         @endforeach
@@ -34,7 +34,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="person_id">Persona</label>
                                     <select name="person_id" class="form-control select2" required>
-                                        <option value="">-- Selecciona a la persona --</option>
+                                        <option value="" disabled>-- Selecciona a la persona --</option>
                                         @foreach ($people as $item)
                                         <option @if(isset($contract) && $contract->person->id == $item->id) selected @endif value="{{ $item->id }}">{{ $item->first_name }} {{ $item->last_name }} - {{ $item->ci }}</option>
                                         @endforeach
@@ -226,7 +226,7 @@
                                     <input type="date" name="date_note"  value="{{ isset($contract) ? $contract->date_note : '' }}" class="form-control">
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="date_report">Fecha de informe</label>
+                                    <label for="date_report">Fecha de informe de evaluación</label>
                                     <input type="date" name="date_report" value="{{ isset($contract) ? $contract->date_report : '' }}" class="form-control">
                                 </div>
                                 <div class="form-group col-md-4">
@@ -394,8 +394,8 @@
                 $('#select-workers_memo').val(workers_memo);
                 $('.div-{{ $contract->procedure_type_id }}').fadeIn('fast');
                 setTimeout(() => {
-                    $('#select-procedure_type_id').val("{{ $contract->procedure_type_id }}");
-                    $('#select-procedure_type_id').trigger('change');
+                    $('#select-procedure_type_id').val("{{ $contract->procedure_type_id }}").trigger('change');
+                    $('#select-cargo_id').val("{{ $contract->job_id ?? $contract->cargo_id }}");
                 }, 0);
             @endisset
             $('#select-workers_memo').select2();
@@ -410,7 +410,7 @@
                 $('#select-program_id').html(`<option value="">Seleccione un programa</option>`);
                 programs.map(item => {
                     if($('#select-direccion_administrativa_id option:selected').val() == item.direccion_administrativa_id && $('#select-procedure_type_id option:selected').val() == item.procedure_type_id){
-                        $('#select-program_id').append(`<option value="${item.id}">${item.name}</option>`);
+                        $('#select-program_id').append(`<option value="${item.id}">${item.name} - ${item.programatic_category}</option>`);
                     }
                 });
             });
@@ -439,12 +439,10 @@
                             $('#select-program_id').append(`<option value="${item.id}">${item.name}</option>`);
                         }
                     });
-                    $('#select-procedure_type_id').val("{{ isset($contract) ? $contract->procedure_type_id : '' }}");
 
                     jobs.map(item => {
-                        $('#select-cargo_id').append(`<option value="${item.id}">Item: ${item.id} - ${item.name}</option>`);
+                        $('#select-cargo_id').append(`<option value="${item.id}">Item ${item.item} - ${item.name}</option>`);
                     });
-                    $('#select-cargo_id').val("{{ isset($contract) ? $contract->job_id : '' }}");
                 }else{
                     $('#select-direccion_administrativa_id').attr('disabled', false);
                     $('#select-direccion_administrativa_id').attr('required', true);
@@ -479,9 +477,7 @@
                             });
                             $('#select-cargo_id').append(`<option value="${item.ID}">${item.Descripcion} | Nivel ${nivel.NumNivel} | Bs. ${nivel.Sueldo}</option>`);
                         }
-                            
                     });
-                    $('#select-cargo_id').val("{{ isset($contract) ? $contract->cargo_id : '' }}");
                 }
             });
         });

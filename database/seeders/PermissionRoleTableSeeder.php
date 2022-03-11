@@ -28,6 +28,9 @@ class PermissionRoleTableSeeder extends Seeder
                                                 table_name = "cashiers" or
                                                 table_name = "vaults" or
                                                 `key` = "browse_planillaspagos" or
+                                                `key` = "browse_paymentschedules" or
+                                                `key` = "read_paymentschedules" or
+                                                `key` = "enable_paymentschedules" or
                                                 table_name = "plugins" or
                                                 table_name = "planillas_adicionales" or
                                                 table_name = "reports_cachiers"')->get();
@@ -38,6 +41,9 @@ class PermissionRoleTableSeeder extends Seeder
                                                 table_name = "cashiers" or
                                                 table_name = "vaults" or
                                                 `key` = "browse_planillaspagos" or
+                                                `key` = "browse_paymentschedules" or
+                                                `key` = "read_paymentschedules" or
+                                                `key` = "enable_paymentschedules" or
                                                 table_name = "plugins" or
                                                 table_name = "planillas_adicionales" or
                                                 `key` = "browse_reportscashiervaults"')->get();
@@ -180,7 +186,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = "read_cities" or
                                             `key` = "edit_cities" or
                                             `key` = "add_cities" or
-                                            table_name = "reports_rrhh"')->get();
+                                            table_name = "reports_rrhh" or
+                                            table_name = "seniority_bonus_people"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_tecnico')->firstOrFail();
@@ -208,7 +215,9 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = "browse_cities" or
                                             `key` = "read_cities" or
                                             `key` = "edit_cities" or
-                                            `key` = "add_cities"')->get();
+                                            `key` = "add_cities" or
+                                            table_name = "seniority_bonus_people" or
+                                            table_name = "paymentschedules"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de administrativo
@@ -322,7 +331,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = "browse_cities" or
                                             `key` = "read_cities" or
                                             `key` = "edit_cities" or
-                                            `key` = "add_cities"')->get();
+                                            `key` = "add_cities" or
+                                            table_name = "reports_contracts"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'contrataciones_jefe_seccion')->firstOrFail();
@@ -350,7 +360,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = "browse_cities" or
                                             `key` = "read_cities" or
                                             `key` = "edit_cities" or
-                                            `key` = "add_cities"')->get();
+                                            `key` = "add_cities" or
+                                            table_name = "reports_contracts"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'contrataciones_tecnico')->firstOrFail();

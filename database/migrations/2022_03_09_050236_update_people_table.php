@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateCkeckHistTable extends Migration
+class UpdatePeopleTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class UpdateCkeckHistTable extends Migration
      */
     public function up()
     {
-        Schema::table('checks_histories', function (Blueprint $table) {
-            $table->text('observacion')->nullable();
-        });
+        Schema::table('people', function(Blueprint $table){
+            $table->foreignId('user_id')->nullable()->constrained('users');
+		});
     }
 
     /**
@@ -25,8 +25,8 @@ class UpdateCkeckHistTable extends Migration
      */
     public function down()
     {
-        Schema::table('checks_histories', function (Blueprint $table) {
-            $table->dropColumn('observacion');
+        Schema::table('people', function (Blueprint $table) {
+            $table->dropColumn(['user_id']);
         });
     }
 }

@@ -15,8 +15,10 @@ class CreateJobsTable extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->smallInteger('item')->nullable();
             $table->smallInteger('level')->nullable();
+            $table->string('name')->nullable();
+            $table->string('dependence')->nullable();
             $table->integer('direccion_administrativa_id')->nullable();
             $table->decimal('salary', 10, 2)->nullable();
             $table->smallInteger('status')->nullable()->default(1);

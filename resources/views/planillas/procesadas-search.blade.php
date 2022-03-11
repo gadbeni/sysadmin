@@ -79,7 +79,7 @@
 
         {{-- Formulario de pago de aguinaldo --}}
         {{-- @if (count($aguinaldo) > 0) --}}
-        <form action="" method="post">
+        {{-- <form action="" method="post">
             @csrf
             <div class="panel-body" style="margin-bottom: 50px">
                 <div class="table-responsive">
@@ -138,11 +138,11 @@
                     </table>
                 </div>
             </div>
-        </form>
+        </form> --}}
         {{-- @endif --}}
 
         {{-- AdditionalSteddts --}}
-        <form action="" method="post">
+        {{-- <form action="" method="post">
             @csrf
             <div class="panel-body" style="margin-bottom: 50px">
                 <div class="table-responsive">
@@ -195,10 +195,6 @@
                                         @if ($item->estado == 'pendiente')
                                             <button type="button" data-toggle="modal" data-target="#pagar-planilla-adicional-modal" onclick='planillasetValuePayBonus(@json($item), @json($cashier))' class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
                                         @endif
-
-                                        {{-- @if ($item->estado == 'pagada')
-                                        <button type="button" onclick="print_recipe({{ $item->id }}, 'aguinaldo')" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
-                                        @endif --}}
                                     </td>
                                     @endif
                                     
@@ -210,7 +206,7 @@
                     </table>
                 </div>
             </div>
-        </form>
+        </form> --}}
 
 
 
@@ -221,7 +217,7 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5)
+                                @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 4 || Auth::user()->role_id == 5)
                                 <th style="width: 50px" class="text-center"><input type="checkbox" id="check-all" style="transform: scale(1.5);" @if ($tipo_planilla == 2 || $planilla->where('pagada', 0)->count() == $planilla->count()) disabled @endif></th>
                                 @endif
                                 <th>ITEM</th>
@@ -249,7 +245,7 @@
                         <tbody id="dataTable-body">
                             @forelse ($planilla as $item)
                             <tr>
-                                @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5)
+                                @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 4 || Auth::user()->role_id == 5)
                                 <td class="text-center"><input type="checkbox" name="planilla_haber_id[]" class="check-item" value="{{ $item->ID }}" style="transform: scale(1.5);" @if($item->pagada != 1) disabled @endif></td>
                                 @endif
                                 <td>{{ $cont }}</td>
@@ -269,16 +265,16 @@
                                             <label class="label label-danger">Pendiente</label>
                                             @break
                                         @case(2)
-                                            <label class="label label-success">Pagada</label> <br>
+                                            <label class="label label-success">Pagado</label> <br>
                                             @php
-                                                $detalle_pago = \App\Models\CashiersPayment::with('cashier.user')->where('planilla_haber_id', $item->ID)->first();
+                                                $detalle_pago = \App\Models\CashiersPayment::with('cashier.user')->where('planilla_haber_id', $item->ID)->where('deleted_at', NULL)->first();
                                             @endphp
                                             @if ($detalle_pago)
                                                 <small>Por {{ $detalle_pago->cashier->user->name }} <br> {{ date('d-m-Y', strtotime($detalle_pago->created_at)) }} <br> {{ date('H:i:s', strtotime($detalle_pago->created_at)) }} </small>
                                             @endif
                                             @break
                                         @default
-                                            <label class="label label-default">inhabilitada</label>
+                                            <label class="label label-default">procesado</label>
                                     @endswitch
                                 </td>
                                 @if ($cashier || Auth::user()->role_id == 1)
@@ -301,11 +297,11 @@
                             </tr>
                             @empty
                                 <tr>
-                                    <td @if (Auth::user()->role_id == 1) colspan="14" @else colspan="13" @endif><h4 class="text-center">No hay registros</h4></td>
+                                    <td @if (Auth::user()->role_id == 1) colspan="15" @else colspan="14" @endif><h4 class="text-center">No hay registros</h4></td>
                                 </tr>
                             @endforelse
                             <tr>
-                                <td @if (Auth::user()->role_id == 1) colspan="11" @else colspan="10" @endif><h5>TOTAL</h5></td>
+                                <td @if (Auth::user()->role_id == 1) colspan="12" @else colspan="11" @endif><h5>TOTAL</h5></td>
                                 <td><h5 class="text-right">{{ number_format($total, 2, ',', '.') }}</h3></td>
                                 <td colspan="2"></td>
                             </tr>

@@ -14,6 +14,9 @@ use App\Http\Controllers\PluginsController;
 use App\Http\Controllers\ContractsController;
 use App\Http\Controllers\StipendController;
 use App\Http\Controllers\CheckController;
+use App\Http\Controllers\PeriodsController;
+use App\Http\Controllers\PaymentschedulesController;
+use App\Http\Controllers\ImportsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,9 +66,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('vaults/{vault}/print/closure', [VaultsController::class, 'print_closure'])->name('vaults.print.closure');
     Route::get('vaults/{vault}/print/status', [VaultsController::class, 'print_status'])->name('vaults.print.status');
 
-    Route::get('planillas', [PlanillasController::class, 'planillas_index'])->name('planillas.index');
-    Route::get('planillas/create', [PlanillasController::class, 'planillas_create'])->name('planillas.create');
-    Route::post('planillas/generate', [PlanillasController::class, 'planillas_generate'])->name('planillas.generate');
     Route::get('planillas/pagos', [PlanillasController::class, 'planillas_pagos_index'])->name('planillas.pagos.index');
     Route::post('planillas/pagos/search', [PlanillasController::class, 'planillas_pagos_search'])->name('planillas.pagos.search');
     Route::get('planillas/pagos/search/id', [PlanillasController::class, 'planillas_pagos_search_by_id']);
@@ -79,6 +79,19 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('planillas/pagos/delete/print/{id}', [PlanillasController::class, 'planillas_pagos_delete_print']);
 
     Route::post('planillas/pagos/centralizada/search', [PlanillasController::class, 'planillas_pagos_centralizada_search'])->name('planillas.pagos.centralizada.search');
+
+    // Planillas de pagos
+    Route::resource('paymentschedules', PaymentschedulesController::class);
+    Route::get('paymentschedules/ajax/list/{search?}', [PaymentschedulesController::class, 'list']);
+    Route::post('paymentschedules/update/status', [PaymentschedulesController::class, 'update_status'])->name('paymentschedules.update.status');
+    Route::post('paymentschedules/cancel', [PaymentschedulesController::class, 'cancel'])->name('paymentschedules.cancel');
+    Route::post('paymentschedules/generate', [PaymentschedulesController::class, 'generate'])->name('paymentschedules.generate');
+    Route::get('paymentschedules/files/index', [PaymentschedulesController::class, 'files_index'])->name('paymentschedules.files.index');
+    Route::get('paymentschedules/files/list/{search?}', [PaymentschedulesController::class, 'files_list'])->name('paymentschedules.files.list');
+    Route::get('paymentschedules/files/create', [PaymentschedulesController::class, 'files_create'])->name('paymentschedules.files.create');
+    Route::post('paymentschedules/files/generate', [PaymentschedulesController::class, 'files_generate'])->name('paymentschedules.files.generate');
+    Route::post('paymentschedules/files/store', [PaymentschedulesController::class, 'files_store'])->name('paymentschedules.files.store');
+    Route::post('paymentschedules/files/delete', [PaymentschedulesController::class, 'files_delete'])->name('paymentschedules.files.delete');
 
     // Previsión social
     // * Cheques
@@ -130,6 +143,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('check/devolver', [CheckController::class, 'devolver_checks'])->name('checks.devolver');
     Route::delete('check/delete', [CheckController::class, 'destroy'])->name('checks.delet');
 
+    // Periods
+    Route::get('periods/tipo_direccion_adminstrativa/{id}', [PeriodsController::class, 'periods_tipo_direccion_adminstrativa']);
 
     Route::get('reports/check/check-browse', [CheckController::class, 'report_view'])->name('report.check.browse');
     Route::post('reports/check/chek-list', [ReportsController::class, 'check_list'])->name('reports.check.list');
@@ -141,6 +156,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     // *Contratos
     Route::resource('contracts', ContractsController::class);
+    Route::post('contracts/status', [ContractsController::class, 'contracts_status'])->name('contracts.status');
     Route::get('contracts/direccion-administrativa/{id}', [ContractsController::class, 'contracts_direccion_administrativa']);
     Route::get('contracts/{id}/print/{document}', [ContractsController::class, 'print'])->name('contracts.print');
     
@@ -149,7 +165,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     // *Recursos humanos
     Route::get('reports/humans-resources/contraloria', [ReportsController::class, 'humans_resources_contraloria_index'])->name('reports.humans_resources.contraloria');
     Route::post('reports/humans-resources/contraloria/list', [ReportsController::class, 'humans_resources_contraloria_list'])->name('reports.humans_resources.contraloria.list');
-    Route::post('reports/humans-resources/contraloria/print', [ReportsController::class, 'humans_resources_contraloria_print'])->name('reports.humans_resources.contraloria.print');
 
     Route::get('reports/humans-resources/aniversarios', [ReportsController::class, 'humans_resources_aniversarios_index'])->name('reports.humans_resources.aniversarios');
     Route::post('reports/humans-resources/aniversarios/list', [ReportsController::class, 'humans_resources_aniversarios_list'])->name('reports.humans_resources.aniversarios.list');
@@ -180,6 +195,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('reports/cashier/vaults', [ReportsController::class, 'cashier_vaults_index'])->name('reports.cashier.vaults.index');
     Route::post('reports/cashier/vaults/list', [ReportsController::class, 'cashier_vaults_list'])->name('reports.cashier.vaults.list');
 
+    // Contrataciones
+    Route::get('reports/contracts/contracts', [ReportsController::class, 'contracts_contracts_index'])->name('reports.contracts.contracts.index');
+    Route::post('reports/contracts/contracts/list', [ReportsController::class, 'contracts_contracts_list'])->name('reports.contracts.contracts.list');
+
+    
     // Complementos
     Route::get('plugins/cashiers/tickets', [PluginsController::class, 'cashiers_tickets'])->name('cashiers.tickets');
     Route::get('plugins/cashiers/tickets/generate', [PluginsController::class, 'cashiers_tickets_generate'])->name('cashiers.tickets.generate');
@@ -192,6 +212,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('plugins/cashiers/tickets/get', function(){
         return response()->json(['ticket' => setting('auxiliares.numero_ticket')]);
     });
+
+    Route::get('imports', [ImportsController::class, 'imports_index'])->name('imports.index');
+    Route::post('imports/store', [ImportsController::class, 'imports_store'])->name('imports.store');
 });
 
 // Clear cache

@@ -74,6 +74,6 @@ class Contract extends Model
     }
 
     public function job(){
-        return $this->belongsTo(Job::class, 'job_id');
+        return $this->belongsTo(Job::class);
     }
 }

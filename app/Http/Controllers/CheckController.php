@@ -12,6 +12,10 @@ use App\Models\ChecksHistory;
 
 class CheckController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
    
     public function index()
     {

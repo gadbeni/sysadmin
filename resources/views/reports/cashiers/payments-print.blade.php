@@ -58,8 +58,10 @@
                             {{ $item->aguinaldo->ci }}
                         @elseif($item->stipend)
                             {{ $item->stipend->ci }}
+                        @elseif($item->paymentschedulesdetail)
+                            {{ $item->paymentschedulesdetail->contract->person->ci }}
                         @endif
-                        {{ $item->planilla ? $item->planilla->CedulaIdentidad : '' }}</td>
+                    </td>
                     <td>{{ $item->planilla ? $item->planilla->Periodo : '' }}</td>
                     <td>{{ date('d', strtotime($item->created_at)).'/'.$months[intval(date('m', strtotime($item->created_at)))].'/'.date('Y', strtotime($item->created_at)) }} {{ date('H:i', strtotime($item->created_at)) }} </td>
                     <td>{{ $item->cashier->user->name }} </td>

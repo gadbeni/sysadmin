@@ -10,7 +10,29 @@
                 $code = $contract->code;
             @endphp
             <p>
-                Santísima Trinidad, {{ date('d', strtotime($contract->date_note)) }} de {{ $months[intval(date('m', strtotime($contract->date_note)))] }} de {{ date('Y', strtotime($contract->date_note)) }} <br>
+                <select id="location-id">
+                    <option value="Santísima Trinidad">Santísima Trinidad</option>
+                    <option value="Guayaramerín">Guayaramerín</option>
+                    <option value="Riberalta">Riberalta</option>
+                    <option value="Santa Rosa">Santa Rosa</option>
+                    <option value="Reyes">Reyes</option>
+                    <option value="Rurrenabaque">Rurrenabaque</option>
+                    <option value="Yucumo">Yucumo</option>
+                    <option value="San Borja">San Borja</option>
+                    <option value="San Ignacio">San Ignacio</option>
+                    <option value="San Ramón">San Ramón</option>
+                    <option value="San Joaquín">San Joaquín</option>
+                    <option value="Puerto Siles">Puerto Siles</option>
+                    <option value="Santa Ana">Santa Ana</option>
+                    <option value="Magdalena">Magdalena</option>
+                    <option value="Baures">Baures</option>
+                    <option value="Huacaraje">Huacaraje</option>
+                    <option value="Exaltación">Exaltación</option>
+                    <option value="San Javier">San Javier</option>
+                    <option value="Loreto">Loreto</option>
+                    <option value="San Andrés">San Andrés</option>
+                </select>
+                <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->date_note)) }} de {{ $months[intval(date('m', strtotime($contract->date_note)))] }} de {{ date('Y', strtotime($contract->date_note)) }} <br>
                 <b>INV/CI/GAD BENI/MCD N° {{ $code }}</b>
             </p>
             <br>
@@ -27,7 +49,8 @@
         <div class="page-body">
             @php
                 $contract_duration = contract_duration_calculate($contract->start, $contract->finish);
-                $total = ($contract->cargo->nivel->Sueldo *$contract_duration->months) + (($contract->cargo->nivel->Sueldo /30) *$contract_duration->days);
+                $salary = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
+                $total = ($salary *$contract_duration->months) + (($salary /30) *$contract_duration->days);
                 $periodo = '';
                 if($contract_duration->months > 0){
                     if($contract_duration->months == 1){
@@ -52,7 +75,10 @@
             <table align="center">
                 <tr>
                     <td style="width: 320px;">&#9679; &nbsp; Monto mensual</td>
-                    <td style="width: 180px; text-align: right">Bs.- &nbsp;&nbsp; {{ number_format($contract->cargo->nivel->Sueldo, 2, ',', '.') }}</td>
+                    @php
+                        $salary = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
+                    @endphp
+                    <td style="width: 180px; text-align: right">Bs.- &nbsp;&nbsp; {{ number_format($salary, 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td>&#9679; &nbsp; Monto total adjudicado</td>
@@ -69,17 +95,50 @@
             </table>
 
             <p>
-                Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la Dirección Administrativa dependiente de la Secretaría Dptal. de Administración y Finanzas, ubicada en la Plaza Principal, hasta el día {{ date('d', strtotime($contract->date_limit_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_limit_invitation)))] }} de {{ date('Y', strtotime($contract->date_limit_invitation)) }} , deberá presentar la siguiente documentación:
+                Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la Unidad de Contrataciones de Bienes y Servicios dependiente de la Secretaría Departamental Administrativa, ubicada en edificio ex CORDEBENI Calle Cochabamba y Joaquín de Sierra, con un plazo no mayor a 48 horas a partir la fecha, debiendo presentar la siguiente documentación:
             </p>
 
             <table align="center">
                 <tr>
                     <td style="width: 500px;">
-                        <b>&#10003;</b> &nbsp; Nota de predisposición para el trabajo de consultoría <br>
-                        <b>&#10003;</b> &nbsp; Fotocopia de Cédula de Identidad vigente <br>
-                        <b>&#10003;</b> &nbsp; NIT <br>
-                        <b>&#10003;</b> &nbsp; Número de CUA o NUA y nombre de la Entidad donde realiza sus aportes de AFPs <br>
-                        <b>&#10003;</b> &nbsp; Documentación original de respaldo (con fines de verificación) <br>
+                        <table>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Fotocopia simple del Certificado de Trabajo o Contrato. Deben cubrir la expreriencia  el nivel de la escala (los memorándums de desiganción no serán aceptados como referentes debido a que indica la fecha de inicio de contrato pero no su conclusión)</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Fotocopia simple del Certificado que acredite su nivel de estudios (Título en provisión nacional, Título académico, Certificado a Nivel Técnico Medio/Superior, Título de Bachiller, etc.), de acuerdo a la escala</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Certificado No Deudor a la Gobernación (original)</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Fotocopia de C.I. legible</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Certificado de inscripción del NIT, con la actividad correspondiente a la consultoría</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Registro AFP (CUA o NUA)</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Certificado de No violencia (Emitido por la Magistratura)</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Certificado de Antecedentes Penales - REJAP (Emitido por la Magistratura)</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Libreta de Servicio Militar (para varones)</td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
             </table>
@@ -91,11 +150,8 @@
 
             <div style="margin-top: 80px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
-                    {{ setting('firma-autorizada.name') }} <br>
-                    <b>RESPONSABLE DEL PROCESO DE CONTRATACIÓN <br>
-                        DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO – RPA <br>
-                        GAD - BENI
-                    </b>
+                    {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
+                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }}</b>
                 </p>
             </div>
         </div>

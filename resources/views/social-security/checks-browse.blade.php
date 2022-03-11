@@ -56,7 +56,7 @@
                                     <input type="text" id="input-search" class="form-control">
                                 </div>
                             </div>
-                            <div class="row" id="data-result"></div>
+                            <div class="row" id="div-results" style="min-height: 120px"></div>
                         </div>
                     </div>
                 </div>
@@ -80,9 +80,6 @@
                         list();
                     }
                 });
-                $('#input-search').on('change', function(){
-                    list();
-                });
 
                 $('#select-paginate').change(function(){
                     countPage = $(this).val();
@@ -91,13 +88,15 @@
             });
 
             function list(page = 1){
+                $('#div-results').loading({message: 'Cargando...'});
                 let url = '{{ url("admin/social-security/checks/list") }}';
                 let search = $('#input-search').val() ? $('#input-search').val() : '';
                 $.ajax({
                     url: `${url}/${search}?paginate=${countPage}&page=${page}`,
                     type: 'get',
                     success: function(response){
-                        $('#data-result').html(response);
+                        $('#div-results').html(response);
+                        $('#div-results').loading('toggle');
                     }
                 });
             }

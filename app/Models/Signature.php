@@ -10,4 +10,8 @@ class Signature extends Model
 {
     use HasFactory, SoftDeletes;
     protected $dates = ['deleted_at'];
+
+    public function direccion_administrativa(){
+        return $this->belongsTo(DireccionAdministrativa::class, 'direccion_administrativa_id', 'ID');
+    }
 }

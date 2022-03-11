@@ -34,12 +34,26 @@
             position: relative;
             width: 350px;
         }
+        #label-location{
+            display: none;
+        }
         @media print{
             .hide-print{
                 display: none
             }
             .content{
                 padding: 0px 0px
+            }
+            #location-id{
+                display: none;
+            }
+            #label-location{
+                display: inline;
+            }
+        }
+        @media print and (min-width: 700px) and (orientation: landscape) {
+            #watermark {
+                top: 200px;
             }
         }
     </style>
@@ -72,6 +86,14 @@
         });
     </script>
 
+    <script type="text/javascript" src="{{ voyager_asset('js/app.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#location-id').change(function () {
+                $('#label-location').html($(this).val());
+            });
+        });
+    </script>
     @yield('script')
 </body>
 </html>

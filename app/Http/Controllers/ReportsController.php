@@ -15,6 +15,7 @@ use App\Models\CashiersPayment;
 use App\Models\VaultsClosure;
 use App\Models\Spreadsheet;
 use App\Models\DireccionAdministrativa;
+use App\Models\Contract;
 
 // Exports
 use App\Exports\PaymentsExport;
@@ -61,6 +62,24 @@ class ReportsController extends Controller
             return view('reports.rr_hh.contraloria-print', compact('funcionarios', 'periodo', 'afp'));
         }else{
             return view('reports.rr_hh.contraloria-list', compact('funcionarios'));
+        }
+    }
+
+    public function contracts_contracts_index(){
+        return view('reports.contracts.contracts-browse');
+    }
+
+    public function contracts_contracts_list(Request $request){
+        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel' => function($q){
+                            $q->where('Estado', 1);
+                        }, 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
+                        ->whereRaw($request->procedure_type_id ? "procedure_type_id = ".$request->procedure_type_id : 1)
+                        ->where('deleted_at', NULL)->get();
+        // dd($contracts);
+        if($request->print){
+            return view('reports.contracts.contracts-print', compact('contracts'));
+        }else{
+            return view('reports.contracts.contracts-list', compact('contracts'));
         }
     }
 
@@ -384,7 +403,7 @@ class ReportsController extends Controller
     }
 
     public function social_security_contracts_index(){
-        return view('reports.rr_hh.contracts-browse');
+        return view('reports.rr_hh.contracts-history-browse');
     }
 
     public function social_security_contracts_list (Request $request){
@@ -417,9 +436,9 @@ class ReportsController extends Controller
                             ->get();
         
         if($request->print){
-            return view('reports.rr_hh.contracts-print', compact('funcionarios_ingreso', 'funcionarios_egreso', 'year', 'month'));
+            return view('reports.rr_hh.contracts-history-print', compact('funcionarios_ingreso', 'funcionarios_egreso', 'year', 'month'));
         }else{
-            return view('reports.rr_hh.contracts-list', compact('funcionarios_ingreso', 'funcionarios_egreso'));
+            return view('reports.rr_hh.contracts-history-list', compact('funcionarios_ingreso', 'funcionarios_egreso'));
         }
 
     }
@@ -608,14 +627,14 @@ class ReportsController extends Controller
         $user_id = $request->user_id;
         // dd($user_id);
         if($user_id){
-            $payments = CashiersPayment::with(['deletes', 'cashier.user', 'planilla', 'aguinaldo', 'stipend'])
+            $payments = CashiersPayment::with(['deletes', 'cashier.user', 'planilla', 'aguinaldo', 'stipend', 'paymentschedulesdetail'])
                             ->whereHas('cashier.user', function($query) use ($user_id){
                                 $query->where('id', $user_id);
                             })
                             ->whereDate('created_at', '>=', date('Y-m-d', strtotime($request->start)))
                             ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->finish)))->get();
         }else{
-            $payments = CashiersPayment::with(['deletes', 'cashier.user', 'planilla', 'aguinaldo', 'stipend'])
+            $payments = CashiersPayment::with(['deletes', 'cashier.user', 'planilla', 'aguinaldo', 'stipend', 'paymentschedulesdetail'])
                             ->whereDate('created_at', '>=', date('Y-m-d', strtotime($request->start)))
                             ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->finish)))->get();
         }

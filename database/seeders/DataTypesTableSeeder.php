@@ -35,7 +35,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"desc","default_search_key":null,"scope":null}',
                 'created_at' => '2021-06-02 17:55:30',
-                'updated_at' => '2022-02-14 17:58:57',
+                'updated_at' => '2022-03-09 21:05:39',
             ),
             1 => 
             array (
@@ -63,7 +63,7 @@ class DataTypesTableSeeder extends Seeder
                 'display_name_singular' => 'Rol',
                 'display_name_plural' => 'Roles',
                 'icon' => 'voyager-lock',
-                'model_name' => 'TCG\\Voyager\\Models\\Role',
+                'model_name' => 'App\\Models\\Role',
                 'policy_name' => NULL,
                 'controller' => 'TCG\\Voyager\\Http\\Controllers\\VoyagerRoleController',
                 'description' => NULL,
@@ -71,7 +71,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"name","order_display_column":"name","order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2021-06-02 17:55:31',
-                'updated_at' => '2021-09-23 09:28:28',
+                'updated_at' => '2022-02-25 12:53:46',
             ),
             3 => 
             array (
@@ -179,7 +179,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"last_name","order_display_column":"first_name","order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2021-12-29 16:09:12',
-                'updated_at' => '2022-02-23 11:01:59',
+                'updated_at' => '2022-03-09 05:18:47',
             ),
             9 => 
             array (
@@ -377,7 +377,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"id","order_display_column":"id","order_direction":"desc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-02-17 14:59:11',
-                'updated_at' => '2022-02-17 15:18:48',
+                'updated_at' => '2022-03-09 05:16:52',
             ),
         ));
         

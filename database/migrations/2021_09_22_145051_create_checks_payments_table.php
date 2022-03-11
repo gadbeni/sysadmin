@@ -23,6 +23,7 @@ class CreateChecksPaymentsTable extends Migration
             $table->decimal('amount', 10, 2)->nullable();
             $table->date('date_print')->nullable();
             $table->text('observations')->nullable();
+            // ==cambiar
             $table->smallInteger('status')->nullable()->default(1);
             $table->timestamps();
             $table->softDeletes();

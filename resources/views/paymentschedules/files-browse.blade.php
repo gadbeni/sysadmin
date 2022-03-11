@@ -1,6 +1,6 @@
 @extends('voyager::master')
 
-@section('page_title', 'Viendo Planillas')
+@section('page_title', 'Viendo Archivos')
 
 @section('page_header')
     <div class="container-fluid">
@@ -10,7 +10,7 @@
                     <div class="panel-body" style="padding: 0px">
                         <div class="col-md-8" style="padding: 0px">
                             <h1 class="page-title">
-                                <i class="voyager-logbook"></i> Planillas
+                                <i class="voyager-file-text"></i> Archivos
                             </h1>
                             {{-- <div class="alert alert-info">
                                 <strong>Información:</strong>
@@ -18,7 +18,7 @@
                             </div> --}}
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
-                            <a href="{{ route('planillas.create') }}" class="btn btn-success">
+                            <a href="{{ route('paymentschedules.files.create') }}" class="btn btn-success">
                                 <i class="voyager-plus"></i> <span>Crear</span>
                             </a>
                         </div>
@@ -50,7 +50,7 @@
                                 <input type="text" id="input-search" class="form-control">
                             </div>
                         </div>
-                        <div class="row" id="data-result"></div>
+                        <div class="row" id="div-results" style="min-height: 120px"></div>
                     </div>
                 </div>
             </div>
@@ -85,22 +85,34 @@
 @section('javascript')
     <script src="{{ url('js/main.js') }}"></script>
     <script>
+        var countPage = 10, order = 'id', typeOrder = 'desc';
         $(document).ready(function() {
-            let columns = [
-                { data: 'id', title: 'id' },
-                { data: 'cliente', title: 'Cliente' },
-                { data: 'detalle', title: 'Detalle' },
-                { data: 'fecha', title: 'Fecha' },
-                { data: 'total', title: 'Total' },
-                { data: 'action', title: 'Acciones', orderable: false, searchable: false },
-            ]
-            // customDataTable("{{ url('admin/ventas/ajax/list') }}/", columns);
+            list();
+            
+            $('#input-search').on('keyup', function(e){
+                if(e.keyCode == 13) {
+                    list();
+                }
+            });
+
+            $('#select-paginate').change(function(){
+                countPage = $(this).val();
+                list();
+            });
         });
 
-        function deleteItem(id){
-            let url = '{{ url("admin/ventas") }}/'+id;
-            $('#delete_form').attr('action', url);
+        function list(page = 1){
+            $('#div-results').loading({message: 'Cargando...'});
+            let url = '{{ url("admin/paymentschedules/files/list") }}';
+            let search = $('#input-search').val() ? $('#input-search').val() : '';
+            $.ajax({
+                url: `${url}/${search}?paginate=${countPage}&page=${page}`,
+                type: 'get',
+                success: function(response){
+                    $('#div-results').html(response);
+                    $('#div-results').loading('toggle');
+                }
+            });
         }
-
     </script>
 @stop
