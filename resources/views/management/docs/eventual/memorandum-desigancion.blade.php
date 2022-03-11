@@ -51,10 +51,8 @@
                     </p>
                 </div>
                 <div class="border-left">
-                    {{-- <b>DE:</b> {{ Str::upper($signature ? $signature->name : setting('firma-autorizada.name')) }} <br>
-                    <b>{{ Str::upper($signature ? $signature->job : setting('firma-autorizada.job')) }}</b> <br> <br> <br> --}}
-                    <b>DE:</b> ING. PAUL STEVE CURCUY ITURRI <br>
-                    <b>Director Departamental de Recursos Humanos GAD-BENI</b> <br> <br> <br>
+                    <b>DE:</b> {{ Str::upper($signature ? $signature->name : 'ING. PAUL STEVE CURCUY ITURRI') }} <br>
+                    <b>{{ Str::upper($signature ? $signature->job : 'Director Departamental de Recursos Humanos GAD-BENI') }}</b> <br> <br> <br>
                     <b>A:</b> {{ Str::upper($contract->person->first_name.' '.$contract->person->last_name) }} <br>
                     <b>CI: {{ $contract->person->ci }}</b> <br> <br>
                 </div>

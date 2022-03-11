@@ -95,17 +95,50 @@
             </table>
 
             <p>
-                Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la Unidad de Contrataciones de Bienes y Servicios, dependiente de la Secretaría Dptal. de Administración y Finanzas, ubicada en edificio ex CORDEBENI Calle Joaquín de Sierra esq. C/ La Paz, con un plazo de 48 horas a partir la fecha, deberá presentar la siguiente documentación:
+                Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la Unidad de Contrataciones de Bienes y Servicios dependiente de la Secretaría Departamental Administrativa, ubicada en edificio ex CORDEBENI Calle Cochabamba y Joaquín de Sierra, con un plazo no mayor a 48 horas a partir la fecha, debiendo presentar la siguiente documentación:
             </p>
 
             <table align="center">
                 <tr>
                     <td style="width: 500px;">
-                        <b>&#10003;</b> &nbsp; Nota de predisposición para el trabajo de consultoría <br>
-                        <b>&#10003;</b> &nbsp; Fotocopia de Cédula de Identidad vigente <br>
-                        <b>&#10003;</b> &nbsp; NIT <br>
-                        <b>&#10003;</b> &nbsp; Número de CUA o NUA y nombre de la Entidad donde realiza sus aportes de AFPs <br>
-                        <b>&#10003;</b> &nbsp; Documentación original de respaldo (con fines de verificación) <br>
+                        <table>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Fotocopia simple del Certificado de Trabajo o Contrato. Deben cubrir la expreriencia  el nivel de la escala (los memorándums de desiganción no serán aceptados como referentes debido a que indica la fecha de inicio de contrato pero no su conclusión)</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Fotocopia simple del Certificado que acredite su nivel de estudios (Título en provisión nacional, Título académico, Certificado a Nivel Técnico Medio/Superior, Título de Bachiller, etc.), de acuerdo a la escala</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Certificado No Deudor a la Gobernación (original)</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Fotocopia de C.I. legible</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Certificado de inscripción del NIT, con la actividad correspondiente a la consultoría</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Registro AFP (CUA o NUA)</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Certificado de No violencia (Emitido por la Magistratura)</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Certificado de Antecedentes Penales - REJAP (Emitido por la Magistratura)</td>
+                            </tr>
+                            <tr>
+                                <td>&#10003;</td>
+                                <td>Libreta de Servicio Militar (para varones)</td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
             </table>
