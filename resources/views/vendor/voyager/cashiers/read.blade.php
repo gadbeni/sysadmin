@@ -290,7 +290,7 @@
         </div>
     </div>
 
-    <form id="form-delete" action="{{ route('planillas.pagos.delete') }}" id="delete_form" method="POST">
+    <form id="form-delete" action="{{ route('planillas.pagos.delete') }}" method="POST">
         <input type="hidden" name="id" value="{{ $cashier->id }}">
         <input type="hidden" name="planilla_haber_id">
         @csrf

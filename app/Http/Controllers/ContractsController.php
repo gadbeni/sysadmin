@@ -18,6 +18,7 @@ use App\Models\Cargo;
 use App\Models\Job;
 use App\Models\Signature;
 use App\Models\ContractsHistory;
+use App\Models\PaymentschedulesDetail;
 
 class ContractsController extends Controller
 {
@@ -33,15 +34,33 @@ class ContractsController extends Controller
      */
     public function index()
     {
-        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel' => function($q){
-                            $q->where('Estado', 1);
-                        }, 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
-                        // ->whereHas('job', function($query) {
-                        //     $query->whereRaw(Auth::user()->direccion_administrativa_id ? "(direccion_administrativa_id is not NULL or direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id.")" : 1);
-                        // })
-                        ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
-                        ->where('deleted_at', NULL)->get();
-        return view('management.contracts.browse', compact('contracts'));
+        // $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel' => function($q){
+        //                     $q->where('Estado', 1);
+        //                 }, 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
+        //                 ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
+        //                 ->where('deleted_at', NULL)->get();
+        return view('management.contracts.browse');
+    }
+
+    public function list($search = null){
+        $paginate = request('paginate') ?? 10;
+        $data = Contract::with(['user', 'person', 'program', 'cargo.nivel' => function($q){
+                        $q->where('Estado', 1);
+                    }, 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
+                    ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
+                    ->where(function($query) use ($search){
+                        if($search){
+                            $query->OrwhereHas('person', function($query) use($search){
+                                $query->whereRaw($search ? '(first_name like "%'.$search.'%" or last_name like "%'.$search.'%")' : 1);
+                            })
+                            ->OrWhereHas('user', function($query) use($search){
+                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                            });
+                        }
+                    })
+                    ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
+        // dd($data);
+        return view('management.contracts.list', compact('data', 'search'));
     }
 
     /**
@@ -252,7 +271,6 @@ class ContractsController extends Controller
     }
 
     public function contracts_status(Request $request){
-        // dd($request->all());
         DB::beginTransaction();
         try {
             $contract = Contract::where('id', $request->id)->update([
@@ -266,10 +284,10 @@ class ContractsController extends Controller
                 'observations' => $request->observations,
             ]);
             DB::commit();
-            return redirect()->route('contracts.index')->with(['message' => 'Contrato promovido exitosamente.', 'alert-type' => 'success']);
+            return response()->json(['message' => 'Contrato promovido exitosamente.']);
         } catch (\Throwable $th) {
             DB::rollback();
-            return redirect()->route('contracts.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return response()->json(['error' => 'Ocurrió un error.']);
         }
     }
 
@@ -281,7 +299,16 @@ class ContractsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            Contract::where('id', $id)->update([
+                'status' => 'anulado',
+                'deleted_at' => Carbon::now()
+            ]);
+            return response()->json(['message' => 'Anulado exitosamente.']);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['error' => 'Ocurrió un error.']);
+        }
     }
 
     // ===============================

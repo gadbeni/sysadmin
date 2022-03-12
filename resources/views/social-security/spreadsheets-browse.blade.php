@@ -100,10 +100,5 @@
             ]
             customDataTable("{{ url('admin/spreadsheets/ajax/list') }}/", columns, 1);
         });
-
-        function deleteItem(url){
-            $('#delete_form').attr('action', url);
-        }
-
     </script>
 @stop
