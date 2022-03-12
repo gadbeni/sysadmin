@@ -86,7 +86,7 @@ class ContractsController extends Controller
         $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw($ids ? "id in ($ids)" : 1)->get();
 
         $people = Person::where('deleted_at', NULL)
-                    // ->whereRaw("id not in (select person_id from contracts where status <> 'finalizado' and deleted_at is null)")
+                    ->whereRaw("id not in (select person_id from contracts where status <> 'finalizado' and deleted_at is null)")
                     ->get();
         $direccion_administrativas = DireccionAdministrativa::whereRaw($direccion_administrativa_id ? "ID = $direccion_administrativa_id" : 1)->get();
         $unidad_administrativas = UnidadAdministrativa::get();
@@ -97,7 +97,7 @@ class ContractsController extends Controller
         }])->where('estado', 1)->get();
         // dd($cargos);
         $jobs = Job::with('direccion_administrativa')
-                    // ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'finalizado' and deleted_at is null)")
+                    ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'finalizado' and deleted_at is null)")
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->where('deleted_at', NULL)->get();
         return view('management.contracts.edit-add', compact('procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos', 'jobs'));
@@ -202,7 +202,7 @@ class ContractsController extends Controller
                     }])->where('estado', 1)->get();
         
         $jobs = Job::with('direccion_administrativa')
-                    // ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'finalizado' and deleted_at is null) or id = ".($contract->job_id ?? 0))
+                    ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'finalizado' and deleted_at is null) or id = ".($contract->job_id ?? 0))
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->where('deleted_at', NULL)->get();
         return view('management.contracts.edit-add', compact('contract', 'procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos', 'jobs'));
@@ -275,7 +275,7 @@ class ContractsController extends Controller
         DB::beginTransaction();
         try {
 
-            // Verificar si el contrato ya tiene una solicitud de pago
+            // Verificar si el contrato tenga pagos realizados
             if(!$this->enabled_to_delete($request->id)){
                 return response()->json(['error' => 'El contrato pertenece a una planilla en proceso de pago.']);
             }
@@ -352,7 +352,7 @@ class ContractsController extends Controller
     public function enabled_to_delete($id){
         $contracts = PaymentschedulesDetail::where('contract_id', $id)
                         ->where('status', '<>', 'anulado')
-                        ->where('status', '<>', 'pagado')
+                        // ->where('status', '<>', 'pagado')
                         ->where('deleted_at', NULL)->first();
         return $contracts ? false : true;
     }

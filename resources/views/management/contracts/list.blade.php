@@ -130,7 +130,7 @@
                                     Anular <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu" style="left: -90px !important">
-                                    <li><a href="#" onclick="degradeContract({{ $item->id }}, 'elaborado')" data-toggle="modal" data-target="#degrade-modal">Quitar firma</a></li>
+                                    <li><a href="#" onclick="downgradeContract({{ $item->id }}, 'elaborado')" data-toggle="modal" data-target="#downgrade-modal">Quitar firma</a></li>
                                     <li>
                                         <a href="#" onclick="deleteItem('{{ route('contracts.destroy', ['contract' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal-alt" title="Anular">
                                             Anular
@@ -198,7 +198,7 @@
     </div>
 </form>
 
-<div class="modal modal-danger fade" tabindex="-1" id="degrade-modal" role="dialog">
+<div class="modal modal-danger fade" tabindex="-1" id="downgrade-modal" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -206,7 +206,7 @@
                 <h4 class="modal-title"><i class="voyager-trash"></i> Desea eliminar la firma del contrato?</h4>
             </div>
             <div class="modal-footer">
-                <form action="{{ route('contracts.status') }}" id="degrade-form" method="POST">
+                <form action="{{ route('contracts.status') }}" id="downgrade-form" method="POST">
                     {{ csrf_field() }}
                     <input type="hidden" name="id">
                     <input type="hidden" name="status">
@@ -263,8 +263,8 @@
             });
         });
 
-        $('#degrade-form').submit(function(e){
-            $('#degrade-modal').modal('hide');
+        $('#downgrade-form').submit(function(e){
+            $('#downgrade-modal').modal('hide');
             e.preventDefault();
             $('#div-results').loading({message: 'Cargando...'});
             $.post($(this).attr('action'), $(this).serialize(), function(res){

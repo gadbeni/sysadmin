@@ -116,7 +116,7 @@
                         $labor_faults_amount = 0;
                         $labor_liquid_payable = 0;
                     @endphp
-                    @forelse ($data->details as $item)
+                    @forelse ($data->procedure_type_id == 1 ? $data->details->oderBy('id', 'DESC') : $data->details as $item)
                         @php
                             $cont++;
                             $total_partial_salary += $item->partial_salary;

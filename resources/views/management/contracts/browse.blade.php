@@ -100,9 +100,9 @@
             $('#form-status input[name="status"]').val(status)
         }
 
-        function degradeContract(id, status) {
-            $('#degrade-form input[name="id"]').val(id)
-            $('#degrade-form input[name="status"]').val(status)
+        function downgradeContract(id, status) {
+            $('#downgrade-form input[name="id"]').val(id)
+            $('#downgrade-form input[name="status"]').val(status)
         }
 
         function deleteItem(url){

@@ -250,7 +250,8 @@ class PaymentschedulesController extends Controller
                             ->whereHas('paymentschedule', function($q) use($centralize_code){
                                 $q->where('centralize_code', $centralize_code);
                             })
-                            ->where('deleted_at', NULL)->orderBy('item', 'ASC')->get();
+                            ->where('deleted_at', NULL)
+                            ->get();
         }
 
         // Si se elije una AFP, se filtran los contratos que correspondan a esa AFP

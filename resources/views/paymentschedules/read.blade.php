@@ -145,6 +145,7 @@
                             <table class="table table-bordered table-hover table-details">
                                 <thead>
                                     <tr>
+                                        <th rowspan="3">N&deg;</th>
                                         <th rowspan="3">ITEM</th>
                                         <th rowspan="3">NIVEL</th>
                                         <th rowspan="3">APELLIDOS Y NOMBRES / CARGO</th>
@@ -215,7 +216,7 @@
                                         $labor_faults_amount = 0;
                                         $labor_liquid_payable = 0;
                                     @endphp
-                                    @forelse ($data->details as $item)
+                                    @forelse ($data->procedure_type_id == 1 ? $data->details->sortBy('contract.job.id') : $data->details as $item)
                                         @php
                                             $total_partial_salary += $item->partial_salary;
                                             $total_seniority_bonus_amount += $item->seniority_bonus_amount;
@@ -234,7 +235,8 @@
                                             $labor_liquid_payable += $item->liquid_payable;
                                         @endphp
                                         <tr>
-                                            <td>{{ $afp ? $item->item : $cont }}</td>
+                                            <td>{{ $cont }}</td>
+                                            <td>{{ $item->item ?? $item->contract->job ? $item->contract->job->id : '' }}</td>
                                             <td>{{ $item->job_level }}</td>
                                             <td>
                                                 <b>{{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }}</b> <br>
@@ -291,7 +293,7 @@
                                         
                                     @endphp
                                     <tr>
-                                        <td colspan="7" class="text-right"><b>TOTAL</b></td>
+                                        <td colspan="8" class="text-right"><b>TOTAL</b></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('salary'), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($total_partial_salary, 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ $data->details->sum('seniority_bonus_percentage') }}%</b></td>
