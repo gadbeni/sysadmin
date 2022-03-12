@@ -69,6 +69,18 @@ class PermissionsTableSeeder extends Seeder
 
         // checkes
         $keys = [
+            'downgrade_contracts',
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'contracts',
+            ]);
+        }
+        
+        // checkes
+        $keys = [
             'payment_checks',
             'success_checks',
         ];
@@ -79,7 +91,6 @@ class PermissionsTableSeeder extends Seeder
                 'table_name' => 'checks',
             ]);
         }
-
   
         // Planillas
         $keys = [

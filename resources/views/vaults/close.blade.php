@@ -35,6 +35,7 @@
         @include('voyager::alerts')
         <div class="row">
             <form action="{{ route('vaults.close.store', ['id' => $vault->id]) }}" method="post">
+                @csrf
                 <div class="col-md-12">
                     <div class="panel panel-bordered">
                         <div class="panel-body">
@@ -171,11 +172,8 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <form action="#" id="delete_form" method="POST">
-                                        {{ csrf_field() }}
-                                        <input type="submit" class="btn btn-danger pull-right delete-confirm" value="Sí, cerrar">
-                                    </form>
-                                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                    <input type="submit" class="btn btn-danger delete-confirm" value="Sí, cerrar">
                                 </div>
                             </div>
                         </div>
