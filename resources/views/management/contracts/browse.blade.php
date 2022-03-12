@@ -98,7 +98,12 @@
         function changeStatus(id, status) {
             $('#form-status input[name="id"]').val(id)
             $('#form-status input[name="status"]').val(status)
-        };
+        }
+
+        function degradeContract(id, status) {
+            $('#degrade-form input[name="id"]').val(id)
+            $('#degrade-form input[name="status"]').val(status)
+        }
 
         function deleteItem(url){
             $('#delete_form_alt').attr('action', url);

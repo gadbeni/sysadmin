@@ -34,11 +34,6 @@ class ContractsController extends Controller
      */
     public function index()
     {
-        // $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel' => function($q){
-        //                     $q->where('Estado', 1);
-        //                 }, 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
-        //                 ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
-        //                 ->where('deleted_at', NULL)->get();
         return view('management.contracts.browse');
     }
 
@@ -50,8 +45,14 @@ class ContractsController extends Controller
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
                     ->where(function($query) use ($search){
                         if($search){
-                            $query->OrwhereHas('person', function($query) use($search){
-                                $query->whereRaw($search ? '(first_name like "%'.$search.'%" or last_name like "%'.$search.'%")' : 1);
+                            $query->OrwhereHas('job', function($query) use($search){
+                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                            })
+                            ->OrwhereHas('type', function($query) use($search){
+                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                            })
+                            ->OrwhereHas('person', function($query) use($search){
+                                $query->whereRaw($search ? '(first_name like "%'.$search.'%" or last_name like "%'.$search.'%" or ci like "%'.$search.'%" or phone like "%'.$search.'%")' : 1);
                             })
                             ->OrWhereHas('user', function($query) use($search){
                                 $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
@@ -273,18 +274,26 @@ class ContractsController extends Controller
     public function contracts_status(Request $request){
         DB::beginTransaction();
         try {
+
+            // Verificar si el contrato ya tiene una solicitud de pago
+            if(!$this->enabled_to_delete($request->id)){
+                return response()->json(['error' => 'El contrato pertenece a una planilla en proceso de pago.']);
+            }
+
             $contract = Contract::where('id', $request->id)->update([
                 'status' => $request->status,
             ]);
 
-            ContractsHistory::create([
-                'contract_id' => $request->id,
-                'user_id' => Auth::user()->id,
-                'status' => $request->status,
-                'observations' => $request->observations,
-            ]);
+            if($request->observations){
+                ContractsHistory::create([
+                    'contract_id' => $request->id,
+                    'user_id' => Auth::user()->id,
+                    'status' => $request->status,
+                    'observations' => $request->observations,
+                ]);
+            }
             DB::commit();
-            return response()->json(['message' => 'Contrato promovido exitosamente.']);
+            return response()->json(['message' => 'Cambio realizo exitosamente.']);
         } catch (\Throwable $th) {
             DB::rollback();
             return response()->json(['error' => 'Ocurrió un error.']);
@@ -300,11 +309,15 @@ class ContractsController extends Controller
     public function destroy($id)
     {
         try {
-            Contract::where('id', $id)->update([
-                'status' => 'anulado',
-                'deleted_at' => Carbon::now()
-            ]);
-            return response()->json(['message' => 'Anulado exitosamente.']);
+            if($this->enabled_to_delete($id)){
+                Contract::where('id', $id)->update([
+                    'status' => 'anulado',
+                    'deleted_at' => Carbon::now()
+                ]);
+                return response()->json(['message' => 'Anulado exitosamente.']);
+            }else{
+                return response()->json(['error' => 'El contrato pertenece a una planilla en proceso de pago.']);
+            }
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json(['error' => 'Ocurrió un error.']);
@@ -333,5 +346,14 @@ class ContractsController extends Controller
         $contract->workers = $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
         $signature = Signature::where('direccion_administrativa_id', $contract->user->direccion_administrativa_id)->where('status', 1)->where('deleted_at', NULL)->first();
         return view('management.docs.'.$document, compact('contract', 'signature'));
+    }
+
+    // **** Métodos funcionales ****
+    public function enabled_to_delete($id){
+        $contracts = PaymentschedulesDetail::where('contract_id', $id)
+                        ->where('status', '<>', 'anulado')
+                        ->where('status', '<>', 'pagado')
+                        ->where('deleted_at', NULL)->first();
+        return $contracts ? false : true;
     }
 }

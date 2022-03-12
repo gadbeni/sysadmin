@@ -1625,7 +1625,7 @@ class DataRowsTableSeeder extends Seeder
                 'data_type_id' => 9,
                 'field' => 'person_belongsto_city_relationship',
                 'type' => 'relationship',
-                'display_name' => 'Procedencia',
+                'display_name' => 'Lugar de nacimiento',
                 'required' => 1,
                 'browse' => 1,
                 'read' => 1,

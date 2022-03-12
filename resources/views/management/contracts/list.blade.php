@@ -130,10 +130,12 @@
                                     Anular <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu" style="left: -90px !important">
-                                    <li><a href="#">Quitar firma</a></li>
-                                    <a href="#" onclick="deleteItem('{{ route('contracts.destroy', ['contract' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal-alt" title="Anular" class="btn btn-sm btn-danger delete">
-                                        <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Anular</span>
-                                    </a>
+                                    <li><a href="#" onclick="degradeContract({{ $item->id }}, 'elaborado')" data-toggle="modal" data-target="#degrade-modal">Quitar firma</a></li>
+                                    <li>
+                                        <a href="#" onclick="deleteItem('{{ route('contracts.destroy', ['contract' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal-alt" title="Anular">
+                                            Anular
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         @elseif($item->status != 'firmado' && auth()->user()->hasPermission('delete_contracts'))
@@ -196,6 +198,26 @@
     </div>
 </form>
 
+<div class="modal modal-danger fade" tabindex="-1" id="degrade-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="voyager-trash"></i> Desea eliminar la firma del contrato?</h4>
+            </div>
+            <div class="modal-footer">
+                <form action="{{ route('contracts.status') }}" id="degrade-form" method="POST">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id">
+                    <input type="hidden" name="status">
+                    <input type="submit" class="btn btn-danger pull-right delete-confirm" value="Sí, eliminar">
+                </form>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal modal-danger fade" tabindex="-1" id="delete-modal-alt" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -234,6 +256,24 @@
             $.post($(this).attr('action'), $(this).serialize(), function(res){
                 if(res.message){
                     list(page);
+                }else{
+                    toastr.error(res.error);
+                    $('#div-results').loading('toggle');
+                }
+            });
+        });
+
+        $('#degrade-form').submit(function(e){
+            $('#degrade-modal').modal('hide');
+            e.preventDefault();
+            $('#div-results').loading({message: 'Cargando...'});
+            $.post($(this).attr('action'), $(this).serialize(), function(res){
+                if(res.message){
+                    toastr.success(res.message);
+                    list(page);
+                }else{
+                    toastr.error(res.error);
+                    $('#div-results').loading('toggle');
                 }
             });
         });
@@ -247,7 +287,7 @@
                     toastr.success(res.message);
                     list(page);
                 }else{
-                    toastr.success(res.error);
+                    toastr.error(res.error);
                     $('#div-results').loading('toggle');
                 }
             });
