@@ -27,7 +27,12 @@
                         <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
                         <td>{{ $item->period->name }}</td>
                         <td>{{ $item->procedure_type->name }}</td>
-                        <td>{{ $item->details->count() }}</td>
+                        <td>
+                            {{ $item->details->count() }} <br>
+                            @if ($item->status == 'habilitada')
+                                Pendientes <small>{{ $item->details->where('status', 'habilitado')->count() }}</small>
+                            @endif
+                        </td>
                         <td class="text-right">{{ number_format($item->details->sum('liquid_payable'), 2, ',', '.') }}</td>
                         <td>
                             @php
@@ -43,6 +48,9 @@
                                         break;
                                     case 'enviada':
                                         $label = 'primary';
+                                        break;
+                                    case 'aprobada':
+                                        $label = 'warning';
                                         break;
                                     case 'habilitada':
                                         $label = 'success';
@@ -83,7 +91,7 @@
                             @endif
 
                             @if ($item->status == 'procesada' && auth()->user()->hasPermission('edit_paymentschedules'))
-                                <button type="button" data-id="{{ $item->id }}" class="btn btn-dark btn-send" data-toggle="modal" data-target="#send_modal"><i class="glyphicon glyphicon-ok-circle"></i> Enviar</button>
+                                <button type="button" data-id="{{ $item->id }}" class="btn btn-dark btn-send" data-toggle="modal" data-target="#send-modal"><i class="glyphicon glyphicon-share-alt"></i> Enviar</button>
                             @endif
                             
                             @if (($item->status != 'habilitada' && $item->status != 'pagada' && auth()->user()->hasPermission('delete_paymentschedules')) || Auth::user()->role_id == 1 )
@@ -116,25 +124,7 @@
 </div>
 
 {{-- send modal --}}
-<form id="form-send" action="{{ route('paymentschedules.update.status') }}" method="POST">
-    @csrf
-    <input type="hidden" name="id">
-    <input type="hidden" name="status" value="enviada">
-    <div class="modal modal-primary fade" tabindex="-1" id="send_modal" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title"><i class="glyphicon glyphicon-ok-circle"></i> Desea enviar la siguiente planilla?</h4>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <input type="submit" class="btn btn-dark" value="Sí, enviar">
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
+@include('paymentschedules.partials.modal-send-paymentschedule')
 
 {{-- Modal cancel --}}
 <form id="form-cancel" action="{{ route('paymentschedules.cancel') }}" method="post">

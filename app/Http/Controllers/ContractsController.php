@@ -114,10 +114,10 @@ class ContractsController extends Controller
         // dd($request->all());
         try {
 
-            // $contract_person = Contract::where('person_id', $request->person_id)->where('status', '<>', 'finalizado')->where('deleted_at', NULL)->first();
-            // if($contract_person){
-            //     return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso.', 'alert-type' => 'warning']);
-            // }
+            $contract_person = Contract::where('person_id', $request->person_id)->where('status', '<>', 'finalizado')->where('deleted_at', NULL)->first();
+            if($contract_person){
+                return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso.', 'alert-type' => 'warning']);
+            }
 
             $older_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
                         ->where('procedure_type_id', $request->procedure_type_id)
