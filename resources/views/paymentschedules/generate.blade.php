@@ -23,6 +23,7 @@
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
+                                        <th rowspan="3">N&deg;</th>
                                         <th rowspan="3">ITEM</th>
                                         <th rowspan="3">NIVEL</th>
                                         <th rowspan="3">APELLIDOS Y NOMBRES / CARGO</th>
@@ -102,7 +103,7 @@
                                         $array_faults_amount = [];
                                         $array_liquid_payable = [];
                                     @endphp
-                                    @forelse ($contracts as $item)
+                                    @forelse ($procedure_type_id == 1 ? $contracts->sortBy('job.id') : $contracts as $item)
                                         @php
                                             // Periodo de inicio de contrato
                                             $period_start = date('Ym', strtotime($item->start));
@@ -120,6 +121,7 @@
                                             // Si el fin su contrato finaliza el mes actual
                                             if($period_finish == $period->name){
                                                 $finish_day = date('d', strtotime($item->finish));
+                                                $finish_day = $finish_day > 30 ? 30 : $finish_day;
                                                 if($finish_day < 30 || date('m', strtotime($item->finish)) != 2){
                                                     $days_enabled_worker -= 30 - $finish_day;
                                                 }
@@ -128,22 +130,28 @@
                                             // Sueldo actual
                                             $salary = $item->cargo ? $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo : $item->job->salary;
                                             // Nivel salarial
-                                            $level = $item->cargo ? $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->NumNivel : $item->job->level;
+                                            $job_item = $item->cargo ? '' : $item->job->item;
+                                            $job_level = $item->cargo ? $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->NumNivel : $item->job->level;
 
                                             // Sueldo parcial (en caso de que el trabajador tenga una fecha de ingreso posterior al periodo de la planilla)
                                             $partial_salary = ($salary/30) * $days_enabled_worker;
 
                                             // Calcular bono antigüedad
                                             $minimum_salary = setting('planillas.minimum_salary') ?? 2164;
-                                            $seniority_bonus_percentage = 0;
                                             $minimum_salary_quantity = 1;
-                                            if(count($item->person->seniority_bonus) > 0){
-                                                if(date('Ym', strtotime($item->person->seniority_bonus->first()->start)) <= $period->name){
-                                                    $seniority_bonus_percentage = $item->person->seniority_bonus->first()->type->percentage;
-                                                    $minimum_salary_quantity = $item->person->seniority_bonus->first()->quantity;
+                                            $seniority_bonus_percentage = 0;
+                                            $seniority_bonus_amount = 0;
+
+                                            // Si el tipo de planilla es de personal funcionamiento se calcula el bono antigüedad
+                                            if($procedure_type_id == 1){
+                                                if(count($item->person->seniority_bonus) > 0){
+                                                    if(date('Ym', strtotime($item->person->seniority_bonus->first()->start)) <= $period->name){
+                                                        $seniority_bonus_percentage = $item->person->seniority_bonus->first()->type->percentage;
+                                                        $minimum_salary_quantity = $item->person->seniority_bonus->first()->quantity;
+                                                    }
                                                 }
+                                                $seniority_bonus_amount = ((($minimum_salary * $minimum_salary_quantity) * ($seniority_bonus_percentage /100)) /30) * $days_enabled_worker;
                                             }
-                                            $seniority_bonus_amount = ((($minimum_salary * $minimum_salary_quantity) * ($seniority_bonus_percentage /100)) /30) * $days_enabled_worker;
 
                                             // Total ganado
                                             $total_amout = $partial_salary + $seniority_bonus_amount;
@@ -231,7 +239,7 @@
                                             array_push($array_salary, $salary);
                                             array_push($array_partial_salary, $partial_salary);
                                             array_push($array_job, $item->cargo ? $item->cargo->Descripcion : $item->job->name);
-                                            array_push($array_job_level, $level);
+                                            array_push($array_job_level, $job_level);
                                             array_push($array_seniority_bonus_percentage, $seniority_bonus_percentage);
                                             array_push($array_seniority_bonus_amount, $seniority_bonus_amount);
                                             array_push($array_solidary, $solidary);
@@ -250,7 +258,8 @@
                                         @endphp
                                         <tr>
                                             <td>{{ $cont }}</td>
-                                            <td>{{ $level }}</td>
+                                            <td>{{ $job_item }}</td>
+                                            <td>{{ $job_level }}</td>
                                             <td>
                                                 <b>{{ $item->person->first_name }} {{ $item->person->last_name }}</b> <br>
                                                 <small>{{ $item->cargo ? $item->cargo->Descripcion : $item->job->name }}</small>
@@ -294,7 +303,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colspan="7" class="text-right"><b>TOTAL</b></td>
+                                        <td colspan="8" class="text-right"><b>TOTAL</b></td>
                                         <td class="text-right"><b>{{ number_format(collect($array_salary)->sum(), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format(collect($array_partial_salary)->sum(), 2, ',', '.') }}</b></td>
                                         <td></td>

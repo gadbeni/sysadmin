@@ -94,6 +94,7 @@ class PermissionsTableSeeder extends Seeder
   
         // Planillas
         $keys = [
+            'approve_paymentschedules',
             'enable_paymentschedules',
             'browse_paymentschedulesfiles',
             'browse_paymentschedulesfilescreate'

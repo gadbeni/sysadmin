@@ -80,48 +80,52 @@
                     <td class="no-sort no-click bread-actions text-right">
                         
                         {{-- Definir siguiente estado --}}
-                        @if ($item->status != 'firmado')
+                        @if ($item->status != 'firmado' && ($item->cargo_id || $item->job_id))
                             <button title="Promover a la siguiente instancia" data-toggle="modal" data-target="#status-modal" onclick="changeStatus({{ $item->id }}, '{{ $netx_status }}')" class="btn btn-sm btn-dark btn-status view">
                                 <i class="voyager-check"></i> <span class="hidden-xs hidden-sm">Promover</span>
                             </button>
                         @endif
 
                         {{-- Botón de impresión --}}
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                              Imprimir <span class="caret"></span>
-                            </button>
-                          
-                            <ul class="dropdown-menu" role="menu">
-                                @switch($item->procedure_type_id)
-                                    @case(1)
-                                        <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum']) }}" target="_blank">Memoramdum de desiganación</a></li>
-                                        <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-reasigancion']) }}" target="_blank">Memoramdum de reasignación</a></li>
-                                        @break
-                                    @case(2)
-                                        <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.autorization']) }}" target="_blank">Autorización</a></li>
-                                        <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.invitation']) }}" target="_blank">Invitación</a></li>
-                                        {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'answer']) }}" target="_blank">Respuesta</a></li> --}}
-                                        <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.declaration']) }}" target="_blank">Declaración</a></li>
-                                        <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.memorandum']) }}" target="_blank">Memorandum</a></li>
-                                        <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.report']) }}" target="_blank">Informe</a></li>
-                                        <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
-                                        {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'presentation']) }}" target="_blank">Presentación de documentos</a></li> --}}
-                                        <li class="divider"></li>
-                                        <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.contract']) }}" target="_blank">Contrato</a></li>
-                                        @break
-                                    @case(5)
-                                        <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract']) }}" target="_blank">Contrato</a></li>
-                                        <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-desigancion']) }}" target="_blank">Memorandum</a></li>
-                                        @break
-                                    @default
-                                        
-                                @endswitch
-                            </ul>
-                        </div>
-                        <a href="#" title="Ver" class="btn btn-sm btn-warning view">
-                            <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
-                        </a>
+                        @if ($item->cargo_id || $item->job_id)
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                Imprimir <span class="caret"></span>
+                                </button>
+                            
+                                <ul class="dropdown-menu" role="menu">
+                                    @switch($item->procedure_type_id)
+                                        @case(1)
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum']) }}" target="_blank">Memoramdum de desiganación</a></li>
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-reasigancion']) }}" target="_blank">Memoramdum de reasignación</a></li>
+                                            @break
+                                        @case(2)
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.autorization']) }}" target="_blank">Autorización</a></li>
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.invitation']) }}" target="_blank">Invitación</a></li>
+                                            {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'answer']) }}" target="_blank">Respuesta</a></li> --}}
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.declaration']) }}" target="_blank">Declaración</a></li>
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.memorandum']) }}" target="_blank">Memorandum</a></li>
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.report']) }}" target="_blank">Informe</a></li>
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
+                                            {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'presentation']) }}" target="_blank">Presentación de documentos</a></li> --}}
+                                            <li class="divider"></li>
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.contract']) }}" target="_blank">Contrato</a></li>
+                                            @break
+                                        @case(5)
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract']) }}" target="_blank">Contrato</a></li>
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-desigancion']) }}" target="_blank">Memorandum</a></li>
+                                            @break
+                                        @default
+                                            
+                                    @endswitch
+                                </ul>
+                            </div>
+
+                        
+                            <a href="#" title="Ver" class="btn btn-sm btn-warning view">
+                                <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
+                            </a>
+                        @endif
 
                         {{-- Si está firmado y tiene permiso de cambiar el estado --}}
                         @if ($item->status == 'firmado' && auth()->user()->hasPermission('downgrade_contracts'))
@@ -255,6 +259,7 @@
             $('#div-results').loading({message: 'Cargando...'});
             $.post($(this).attr('action'), $(this).serialize(), function(res){
                 if(res.message){
+                    toastr.success(res.message);
                     list(page);
                 }else{
                     toastr.error(res.error);

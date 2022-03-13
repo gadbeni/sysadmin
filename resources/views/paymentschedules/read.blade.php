@@ -9,7 +9,7 @@
             <span class="glyphicon glyphicon-list"></span>&nbsp; Volver a la lista
         </a>
         <div class="btn-group">
-            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
               AFP's <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
@@ -19,21 +19,102 @@
             </ul>
         </div>
 
-        <div class="btn-group">
-            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                <span class="glyphicon glyphicon-print"></span>&nbsp; Imprimir <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#" data-afp="1" data-toggle="modal" data-target="#print-modal" class="btn-afp">AFP Futuro</a></li>
-                <li><a href="#" data-afp="2" data-toggle="modal" data-target="#print-modal" class="btn-afp">AFP BBVA Previsión</a></li>
-            </ul>
-        </div>
+        <button class="btn btn-danger" data-toggle="modal" data-target="#print-modal"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
 
-        {{-- Si la planilla está enviada o parte de la planilla no ha sido habilitada se mouestra el botón de habilitación --}}
-        @if (($data->status == 'enviada' || $data->details->where('status', 'procesado')->where('deleted_at', NULL)->count() > 0) && auth()->user()->hasPermission('enable_paymentschedules'))
+        {{-- Si la planilla está aprobada o está habiliatda para pago y parte de la planilla no ha sido habilitada se mouestra el botón de habilitación --}}
+        @if (($data->status == 'aprobada' || ($data->status == 'habilitada' && $data->details->where('status', 'procesado')->where('deleted_at', NULL)->count()) > 0) && auth()->user()->hasPermission('enable_paymentschedules') && !$centralize)
             <button type="button" data-toggle="modal" data-target="#enable-modal" class="btn btn-success" style="margin-left: -10px; padding: 7px 15px"><i class="voyager-dollar"></i> Habilitar</button>
         @endif
+
+        @if ($data->status == 'procesada' && auth()->user()->hasPermission('add_paymentschedules'))
+            <button type="button" data-id="{{ $data->id }}" class="btn btn-dark btn-send" data-toggle="modal" data-target="#send-modal"><i class="glyphicon glyphicon-share-alt"></i> Enviar</button>
+        @endif
+
+        @if ($data->status == 'enviada' && auth()->user()->hasPermission('approve_paymentschedules'))
+            <button type="button" data-id="{{ $data->id }}" class="btn btn-info btn-approve" data-toggle="modal" data-target="#approve-modal"><i class="glyphicon glyphicon-ok-circle"></i> Aprobar</button>
+        @endif
     </h1>
+
+    {{-- send modal --}}
+    @include('paymentschedules.partials.modal-send-paymentschedule')
+
+
+    {{-- approve modal --}}
+    <form id="form-approve" action="{{ route('paymentschedules.update.status') }}" method="POST">
+        @csrf
+        <input type="hidden" name="status" value="aprobada">
+        <div class="modal modal-info fade" tabindex="-1" id="approve-modal" role="dialog">
+            <div class="modal-dialog @if($data->centralize) modal-lg @endif">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="glyphicon glyphicon-ok-circle"></i> Desea aprobar la siguiente planilla?</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{-- Si el usuario es encargo de RRHH de una DA desconcentrada --}}
+                        @if (Auth::user()->direccion_administrativa_id || !$data->centralize)
+                            <input type="hidden" name="id" value="{{ $data->id }}">
+                        @else
+                            <input type="hidden" name="centralize" value="1">
+                            
+                            <div class="form-group">
+                                @php
+                                    $paymentschedule = \App\Models\Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details' => function($query){
+                                        $query->where('deleted_at', NULL);
+                                    }])
+                                    ->where('centralize', 1)
+                                    ->where('centralize_code', $data->centralize_code)
+                                    ->where('status', 'enviada')
+                                    ->where('deleted_at', NULL)->get();
+                                @endphp
+
+                                <div class="col-md-12">
+                                    <h4>
+                                        La planilla seleccionada está centralizada, seleccione las planilla que desea aprobar.
+                                    </h4>
+                                    <br>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>ID</th>
+                                                    <th>Dirección administrativa</th>
+                                                    <th>N&deg; de personas</th>
+                                                    <th>Monto</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($paymentschedule as $item)
+                                                    <tr>
+                                                        <td>
+                                                            <input type="checkbox" name="id[]" value="{{ $item->id }}">
+                                                        </td>
+                                                        <td>{{ str_pad($item->id, 6, "0", STR_PAD_LEFT) }}</td>
+                                                        <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
+                                                        <td>{{ $item->details->count() }}</td>
+                                                        <td class="text-right">{{ number_format($item->details->sum('liquid_payable'), 2, ',', '.') }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-info" value="Sí, aprobar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    
 @stop
 
 @section('content')
@@ -116,6 +197,9 @@
                                             case 'enviada':
                                                 $label = 'primary';
                                                 break;
+                                            case 'aprobada':
+                                                $label = 'warning';
+                                                break;
                                             case 'habilitada':
                                                 $label = 'success';
                                                 break;
@@ -153,8 +237,8 @@
                                         <th rowspan="3">N&deg; NUA/CUA</th>
                                         <th rowspan="3">FECHA INGRESO</th>
                                         <th rowspan="3">DÍAS TRAB.</th>
-                                        <th rowspan="3">SUELDO MENSUAL</th>
-                                        <th rowspan="3">SUELDO PARCIAL</th>
+                                        <th rowspan="3">HABER BÁSICO</th>
+                                        <th rowspan="3">TOTAL DÍAS TRAB.</th>
                                         <th rowspan="3">%</th>
                                         <th rowspan="3">BONO ANTIG.</th>
                                         <th rowspan="3">TOTAL GANADO</th>
@@ -236,7 +320,7 @@
                                         @endphp
                                         <tr>
                                             <td>{{ $cont }}</td>
-                                            <td>{{ $item->item ?? $item->contract->job ? $item->contract->job->id : '' }}</td>
+                                            <td>{{ $item->contract->job ? $item->contract->job->id : '' }}</td>
                                             <td>{{ $item->job_level }}</td>
                                             <td>
                                                 <b>{{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }}</b> <br>
@@ -248,7 +332,7 @@
                                             <td><b>{{ $item->worked_days }}</b></td>
                                             <td class="text-right">{{ number_format($item->salary, 2, ',', '.') }}</td>
                                             <td class="text-right"><b>{{ number_format($item->partial_salary, 2, ',', '.') }}</b></td>
-                                            <td class="text-right">{{ number_format($item->seniority_bonus_percentage, 2, ',', '.') }}%</td>
+                                            <td class="text-right">{{ number_format($item->seniority_bonus_percentage, 0, ',', '.') }}%</td>
                                             <td class="text-right">{{ number_format($item->seniority_bonus_amount, 2, ',', '.') }}</td>
                                             <td class="text-right"><b>{{ number_format($item->partial_salary + $item->seniority_bonus_amount, 2, ',', '.') }}</b></td>
                                             <td class="text-right">{{ number_format($item->solidary, 2, ',', '.') }}</td>
@@ -296,7 +380,7 @@
                                         <td colspan="8" class="text-right"><b>TOTAL</b></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('salary'), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($total_partial_salary, 2, ',', '.') }}</b></td>
-                                        <td class="text-right"><b>{{ $data->details->sum('seniority_bonus_percentage') }}%</b></td>
+                                        <td class="text-right"></td>
                                         <td class="text-right"><b>{{ number_format($total_seniority_bonus_amount, 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($total_amount, 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('solidary'), 2, ',', '.') }}</b></td>
@@ -676,6 +760,14 @@
                     <h4 class="modal-title"><i class="glypicon glypicon-print"></i> Imprimir planilla</h4>
                 </div>
                 <div class="modal-body">
+                    <div class="form-group">
+                        <label for="program_id">AFP</label>
+                        <select name="afp" class="form-control select2">
+                            <option value="">Todas</option>
+                            <option value="1">Futuro</option>
+                            <option value="2">Previsión</option>
+                        </select>
+                    </div>
                     @php
                         $contracts = collect();
                         foreach($data->details as $item){
@@ -689,6 +781,14 @@
                             @foreach ($contracts->groupBy('program_id') as $item)
                                 <option value="{{ $item[0]->program->id }}">{{ $item[0]->program->name }}</option>
                             @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="program_id">Agrupar por</label>
+                        <select name="group" class="form-control select2">
+                            <option value="">Ninguno</option>
+                            <option value="1">Dirección administrativa</option>
+                            <option value="2">Programas/Proyectos</option>
                         </select>
                     </div>
                 </div>
@@ -720,16 +820,18 @@
     <script>
         $(document).ready(function () {
             var centralize = "{{ $centralize ? '?centralize=true' : '?' }}";
-            var afp;
-
-            $('.btn-afp').click(function(){
-                afp = '&afp='+$(this).data('afp');
-            });
 
             $('.btn-print').click(function(){
                 $('#print-modal').modal('toggle');
-                let program = '&program='+$('select[name="program_id"]').val();
-                window.open(centralize+afp+program+'&print=true', '_blank');
+                let afp = '&afp='+$('#print-modal select[name="afp"] option:selected').val();
+                let program = '&program='+$('#print-modal select[name="program_id"] option:selected').val();
+                let group = '&group='+$('#print-modal select[name="group"] option:selected').val();
+                console.log(afp,program,group)
+                window.open(centralize+afp+program+group+'&print=true', '_blank');
+            });
+
+            $('.btn-send').click(function(){
+                $('#form-send input[name="id"]').val($(this).data('id'));
             });
         });
     </script>
