@@ -333,9 +333,7 @@ class PaymentschedulesController extends Controller
                     $paymentschedules_joined = collect();
                     foreach ($paymentschedules as $paymentschedule) {
                         Paymentschedule::where('id', $paymentschedule->id)->update(['status' => $request->status]);
-                        
-                        $details = $paymentschedule->procedure_type_id == 1 ? $paymentschedule->details->sortBy('contract.job_id') : $paymentschedule->details;
-                        foreach ($details as $item) {
+                        foreach ($paymentschedule->details as $item) {
                             $paymentschedules_joined->push($item);
                         }
                     }
@@ -343,7 +341,8 @@ class PaymentschedulesController extends Controller
                     // dd($paymentschedules_joined);
                     
                     // Recorrer los items agrupados por afp
-                    foreach ($paymentschedules_joined->groupBy('contract.person.afp') as $afp) {
+                    $details = $paymentschedule->procedure_type_id == 1 ? $paymentschedules_joined->groupBy('contract.person.afp')->sortBy('contract.job_id') : $paymentschedules_joined->groupBy('contract.person.afp');
+                    foreach ($details as $afp) {
                         $cont = 1;
                         foreach ($afp as $item) {
                             PaymentschedulesDetail::where('id', $item->id)->update(['item' => $cont]);

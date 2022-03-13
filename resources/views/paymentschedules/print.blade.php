@@ -140,6 +140,13 @@
                             $total_payable_liquid_group = 0;
                         @endphp
 
+                        {{-- Poner cabecear de la forma de agrupar si existe --}}
+                        @if ($group)
+                            <tr>
+                                <td colspan="26"><b>{{ "{$key}" }}</b></td>
+                            </tr>
+                        @endif
+
                         @forelse ($details as $item)
                             @php
                                 $cont++;
@@ -220,12 +227,12 @@
                             
                         @endforelse
 
-                        {{-- Poner cabecear de la forma de agrupar si existe --}}
+                        {{-- Poner footer de la forma de agrupar si existe --}}
                         @if ($group)
                             <tr>
-                                <td colspan="12"><b>{{ "{$key}" }}</b></td>
+                                <td colspan="12"><b>TOTAL</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_amount_group, 2, ',', '.') }}</b></td>
-                                <td colspan="10"></td>
+                                <td colspan="8"></td>
                                 <td style="text-align: right"><b>{{ number_format($data->procedure_type_id != 2 ? $total_discount_group : 0, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_payable_liquid_group, 2, ',', '.') }}</b></td>
                                 <td colspan="2"></td>
