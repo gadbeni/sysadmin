@@ -230,10 +230,10 @@
                                 <thead>
                                     <tr>
                                         <th rowspan="3">N&deg;</th>
-                                        <th rowspan="3">ITEM</th>
-                                        <th rowspan="3">NIVEL</th>
                                         <th rowspan="3">APELLIDOS Y NOMBRES / CARGO</th>
                                         <th rowspan="3">CI</th>
+                                        <th rowspan="3">ITEM</th>
+                                        <th rowspan="3">NIVEL</th>
                                         <th rowspan="3">N&deg; NUA/CUA</th>
                                         <th rowspan="3">FECHA INGRESO</th>
                                         <th rowspan="3">DÍAS TRAB.</th>
@@ -251,6 +251,11 @@
                                         <th colspan="2">FONDO SOCIAL</th>
                                         <th rowspan="3">TOTAL DESC.</th>
                                         <th rowspan="3">LÍQUIDO PAGABLE</th>
+
+                                        {{-- Si es planilla de funcionamiento se muestran los aportes patronales--}}
+                                        @if ($data->procedure_type_id == 1)
+                                        <th style="text-align: center" colspan="5">APORTES PATRONALES</th>
+                                        @endif
                                     </tr>
                                     <tr>
                                         <th>APORTE SOLIDARIO</th>
@@ -266,6 +271,14 @@
                                         <th>APORTE NAL. SOLIDARIO</th>
                                         <th rowspan="2">DÍAS</th>
                                         <th rowspan="2">MULTAS</th>
+
+                                        @if ($data->procedure_type_id == 1)
+                                        <th>RIESGO PROFESIONAL</th>
+                                        <th>APORTE VIVIENDA</th>
+                                        <th>APORTE SOLIDARIO</th>
+                                        <th>SINEC</th>
+                                        <th>TOTAL</th>
+                                        @endif
                                     </tr>
                                     <tr>
                                         <th>0.5%</th>
@@ -279,6 +292,15 @@
                                         <th>0.5%</th>
                                         <th>10%</th>
                                         <th>1%</th>
+
+                                        {{-- Si es planilla de funcionamiento --}}
+                                        @if ($data->procedure_type_id == 1)
+                                        <th>1.71%</th>
+                                        <th>2%</th>
+                                        <th>3%</th>
+                                        <th>10%</th>
+                                        <th>16.71%</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -299,6 +321,7 @@
                                         $labor_rc_iva_amount = 0;
                                         $labor_faults_amount = 0;
                                         $labor_liquid_payable = 0;
+                                        $employer_total = 0;
                                     @endphp
                                     @forelse ($data->procedure_type_id == 1 ? $data->details->sortBy('contract.job.id') : $data->details as $item)
                                         @php
@@ -317,16 +340,21 @@
                                             $labor_rc_iva_amount += $item->rc_iva_amount;
                                             $labor_faults_amount += $item->faults_amount;
                                             $labor_liquid_payable += $item->liquid_payable;
+
+                                            $employer_amount = $item->common_risk + $item->solidary_employer + $item->housing_employer + $item->health;
+                                            if ($data->procedure_type_id == 1) {
+                                                $employer_total += $employer_amount;
+                                            }
                                         @endphp
                                         <tr>
                                             <td>{{ $cont }}</td>
-                                            <td>{{ $item->contract->job ? $item->contract->job->id : '' }}</td>
-                                            <td>{{ $item->job_level }}</td>
                                             <td>
                                                 <b>{{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }}</b> <br>
                                                 <small>{{ $item->job }}</small>
                                             </td>
                                             <td><b>{{ $item->contract->person->ci }}</b></td>
+                                            <td>{{ $item->contract->job ? $item->contract->job->item : '' }}</td>
+                                            <td>{{ $item->job_level }}</td>
                                             <td>{{ $item->contract->person->nua_cua }}</td>
                                             <td>{{ $item->contract->start }}</td>
                                             <td><b>{{ $item->worked_days }}</b></td>
@@ -347,7 +375,7 @@
                                             <td class="text-right">{{ number_format($item->retirement, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($item->solidary_national, 2, ',', '.') }}</td>
                                             
-                                            {{-- Si la planilla es de consultoría al total aporte afp le sumamos el riego laboral (que es el mismo monto del riesgo común) --}}
+                                            {{-- Si la planilla es de consultoría al total aporte afp le sumamos el riesgo laboral (que es el mismo monto del riesgo común) --}}
                                             <td class="text-right"><b>{{ number_format($item->labor_total + ($data->procedure_type_id == 2 ? $item->common_risk : 0 ), 2, ',', '.') }}</b></td>
                                             
                                             <td class="text-right">{{ number_format($item->rc_iva_amount, 2, ',', '.') }}</td>
@@ -364,6 +392,15 @@
                                                 {{ number_format($labor_total + $item->rc_iva_amount + $item->faults_amount, 2, ',', '.') }}
                                             </td>
                                             <td class="text-right"><b>{{ number_format($item->liquid_payable, 2, ',', '.') }}</b></td>
+
+                                            {{-- Si es planilla de funcionamiento --}}
+                                            @if ($data->procedure_type_id == 1)
+                                            <td class="text-right">{{ number_format($item->common_risk, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($item->housing_employer, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($item->solidary_employer, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($item->health, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($employer_amount, 2, ',', '.') }}</td>
+                                            @endif
                                         </tr>
                                         @php
                                             $cont++;
@@ -395,7 +432,7 @@
                                         <td class="text-right"><b>{{ number_format($data->details->sum('retirement'), 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('solidary_national'), 2, ',', '.') }}</b></td>
                                         
-                                        {{-- Si la planilla es de consultoría al total aporte afp le sumamos el riego laboral (que es el mismo monto del riesgo común) --}}
+                                        {{-- Si la planilla es de consultoría al total aporte afp le sumamos el riesgo laboral (que es el mismo monto del riesgo común) --}}
                                         <td class="text-right"><b>{{ number_format($data->details->sum('labor_total') + ($data->procedure_type_id == 2 ? $total_common_risk : 0), 2, ',', '.') }}</b></td>
                                         
                                         <td class="text-right"><b>{{ number_format($data->details->sum('rc_iva_amount'), 2, ',', '.') }}</b></td>
@@ -412,6 +449,15 @@
                                             <b>{{ number_format($labor_total + $data->details->sum('rc_iva_amount') + $data->details->sum('faults_amount'), 2, ',', '.') }}</b>
                                         </td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('liquid_payable'), 2, ',', '.') }}</b></td>
+
+                                        {{-- Si es planilla de funcionamiento --}}
+                                        @if ($data->procedure_type_id == 1)
+                                        <td class="text-right"><b>{{ number_format($total_common_risk, 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format($total_housing_employer, 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format($total_solidary_employer, 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format($total_health, 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format($employer_total, 2, ',', '.') }}</b></td>
+                                        @endif
                                     </tr>
                                 </tfoot>
                             </table>

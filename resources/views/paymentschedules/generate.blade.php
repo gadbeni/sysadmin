@@ -24,10 +24,10 @@
                                 <thead>
                                     <tr>
                                         <th rowspan="3">N&deg;</th>
-                                        <th rowspan="3">ITEM</th>
-                                        <th rowspan="3">NIVEL</th>
                                         <th rowspan="3">APELLIDOS Y NOMBRES / CARGO</th>
                                         <th rowspan="3">CI</th>
+                                        <th rowspan="3">ITEM</th>
+                                        <th rowspan="3">NIVEL</th>
                                         <th rowspan="3">N&deg; NUA/CUA</th>
                                         <th rowspan="3">FECHA INGRESO</th>
                                         <th rowspan="3">DÍAS TRAB.</th>
@@ -171,8 +171,8 @@
                                             $housing_employer = 0;
                                             $health = 0;
 
-                                            // Si los días trabajados son >= 20
-                                            if($days_enabled_worker >= 20){
+                                            // Si los días trabajados son >= 20 y la planilla no es de consutoría
+                                            if($days_enabled_worker >= 20 || $procedure_type_id != 2){
                                                 $solidary = $total_amout * 0.005;
                                                 $common_risk = $total_amout *0.0171;
                                                 $retirement = $total_amout * 0.1;
@@ -258,13 +258,13 @@
                                         @endphp
                                         <tr>
                                             <td>{{ $cont }}</td>
-                                            <td>{{ $job_item }}</td>
-                                            <td>{{ $job_level }}</td>
                                             <td>
                                                 <b>{{ $item->person->first_name }} {{ $item->person->last_name }}</b> <br>
                                                 <small>{{ $item->cargo ? $item->cargo->Descripcion : $item->job->name }}</small>
                                             </td>
                                             <td><b>{{ $item->person->ci }}</b></td>
+                                            <td>{{ $job_item }}</td>
+                                            <td>{{ $job_level }}</td>
                                             <td>{{ $item->person->nua_cua }}</td>
                                             <td>{{ $item->start }}</td>
                                             <td><b>{{ $days_enabled_worker }}</b></td>

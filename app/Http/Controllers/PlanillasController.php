@@ -366,6 +366,13 @@ class PlanillasController extends Controller
         return view('planillas.payment-recipe', compact('payment', 'planilla'));
     }
 
+    public function planillas_pagos_print_group($id){
+        $paymentschedule_details = PaymentschedulesDetail::with(['paymentschedule', 'paymentschedule.procedure_type', 'contract.person', 'paymentschedule.period'])
+                                ->where('paymentschedule_id', $id)
+                                ->where('deleted_at', NULL)->orderBy('item', 'ASC')->get();
+        return view('planillas.payment-recipe-group', compact('paymentschedule_details'));
+    }
+
     public function planillas_pagos_aguinaldos_print($id){
         $payment = Aguinaldo::with(['payment.cashier.user',])->where('id', $id)->first();
         // dd($payment);

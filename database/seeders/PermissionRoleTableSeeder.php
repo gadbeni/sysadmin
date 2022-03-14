@@ -204,6 +204,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = "read_contracts" or
                                             `key` = "edit_contracts" or
                                             `key` = "add_contracts" or
+                                            `key` = "delete_contracts" or
                                             `key` = "browse_countries" or
                                             `key` = "read_countries" or
                                             `key` = "edit_countries" or
@@ -216,8 +217,10 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = "read_cities" or
                                             `key` = "edit_cities" or
                                             `key` = "add_cities" or
+                                            `key` = "downgrade_contracts" or
                                             table_name = "seniority_bonus_people" or
-                                            table_name = "paymentschedules"')->get();
+                                            table_name = "paymentschedules" or
+                                            `key` = "print_paymentschedules" or')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de administrativo

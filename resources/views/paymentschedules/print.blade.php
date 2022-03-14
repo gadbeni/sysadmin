@@ -45,10 +45,10 @@
                 <thead>
                     <tr>
                         <th rowspan="3">N&deg;</th>
-                        <th rowspan="3">ITEM</th>
-                        <th rowspan="3">NIVEL</th>
                         <th rowspan="3">APELLIDOS Y NOMBRES / CARGO</th>
                         <th rowspan="3">CI</th>
+                        <th rowspan="3">ITEM</th>
+                        <th rowspan="3">NIVEL</th>
                         <th rowspan="3">N&deg; NUA/CUA</th>
                         <th rowspan="3" style="width: 55px">FECHA INGRESO</th>
                         <th rowspan="3">DÍAS TRAB.</th>
@@ -174,13 +174,13 @@
                             @endphp
                             <tr>
                                 <td>{{ $item->item ?? $cont }}</td>
-                                <td>{{ $item->contract->job ? $item->contract->job->id : '' }}</td>
-                                <td>{{ $item->job_level }}</td>
                                 <td>
                                     <b>{{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }}</b> <br>
                                     <small>{{ $item->job }}</small>
                                 </td>
                                 <td><b>{{ $item->contract->person->ci }}</b></td>
+                                <td>{{ $item->contract->job ? $item->contract->job->id : '' }}</td>
+                                <td>{{ $item->job_level }}</td>
                                 <td>{{ $item->contract->person->nua_cua }}</td>
                                 <td>{{ $item->contract->start }}</td>
                                 <td><b>{{ $item->worked_days }}</b></td>

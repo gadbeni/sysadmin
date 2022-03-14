@@ -30,7 +30,7 @@
                         <td>
                             {{ $item->details->count() }} <br>
                             @if ($item->status == 'habilitada')
-                                Pendientes <small>{{ $item->details->where('status', 'habilitado')->count() }}</small>
+                                <small>Pagadas {{ $item->details->where('status', 'pagado')->count() }}</small>
                             @endif
                         </td>
                         <td class="text-right">{{ number_format($item->details->sum('liquid_payable'), 2, ',', '.') }}</td>
@@ -85,7 +85,7 @@
                                     </div>
                                 @else
                                     <a href="{{ route('paymentschedules.show', ['paymentschedule' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
-                                        <i class="voyager-eye"></i><span class="hidden-xs hidden-sm">Ver</span>
+                                        <i class="voyager-eye"></i><span class="hidden-xs hidden-sm"> Ver</span>
                                     </a>
                                 @endif
                             @endif
@@ -93,8 +93,12 @@
                             @if ($item->status == 'procesada' && auth()->user()->hasPermission('edit_paymentschedules'))
                                 <button type="button" data-id="{{ $item->id }}" class="btn btn-dark btn-send" data-toggle="modal" data-target="#send-modal"><i class="glyphicon glyphicon-share-alt"></i> Enviar</button>
                             @endif
+
+                            @if (($item->status == 'aprobada' || $item->status == 'pagada') && ((auth()->user()->hasPermission('print_paymentschedules') && Auth::user()->direccion_administrativa_id) || Auth::user()->role_id == 1))
+                                <a href="{{ route('planillas.pagos.print.group', ['id' => $item->id]) }}" target="_blank" class="btn btn-default btn-print" ><i class="glyphicon glyphicon-print"></i> Imprimir boleta</a>
+                            @endif
                             
-                            @if (($item->status != 'habilitada' && $item->status != 'pagada' && auth()->user()->hasPermission('delete_paymentschedules')) || Auth::user()->role_id == 1 )
+                            @if ($item->procedure_type_id != 2 && ($item->status != 'habilitada' && $item->status != 'pagada' && auth()->user()->hasPermission('delete_paymentschedules')) || Auth::user()->role_id == 1 )
                                 <button type="button" data-id="{{ $item->id }}" data-toggle="modal" data-target="#cancel-modal" title="Anular" class="btn btn-sm btn-danger btn-cancel edit">
                                     <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Anular</span>
                                 </button>

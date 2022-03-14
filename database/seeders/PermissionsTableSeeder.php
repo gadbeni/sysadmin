@@ -96,6 +96,7 @@ class PermissionsTableSeeder extends Seeder
         $keys = [
             'approve_paymentschedules',
             'enable_paymentschedules',
+            'print_paymentschedules',
             'browse_paymentschedulesfiles',
             'browse_paymentschedulesfilescreate'
         ];
