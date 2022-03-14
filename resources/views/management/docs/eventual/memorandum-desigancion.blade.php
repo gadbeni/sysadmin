@@ -51,8 +51,8 @@
                     </p>
                 </div>
                 <div class="border-left">
-                    <b>DE:</b> {{ Str::upper($signature ? $signature->name : 'ING. PAUL STEVE CURCUY ITURRI') }} <br>
-                    <b>{{ Str::upper($signature ? $signature->job : 'Director Departamental de Recursos Humanos GAD-BENI') }}</b> <br> <br> <br>
+                    <b>DE:</b> {{ Str::upper(setting('firma-autorizada.name')) }} <br>
+                    <b>{{ Str::upper(setting('firma-autorizada.job')) }}</b> <br> <br> <br>
                     <b>A:</b> {{ Str::upper($contract->person->first_name.' '.$contract->person->last_name) }} <br>
                     <b>CI: {{ $contract->person->ci }}</b> <br> <br>
                 </div>
@@ -60,7 +60,7 @@
             <br>
             <p style="text-align: center"><u><b>DESIGNACIÓN</b></u></p>
             <p>
-                Mediante el presente comunico a Usted que, a partir de la fecha y hasta el {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}, es {{ $contract->person->gender == 'masculino' ? 'desigando' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b>, bajo la dependincia de la/el <b>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }}</b> con el nivel salarial <b>{{ $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->NumNivel }}</b> de la <b>Planilla de Inversión (Personal Eventual)</b>, según clasificador presupuestario partida 12100. Designación que conlleva todas las implicancias y efectos de la Ley 2027 y 1178, Ley 1413 del PGE  2022 y su respectivo D.S. 4646.
+                Mediante el presente comunico a Usted que, a partir de la fecha y hasta el {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}, es {{ $contract->person->gender == 'masculino' ? 'desigando' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b>, bajo la dependincia de la/el <b>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }}</b> con el nivel salarial <b>{{ $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->NumNivel }}</b> por el monto de <b>{{ number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 0, ',', '.') }} Bs.</b> de la <b>Planilla de Inversión (Personal Eventual)</b>, según clasificador presupuestario partida 12100. Designación que conlleva todas las implicancias y efectos de la Ley 2027 y 1178, Ley 1413 del PGE  2022 y su respectivo D.S. 4646.
             </p>
             <p>
                 De acuerdo a normas vigentes deberá recibir bajo inventario del Responsable de Registro y Control de Bienes Públicos los activos que serán asignados a su persona.
