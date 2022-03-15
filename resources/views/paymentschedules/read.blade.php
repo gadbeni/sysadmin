@@ -253,7 +253,7 @@
                                         <th rowspan="3">LÍQUIDO PAGABLE</th>
 
                                         {{-- Si es planilla de funcionamiento se muestran los aportes patronales--}}
-                                        @if ($data->procedure_type_id == 1)
+                                        @if ($data->procedure_type_id == 5)
                                         <th style="text-align: center" colspan="5">APORTES PATRONALES</th>
                                         @endif
                                     </tr>
@@ -272,7 +272,7 @@
                                         <th rowspan="2">DÍAS</th>
                                         <th rowspan="2">MULTAS</th>
 
-                                        @if ($data->procedure_type_id == 1)
+                                        @if ($data->procedure_type_id == 5)
                                         <th>RIESGO PROFESIONAL</th>
                                         <th>APORTE VIVIENDA</th>
                                         <th>APORTE SOLIDARIO</th>
@@ -294,7 +294,7 @@
                                         <th>1%</th>
 
                                         {{-- Si es planilla de funcionamiento --}}
-                                        @if ($data->procedure_type_id == 1)
+                                        @if ($data->procedure_type_id == 5)
                                         <th>1.71%</th>
                                         <th>2%</th>
                                         <th>3%</th>
@@ -394,7 +394,7 @@
                                             <td class="text-right"><b>{{ number_format($item->liquid_payable, 2, ',', '.') }}</b></td>
 
                                             {{-- Si es planilla de funcionamiento --}}
-                                            @if ($data->procedure_type_id == 1)
+                                            @if ($data->procedure_type_id == 5)
                                             <td class="text-right">{{ number_format($item->common_risk, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($item->housing_employer, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($item->solidary_employer, 2, ',', '.') }}</td>
@@ -451,7 +451,7 @@
                                         <td class="text-right"><b>{{ number_format($data->details->sum('liquid_payable'), 2, ',', '.') }}</b></td>
 
                                         {{-- Si es planilla de funcionamiento --}}
-                                        @if ($data->procedure_type_id == 1)
+                                        @if ($data->procedure_type_id == 5)
                                         <td class="text-right"><b>{{ number_format($total_common_risk, 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($total_housing_employer, 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($total_solidary_employer, 2, ',', '.') }}</b></td>
@@ -806,6 +806,15 @@
                     <h4 class="modal-title"><i class="glypicon glypicon-print"></i> Imprimir planilla</h4>
                 </div>
                 <div class="modal-body">
+                    
+                    <div class="form-group">
+                        <label for="print_type">Tipo de impresión</label>
+                        <select name="print_type" class="form-control select2">
+                            <option value="1">Normal</option>
+                            <option value="2">Contabilidad</option>
+                        </select>
+                    </div>
+
                     <div class="form-group">
                         <label for="program_id">AFP</label>
                         <select name="afp" class="form-control select2">
@@ -872,8 +881,9 @@
                 let afp = '&afp='+$('#print-modal select[name="afp"] option:selected').val();
                 let program = '&program='+$('#print-modal select[name="program_id"] option:selected').val();
                 let group = '&group='+$('#print-modal select[name="group"] option:selected').val();
-                console.log(afp,program,group)
-                window.open(centralize+afp+program+group+'&print=true', '_blank');
+                let print_type = '&print_type='+$('#print-modal select[name="print_type"] option:selected').val();
+                // console.log(afp,program,group)
+                window.open(centralize+afp+program+group+print_type+'&print=true', '_blank');
             });
 
             $('.btn-send').click(function(){

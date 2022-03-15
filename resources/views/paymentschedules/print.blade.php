@@ -68,6 +68,11 @@
                         <th rowspan="3">LÍQUIDO PAGABLE</th>
                         <th rowspan="3">FIRMA</th>
                         <th rowspan="3">ITEM</th>
+
+                        {{-- Si es planilla de funcionamiento se muestran los aportes patronales--}}
+                        @if ($data->procedure_type_id == 5 && $print_type == 2)
+                        <th style="text-align: center" colspan="5">APORTES PATRONALES</th>
+                        @endif
                     </tr>
                     <tr>
                         <th>APORTE SOLIDARIO</th>
@@ -83,6 +88,14 @@
                         <th>APORTE NAL. SOLIDARIO</th>
                         <th rowspan="2">DÍAS</th>
                         <th rowspan="2">MULTAS</th>
+
+                        @if ($data->procedure_type_id == 5 && $print_type == 2)
+                        <th>RIESGO PROFESIONAL</th>
+                        <th>APORTE VIVIENDA</th>
+                        <th>APORTE SOLIDARIO</th>
+                        <th>SINEC</th>
+                        <th>TOTAL</th>
+                        @endif
                     </tr>
                     <tr>
                         <th>0.5%</th>
@@ -96,6 +109,15 @@
                         <th>0.5%</th>
                         <th>10%</th>
                         <th>1%</th>
+
+                        {{-- Si es planilla de funcionamiento --}}
+                        @if ($data->procedure_type_id == 5 && $print_type == 2)
+                        <th>1.71%</th>
+                        <th>2%</th>
+                        <th>3%</th>
+                        <th>10%</th>
+                        <th>16.71%</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -116,6 +138,7 @@
                         $labor_rc_iva_amount = 0;
                         $labor_faults_amount = 0;
                         $labor_liquid_payable = 0;
+                        $employer_total = 0;
                     @endphp
 
                     @php
@@ -138,12 +161,20 @@
                             $total_amount_group = 0;
                             $total_discount_group = 0;
                             $total_payable_liquid_group = 0;
+                            $total_risk_employer_group = 0;
+                            $total_solidary_employer_group = 0;
+                            $total_housing_employer_group = 0;
+                            $total_health_group = 0;
+                            $total_employer_amount_group = 0;
                         @endphp
 
                         {{-- Poner cabecear de la forma de agrupar si existe --}}
                         @if ($group)
                             <tr>
                                 <td colspan="@if ($data->procedure_type_id == 2) 27 @else 26  @endif"><b>{{ "{$key}" }}</b></td>
+                                @if ($data->procedure_type_id == 5 && $print_type == 2)
+                                    <td colspan="5"></td>
+                                @endif
                             </tr>
                         @endif
 
@@ -166,10 +197,20 @@
                                 $labor_faults_amount += $item->faults_amount;
                                 $labor_liquid_payable += $item->liquid_payable;
 
+                                $employer_amount = $item->common_risk + $item->solidary_employer + $item->housing_employer + $item->health;
+                                if ($data->procedure_type_id == 1) {
+                                    $employer_total += $employer_amount;
+                                }
+
                                 if($group){
                                     $total_amount_group += $item->partial_salary;
                                     $total_discount_group += $item->labor_total + $item->rc_iva_amount + $item->faults_amount;
                                     $total_payable_liquid_group += $item->liquid_payable;
+                                    $total_risk_employer_group += $item->common_risk;
+                                    $total_solidary_employer_group += $item->solidary_employer;
+                                    $total_housing_employer_group += $item->housing_employer;
+                                    $total_health_group += $item->health;
+                                    $total_employer_amount_group += $employer_amount;
                                 }
                             @endphp
                             <tr>
@@ -208,7 +249,7 @@
                                 <td style="text-align: right">{{ number_format($item->faults_quantity, floor($item->faults_quantity) < $item->faults_quantity ? 1 : 0, ',', '.') }}</td>
                                 <td style="text-align: right">{{ number_format($item->faults_amount, 2, ',', '.') }}</td>
                                 
-                                <td class="text-right">
+                                <td style="text-align: right">
                                     @php
                                         // Si el planilla es permanenteo eventual restamos el total de aportes laborales al líquido pagable
                                         $labor_total = 0;
@@ -222,6 +263,15 @@
                                 <td style="text-align: right"><b>{{ number_format($item->liquid_payable, 2, ',', '.') }}</b></td>
                                 <td style="width: 150px; height: 50px"></td>
                                 <td>{{ $item->item ?? $cont }}</td>
+
+                                {{-- Si es planilla de funcionamiento --}}
+                                @if ($data->procedure_type_id == 5 && $print_type == 2)
+                                <td style="text-align: right">{{ number_format($item->common_risk, 2, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($item->housing_employer, 2, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($item->solidary_employer, 2, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($item->health, 2, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($employer_amount, 2, ',', '.') }}</td>
+                                @endif
                             </tr>
                         @empty
                             
@@ -236,6 +286,14 @@
                                 <td style="text-align: right"><b>{{ number_format($data->procedure_type_id != 2 ? $total_discount_group : 0, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_payable_liquid_group, 2, ',', '.') }}</b></td>
                                 <td colspan="2"></td>
+                                
+                                @if ($data->procedure_type_id == 5 && $print_type == 2)
+                                <td style="text-align: right"><b>{{ number_format($total_risk_employer_group, 2, ',', '.') }}</b></td>
+                                <td style="text-align: right"><b>{{ number_format($total_solidary_employer_group, 2, ',', '.') }}</b></td>
+                                <td style="text-align: right"><b>{{ number_format($total_housing_employer_group, 2, ',', '.') }}</b></td>
+                                <td style="text-align: right"><b>{{ number_format($total_health_group, 2, ',', '.') }}</b></td>
+                                <td style="text-align: right"><b>{{ number_format($total_employer_amount_group, 2, ',', '.') }}</b></td>
+                                @endif
                             </tr>
                         @endif
                     @empty
@@ -275,11 +333,20 @@
                                     $labor_total = $data->details->sum('labor_total');
                                 }
                             @endphp
-                        <b>{{ number_format($labor_total + $data->details->sum('rc_iva_amount') + $data->details->sum('faults_amount'), 2, ',', '.') }}</b>
-                    </td>
-                    <td style="text-align: right"><b>{{ number_format($data->details->sum('liquid_payable'), 2, ',', '.') }}</b></td>
+                            <b>{{ number_format($labor_total + $data->details->sum('rc_iva_amount') + $data->details->sum('faults_amount'), 2, ',', '.') }}</b>
+                        </td>
+                        <td style="text-align: right"><b>{{ number_format($data->details->sum('liquid_payable'), 2, ',', '.') }}</b></td>
                         <td></td>
                         <td></td>
+
+                        {{-- Si es planilla de funcionamiento --}}
+                        @if ($data->procedure_type_id == 5 && $print_type == 2)
+                        <td style="text-align: right"><b>{{ number_format($total_common_risk, 2, ',', '.') }}</b></td>
+                        <td style="text-align: right"><b>{{ number_format($total_housing_employer, 2, ',', '.') }}</b></td>
+                        <td style="text-align: right"><b>{{ number_format($total_solidary_employer, 2, ',', '.') }}</b></td>
+                        <td style="text-align: right"><b>{{ number_format($total_health, 2, ',', '.') }}</b></td>
+                        <td style="text-align: right"><b>{{ number_format($employer_total, 2, ',', '.') }}</b></td>
+                        @endif
                     </tr>
                 </tbody>
             </table>
@@ -646,7 +713,8 @@
                 size: landscape;
             }
             .content {
-                margin-left: 30px;
+                margin-left: 25px;
+                margin-right: -20px;
             }
             .header{
                 top: 0px;
@@ -670,13 +738,6 @@
             .saltopagina{
                 display: block;
                 page-break-before: always;
-            }
-            
-            @media (max-height: 3000px){
-                .content{
-                    margin-left: -30px;
-                    margin-right: -25px
-                }
             }
         }
     </style>

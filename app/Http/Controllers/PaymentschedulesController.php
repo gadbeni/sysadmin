@@ -242,6 +242,7 @@ class PaymentschedulesController extends Controller
         $centralize = request('centralize');
         $program = request('program');
         $group = request('group');
+        $print_type = request('print_type');
 
         $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract' => function($q){
                         $q->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
@@ -282,7 +283,7 @@ class PaymentschedulesController extends Controller
         }
 
         if($print){
-            return view('paymentschedules.print', compact('data', 'afp', 'centralize', 'program', 'group'));
+            return view('paymentschedules.print', compact('data', 'afp', 'centralize', 'program', 'group', 'print_type'));
         }
         return view('paymentschedules.read', compact('data', 'afp', 'centralize'));
     }

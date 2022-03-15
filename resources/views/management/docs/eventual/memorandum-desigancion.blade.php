@@ -59,14 +59,17 @@
             </div>
             <br>
             <p style="text-align: center"><u><b>DESIGNACIÓN</b></u></p>
-            <p>
+            {{-- <p>
                 Mediante el presente comunico a Usted que, a partir de la fecha y hasta el {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}, es {{ $contract->person->gender == 'masculino' ? 'desigando' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b>, bajo la dependincia de la/el <b>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }}</b> con el nivel salarial <b>{{ $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->NumNivel }}</b> por el monto de <b>{{ number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 0, ',', '.') }} Bs.</b> de la <b>Planilla de Inversión (Personal Eventual)</b>, según clasificador presupuestario partida 12100. Designación que conlleva todas las implicancias y efectos de la Ley 2027 y 1178, Ley 1413 del PGE  2022 y su respectivo D.S. 4646.
+            </p> --}}
+            <p style="margin-top: 50px">
+                Mediante el presente comunico a usted que a partir del <b>{{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} hasta el {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}</b>, es designado para ejercer el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b> bajo la dependencia de la/el <b>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }}</b>, con el nivel salarial <b>{{ $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->NumNivel }}</b> por el monto de <b>Bs. {{ number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 0, ',', '.') }}</b>, con cargo a la Partida Presupuestaria 12100; en cumplimiento a la Constitución Política del Estado, Ley 223 General para Personas con Discapacidad, Estatuto Funcionario Público Ley 2027 Art. 6, Ley 1178, la Ley 1413 del Presupuesto General del Estado de la gestión 2022, su respectivo Decreto Reglamentario y demás normas conexas.    
             </p>
             <p>
-                De acuerdo a normas vigentes deberá recibir bajo inventario del Responsable de Registro y Control de Bienes Públicos los activos que serán asignados a su persona.
+                Quedando establecido que se debe formalizar la contratación conforme al Decreto Supremo N° 26115, artículo 18 parágrafo II inciso e) numeral 5, Decreto Supremo 27375 artículo 5.
             </p>
             <p>
-                Deseándole éxito en sus funciones y responsabilidades que devengan de la prestación de sus servicios, de conformidad del art. 28 de la ley Nº 1178 y esperando contar con su valioso aporte y participación en el logro de los objetivos del <b>Gobierno Autónomo Departamental del Beni</b>, saludo a usted.
+                Al asumir las funciones para las cuales ha sido designado, me permito instarle a desempeñar sus funciones con dedicación, responsabilidad, eficacia, eficiencia y transparencia en el marco de la ley 1178.
             </p>
         </div>
     </div>
