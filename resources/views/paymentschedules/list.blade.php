@@ -94,7 +94,7 @@
                                 <button type="button" data-id="{{ $item->id }}" class="btn btn-dark btn-send" data-toggle="modal" data-target="#send-modal"><i class="glyphicon glyphicon-share-alt"></i> Enviar</button>
                             @endif
 
-                            @if (($item->status == 'aprobada' || $item->status == 'pagada') && ((auth()->user()->hasPermission('print_paymentschedules') && Auth::user()->direccion_administrativa_id) || Auth::user()->role_id == 1))
+                            @if (($item->status == 'aprobada' || $item->status == 'pagada' || $item->status == 'habilitada') && ((auth()->user()->hasPermission('print_paymentschedules') && Auth::user()->direccion_administrativa_id) || Auth::user()->role_id == 1))
                                 <a href="{{ route('planillas.pagos.print.group', ['id' => $item->id]) }}" target="_blank" class="btn btn-default btn-print" ><i class="glyphicon glyphicon-print"></i> Imprimir boleta</a>
                             @endif
                             

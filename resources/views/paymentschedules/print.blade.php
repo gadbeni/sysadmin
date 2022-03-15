@@ -214,7 +214,7 @@
                                 }
                             @endphp
                             <tr>
-                                <td>{{ $item->item ?? $cont }}</td>
+                                <td>@if($group) {{ $cont }} @else {{ $item->item ?? $cont }} @endif</td>
                                 <td>
                                     <b>{{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }}</b> <br>
                                     <small>{{ $item->job }}</small>

@@ -220,7 +220,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = "downgrade_contracts" or
                                             table_name = "seniority_bonus_people" or
                                             table_name = "paymentschedules" or
-                                            `key` = "print_paymentschedules" or')->get();
+                                            `key` = "print_paymentschedules"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de administrativo
