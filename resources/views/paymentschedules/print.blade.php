@@ -93,7 +93,7 @@
                         <th>RIESGO PROFESIONAL</th>
                         <th>APORTE VIVIENDA</th>
                         <th>APORTE SOLIDARIO</th>
-                        <th>SINEC</th>
+                        <th>SEGURO DE SALUD</th>
                         <th>TOTAL</th>
                         @endif
                     </tr>
@@ -159,9 +159,15 @@
 
                             // Inicializar variables en caso de mostrar los datos agrupados
                             $total_amount_group = 0;
+                            $total_solidary_group = 0;
+                            $total_common_risk_group = 0;
+                            $total_afp_commission_group = 0;
+                            $total_retirement_group = 0;
+                            $total_solidary_national_group = 0;
+                            $total_labor_total_group = 0;
+                            $total_rc_iva_amount_group = 0;
                             $total_discount_group = 0;
                             $total_payable_liquid_group = 0;
-                            $total_risk_employer_group = 0;
                             $total_solidary_employer_group = 0;
                             $total_housing_employer_group = 0;
                             $total_health_group = 0;
@@ -203,10 +209,16 @@
                                 }
 
                                 if($group){
-                                    $total_amount_group += $item->partial_salary;
+                                    $total_amount_group += $item->partial_salary + $item->seniority_bonus_amount;
+                                    $total_solidary_group += $item->solidary;
+                                    $total_common_risk_group += $item->common_risk;
+                                    $total_afp_commission_group += $item->afp_commission;
+                                    $total_retirement_group += $item->retirement;
+                                    $total_solidary_national_group += $item->solidary_national;
+                                    $total_labor_total_group += $item->labor_total + ($data->procedure_type_id == 2 ? $item->common_risk : 0 );
+                                    $total_rc_iva_amount_group += $item->rc_iva_amount;
                                     $total_discount_group += $item->labor_total + $item->rc_iva_amount + $item->faults_amount;
                                     $total_payable_liquid_group += $item->liquid_payable;
-                                    $total_risk_employer_group += $item->common_risk;
                                     $total_solidary_employer_group += $item->solidary_employer;
                                     $total_housing_employer_group += $item->housing_employer;
                                     $total_health_group += $item->health;
@@ -262,7 +274,7 @@
 
                                 <td style="text-align: right"><b>{{ number_format($item->liquid_payable, 2, ',', '.') }}</b></td>
                                 <td style="width: 150px; height: 50px"></td>
-                                <td>{{ $item->item ?? $cont }}</td>
+                                <td>@if($group) {{ $cont }} @else {{ $item->item ?? $cont }} @endif</td>
 
                                 {{-- Si es planilla de funcionamiento --}}
                                 @if ($data->procedure_type_id == 5 && $print_type == 2)
@@ -282,15 +294,28 @@
                             <tr>
                                 <td colspan="12"><b>TOTAL</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_amount_group, 2, ',', '.') }}</b></td>
-                                <td colspan="@if ($data->procedure_type_id == 2) 10 @else 9  @endif"></td>
+                                <td style="text-align: right"><b>{{ number_format($total_solidary_group, 2, ',', '.') }}</b></td>
+                                <td style="text-align: right"><b>{{ number_format($total_common_risk_group, 2, ',', '.') }}</b></td>
+
+                                {{-- Si es planilla de consultoría --}}
+                                @if ($data->procedure_type_id == 2)
+                                <td style="text-align: right"><b>{{ number_format($total_common_risk_group, 2, ',', '.') }}</b></td>
+                                @endif
+
+                                <td style="text-align: right"><b>{{ number_format($total_afp_commission_group, 2, ',', '.') }}</b></td>
+                                <td style="text-align: right"><b>{{ number_format($total_retirement_group, 2, ',', '.') }}</b></td>
+                                <td style="text-align: right"><b>{{ number_format($total_solidary_national_group, 2, ',', '.') }}</b></td>
+                                <td style="text-align: right"><b>{{ number_format($total_labor_total_group, 2, ',', '.') }}</b></td>
+                                <td style="text-align: right"><b>{{ number_format($total_rc_iva_amount_group, 2, ',', '.') }}</b></td>
+                                <td colspan="2"></td>
                                 <td style="text-align: right"><b>{{ number_format($data->procedure_type_id != 2 ? $total_discount_group : 0, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_payable_liquid_group, 2, ',', '.') }}</b></td>
                                 <td colspan="2"></td>
                                 
                                 @if ($data->procedure_type_id == 5 && $print_type == 2)
-                                <td style="text-align: right"><b>{{ number_format($total_risk_employer_group, 2, ',', '.') }}</b></td>
-                                <td style="text-align: right"><b>{{ number_format($total_solidary_employer_group, 2, ',', '.') }}</b></td>
+                                <td style="text-align: right"><b>{{ number_format($total_common_risk_group, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_housing_employer_group, 2, ',', '.') }}</b></td>
+                                <td style="text-align: right"><b>{{ number_format($total_solidary_employer_group, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_health_group, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_employer_amount_group, 2, ',', '.') }}</b></td>
                                 @endif
