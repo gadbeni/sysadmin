@@ -66,8 +66,11 @@
                         <th colspan="2">FONDO SOCIAL</th>
                         <th rowspan="3">TOTAL DESC.</th>
                         <th rowspan="3">LÍQUIDO PAGABLE</th>
+
+                        @if ($print_type == 1)
                         <th rowspan="3">FIRMA</th>
                         <th rowspan="3">ITEM</th>
+                        @endif
 
                         {{-- Si es planilla de funcionamiento se muestran los aportes patronales--}}
                         @if ($data->procedure_type_id == 5 && $print_type == 2)
@@ -144,7 +147,33 @@
                     @php
                         $data_group = [];
                         if($group){
-                            $data_group = $group == 1 ? $data->details->groupBy('contract.direccion_administrativa.NOMBRE') : $data->details->groupBy('contract.program.name');
+                            $data_group = $group == 1 ? $data->details->groupBy('contract.direccion_administrativa_id') : $data->details->groupBy('contract.program_id');
+
+                            if($group == 1){
+                                $data_group = $data_group->map(function($item, $key){
+                                    $da = \App\Models\DireccionAdministrativa::where('ID', $key)->first();
+                                    return [
+                                        'id' => $da->ID,
+                                        'name' => $da->NOMBRE,
+                                        'order' => $da->orden,
+                                        'details' => $item
+                                    ];
+                                });
+                                $data_group = $data_group->sortBy('order');
+                            }else{
+                                $data_group = $data_group->map(function($item, $key){
+                                    $program = \App\Models\Program::find($key);
+                                    return [
+                                        'id' => $program->id,
+                                        'programatic_category' => $program->programatic_category,
+                                        'name' => $program->name,
+                                        'direccion_administrativa' =>$program->direccion_administrativa->NOMBRE,
+                                        'details' => $item
+                                    ];
+                                });
+                                $data_group = $data_group->sortBy('order');
+                                // dd($data_group);
+                            }
                         }
                         $group_by = $group ? $data_group : [$data];
                     @endphp
@@ -152,7 +181,7 @@
                     @forelse ($group_by as $key => $item_group)
                         @php
                             if($group){
-                                $details = $data->procedure_type_id == 1 ? $item_group->sortBy('contract.job_id') : $item_group;
+                                $details = $data->procedure_type_id == 1 ? $item_group->sortBy('contract.job_id')['details'] : $item_group['details'];
                             }else{
                                 $details = $data->procedure_type_id == 1 ? $item_group->details->sortBy('contract.job_id') : $item_group->details;
                             }
@@ -177,7 +206,12 @@
                         {{-- Poner cabecear de la forma de agrupar si existe --}}
                         @if ($group)
                             <tr>
-                                <td colspan="@if ($data->procedure_type_id == 2) 27 @else 26  @endif"><b>{{ "{$key}" }}</b></td>
+                                @if ($group == 1)
+                                <td colspan="@if ($data->procedure_type_id == 2) 27 @else 26  @endif"><b>{{ $item_group['name'] }}</b></td>
+                                @else
+                                <td colspan="@if ($data->procedure_type_id == 2) 27 @else 26  @endif"><b>{{ $item_group['programatic_category'] }} - {{ $item_group['name'] }} | {{ $item_group['direccion_administrativa'] }}</b></td>
+                                @endif
+
                                 @if ($data->procedure_type_id == 5 && $print_type == 2)
                                     <td colspan="5"></td>
                                 @endif
@@ -204,7 +238,7 @@
                                 $labor_liquid_payable += $item->liquid_payable;
 
                                 $employer_amount = $item->common_risk + $item->solidary_employer + $item->housing_employer + $item->health;
-                                if ($data->procedure_type_id == 1) {
+                                if ($data->procedure_type_id == 5) {
                                     $employer_total += $employer_amount;
                                 }
 
@@ -273,8 +307,11 @@
                                 </td>
 
                                 <td style="text-align: right"><b>{{ number_format($item->liquid_payable, 2, ',', '.') }}</b></td>
+                                
+                                @if ($print_type == 1)
                                 <td style="width: 150px; height: 50px"></td>
                                 <td>@if($group) {{ $cont }} @else {{ $item->item ?? $cont }} @endif</td>
+                                @endif
 
                                 {{-- Si es planilla de funcionamiento --}}
                                 @if ($data->procedure_type_id == 5 && $print_type == 2)
@@ -310,7 +347,10 @@
                                 <td colspan="2"></td>
                                 <td style="text-align: right"><b>{{ number_format($data->procedure_type_id != 2 ? $total_discount_group : 0, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_payable_liquid_group, 2, ',', '.') }}</b></td>
+                                
+                                @if ($print_type == 1)
                                 <td colspan="2"></td>
+                                @endif
                                 
                                 @if ($data->procedure_type_id == 5 && $print_type == 2)
                                 <td style="text-align: right"><b>{{ number_format($total_common_risk_group, 2, ',', '.') }}</b></td>
@@ -361,8 +401,11 @@
                             <b>{{ number_format($labor_total + $data->details->sum('rc_iva_amount') + $data->details->sum('faults_amount'), 2, ',', '.') }}</b>
                         </td>
                         <td style="text-align: right"><b>{{ number_format($data->details->sum('liquid_payable'), 2, ',', '.') }}</b></td>
+                        
+                        @if ($print_type == 1)
                         <td></td>
                         <td></td>
+                        @endif
 
                         {{-- Si es planilla de funcionamiento --}}
                         @if ($data->procedure_type_id == 5 && $print_type == 2)

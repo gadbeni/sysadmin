@@ -11,4 +11,8 @@ class Program extends Model
     use HasFactory;
     use SoftDeletes;
     protected $dates = ['deleted_at'];
+
+    public function direccion_administrativa(){
+        return $this->belongsTo(DireccionAdministrativa::class, 'direccion_administrativa_id', 'ID');
+    }
 }

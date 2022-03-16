@@ -253,7 +253,7 @@
                                         <th rowspan="3">LÍQUIDO PAGABLE</th>
 
                                         {{-- Si es planilla de funcionamiento se muestran los aportes patronales--}}
-                                        @if ($data->procedure_type_id == 5)
+                                        @if ($data->procedure_type_id == 5 && false)
                                         <th style="text-align: center" colspan="5">APORTES PATRONALES</th>
                                         @endif
                                     </tr>
@@ -272,11 +272,11 @@
                                         <th rowspan="2">DÍAS</th>
                                         <th rowspan="2">MULTAS</th>
 
-                                        @if ($data->procedure_type_id == 5)
+                                        @if ($data->procedure_type_id == 5 && false)
                                         <th>RIESGO PROFESIONAL</th>
                                         <th>APORTE VIVIENDA</th>
                                         <th>APORTE SOLIDARIO</th>
-                                        <th>SINEC</th>
+                                        <th>SEGURO DE SALUD</th>
                                         <th>TOTAL</th>
                                         @endif
                                     </tr>
@@ -294,7 +294,7 @@
                                         <th>1%</th>
 
                                         {{-- Si es planilla de funcionamiento --}}
-                                        @if ($data->procedure_type_id == 5)
+                                        @if ($data->procedure_type_id == 5 && false)
                                         <th>1.71%</th>
                                         <th>2%</th>
                                         <th>3%</th>
@@ -394,7 +394,7 @@
                                             <td class="text-right"><b>{{ number_format($item->liquid_payable, 2, ',', '.') }}</b></td>
 
                                             {{-- Si es planilla de funcionamiento --}}
-                                            @if ($data->procedure_type_id == 5)
+                                            @if ($data->procedure_type_id == 5 && false)
                                             <td class="text-right">{{ number_format($item->common_risk, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($item->housing_employer, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($item->solidary_employer, 2, ',', '.') }}</td>
@@ -451,7 +451,7 @@
                                         <td class="text-right"><b>{{ number_format($data->details->sum('liquid_payable'), 2, ',', '.') }}</b></td>
 
                                         {{-- Si es planilla de funcionamiento --}}
-                                        @if ($data->procedure_type_id == 5)
+                                        @if ($data->procedure_type_id == 5 && false)
                                         <td class="text-right"><b>{{ number_format($total_common_risk, 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($total_housing_employer, 2, ',', '.') }}</b></td>
                                         <td class="text-right"><b>{{ number_format($total_solidary_employer, 2, ',', '.') }}</b></td>
