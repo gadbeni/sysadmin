@@ -8,7 +8,7 @@
         <a href="{{ route('paymentschedules.index') }}" class="btn btn-warning">
             <span class="glyphicon glyphicon-list"></span>&nbsp; Volver a la lista
         </a>
-        <div class="btn-group">
+        {{-- <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
               AFP's <span class="caret"></span>
             </button>
@@ -17,7 +17,7 @@
                 <li><a href="?afp=1{{ $centralize ? '&centralize=true' : '' }}">Futuro</a></li>
                 <li><a href="?afp=2{{ $centralize ? '&centralize=true' : '' }}">Previsión</a></li>
             </ul>
-        </div>
+        </div> --}}
 
         <button class="btn btn-danger" data-toggle="modal" data-target="#print-modal"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
 
@@ -33,6 +33,15 @@
         @if ($data->status == 'enviada' && auth()->user()->hasPermission('approve_paymentschedules'))
             <button type="button" data-id="{{ $data->id }}" class="btn btn-info btn-approve" data-toggle="modal" data-target="#approve-modal"><i class="glyphicon glyphicon-ok-circle"></i> Aprobar</button>
         @endif
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                Exportar <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="?{{ $centralize ? '&centralize=true' : '' }}&excel=true" target="_blank">Excel</a></li>
+            </ul>
+        </div>
     </h1>
 
     {{-- send modal --}}

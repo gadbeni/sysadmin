@@ -98,7 +98,7 @@
                                 <a href="{{ route('planillas.pagos.print.group', ['id' => $item->id]) }}" target="_blank" class="btn btn-default btn-print" ><i class="glyphicon glyphicon-print"></i> Imprimir boleta</a>
                             @endif
                             
-                            @if ($item->procedure_type_id != 2 && ($item->status != 'habilitada' && $item->status != 'pagada' && auth()->user()->hasPermission('delete_paymentschedules')) || Auth::user()->role_id == 1 )
+                            @if (($item->status != 'habilitada' && $item->status != 'pagada' && auth()->user()->hasPermission('delete_paymentschedules')) || Auth::user()->role_id == 1 )
                                 <button type="button" data-id="{{ $item->id }}" data-toggle="modal" data-target="#cancel-modal" title="Anular" class="btn btn-sm btn-danger btn-cancel edit">
                                     <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Anular</span>
                                 </button>

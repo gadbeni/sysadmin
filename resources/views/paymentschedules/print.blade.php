@@ -180,11 +180,13 @@
                     
                     @forelse ($group_by as $key => $item_group)
                         @php
-                            if($group){
-                                $details = $data->procedure_type_id == 1 ? $item_group->sortBy('contract.job_id')['details'] : $item_group['details'];
-                            }else{
-                                $details = $data->procedure_type_id == 1 ? $item_group->details->sortBy('contract.job_id') : $item_group->details;
-                            }
+                            // if($group){
+                            //     $details = $data->procedure_type_id == 1 ? $item_group->sortBy('contract.job_id')['details'] : $item_group['details'];
+                            // }else{
+                            //     $details = $data->procedure_type_id == 1 ? $item_group->details->sortBy('contract.job_id') : $item_group->details;
+                            // }
+                            $details = $item_group['details'];
+                            // dd($item_group);
 
                             // Inicializar variables en caso de mostrar los datos agrupados
                             $total_amount_group = 0;

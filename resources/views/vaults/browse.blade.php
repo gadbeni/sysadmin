@@ -194,8 +194,8 @@
     <form action="{{ route('vaults.details.store', ['id' => $vault ? $vault->id : 0]) }}" method="post">
         @csrf
         {{-- <input type="hidden" name="vault_id" value="{{  }}"> --}}
-        <div class="modal modal-success fade" tabindex="-1" id="vaults-details-modal" role="dialog">
-            <div class="modal-dialog modal-lg">
+        <div class="modal fade" tabindex="-1" id="vaults-details-modal" role="dialog">
+            <div class="modal-dialog modal-success modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
@@ -237,7 +237,7 @@
                                 <div class="row">
                                     <div class="col-md-6" style="margin: 0px"><h4>TOTAL</h4></div>
                                     <div class="col-md-6">
-                                        <h3 class="text-right" style="margin: 0px" id="label-total">0.00 Bs.</h3>
+                                        <h3 class="text-right text-muted" style="margin: 0px;" id="label-total">0.00 Bs.</h3>
                                     </div>
                                 </div>
                             </div>
@@ -311,6 +311,7 @@
             $(".input-subtotal").each(function(){
                 total += $(this).val() ? parseFloat($(this).val()) : 0;
             });
+            console.log(total)
             $('#label-total').html('<b>'+(total).toFixed(2)+' Bs.</b>');
         }
     </script>

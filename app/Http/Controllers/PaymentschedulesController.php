@@ -10,8 +10,11 @@ use Illuminate\Support\Str;
 
 use Maatwebsite\Excel\Facades\Excel;
 
-// Imporst
+// Imports
 use App\Imports\PaymentschedulesFilesImport;
+
+// Exports
+use App\Exports\MinisterioTrabajoExport;
 
 // Models
 use App\Models\TipoDireccionAdministrativa;
@@ -243,6 +246,7 @@ class PaymentschedulesController extends Controller
         $program = request('program');
         $group = request('group');
         $print_type = request('print_type');
+        $excel = request('excel');
 
         $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract' => function($q){
                         $q->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
@@ -251,7 +255,7 @@ class PaymentschedulesController extends Controller
         
         if($centralize){
             $centralize_code = $data->centralize_code;
-            $data->details = PaymentschedulesDetail::with(['contract.program'])
+            $data->details = PaymentschedulesDetail::with(['contract.program', 'contract.type'])
                             ->whereHas('paymentschedule', function($q) use($centralize_code){
                                 $q->where('centralize_code', $centralize_code);
                             })
@@ -284,6 +288,10 @@ class PaymentschedulesController extends Controller
 
         if($print){
             return view('paymentschedules.print', compact('data', 'afp', 'centralize', 'program', 'group', 'print_type'));
+        }
+        else if($excel){
+            // return view('paymentschedules.partials.reporte_ministerio', compact('data'));
+            return Excel::download(new MinisterioTrabajoExport($data->details), 'ministerio de trabajo - '.$data->procedure_type->name.' - '.$data->period->name.'.xlsx');
         }
         return view('paymentschedules.read', compact('data', 'afp', 'centralize'));
     }
