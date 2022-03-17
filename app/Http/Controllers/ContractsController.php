@@ -34,6 +34,9 @@ class ContractsController extends Controller
      */
     public function index()
     {
+        $date = date('Y-m-d');
+        Contract::where('finish', '<', $date)->update(['status' => 'concluido']);
+
         return view('management.contracts.browse');
     }
 
@@ -46,17 +49,18 @@ class ContractsController extends Controller
                     ->where(function($query) use ($search){
                         if($search){
                             $query->OrwhereHas('job', function($query) use($search){
-                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                                $query->whereRaw("name like '%$search%'");
                             })
                             ->OrwhereHas('type', function($query) use($search){
-                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                                $query->whereRaw("name like '%$search%'");
                             })
                             ->OrwhereHas('person', function($query) use($search){
-                                $query->whereRaw($search ? '(first_name like "%'.$search.'%" or last_name like "%'.$search.'%" or ci like "%'.$search.'%" or phone like "%'.$search.'%")' : 1);
+                                $query->whereRaw("(first_name like '%$search%' or last_name like '%$search%' or ci like '%$search%' or phone like '%$search%')");
                             })
                             ->OrWhereHas('user', function($query) use($search){
-                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
-                            });
+                                $query->whereRaw("name like '%$search%'");
+                            })
+                            ->OrWhereRaw($search ? "status like '%$search%'" : 1);
                         }
                     })
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
@@ -272,17 +276,21 @@ class ContractsController extends Controller
     }
 
     public function contracts_status(Request $request){
+        // dd($request->all());
         DB::beginTransaction();
         try {
 
             // Verificar si el contrato tenga pagos realizados
-            if(!$this->enabled_to_delete($request->id)){
+            if(!$this->enabled_to_delete($request->id) && !$request->finish){
                 return response()->json(['error' => 'El contrato pertenece a una planilla en proceso de pago.']);
             }
 
-            $contract = Contract::where('id', $request->id)->update([
-                'status' => $request->status,
-            ]);
+            $contract = Contract::findOrFail($request->id);
+            $contract->status = $request->status;
+            if ($request->finish) {
+                $contract->finish = $request->finish;
+            }
+            $contract->update();
 
             if($request->observations){
                 ContractsHistory::create([

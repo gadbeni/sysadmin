@@ -46,6 +46,10 @@
                                     0.00
                                 @endif
                             </li>
+                            <li><b>Desde </b>{{ date('d/m/Y', strtotime($item->start)) }}
+                            @if ($item->finish)
+                            <b> hasta </b>{{ date('d/m/Y', strtotime($item->finish)) }}
+                            @endif
                             <li>
                                 @php
                                     switch ($item->status) {
@@ -78,15 +82,25 @@
                         </ul>
                     </td>
                     <td class="no-sort no-click bread-actions text-right">
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                                Más <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" style="left: -90px !important">
+                                {{-- Definir siguiente estado --}}
+                                @if ($item->status != 'concluido' && $item->status != 'firmado' && ($item->cargo_id || $item->job_id))
+                                <li><a href="#" title="Promover a {{ $netx_status }}" data-toggle="modal" data-target="#status-modal" onclick="changeStatus({{ $item->id }}, '{{ $netx_status }}')">Promover</a></li>
+                                @endif
+                                @if ($item->status == 'firmado' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('finish_contracts'))
+                                <li><a href="#" title="Finalizar" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }})">Finalizar</a></li>
+                                @endif
+                                
+                            </ul>
+                        </div>
                         
                         @if ($item->status != 'concluido')
-                            {{-- Definir siguiente estado --}}
-                            @if ($item->status != 'firmado' && ($item->cargo_id || $item->job_id))
-                                <button title="Promover a la siguiente instancia" data-toggle="modal" data-target="#status-modal" onclick="changeStatus({{ $item->id }}, '{{ $netx_status }}')" class="btn btn-sm btn-dark btn-status view">
-                                    <i class="voyager-check"></i> <span class="hidden-xs hidden-sm">Promover</span>
-                                </button>
-                            @endif
-
+                            
                             {{-- Botón de impresión --}}
                             @if ($item->cargo_id || $item->job_id)
                                 <div class="btn-group">
@@ -103,12 +117,10 @@
                                             @case(2)
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.autorization']) }}" target="_blank">Autorización</a></li>
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.invitation']) }}" target="_blank">Invitación</a></li>
-                                                {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'answer']) }}" target="_blank">Respuesta</a></li> --}}
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.declaration']) }}" target="_blank">Declaración</a></li>
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.memorandum']) }}" target="_blank">Memorandum</a></li>
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.report']) }}" target="_blank">Informe</a></li>
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
-                                                {{-- <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'presentation']) }}" target="_blank">Presentación de documentos</a></li> --}}
                                                 <li class="divider"></li>
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.contract']) }}" target="_blank">Contrato</a></li>
                                                 @break
@@ -128,7 +140,7 @@
                             @endif
 
                             {{-- Se puede editar el contrato si no está firmado --}}
-                            @if ($item->status != 'firmado' && auth()->user()->hasPermission('edit_contracts'))
+                            @if (($item->status != 'firmado' && auth()->user()->hasPermission('edit_contracts') || Auth::user()->role_id == 1))
                                 <a href="{{ route('contracts.edit', ['contract' => $item->id]) }}" title="Editar" class="btn btn-sm btn-primary edit">
                                     <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
                                 </a>
@@ -213,6 +225,37 @@
     </div>
 </form>
 
+{{-- Finish modal --}}
+<form action="{{ route('contracts.status') }}" id="form-finish" method="POST">
+    {{ csrf_field() }}
+    <div class="modal fade" tabindex="-1" id="finish-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="voyager-calendar"></i> Desea dar el contrato como concluido?</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id">
+                    <input type="hidden" name="status" value="concluido">
+                    <div class="form-group">
+                        <label for="">Fecha de conclusión</label>
+                        <input type="date" name="finish" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="observations">Observaciones</label>
+                        <textarea name="observations" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" class="btn btn-dark" value="Aceptar">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <div class="modal modal-danger fade" tabindex="-1" id="downgrade-modal" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -266,6 +309,21 @@
 
         $('#form-status').submit(function(e){
             $('#status-modal').modal('hide');
+            e.preventDefault();
+            $('#div-results').loading({message: 'Cargando...'});
+            $.post($(this).attr('action'), $(this).serialize(), function(res){
+                if(res.message){
+                    toastr.success(res.message);
+                    list(page);
+                }else{
+                    toastr.error(res.error);
+                    $('#div-results').loading('toggle');
+                }
+            });
+        });
+
+        $('#form-finish').submit(function(e){
+            $('#finish-modal').modal('hide');
             e.preventDefault();
             $('#div-results').loading({message: 'Cargando...'});
             $.post($(this).attr('action'), $(this).serialize(), function(res){

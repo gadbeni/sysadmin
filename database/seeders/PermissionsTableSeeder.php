@@ -70,6 +70,7 @@ class PermissionsTableSeeder extends Seeder
         // checkes
         $keys = [
             'downgrade_contracts',
+            'finish_contracts',
         ];
 
         foreach ($keys as $key) {
@@ -98,7 +99,8 @@ class PermissionsTableSeeder extends Seeder
             'enable_paymentschedules',
             'print_paymentschedules',
             'browse_paymentschedulesfiles',
-            'browse_paymentschedulesfilescreate'
+            'add_paymentschedulesfiles',
+            'delete_paymentschedulesfiles'
         ];
 
         foreach ($keys as $key) {

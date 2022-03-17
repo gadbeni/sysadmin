@@ -96,13 +96,17 @@
         }
 
         function changeStatus(id, status) {
-            $('#form-status input[name="id"]').val(id)
-            $('#form-status input[name="status"]').val(status)
+            $('#form-status input[name="id"]').val(id);
+            $('#form-finish input[name="status"]').val(status);
+        }
+
+        function finishContract(id, status) {
+            $('#form-finish input[name="id"]').val(id);
         }
 
         function downgradeContract(id, status) {
-            $('#downgrade-form input[name="id"]').val(id)
-            $('#downgrade-form input[name="status"]').val(status)
+            $('#downgrade-form input[name="id"]').val(id);
+            $('#downgrade-form input[name="status"]').val(status);
         }
 
         function deleteItem(url){
