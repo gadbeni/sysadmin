@@ -76,4 +76,8 @@ class Contract extends Model
     public function job(){
         return $this->belongsTo(Job::class);
     }
+
+    public function finished(){
+        return $this->hasOne(ContractsFinished::class);
+    }
 }

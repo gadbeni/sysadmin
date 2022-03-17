@@ -97,7 +97,7 @@
 
         function changeStatus(id, status) {
             $('#form-status input[name="id"]').val(id);
-            $('#form-finish input[name="status"]').val(status);
+            $('#form-status input[name="status"]').val(status);
         }
 
         function finishContract(id, status) {

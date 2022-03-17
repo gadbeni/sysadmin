@@ -19,6 +19,7 @@ use App\Models\Job;
 use App\Models\Signature;
 use App\Models\ContractsHistory;
 use App\Models\PaymentschedulesDetail;
+use App\Models\ContractsFinished;
 
 class ContractsController extends Controller
 {
@@ -300,6 +301,16 @@ class ContractsController extends Controller
                     'observations' => $request->observations,
                 ]);
             }
+
+            if($request->status == 'concluido'){
+                ContractsFinished::create([
+                    'contract_id' => $request->id,
+                    'role_id' => Auth::user()->id,
+                    'code' => 'A-'.str_pad(ContractsFinished::count() +1, 3, "0", STR_PAD_LEFT).'/'.date('Y'),
+                    'observations' => $request->observations
+                ]);
+            }
+
             DB::commit();
             return response()->json(['message' => 'Cambio realizo exitosamente.']);
         } catch (\Throwable $th) {
@@ -348,7 +359,7 @@ class ContractsController extends Controller
     // ================================
     
     public function print($id, $document){
-        $contract = Contract::with(['user', 'person', 'program', 'cargo.nivel' => function($q){
+        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel' => function($q){
             $q->where('Estado', 1);
         }, 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa'])->where('id', $id)->first();
         $contract->workers = $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];

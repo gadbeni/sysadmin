@@ -4,12 +4,12 @@
 
 @php
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-    $code = $contract->code;
+    $code = $contract->finished->code;
 @endphp
 
 @section('qr_code')
     <div id="qr_code">
-        {!! QrCode::size(80)->generate('Personal eventual '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)).' con un sueldo de '.number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.').' Bs.'); !!}
+        {!! QrCode::size(80)->generate('Personal permanente '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)).' con un sueldo de '.number_format($contract->job->salary, 2, ',', '.').' Bs.'); !!}
     </div>
 @endsection
 
@@ -47,7 +47,7 @@
                             <option value="Loreto">Loreto</option>
                             <option value="San Andrés">San Andrés</option>
                         </select>
-                        <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
+                        <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}
                     </p>
                 </div>
                 <div class="border-left">
@@ -58,18 +58,20 @@
                 </div>
             </div>
             <br>
-            <p style="text-align: center"><u><b>DESIGNACIÓN</b></u></p>
+            <p style="text-align: center"><u><b>AGRADECIMIENTO</b></u></p>
             {{-- <p>
                 Mediante el presente comunico a Usted que, a partir de la fecha y hasta el {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}, es {{ $contract->person->gender == 'masculino' ? 'desigando' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b>, bajo la dependincia de la/el <b>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }}</b> con el nivel salarial <b>{{ $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->NumNivel }}</b> por el monto de <b>{{ number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 0, ',', '.') }} Bs.</b> de la <b>Planilla de Inversión (Personal Eventual)</b>, según clasificador presupuestario partida 12100. Designación que conlleva todas las implicancias y efectos de la Ley 2027 y 1178, Ley 1413 del PGE  2022 y su respectivo D.S. 4646.
             </p> --}}
             <p style="margin-top: 50px">
-                Mediante el presente comunico a usted que a partir del <b>{{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} hasta el {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}</b>, es designado para ejercer el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b> bajo la dependencia de la/el <b>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }}</b>, con el nivel salarial <b>{{ $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->NumNivel }}</b> por el monto de <b>Bs. {{ number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 0, ',', '.') }}</b>, con cargo a la Partida Presupuestaria 12100; en cumplimiento a la Constitución Política del Estado, Ley 223 General para Personas con Discapacidad, Estatuto Funcionario Público Ley 2027 Art. 6, Ley 1178, la Ley 1413 del Presupuesto General del Estado de la gestión 2022, su respectivo Decreto Reglamentario y demás normas conexas.    
+                De mi consideración: <br><br><br>
+                A través de la presente, comunico a usted que a partir de la fecha de su recepción del presente memorándum, queda desvinculada del cargo de <b>{{ Str::upper($contract->job->name) }}</b>, dependiente de la/el <b>{{ Str::upper($contract->direccion_administrativa->NOMBRE) }}</b>.
             </p>
             <p>
-                Quedando establecido que se debe formalizar la contratación conforme al Decreto Supremo N° 26115, artículo 18 parágrafo II inciso e) numeral 5, Decreto Supremo 27375 artículo 5.
+                Por lo cual, deberá realizar la entrega bajo inventario los documentos, los activos asignados a su cargo a la responsable de Registro y Control de Bienes Públicos a efecto que le emitan su declaración de no custodio; asimismo, deberá realizar los trámites correspondientes para su obtención de saldo no deudor y declaración de Bienes y Rentas; dicha documentación deberá hacer llegar copia a RR.HH.
             </p>
+            <br>
             <p>
-                Al asumir las funciones para las cuales ha sido designado, me permito instarle a desempeñar sus funciones con dedicación, responsabilidad, eficacia, eficiencia y transparencia en el marco de la ley 1178.
+                Atentamente
             </p>
         </div>
     </div>

@@ -102,8 +102,6 @@ class PermissionRoleTableSeeder extends Seeder
         $similar_permissions = 'table_name = "admin" or
                                 `key` = "browse_programs" or
                                 `key` = "read_programs" or
-                                `key` = "edit_programs" or
-                                `key` = "add_programs" or
                                 `key` = "browse_people" or
                                 `key` = "read_people" or
                                 `key` = "edit_people" or
