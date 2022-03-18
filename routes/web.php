@@ -85,6 +85,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::resource('paymentschedules', PaymentschedulesController::class);
     Route::get('paymentschedules/ajax/list/{search?}', [PaymentschedulesController::class, 'list']);
     Route::post('paymentschedules/update/status', [PaymentschedulesController::class, 'update_status'])->name('paymentschedules.update.status');
+    Route::post('paymentschedules/update/centralize', [PaymentschedulesController::class, 'update_centralize'])->name('paymentschedules.update.centralize');
     Route::post('paymentschedules/cancel', [PaymentschedulesController::class, 'cancel'])->name('paymentschedules.cancel');
     Route::post('paymentschedules/generate', [PaymentschedulesController::class, 'generate'])->name('paymentschedules.generate');
     Route::get('paymentschedules/files/index', [PaymentschedulesController::class, 'files_index'])->name('paymentschedules.files.index');

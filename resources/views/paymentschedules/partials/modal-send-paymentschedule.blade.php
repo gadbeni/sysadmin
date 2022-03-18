@@ -1,9 +1,9 @@
 {{-- send modal --}}
-<form id="form-send" action="{{ route('paymentschedules.update.status') }}" method="POST">
+<form id="form-send" class="form-submit" action="{{ route('paymentschedules.update.status') }}" method="POST">
     @csrf
     <input type="hidden" name="id">
     <input type="hidden" name="status" value="enviada">
-    <div class="modal modal-primary fade" tabindex="-1" id="send-modal" role="dialog">
+    <div class="modal modal-primary fade submit-modal" tabindex="-1" id="send-modal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

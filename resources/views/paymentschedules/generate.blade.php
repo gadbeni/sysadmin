@@ -379,7 +379,7 @@
                         <input type="hidden" name="faults_amount" value="{{ json_encode($array_faults_amount) }}">
                         <input type="hidden" name="liquid_payable" value="{{ json_encode($array_liquid_payable) }}">
 
-                        <div class="form-group">
+                        <div class="form-group" style="@if(Auth::user()->direccion_administrativa_id) display:none @endif">
                             <label>Centralizar planilla</label> <br>
                             <label class="radio-inline"><input type="radio" name="centralize" value="1">Sí</label>
                             <label class="radio-inline"><input type="radio" name="centralize" value="0" checked>No</label>

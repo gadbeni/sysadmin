@@ -21,17 +21,12 @@
 
         <button class="btn btn-danger" data-toggle="modal" data-target="#print-modal"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
 
-        {{-- Si la planilla está aprobada o está habiliatda para pago y parte de la planilla no ha sido habilitada se mouestra el botón de habilitación --}}
-        @if (($data->status == 'aprobada' || ($data->status == 'habilitada' && $data->details->where('status', 'procesado')->where('deleted_at', NULL)->count()) > 0) && auth()->user()->hasPermission('enable_paymentschedules') && !$centralize)
-            <button type="button" data-toggle="modal" data-target="#enable-modal" class="btn btn-success" style="margin-left: -10px; padding: 7px 15px"><i class="voyager-dollar"></i> Habilitar</button>
-        @endif
-
         @if ($data->status == 'procesada' && auth()->user()->hasPermission('add_paymentschedules'))
             <button type="button" data-id="{{ $data->id }}" class="btn btn-dark btn-send" data-toggle="modal" data-target="#send-modal"><i class="glyphicon glyphicon-share-alt"></i> Enviar</button>
         @endif
 
         @if ($data->status == 'enviada' && auth()->user()->hasPermission('approve_paymentschedules'))
-            <button type="button" data-id="{{ $data->id }}" class="btn btn-info btn-approve" data-toggle="modal" data-target="#approve-modal"><i class="glyphicon glyphicon-ok-circle"></i> Aprobar</button>
+            <button title="Aprobar planilla" type="button" data-id="{{ $data->id }}" class="btn btn-info btn-approve" data-toggle="modal" data-target="#approve-modal"><i class="glyphicon glyphicon-ok-circle"></i> Aprobar</button>
         @endif
 
         <div class="btn-group">
@@ -42,87 +37,20 @@
                 <li><a href="?{{ $centralize ? '&centralize=true' : '' }}&excel=true" target="_blank">Excel</a></li>
             </ul>
         </div>
+
+        {{-- Si la planilla está aprobada o está habilitada para pago y parte de la planilla no ha sido habilitada se mouestra el botón de habilitación --}}
+        @if (($data->status == 'aprobada' || ($data->status == 'habilitada' && $data->details->where('status', 'procesado')->where('deleted_at', NULL)->count()) > 0) && auth()->user()->hasPermission('enable_paymentschedules') && !$centralize)
+            <button type="button" data-toggle="modal" data-target="#enable-modal" class="btn btn-success" style="margin-left: -10px; padding: 7px 15px"><i class="voyager-dollar"></i> Habilitar</button>
+        @endif
+
+        {{-- Si la planilla está habiliatda y todos ninguno de los funcionarios está con pago procesado para pago se muestra el botón de pagada --}}
+        @if ( !$centralize && $data->status == 'habilitada' && $data->details->where('status', 'procesado')->where('deleted_at', NULL)->count() == 0 && auth()->user()->hasPermission('close_paymentschedules') )
+            <button type="button" data-toggle="modal" data-target="#close-modal" class="btn btn-primary"><i class="voyager-lock"></i> Cerrar planilla</button>
+        @endif
     </h1>
 
     {{-- send modal --}}
     @include('paymentschedules.partials.modal-send-paymentschedule')
-
-
-    {{-- approve modal --}}
-    <form id="form-approve" action="{{ route('paymentschedules.update.status') }}" method="POST">
-        @csrf
-        <input type="hidden" name="status" value="aprobada">
-        <div class="modal modal-info fade" tabindex="-1" id="approve-modal" role="dialog">
-            <div class="modal-dialog @if($data->centralize) modal-lg @endif">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title"><i class="glyphicon glyphicon-ok-circle"></i> Desea aprobar la siguiente planilla?</h4>
-                    </div>
-                    <div class="modal-body">
-                        {{-- Si el usuario es encargo de RRHH de una DA desconcentrada --}}
-                        @if (Auth::user()->direccion_administrativa_id || !$data->centralize)
-                            <input type="hidden" name="id" value="{{ $data->id }}">
-                        @else
-                            <input type="hidden" name="centralize" value="1">
-                            
-                            <div class="form-group">
-                                @php
-                                    $paymentschedule = \App\Models\Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details' => function($query){
-                                        $query->where('deleted_at', NULL);
-                                    }])
-                                    ->where('centralize', 1)
-                                    ->where('centralize_code', $data->centralize_code)
-                                    ->where('status', 'enviada')
-                                    ->where('deleted_at', NULL)->get();
-                                @endphp
-
-                                <div class="col-md-12">
-                                    <h4>
-                                        La planilla seleccionada está centralizada, seleccione las planilla que desea aprobar.
-                                    </h4>
-                                    <br>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>ID</th>
-                                                    <th>Dirección administrativa</th>
-                                                    <th>N&deg; de personas</th>
-                                                    <th>Monto</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($paymentschedule as $item)
-                                                    <tr>
-                                                        <td>
-                                                            <input type="checkbox" name="id[]" value="{{ $item->id }}">
-                                                        </td>
-                                                        <td>{{ str_pad($item->id, 6, "0", STR_PAD_LEFT) }}</td>
-                                                        <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
-                                                        <td>{{ $item->details->count() }}</td>
-                                                        <td class="text-right">{{ number_format($item->details->sum('liquid_payable'), 2, ',', '.') }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" class="btn btn-info" value="Sí, aprobar">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
     
 @stop
 
@@ -131,7 +59,7 @@
         <div class="row">
             <div class="col-md-12">
 
-                <div class="panel panel-bordered" style="padding-bottom:5px;">
+                <div class="panel panel-bordered panel-details" style="padding-bottom:5px;">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="panel-heading" style="border-bottom:0;">
@@ -772,39 +700,110 @@
         @endif
     </div>
 
-    {{-- send modal --}}
-    <form id="form-send" action="{{ route('paymentschedules.update.status') }}" method="POST">
+    {{-- approve modal --}}
+    <form id="form-approve" class="form-submit" action="{{ route('paymentschedules.update.status') }}" method="POST">
         @csrf
-        <input type="hidden" name="id" value="{{ $data->id }}">
-        <input type="hidden" name="status" value="habilitada">
-        <div class="modal fade" tabindex="-1" id="enable-modal" role="dialog">
-            <div class="modal-dialog modal-success">
+        <div class="modal modal-info fade submit-modal" tabindex="-1" id="approve-modal" role="dialog">
+            <div class="modal-dialog @if($data->centralize) modal-lg @endif">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title"><i class="voyager-dollar"></i> Desea habilitar la siguiente planilla para pago?</h4>
+                        <h4 class="modal-title"><i class="glyphicon glyphicon-ok-circle"></i> Desea aprobar la siguiente planilla?</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="afp">AFP</label>
-                            <select name="afp" class="form-control select2">
-                                <option value="">Todas las AFP</option>
-                                <option @if($afp == 1) selected @endif value="1">Futuro</option>
-                                <option @if($afp == 2) selected @endif value="2">Previsón</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <textarea name="observations" class="form-control" rows="5" placeholder="Observaciones"></textarea>
-                        </div>
+                        {{-- Si el usuario es encargo de RRHH de una DA desconcentrada --}}
+                        @if (Auth::user()->direccion_administrativa_id || !$data->centralize)
+                            <input type="hidden" name="id" value="{{ $data->id }}">
+                            <input type="hidden" name="status" value="aprobada">
+                            <div class="col-md-12">
+                                <p class="text-muted">
+                                    <b>Advertencia!</b> <br>
+                                    Esta acción cambiará el estado de la planilla a <b>Aprobada</b> y no podrá generar más planillas para este tipo de planillas y periodo.
+                                </p>
+                            </div>
+                        @else
+                            <input type="hidden" name="centralize" value="1">
+                            
+                            <div class="form-group">
+                                @php
+                                    $paymentschedule = \App\Models\Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details' => function($query){
+                                        $query->where('deleted_at', NULL);
+                                    }])
+                                    ->where('centralize', 1)
+                                    ->where('centralize_code', $data->centralize_code)
+                                    ->where('status', 'enviada')
+                                    ->where('deleted_at', NULL)->get();
+                                @endphp
+
+                                <div class="col-md-12">
+                                    <h4>
+                                        La planilla seleccionada está centralizada, seleccione las planilla que desea aprobar.
+                                    </h4>
+                                    <br>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>N&deg;</th>
+                                                    <th>ID</th>
+                                                    <th>Dirección administrativa</th>
+                                                    <th>N&deg; de personas</th>
+                                                    <th>Monto</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @php
+                                                    $cont = 1;
+                                                    $count_people = 0;
+                                                    $total_amount = 0;
+                                                @endphp
+                                                @foreach ($paymentschedule as $item)
+                                                    <tr>
+                                                        <td>
+                                                            <input type="checkbox" name="id[]" value="{{ $item->id }}">
+                                                        </td>
+                                                        <td>{{$cont}}</td>
+                                                        <td>{{ str_pad($item->id, 6, "0", STR_PAD_LEFT) }}</td>
+                                                        <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
+                                                        <td class="text-right">{{ $item->details->count() }}</td>
+                                                        <td class="text-right">{{ number_format($item->details->sum('liquid_payable'), 2, ',', '.') }}</td>
+                                                    </tr>
+                                                    @php
+                                                        $cont++;
+                                                        $count_people += $item->details->count();
+                                                        $total_amount += $item->details->sum('liquid_payable');
+                                                    @endphp
+                                                @endforeach
+                                                <tr>
+                                                    <td colspan="4"><b>TOTAL</b></td>
+                                                    <td class="text-right"><b>{{ $count_people }}</b></td>
+                                                    <td class="text-right"><b>{{ number_format($total_amount, 2, ',', '.') }}</b></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" class="btn btn-success" value="Sí, Habilitar">
+                        <input type="submit" class="btn btn-info" value="Sí, aprobar">
                     </div>
                 </div>
             </div>
         </div>
     </form>
+
+    {{-- enable modal --}}
+    @include('paymentschedules.partials.modal-enable-paymentschedule', ['id' => $data->id])
+
+    {{-- close modal --}}
+    @include('paymentschedules.partials.modal-close-paymentschedule', ['id' => $data->id])
 
     {{-- print modal --}}
     <div class="modal modal-danger fade" tabindex="-1" id="print-modal" role="dialog">
@@ -894,6 +893,24 @@
                 // console.log(afp,program,group)
                 window.open(centralize+afp+program+group+print_type+'&print=true', '_blank');
             });
+
+            $('.form-submit').submit(function(e){
+            $('.submit-modal').modal('hide');
+            e.preventDefault();
+            $('#div-results').loading({message: 'Cargando...'});
+            $.post($(this).attr('action'), $(this).serialize(), function(res){
+                if(res.message){
+                    toastr.success(res.message);
+                    $('.panel-details').loading({message: 'Actualizando...'});
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                }else{
+                    toastr.error(res.error);
+                    $('#div-results').loading('toggle');
+                }
+            });
+        });
 
             $('.btn-send').click(function(){
                 $('#form-send input[name="id"]').val($(this).data('id'));

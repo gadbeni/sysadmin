@@ -30,6 +30,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = 'browse_paymentschedules' or
                                                 `key` = 'read_paymentschedules' or
                                                 `key` = 'enable_paymentschedules' or
+                                                `key` = 'close_paymentschedules' or
                                                 table_name = 'plugins' or
                                                 table_name = 'planillas_adicionales' or
                                                 table_name = 'reports_cachiers'")->get();
@@ -41,6 +42,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = 'browse_paymentschedules' or
                                                 `key` = 'read_paymentschedules' or
                                                 `key` = 'enable_paymentschedules' or
+                                                `key` = 'close_paymentschedules' or
                                                 table_name = 'plugins' or
                                                 table_name = 'planillas_adicionales' or
                                                 `key` = 'browse_reportscashiervaults'")->get();
@@ -59,6 +61,7 @@ class PermissionRoleTableSeeder extends Seeder
         $permissions = Permission::whereRaw('   table_name = "admin" or
                                                 `key` = "browse_planillaspagos" or
                                                 `key` = "enable_paymentschedules" or
+                                                `key` = "close_paymentschedules" or
                                                 table_name = "planillas_adicionales" or
                                                 table_name = "plugins"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
