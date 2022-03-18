@@ -12,7 +12,7 @@ class Paymentschedule extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'user_id', 'direccion_administrativa_id', 'period_id', 'procedure_type_id', 'centralize', 'centralize_code', 'observations', 'status'
+        'user_id', 'direccion_administrativa_id', 'period_id', 'procedure_type_id', 'centralize', 'centralize_code', 'aditional', 'observations', 'status'
     ];
 
     public function direccion_administrativa(){

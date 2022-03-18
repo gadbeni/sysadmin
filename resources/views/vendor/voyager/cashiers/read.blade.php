@@ -212,7 +212,7 @@
                                                 @elseif($payment->stipend_id)
                                                     Estipendio
                                                 @elseif($payment->paymentschedulesdetail)
-                                                    {{ str_pad($payment->paymentschedulesdetail->paymentschedule->centralize_code ?? $payment->paymentschedulesdetail->paymentschedule->id, 6, "0", STR_PAD_LEFT) }}
+                                                    {{ str_pad($payment->paymentschedulesdetail->paymentschedule->centralize_code ?? $payment->paymentschedulesdetail->paymentschedule->id, 6, "0", STR_PAD_LEFT).($payment->paymentschedulesdetail->paymentschedule->aditional ? '-A' : '') }}
                                                 @endif
                                             </td>
                                             <td>{{ $payment->created_at->format('d/m/Y H:i') }}</td>

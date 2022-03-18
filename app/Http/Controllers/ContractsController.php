@@ -370,8 +370,7 @@ class ContractsController extends Controller
     // **** Métodos funcionales ****
     public function enabled_to_delete($id){
         $contracts = PaymentschedulesDetail::where('contract_id', $id)
-                        ->where('status', '<>', 'anulado')
-                        // ->where('status', '<>', 'pagado')
+                        ->whereRaw("(status = 'procesada' OR status = 'enviada' OR status = 'aprobada' OR status = 'habilitada')")
                         ->where('deleted_at', NULL)->first();
         return $contracts ? false : true;
     }

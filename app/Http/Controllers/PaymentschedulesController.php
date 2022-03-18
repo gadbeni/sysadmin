@@ -50,7 +50,7 @@ class PaymentschedulesController extends Controller
         $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details' => function($query){
                         $query->where('deleted_at', NULL);
                     }])
-                    ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
+                    ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->where(function($query) use ($search){
                         if($search){
                             $query->OrwhereHas('period', function($query) use($search){
@@ -61,7 +61,8 @@ class PaymentschedulesController extends Controller
                             })
                             ->OrWhereHas('user', function($query) use($search){
                                 $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
-                            });
+                            })
+                            ->OrWhereRaw($search ? "centralize_code like '%$search%'" : 1);
                         }
                     })
                     ->where('status', '!=', 'borrador')
@@ -78,7 +79,14 @@ class PaymentschedulesController extends Controller
      */
     public function create()
     {
-        $tipo_da = TipoDireccionAdministrativa::with(['direcciones_administrativas'])->where('Estado', 1)->get();
+        $direccion_administrativa_id = Auth::user()->direccion_administrativa_id;
+        $tipo_da = TipoDireccionAdministrativa::with(['direcciones_administrativas' => function($q) use($direccion_administrativa_id){
+                            $q->whereRaw($direccion_administrativa_id ? "ID = $direccion_administrativa_id" : 1);
+                        }])
+                        ->whereHas('direcciones_administrativas', function($q) use($direccion_administrativa_id){
+                            $q->whereRaw($direccion_administrativa_id ? "ID = $direccion_administrativa_id" : 1);
+                        })
+                        ->where('Estado', 1)->get();
         // dd($tipo_da);
         return view('paymentschedules.edit-add', compact('tipo_da'));
     }
@@ -94,9 +102,6 @@ class PaymentschedulesController extends Controller
             'procedure_type_id' => $request->procedure_type_id,
             'deleted_at' => NULL,
         ])->first();
-        if($paymentschedule){
-            return view('paymentschedules.generate', compact('paymentschedule'));
-        }
 
         $period = Period::findOrFail($request->period_id);
         $year = Str::substr($period->name, 0, 4);
@@ -136,30 +141,35 @@ class PaymentschedulesController extends Controller
         try {
 
             // Verificar si no existe una planilla generada para la DA, el periodo y tipo de planilla
-            $paymentschedule = Paymentschedule::where([
-                'direccion_administrativa_id' =>  $request->direccion_administrativa_id,
-                'period_id' => $request->period_id,
-                'procedure_type_id' => $request->procedure_type_id,
-                'deleted_at' => NULL,
-            ])->first();
-            if($paymentschedule){
-                return redirect()->route('paymentschedules.index')->with(['message' => 'Ya se generó una planilla con los datos ingresados.', 'alert-type' => 'error']);
-            }
+            // $paymentschedule = Paymentschedule::where([
+            //     'direccion_administrativa_id' =>  $request->direccion_administrativa_id,
+            //     'period_id' => $request->period_id,
+            //     'procedure_type_id' => $request->procedure_type_id,
+            //     'deleted_at' => NULL,
+            // ])->first();
+            // if($paymentschedule){
+            //     return redirect()->route('paymentschedules.index')->with(['message' => 'Ya se generó una planilla con los datos ingresados.', 'alert-type' => 'error']);
+            // }
 
-            // Registrar nueva planilla
-            $paymentschedule = Paymentschedule::create([
-                'direccion_administrativa_id' =>  $request->direccion_administrativa_id,
-                'period_id' => $request->period_id,
-                'procedure_type_id' => $request->procedure_type_id,
-                'centralize' => $request->centralize,
-                'observations' => $request->observations,
-                'status' => 'procesada',
-                'user_id' => Auth::user()->id,
-            ]);
+            // Buscar o registrar nueva planilla
+            if($request->paymentschedule_id && !$request->aditional){
+                $paymentschedule = Paymentschedule::findOrFail($request->paymentschedule_id);
+            }else{
+                $paymentschedule = Paymentschedule::create([
+                    'direccion_administrativa_id' =>  $request->direccion_administrativa_id,
+                    'period_id' => $request->period_id,
+                    'procedure_type_id' => $request->procedure_type_id,
+                    'centralize' => $request->centralize,
+                    'aditional' => $request->aditional ? 1 : NULL,
+                    'observations' => $request->observations,
+                    'status' => 'procesada',
+                    'user_id' => Auth::user()->id,
+                ]);
+            }
             // dd($paymentschedule);
 
             // En caso de ser centralizada asignarle el número correspondiente
-            if($request->centralize){
+            if($request->centralize  && !$request->aditional){
                 $centralize_paymentschedule = Paymentschedule::where('period_id', $request->period_id)
                                                     ->where('procedure_type_id', $request->procedure_type_id)
                                                     ->where('centralize', 1)->where('id', '<>', $paymentschedule->id)->where('deleted_at', NULL)->first();
@@ -290,7 +300,8 @@ class PaymentschedulesController extends Controller
             return view('paymentschedules.print', compact('data', 'afp', 'centralize', 'program', 'group', 'print_type'));
         }
         else if($excel){
-            // return view('paymentschedules.partials.reporte_ministerio', compact('data'));
+            $data = $data->details;
+            return view('paymentschedules.partials.reporte_afp_futuro', compact('data'));
             return Excel::download(new MinisterioTrabajoExport($data->details), 'ministerio de trabajo - '.$data->procedure_type->name.' - '.$data->period->name.'.xlsx');
         }
         return view('paymentschedules.read', compact('data', 'afp', 'centralize'));
@@ -327,7 +338,7 @@ class PaymentschedulesController extends Controller
             // Si se seleccionó mas de una planilla, se debe actualizar el estado de todas las planillas seleccionadas
             if($request->centralize){
                 if(!$request->id){
-                    return redirect()->back()->with(['message' => 'Debe seleccionar al menos 1 planilla', 'alert-type' => 'error']);
+                    return response()->json(['error' => 'Debe seleccionar al menos 1 planilla']);
                 }
 
                 $paymentschedules = Paymentschedule::with(['details.contract.person', 'details' => function($query){
@@ -393,14 +404,39 @@ class PaymentschedulesController extends Controller
                         }
                     }
                 }
+
+                if($request->status == 'pagada' && Auth::user()->direccion_administrativa_id){
+                    PaymentschedulesDetail::where('paymentschedule_id', $request->id)->where('deleted_at', NULL)->update([
+                        'status' => 'pagado',
+                    ]);
+                }
             }
+
+            PaymentschedulesHistory::create([
+                'paymentschedule_id' => $request->id,
+                'user_id' => Auth::user()->id,
+                'type' => $request->status
+            ]);
             
             DB::commit();
-            return redirect()->route('paymentschedules.index')->with(['message' => 'Estado actualizado correctamente.', 'alert-type' => 'success']);
+            return response()->json(['message' => 'Cambio realizado exitosamente.']);
         } catch (\Throwable $th) {
             DB::rollback();
-            // dd($th);
-            return redirect()->route('paymentschedules.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return response()->json(['error' => 'Ocurrió un error.']);
+        }
+    }
+
+    public function update_centralize(Request $request){
+        DB::beginTransaction();
+        try {
+            
+            Paymentschedule::where('id', $request->id)->update(['centralize' => 0, 'centralize_code' => NULL]);
+            
+            DB::commit();
+            return response()->json(['message' => 'Cambio realizado exitosamente.']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json(['error' => 'Ocurrió un error.']);
         }
     }
 
@@ -408,7 +444,7 @@ class PaymentschedulesController extends Controller
         DB::beginTransaction();
         try {
             if($request->observations == ''){
-                return redirect()->route('paymentschedules.index')->with(['message' => 'Debe describir un motivo de anulación.', 'alert-type' => 'error']); 
+                return response()->json(['error' => 'Debe describir un motivo de anulación']);
             }
 
             $paymentschedule = Paymentschedule::findOrFail($request->id);
@@ -432,11 +468,10 @@ class PaymentschedulesController extends Controller
             ]);
             
             DB::commit();
-            return redirect()->route('paymentschedules.index')->with(['message' => 'Planilla Anulada correctamente.', 'alert-type' => 'success']);
+            return response()->json(['message' => 'Planilla anulada exitosamente.']);
         } catch (\Throwable $th) {
             DB::rollback();
-            // dd($th);
-            return redirect()->route('paymentschedules.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return response()->json(['error' => 'Ocurrió un error.']);
         }
     }
 
