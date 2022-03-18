@@ -337,7 +337,7 @@
                                     </div> 
                                     <div class="col-md-6">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text"><b>Resumen:</b></span>
+                                            <span class="input-group-text"><b>Beneficiario:</b></span>
                                         </div>
                                         <input type="text" class="form-control" name="resumen[]" required>
                                     </div>                                 
@@ -385,7 +385,7 @@
                                     
                                 <div class="col-md-12">
                                     <div class="input-group-prepend">
-                                    <span class="input-group-text"><b>Observacion:</b></span>
+                                    <span class="input-group-text"><b>Detalle:</b></span>
                                     </div>
                                     <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
                                 </div>                
@@ -448,7 +448,7 @@
                             </div>
                             <div class="col-md-8">
                             <div class="input-group-prepend">
-                                <span class="input-group-text"><b>Resumen:</b></span>
+                                <span class="input-group-text"><b>Beneficiario:</b></span>
                             </div>
                             <input type="text" class="form-control" id="resumen" name="resumen" required>
                             </div>
@@ -497,7 +497,7 @@
                                  
                             <div class="col-md-12">
                                 <div class="input-group-prepend">
-                                <span class="input-group-text"><b>Observacion:</b></span>
+                                <span class="input-group-text"><b>Detalle:</b></span>
                                 </div>
                                 <textarea id="observacion" class="form-control" name="observacion" cols="77" rows="3"></textarea>
                             </div>                

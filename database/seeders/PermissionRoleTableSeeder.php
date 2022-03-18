@@ -53,8 +53,19 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = "browse_planillaspagos" or
                                             table_name = "planillas_adicionales" or
                                             table_name = "checks_categories" or
-                                            table_name = "checks" or
+                                            `key` = "browse_checks" or
+                                            `key` = "read_checks" or
+                                            `key` = "edit_checks" or
+                                            `key` = "add_checks" or
+                                            `key` = "delete_checks" or
+                                            `key` = "payment_checks" or
                                             table_name = "plugins"')->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        $role = Role::where('name', 'despacho_gobernador')->firstOrFail();
+        $permissions = Permission::whereRaw('   table_name = "admin" or
+                                                `key` = "browse_checks" or
+                                                `key` = "success_checks"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'caja_cajero')->firstOrFail();
