@@ -70,6 +70,7 @@
         <button class="btn-print" onclick="window.print()"> Imprimir <i class="fa fa-print"></i></button>
     </div>
     @foreach ($paymentschedule_details as $item)
+    {{-- {{ dd($item) }} --}}
         @for ($i = 0; $i < 2; $i++)
         <div @if ($i == 1) class="show-print" @else class="border-bottom" @endif>
             <table width="100%">
@@ -89,7 +90,7 @@
             <table width="100%" cellpadding="5" style="font-size: 12px">
                 <tr>
                     <td><b>SECRETARÍA</b></td>
-                    <td style="border: 1px solid #ddd">{{ $item->contract->direccion_administrativa->NOMBRE }}</td>
+                    <td style="border: 1px solid #ddd">{{ $item->paymentschedule->direccion_administrativa->NOMBRE }}</td>
                     <td><b>TIPO DE CONTRATO</b></td>
                     <td style="border: 1px solid #ddd">{{ $item->paymentschedule->procedure_type->name }}</td>
                 </tr>
