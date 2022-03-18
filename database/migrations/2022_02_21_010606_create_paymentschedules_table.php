@@ -21,6 +21,7 @@ class CreatePaymentschedulesTable extends Migration
             $table->foreignId('procedure_type_id')->nullable()->constrained('procedure_types');
             $table->smallInteger('centralize')->nullable()->default(0);
             $table->string('centralize_code')->nullable();
+            $table->string('aditional')->nullable();
             $table->text('observations')->nullable();
             $table->string('status')->nullable()->default('borrador');
             $table->timestamps();

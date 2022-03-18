@@ -17,7 +17,7 @@
                 @forelse ($data as $item)
                     <tr>
                         <td>
-                            {{ str_pad($item->id, 6, "0", STR_PAD_LEFT) }} <br>
+                            {{ str_pad($item->id, 6, "0", STR_PAD_LEFT).($item->aditional ? '-A' : '') }} <br>
                             @if ($item->centralize)
                                 <label class="label label-danger" title="Centralizada">{{ str_pad($item->centralize_code, 6, "0", STR_PAD_LEFT) }}</label>
                             @endif

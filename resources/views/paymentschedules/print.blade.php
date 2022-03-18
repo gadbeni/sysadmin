@@ -1,6 +1,6 @@
 @extends('layouts.template-print-alt')
 
-@section('page_title', 'Impresión de planilla - '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT))
+@section('page_title', 'Impresión de planilla - '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : ''))
 
 @section('content')
     <div class="content">
@@ -25,12 +25,12 @@
                         
                     </td>
                     <td style="text-align:center; width: 90px">
-                        {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->NOMBRE).' | '.$data->procedure_type->name); !!} <br>
+                        {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->NOMBRE).' | '.$data->procedure_type->name); !!} <br>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2"></td>
-                    <td style="text-align: center"><b>{{ str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT) }}</b></td>
+                    <td style="text-align: center"><b>{{ str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '') }}</b></td>
                 </tr>
                 <tr>
                     <td colspan="3" style="text-align: right">
@@ -444,12 +444,12 @@
                             @endif
                         </td>
                         <td style="text-align:center; width: 90px">
-                            {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->NOMBRE).' | '.$data->procedure_type->name); !!} <br>
+                            {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->NOMBRE).' | '.$data->procedure_type->name); !!} <br>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
-                        <td style="text-align: center"><b>{{ str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT) }}</b></td>
+                        <td style="text-align: center"><b>{{ str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '') }}</b></td>
                     </tr>
                     <tr>
                         <td colspan="3" style="text-align: right">

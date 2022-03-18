@@ -102,9 +102,6 @@ class PaymentschedulesController extends Controller
             'procedure_type_id' => $request->procedure_type_id,
             'deleted_at' => NULL,
         ])->first();
-        if($paymentschedule){
-            return view('paymentschedules.generate', compact('paymentschedule'));
-        }
 
         $period = Period::findOrFail($request->period_id);
         $year = Str::substr($period->name, 0, 4);
@@ -144,30 +141,35 @@ class PaymentschedulesController extends Controller
         try {
 
             // Verificar si no existe una planilla generada para la DA, el periodo y tipo de planilla
-            $paymentschedule = Paymentschedule::where([
-                'direccion_administrativa_id' =>  $request->direccion_administrativa_id,
-                'period_id' => $request->period_id,
-                'procedure_type_id' => $request->procedure_type_id,
-                'deleted_at' => NULL,
-            ])->first();
-            if($paymentschedule){
-                return redirect()->route('paymentschedules.index')->with(['message' => 'Ya se generó una planilla con los datos ingresados.', 'alert-type' => 'error']);
-            }
+            // $paymentschedule = Paymentschedule::where([
+            //     'direccion_administrativa_id' =>  $request->direccion_administrativa_id,
+            //     'period_id' => $request->period_id,
+            //     'procedure_type_id' => $request->procedure_type_id,
+            //     'deleted_at' => NULL,
+            // ])->first();
+            // if($paymentschedule){
+            //     return redirect()->route('paymentschedules.index')->with(['message' => 'Ya se generó una planilla con los datos ingresados.', 'alert-type' => 'error']);
+            // }
 
-            // Registrar nueva planilla
-            $paymentschedule = Paymentschedule::create([
-                'direccion_administrativa_id' =>  $request->direccion_administrativa_id,
-                'period_id' => $request->period_id,
-                'procedure_type_id' => $request->procedure_type_id,
-                'centralize' => $request->centralize,
-                'observations' => $request->observations,
-                'status' => 'procesada',
-                'user_id' => Auth::user()->id,
-            ]);
+            // Buscar o registrar nueva planilla
+            if($request->paymentschedule_id && !$request->aditional){
+                $paymentschedule = Paymentschedule::findOrFail($request->paymentschedule_id);
+            }else{
+                $paymentschedule = Paymentschedule::create([
+                    'direccion_administrativa_id' =>  $request->direccion_administrativa_id,
+                    'period_id' => $request->period_id,
+                    'procedure_type_id' => $request->procedure_type_id,
+                    'centralize' => $request->centralize,
+                    'aditional' => $request->aditional ? 1 : NULL,
+                    'observations' => $request->observations,
+                    'status' => 'procesada',
+                    'user_id' => Auth::user()->id,
+                ]);
+            }
             // dd($paymentschedule);
 
             // En caso de ser centralizada asignarle el número correspondiente
-            if($request->centralize){
+            if($request->centralize  && !$request->aditional){
                 $centralize_paymentschedule = Paymentschedule::where('period_id', $request->period_id)
                                                     ->where('procedure_type_id', $request->procedure_type_id)
                                                     ->where('centralize', 1)->where('id', '<>', $paymentschedule->id)->where('deleted_at', NULL)->first();
@@ -298,7 +300,8 @@ class PaymentschedulesController extends Controller
             return view('paymentschedules.print', compact('data', 'afp', 'centralize', 'program', 'group', 'print_type'));
         }
         else if($excel){
-            // return view('paymentschedules.partials.reporte_ministerio', compact('data'));
+            $data = $data->details;
+            return view('paymentschedules.partials.reporte_afp_futuro', compact('data'));
             return Excel::download(new MinisterioTrabajoExport($data->details), 'ministerio de trabajo - '.$data->procedure_type->name.' - '.$data->period->name.'.xlsx');
         }
         return view('paymentschedules.read', compact('data', 'afp', 'centralize'));
@@ -401,7 +404,19 @@ class PaymentschedulesController extends Controller
                         }
                     }
                 }
+
+                if($request->status == 'pagada' && Auth::user()->direccion_administrativa_id){
+                    PaymentschedulesDetail::where('paymentschedule_id', $request->id)->where('deleted_at', NULL)->update([
+                        'status' => 'pagado',
+                    ]);
+                }
             }
+
+            PaymentschedulesHistory::create([
+                'paymentschedule_id' => $request->id,
+                'user_id' => Auth::user()->id,
+                'type' => $request->status
+            ]);
             
             DB::commit();
             return response()->json(['message' => 'Cambio realizado exitosamente.']);

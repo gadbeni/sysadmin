@@ -1,10 +1,10 @@
 @extends('voyager::master')
 
-@section('page_title', 'Ver Planilla - '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT))
+@section('page_title', 'Ver Planilla - '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : ''))
 
 @section('page_header')
     <h1 class="page-title">
-        <i class="voyager-logbook"></i> Planilla - {{ str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT) }}
+        <i class="voyager-logbook"></i> Planilla - {{ str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '') }}
         <a href="{{ route('paymentschedules.index') }}" class="btn btn-warning">
             <span class="glyphicon glyphicon-list"></span>&nbsp; Volver a la lista
         </a>
@@ -767,7 +767,7 @@
                                                             <input type="checkbox" name="id[]" value="{{ $item->id }}">
                                                         </td>
                                                         <td>{{$cont}}</td>
-                                                        <td>{{ str_pad($item->id, 6, "0", STR_PAD_LEFT) }}</td>
+                                                        <td>{{ str_pad($item->id, 6, "0", STR_PAD_LEFT).($item->aditional ? '-A' : '') }}</td>
                                                         <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
                                                         <td class="text-right">{{ $item->details->count() }}</td>
                                                         <td class="text-right">{{ number_format($item->details->sum('liquid_payable'), 2, ',', '.') }}</td>
