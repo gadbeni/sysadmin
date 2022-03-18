@@ -340,7 +340,7 @@ class PlanillasController extends Controller
                 $payment->deleted_at = Carbon::now();
                 $payment->update();
             }else{
-                dd($request->paymentschedules_detail_id);
+                PaymentschedulesDetail::where('id', $request->paymentschedules_detail_id)->update(['status' => 'habilitado']);
                 $payment = CashiersPayment::where('paymentschedules_detail_id', $request->paymentschedules_detail_id)->first();
                 $payment->deleted_at = Carbon::now();
                 $payment->update();
@@ -387,13 +387,12 @@ class PlanillasController extends Controller
 
     public function planillas_pagos_delete_print($id){
         $payment = CashiersPayment::with(['cashier.user', 'deletes.user'])->where('id', $id)->first();
+        $planilla = null;
         if($payment->planilla_haber_id){
             $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
                             ->where('p.id', $payment->planilla_haber_id)
                             ->select('p.ID', 'p.Liquido_Pagable')
                             ->first();
-        }else{
-
         }
         
         // dd($payment, $planilla);

@@ -57,7 +57,7 @@
             <tr>
                 <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="80px"></td>
                 <td style="text-align: right">
-                    <h3 style="margin-bottom: 0px; margin-top: 5px">CAJAS - GOBERNACIÓN<br> <small>ANULACIÓN DE RECIBO DE PAGO N&deg; {{ str_pad($planilla->ID, 6, "0", STR_PAD_LEFT) }} </small> </h3>
+                    <h3 style="margin-bottom: 0px; margin-top: 5px">CAJAS - GOBERNACIÓN<br> <small>ANULACIÓN DE RECIBO DE PAGO N&deg; {{ str_pad($planilla ? $planilla->ID : $payment->paymentschedules_detail_id, 6, "0", STR_PAD_LEFT) }} </small> </h3>
                 </td>
             </tr>
         </table>
@@ -72,7 +72,7 @@
                     <div>
                         <h2 style="text-align: center">MOTIVO DE LA ANULACIÓN</h2>
                         <p style="text-align: justify; height: 120px; padding: 10px; font-size: 12px">{{ $payment->deletes->observations }}</p>
-                        <h2 style="text-align: right"><small>Monto anulado: Bs.</small> {{ $planilla->Liquido_Pagable }} </h2>
+                        <h2 style="text-align: right"><small>Monto anulado: Bs.</small> {{ $planilla ? $planilla->Liquido_Pagable : $payment->amount }} </h2>
                     </div>
                 </td>
                 <td width="30%" style="padding: 0px 10px">

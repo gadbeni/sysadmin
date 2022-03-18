@@ -219,10 +219,11 @@
                                                     @endif
                                                 @endif
                                                 
-                                                {{-- @if ($payment->paymentschedulesdetail)
+                                                @if ($payment->paymentschedulesdetail)
+                                                    {{-- {{ dd($payment) }} --}}
                                                     @if (!$payment->deleted_at)
-                                                        <button type="button" onclick="print_recipe({{ $payment->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
-                                                        <button type="button" data-toggle="modal" data-target="#delete_payment-modal" data-id="{{ $payment->id }}" data-type="paymentschedules_detail_id" class="btn btn-danger btn-delete"><i class="voyager-trash"></i> Anular</button>
+                                                        {{-- <button type="button" onclick="print_recipe({{ $payment->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Imprimir</button> --}}
+                                                        <button type="button" data-toggle="modal" data-target="#delete_payment-modal" data-id="{{ $payment->paymentschedules_detail_id }}" data-type="paymentschedules_detail_id" class="btn btn-danger btn-delete"><i class="voyager-trash"></i> Anular</button>
                                                     @else
                                                         @if ($payment->deletes)
                                                             <button type="button" onclick="print_recipe_delete({{ $payment->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Informe de anulación</button>
@@ -230,7 +231,7 @@
                                                             <label class="label label-danger">Eliminado manualmente</label>
                                                         @endif
                                                     @endif
-                                                @endif --}}
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
