@@ -14,7 +14,7 @@ class UpdatePeopleTable extends Migration
     public function up()
     {
         Schema::table('people', function(Blueprint $table){
-            $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->smallInteger('retired')->nullable()->default(0)->after('afp_status');
 		});
     }
 
@@ -26,7 +26,7 @@ class UpdatePeopleTable extends Migration
     public function down()
     {
         Schema::table('people', function (Blueprint $table) {
-            $table->dropColumn(['user_id']);
+            $table->dropColumn(['retired']);
         });
     }
 }

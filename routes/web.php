@@ -189,6 +189,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('reports/social-security/caratula/list', [ReportsController::class, 'social_security_personal_caratula_list'])->name('reports.social_security.personal.caratula.list');
     Route::get('reports/social-security/checks', [ReportsController::class, 'social_security_personal_checks_index'])->name('reports.social_security.personal.checks.index');
     Route::post('reports/social-security/checks/list', [ReportsController::class, 'social_security_personal_checks_list'])->name('reports.social_security.personal.checks.list');
+    Route::get('reports/social-security/exports', [ReportsController::class, 'social_security_exports_index'])->name('reports.social_security.exports.index');
+    Route::post('reports/social-security/exports/list', [ReportsController::class, 'social_security_exports_list'])->name('reports.social_security.exports.list');
 
     // Cashier
     Route::get('reports/cashier/cashiers', [ReportsController::class, 'cashier_cashiers_index'])->name('reports.cashier.cashiers.index');

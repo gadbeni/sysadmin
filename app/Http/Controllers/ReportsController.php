@@ -16,9 +16,12 @@ use App\Models\VaultsClosure;
 use App\Models\Spreadsheet;
 use App\Models\DireccionAdministrativa;
 use App\Models\Contract;
+use App\Models\Period;
+use App\Models\PaymentschedulesDetail;
 
 // Exports
 use App\Exports\PaymentsExport;
+use App\Exports\MinisterioTrabajoExport;
 
 class ReportsController extends Controller
 {
@@ -598,6 +601,23 @@ class ReportsController extends Controller
             return view('reports.social_security.checks-list', compact('data'));
         }
         
+    }
+
+    public function social_security_exports_index(){
+        return view('reports.social_security.exports-browse');
+    }
+
+    public function social_security_exports_list(Request $request){
+        // dd($request->all());
+        $period_id = $request->period_id;
+        $procedure_type_id = $request->procedure_type_id;
+        $data = PaymentschedulesDetail::whereHas('paymentschedule', function($q) use($period_id, $procedure_type_id){
+            $q->where('period_id', $period_id)->where('procedure_type_id', $procedure_type_id)->where('deleted_at', NULL);
+        })->where('deleted_at', NULL)->get();
+        if($request->type == 'excel'){
+            return Excel::download(new MinisterioTrabajoExport($data), 'ministerio de trabajo - '.date('d-m-Y H:i:s').'.xlsx');
+        }
+        return view('reports.social_security.exports-list', compact('data'));
     }
 
     //  ===== Cashiers =====

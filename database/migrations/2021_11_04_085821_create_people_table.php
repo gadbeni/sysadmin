@@ -27,6 +27,7 @@ class CreatePeopleTable extends Migration
             $table->string('email')->nullable();
             $table->smallInteger('afp')->nullable();
             $table->smallInteger('afp_status')->nullable()->default(1);
+            $table->smallInteger('retired')->nullable()->default(1);
             $table->string('gender')->nullable();
             $table->date('birthday')->nullable();
             $table->string('civil_status')->nullable();

@@ -3139,6 +3139,22 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{}',
                 'order' => 18,
             ),
+            195 => 
+            array (
+                'id' => 213,
+                'data_type_id' => 9,
+                'field' => 'retired',
+                'type' => 'text',
+                'display_name' => 'Retired',
+                'required' => 0,
+                'browse' => 0,
+                'read' => 0,
+                'edit' => 0,
+                'add' => 0,
+                'delete' => 0,
+                'details' => '{}',
+                'order' => 14,
+            ),
         ));
         
         

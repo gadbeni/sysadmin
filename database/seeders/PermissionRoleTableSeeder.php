@@ -102,6 +102,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = "browse_reportssocial-securityspreadsheetspayments" or
                                                 `key` = "browse_reportssocial-securitycaratula" or
                                                 `key` = "browse_reportssocial-securitychecks" or
+                                                `key` = "browse_reportssocial-securityexports" or
                                                 `key` = "browse_social-securitypayments" or
                                                 `key` = "read_social-securitypayments" or 
                                                 `key` = "add_social-securitypayments" or
