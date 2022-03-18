@@ -257,6 +257,7 @@ class PaymentschedulesController extends Controller
         $group = request('group');
         $print_type = request('print_type');
         $excel = request('excel');
+        $type_excel = request('type_excel');
 
         $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract' => function($q){
                         $q->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
@@ -300,9 +301,14 @@ class PaymentschedulesController extends Controller
             return view('paymentschedules.print', compact('data', 'afp', 'centralize', 'program', 'group', 'print_type'));
         }
         else if($excel){
-            $data = $data->details;
-            return view('paymentschedules.partials.reporte_afp_futuro', compact('data'));
-            return Excel::download(new MinisterioTrabajoExport($data->details), 'ministerio de trabajo - '.$data->procedure_type->name.' - '.$data->period->name.'.xlsx');
+            // return view('paymentschedules.partials.reporte_afp_futuro', compact('data'));
+            if($type_excel == 1){
+                return Excel::download(new MinisterioTrabajoExport($data->details), 'ministerio de trabajo - '.$data->procedure_type->name.' - '.$data->period->name.'.xlsx');
+            }else if($type_excel == 2){
+                return 'En desarrollo';
+            }else if($type_excel == 3){
+                return 'En desarrollo';
+            }
         }
         return view('paymentschedules.read', compact('data', 'afp', 'centralize'));
     }

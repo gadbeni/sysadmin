@@ -221,7 +221,7 @@
                                                 @if ($data)
                                                     @if (!$payment->deleted_at)
                                                         <button type="button" onclick="print_recipe({{ $payment->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
-                                                        <button type="button" data-toggle="modal" data-target="#delete_payment-modal" data-id="{{ $data->ID }}" class="btn btn-danger btn-delete"><i class="voyager-trash"></i> Anular</button>
+                                                        <button type="button" data-toggle="modal" data-target="#delete_payment-modal" data-id="{{ $data->ID }}" data-type="planilla_haber_id" class="btn btn-danger btn-delete"><i class="voyager-trash"></i> Anular</button>
                                                     @else
                                                         @if ($payment->deletes)
                                                             <button type="button" onclick="print_recipe_delete({{ $payment->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Informe de anulación</button>
@@ -230,6 +230,19 @@
                                                         @endif
                                                     @endif
                                                 @endif
+                                                
+                                                {{-- @if ($payment->paymentschedulesdetail)
+                                                    @if (!$payment->deleted_at)
+                                                        <button type="button" onclick="print_recipe({{ $payment->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+                                                        <button type="button" data-toggle="modal" data-target="#delete_payment-modal" data-id="{{ $payment->id }}" data-type="paymentschedules_detail_id" class="btn btn-danger btn-delete"><i class="voyager-trash"></i> Anular</button>
+                                                    @else
+                                                        @if ($payment->deletes)
+                                                            <button type="button" onclick="print_recipe_delete({{ $payment->id }})" title="Imprimir" class="btn btn-default btn-print"><i class="glyphicon glyphicon-print"></i> Informe de anulación</button>
+                                                        @else
+                                                            <label class="label label-danger">Eliminado manualmente</label>
+                                                        @endif
+                                                    @endif
+                                                @endif --}}
                                             </td>
                                         </tr>
                                     @endforeach
@@ -291,8 +304,6 @@
     </div>
 
     <form id="form-delete" action="{{ route('planillas.pagos.delete') }}" method="POST">
-        <input type="hidden" name="id" value="{{ $cashier->id }}">
-        <input type="hidden" name="planilla_haber_id">
         @csrf
         <div class="modal modal-danger fade" tabindex="-1" id="delete_payment-modal" role="dialog">
             <div class="modal-dialog">
@@ -302,6 +313,9 @@
                         <h4 class="modal-title"><i class="voyager-trash"></i> Desea anular el siguiente pago?</h4>
                     </div>
                     <div class="modal-body">
+                        <input type="hidden" name="id" value="{{ $cashier->id }}">
+                        <input type="hidden" name="planilla_haber_id">
+                        <input type="hidden" name="paymentschedules_detail_id">
                         <div class="form-group">
                             <label for="observation">Motivo</label>
                             <textarea name="observations" class="form-control" rows="5" placeholder="Describa el motivo de la anulación del pago" required></textarea>
@@ -323,7 +337,8 @@
         $(document).ready(function () {
             $('.btn-delete').click(function(){
                 let id = $(this).data('id');
-                $('#form-delete input[name="planilla_haber_id"]').val(id);
+                let type = $(this).data('type');
+                $(`#form-delete input[name="${type}"]`).val(id);
             });
         });
 

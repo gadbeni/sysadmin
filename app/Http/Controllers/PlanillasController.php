@@ -330,15 +330,21 @@ class PlanillasController extends Controller
     }
 
     public function planillas_pagos_delete(Request $request){
-        // dd($request);
         DB::beginTransaction();
         try {
-            DB::connection('mysqlgobe')->table('planillahaberes')
-                ->where('id', $request->planilla_haber_id)->update(['pagada' => 1]);
+            if($request->planilla_haber_id){
+                DB::connection('mysqlgobe')->table('planillahaberes')
+                        ->where('id', $request->planilla_haber_id)->update(['pagada' => 1]);
 
-            $payment = CashiersPayment::where('planilla_haber_id', $request->planilla_haber_id)->first();
-            $payment->deleted_at = Carbon::now();
-            $payment->save();
+                $payment = CashiersPayment::where('planilla_haber_id', $request->planilla_haber_id)->first();
+                $payment->deleted_at = Carbon::now();
+                $payment->update();
+            }else{
+                dd($request->paymentschedules_detail_id);
+                $payment = CashiersPayment::where('paymentschedules_detail_id', $request->paymentschedules_detail_id)->first();
+                $payment->deleted_at = Carbon::now();
+                $payment->update();
+            }
 
             CashiersPaymentsDelete::create([
                 'cashiers_payment_id' => $payment->id,
@@ -350,7 +356,7 @@ class PlanillasController extends Controller
             return redirect()->route('voyager.cashiers.show', ['id' => $request->id])->with(['message' => 'Pago anulado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
-            // dd($th);
+            dd($th);
             return redirect()->route('voyager.cashiers.show', ['id' => $request->id])->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
@@ -381,10 +387,15 @@ class PlanillasController extends Controller
 
     public function planillas_pagos_delete_print($id){
         $payment = CashiersPayment::with(['cashier.user', 'deletes.user'])->where('id', $id)->first();
-        $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                        ->where('p.id', $payment->planilla_haber_id)
-                        ->select('p.ID', 'p.Liquido_Pagable')
-                        ->first();
+        if($payment->planilla_haber_id){
+            $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                            ->where('p.id', $payment->planilla_haber_id)
+                            ->select('p.ID', 'p.Liquido_Pagable')
+                            ->first();
+        }else{
+
+        }
+        
         // dd($payment, $planilla);
         return view('planillas.payment-recipe-delete', compact('payment', 'planilla'));
     }

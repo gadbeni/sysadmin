@@ -34,7 +34,9 @@
                 Exportar <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-                <li><a href="?{{ $centralize ? '&centralize=true' : '' }}&excel=true" target="_blank">Excel</a></li>
+                <li><a href="?{{ $centralize ? '&centralize=true' : '' }}&excel=true&type_excel=1" target="_blank">Ministerio de Trabajo</a></li>
+                <li><a href="?{{ $centralize ? '&centralize=true' : '' }}&excel=true&type_excel=2" target="_blank">AFP futuro</a></li>
+                <li><a href="?{{ $centralize ? '&centralize=true' : '' }}&excel=true&type_excel=3" target="_blank">AFP previsión</a></li>
             </ul>
         </div>
 

@@ -53,13 +53,22 @@
                 <td></td>
                 <td>{{ $item->worked_days }}</td>
                 <td>N</td>
+                {{-- < 65 && no jubilado si aporta --}}
                 <td>{{ number_format(0, 2, ',', '.') }}</td>
+                {{-- >= 65 && no jubilado si aporta --}}
                 <td>{{ number_format(0, 2, ',', '.') }}</td>
+                {{-- < 65 && si jubilado no aporta --}}
                 <td>{{ number_format(0, 2, ',', '.') }}</td>
+                {{-- >= 65 && si jubilado no aporta --}}
                 <td>{{ number_format(0, 2, ',', '.') }}</td>
+                
                 <td>{{ number_format(0, 2, ',', '.') }}</td>
+                
+                {{-- Sueldo --}}
                 <td>{{ number_format(0, 2, ',', '.') }}</td>
+                {{-- Sueldo --}}
                 <td>{{ number_format(0, 2, ',', '.') }}</td>
+                
                 <td>{{ number_format(0, 2, ',', '.') }}</td>
             </tr> 
             @php
