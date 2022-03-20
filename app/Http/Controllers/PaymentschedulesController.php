@@ -13,9 +13,6 @@ use Maatwebsite\Excel\Facades\Excel;
 // Imports
 use App\Imports\PaymentschedulesFilesImport;
 
-// Exports
-use App\Exports\MinisterioTrabajoExport;
-
 // Models
 use App\Models\TipoDireccionAdministrativa;
 use App\Models\Contract;

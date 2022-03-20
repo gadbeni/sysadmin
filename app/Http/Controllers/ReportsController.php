@@ -20,7 +20,6 @@ use App\Models\Period;
 use App\Models\PaymentschedulesDetail;
 
 // Exports
-use App\Exports\PaymentsExport;
 use App\Exports\MinisterioTrabajoExport;
 
 class ReportsController extends Controller
@@ -275,7 +274,7 @@ class ReportsController extends Controller
                 return view('reports.social_security.payments-details-list-print', compact('da'));
             }
         }elseif($request->type == 'excel'){
-            return Excel::download(new PaymentsExport, 'users.xlsx');
+            return null;
         }else{
             if($request->tipo_planilla == 1 || $request->tipo_planilla == 2){
                 if($request->group_afp){
@@ -611,7 +610,7 @@ class ReportsController extends Controller
         // dd($request->all());
         $period_id = $request->period_id;
         $procedure_type_id = $request->procedure_type_id;
-        $data = PaymentschedulesDetail::whereHas('paymentschedule', function($q) use($period_id, $procedure_type_id){
+        $data = PaymentschedulesDetail::with('contract')->whereHas('paymentschedule', function($q) use($period_id, $procedure_type_id){
             $q->where('period_id', $period_id)->where('procedure_type_id', $procedure_type_id)->where('deleted_at', NULL);
         })->where('deleted_at', NULL)->get();
         if($request->type == 'excel'){

@@ -10,3 +10,11 @@ composer install
 cp .env.example .env
 php artisan template:install
 ```
+
+## Colaboradores
+
+<a href="https://github.com/gadbeni/sysadmin/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=gadbeni/sysadmin" />
+</a>
+
+<!-- Made with [contrib.rocks](https://contrib.rocks). -->
