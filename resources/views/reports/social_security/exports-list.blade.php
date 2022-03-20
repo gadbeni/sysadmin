@@ -68,23 +68,23 @@
                             <td>{{ explode(' ', $item->contract->person->last_name)[0] }}</td>
                             <td>{{ count(explode(' ', $item->contract->person->last_name)) > 1 ? explode(' ', $item->contract->person->last_name)[1] : '' }}</td>
                             <td></td>
-                            <td>{{ date('d/m/Y', strtotime($item->contract->person->birthday)) }}</td>
-                            <td>{{ date('d/m/Y', strtotime($item->contract->start)) }}</td>
+                            <td>{{ date('Y-m-d', strtotime($item->contract->person->birthday)) }}</td>
+                            <td>{{ date('Y-m-d', strtotime($item->contract->start)) }}</td>
                             <td>{{ $item->contract->person->gender == 'masculino' ? 'M' : 'F' }}</td>
                             <td>{{ $item->contract->job_id ? $item->contract->job->item : '' }}</td>
                             <td>{{ $item->job }}</td>
-                            <td>{{ $item->contract->type->name }}</td>
-                            <td>{{ $item->contract->person->profession }}</td>
+                            <td>{{ Str::upper($item->contract->type->name) }}</td>
+                            <td>NO EXISTE INFORMACION</td>
                             <td>{{ $item->worked_days }}</td>
-                            <td>{{ number_format($item->salary, 2, ',', '.') }}</td>
-                            <td>{{ number_format($item->seniority_bonus_amount, 2, ',', '.') }}</td>
+                            <td>{{ number_format($item->salary, 2, ',', '') }}</td>
+                            <td>{{ number_format($item->seniority_bonus_amount, 2, ',', '') }}</td>
                             <td>0</td>
-                            <td>{{ number_format($item->partial_salary, 2, ',', '.') }}</td>
-                            <td>{{ number_format($item->solidary + $item->common_risk + $item->retirement, 2, ',', '.') }}</td>
-                            <td>{{ number_format($item->faults_amount, 2, ',', '.') }}</td>
-                            <td>{{ number_format($item->solidary, 2, ',', '.') }}</td>
-                            <td>{{ number_format($item->solidary_employer, 2, ',', '.') }}</td>
-                            <td>{{ number_format($item->liquid_payable, 2, ',', '.') }}</td>
+                            <td>{{ number_format($item->partial_salary, 2, ',', '') }}</td>
+                            <td>{{ number_format($item->solidary + $item->common_risk + $item->retirement, 2, ',', '') }}</td>
+                            <td>{{ number_format($item->faults_amount, 2, ',', '') }}</td>
+                            <td>{{ number_format($item->solidary, 2, ',', '') }}</td>
+                            <td>{{ number_format($item->solidary_employer, 2, ',', '') }}</td>
+                            <td>{{ number_format($item->liquid_payable, 2, ',', '') }}</td>
                         </tr> 
                     @endforeach
                     </tbody>
