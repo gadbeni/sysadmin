@@ -52,6 +52,7 @@
                             $period = \App\Models\Period::findOrFail($item->paymentschedule->period_id);
                             $year = Str::substr($period->name, 0, 4);
                             $month = Str::substr($period->name, 4, 2);
+                            // dd($item->contract);
                         @endphp
                         <tr>
                             <td>908</td>
@@ -62,16 +63,16 @@
                             <td>{{ $month }}</td>
                             <td>{{ explode('-', $item->contract->person->ci)[0] }}</td>
                             <td>{{ count(explode('-', $item->contract->person->ci)) > 1 ? explode('-', $item->contract->person->ci)[1] : '' }}</td>
-                            <td></td>
+                            <td>OTRO</td>
                             <td>{{ explode(' ', $item->contract->person->first_name)[0] }}</td>
                             <td>{{ count(explode(' ', $item->contract->person->first_name)) > 1 ? explode(' ', $item->contract->person->first_name)[1] : '' }}</td>
                             <td>{{ explode(' ', $item->contract->person->last_name)[0] }}</td>
                             <td>{{ count(explode(' ', $item->contract->person->last_name)) > 1 ? explode(' ', $item->contract->person->last_name)[1] : '' }}</td>
                             <td></td>
-                            <td>{{ date('Y-m-d', strtotime($item->contract->person->birthday)) }}</td>
-                            <td>{{ date('Y-m-d', strtotime($item->contract->start)) }}</td>
+                            <td>{{ date('d/m/Y', strtotime($item->contract->person->birthday)) }}</td>
+                            <td>{{ date('d/m/Y', strtotime($item->contract->start)) }}</td>
                             <td>{{ $item->contract->person->gender == 'masculino' ? 'M' : 'F' }}</td>
-                            <td>{{ $item->contract->job_id ? $item->contract->job->item : '' }}</td>
+                            <td>{{ $item->contract->job_id }}</td>
                             <td>{{ $item->job }}</td>
                             <td>{{ Str::upper($item->contract->type->name) }}</td>
                             <td>NO EXISTE INFORMACION</td>
