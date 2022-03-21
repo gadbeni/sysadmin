@@ -110,7 +110,6 @@
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                 Imprimir <span class="caret"></span>
                                 </button>
-                            
                                 <ul class="dropdown-menu" role="menu">
                                     @switch($item->procedure_type_id)
                                         @case(1)
@@ -128,8 +127,13 @@
                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.contract']) }}" target="_blank">Contrato</a></li>
                                             @break
                                         @case(5)
+                                            @if ($item->direccion_administrativa->Tipo == 3 || $item->direccion_administrativa->Tipo == 4)
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-alt']) }}" target="_blank">Contrato</a></li>
+                                            @else
                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract']) }}" target="_blank">Contrato</a></li>
                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-desigancion']) }}" target="_blank">Memorandum</a></li>
+                                            @endif
+
                                             @break
                                         @default
                                             

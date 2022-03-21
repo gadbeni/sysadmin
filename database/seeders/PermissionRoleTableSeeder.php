@@ -139,6 +139,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
+                                            `key` = 'enable_paymentschedules' or
                                             `key` = 'add_paymentschedules' or
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
