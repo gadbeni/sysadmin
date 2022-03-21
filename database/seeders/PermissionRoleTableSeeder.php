@@ -256,6 +256,10 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'read_contracts' or
                                             `key` = 'edit_contracts' or
                                             `key` = 'add_contracts' or
+                                            `key` = 'browse_programs' or
+                                            `key` = 'read_programs' or
+                                            `key` = 'edit_programs' or
+                                            `key` = 'add_programs' or
                                             `key` = 'downgrade_contracts' or
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or

@@ -45,4 +45,8 @@ class PaymentschedulesDetail extends Model
     public function contract(){
         return $this->belongsTo(Contract::class, 'contract_id');
     }
+
+    public function payment(){
+        return $this->hasOne(CashiersPayment::class);
+    }
 }

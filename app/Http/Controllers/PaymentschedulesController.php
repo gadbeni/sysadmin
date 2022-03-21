@@ -114,7 +114,7 @@ class PaymentschedulesController extends Controller
                         ->whereRaw('(CONCAT(YEAR(finish), IF( LENGTH(MONTH(finish)) > 1, MONTH(finish), CONCAT("0", MONTH(finish)) )) >= "'.$year.$month.'" or finish is null)')
                         ->whereRaw("id not in (select pd.contract_id from paymentschedules as p, paymentschedules_details as pd
                                                     where p.id = pd.paymentschedule_id and p.period_id = ".$period->id." and p.deleted_at is null and pd.deleted_at is null)")
-                        ->where('status', 'firmado')
+                        ->whereRaw('(status = "firmado" or status = "concluido")')
                         ->where('deleted_at', NULL)->get();
 
         $paymentschedules_file = PaymentschedulesFile::with(['details'])

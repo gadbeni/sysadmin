@@ -69,7 +69,7 @@
             <tr>
                 <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="80px"></td>
                 <td style="text-align: right">
-                    <h3 style="margin-bottom: 0px; margin-top: 5px">BOLETA DE PAGO<br> <small>RECIBO DE PAGO N&deg; {{ str_pad($planilla->ID, 6, "0", STR_PAD_LEFT) }} </small> </h3>
+                    <h3 style="margin-bottom: 0px; margin-top: 5px">BOLETA DE PAGO<br> <small>RECIBO DE PAGO N&deg; {{ str_pad($planilla ? $planilla->ID : $payment->id, 6, "0", STR_PAD_LEFT) }} </small> </h3>
                     <small>Impreso por {{ Auth::user()->name }} - {{ date('d/m/Y H:i:s') }}</small>
                     <br>
                 </td>
@@ -82,21 +82,21 @@
         <table width="100%" cellpadding="5" style="font-size: 12px">
             <tr>
                 <td><b>SECRETARÍA</b></td>
-                <td style="border: 1px solid #ddd">{{ $planilla->Direccion_Administrativa }}</td>
+                <td style="border: 1px solid #ddd">{{ $planilla ? $planilla->Direccion_Administrativa : $payment->paymentschedulesdetail->paymentschedule->direccion_administrativa->NOMBRE }}</td>
                 <td><b>TIPO DE CONTRATO</b></td>
-                <td style="border: 1px solid #ddd">{{ $planilla->tipo_planilla }}</td>
+                <td style="border: 1px solid #ddd">{{ $planilla ? $planilla->tipo_planilla : '' }}</td>
             </tr>
             <tr>
                 <td><b>AFP</b></td>
-                <td style="border: 1px solid #ddd">{{ $planilla->Afp == 1 ? 'Futuro' : 'Previsión' }}</td>
+                <td style="border: 1px solid #ddd">{{ ($planilla ? $planilla->Afp : $payment->paymentschedulesdetail->contract->person->afp == 1) ? 'Futuro' : 'Previsión' }}</td>
                 <td><b>ITEM</b></td>
-                <td style="border: 1px solid #ddd">{{ $planilla->ITEM }}</td>
+                <td style="border: 1px solid #ddd">{{ $planilla ? $planilla->ITEM : $payment->paymentschedulesdetail->item }}</td>
             </tr>
             <tr>
                 <td><b>NOMBRE COMPLETO</b></td>
-                <td style="border: 1px solid #ddd">{{ $planilla->Nombre_Empleado }}</td>
+                <td style="border: 1px solid #ddd">{{ $planilla ? $planilla->Nombre_Empleado : $payment->paymentschedulesdetail->contract->person->first_name.' '.$payment->paymentschedulesdetail->contract->person->last_name }}</td>
                 <td><b>CI</b></td>
-                <td style="border: 1px solid #ddd">{{ $planilla->CedulaIdentidad }} {{ $planilla->Expedido }}</td>
+                <td style="border: 1px solid #ddd">{{ $planilla ? $planilla->CedulaIdentidad : $payment->paymentschedulesdetail->contract->person->ci }}</td>
             </tr>
             <tr>
                 <td><b>FECHA DE PAGO</b></td>
@@ -105,7 +105,7 @@
                         $dias = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
                         $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                     @endphp
-                    {{ $dias[date('N', strtotime($payment->created_at))].', '.date('d', strtotime($payment->created_at)).' de '.$months[date('m', strtotime($payment->created_at))].' de '.date('Y', strtotime($payment->created_at)) }}
+                    {{ $dias[intval(date('N', strtotime($payment->created_at)))].', '.date('d', strtotime($payment->created_at)).' de '.$months[intval(date('m', strtotime($payment->created_at)))].' de '.date('Y', strtotime($payment->created_at)) }}
                 </td>
                 <td><b>HORA</b></td>
                 <td style="border: 1px solid #ddd">
@@ -114,51 +114,58 @@
             </tr>
         </table>
         <hr style="margin: 0px">
-        <div id="watermark-stamp">
+        {{-- <div id="watermark-stamp">
             <img src="{{ asset('images/stamp.png') }}" height="100%" width="100%" /> 
-        </div>
+        </div> --}}
+        @php
+            if($payment->paymentschedulesdetail){
+                $period = App\Models\Period::findOrFail($payment->paymentschedulesdetail->paymentschedule->period_id);
+                $year = Str::substr($period->name, 0, 4);
+                $month = Str::substr($period->name, 4, 2);
+            }
+        @endphp
         <table width="100%" cellpadding="10" style="font-size: 12px">
             <tr>
                 <td>
                     <table width="100%" cellpadding="5">
                         <tr>
                             <td width="150px"><b>GESTIÓN</b></td>
-                            <td style="border: 1px solid #ddd">{{ $planilla->Anio }}</td>
+                            <td style="border: 1px solid #ddd">{{ $planilla ? $planilla->Anio : $year }}</td>
                             <td style="text-align: right"><b>MES</b></td>
                             <td style="border: 1px solid #ddd; text-align: right">
                                 @php
                                     $meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                                 @endphp
-                                {{ $meses[intval($planilla->Mes)] }}
+                                {{ $meses[intval($planilla ? $planilla->Mes : $month)] }}
                             </td>
                         </tr>
                         <tr>
                             <td style="width: 120px"><b>DÍAS TRABAJADOS</b></td>
-                            <td style="border: 1px solid #ddd">{{ $planilla->Dias_Trabajado }}</td>
+                            <td style="border: 1px solid #ddd">{{ $planilla ? $planilla->Dias_Trabajado : $payment->paymentschedulesdetail->worked_days - $payment->paymentschedulesdetail->faults_quantity }}</td>
                             <td width="150px" style="text-align: right"><b>HABER BÁSICO</b></td>
-                            <td style="border: 1px solid #ddd; text-align: right">{{ number_format($planilla->Sueldo_Mensual, 2, ',', '.') }}</td>
+                            <td style="border: 1px solid #ddd; text-align: right">{{ number_format($planilla ? $planilla->Sueldo_Mensual : $payment->paymentschedulesdetail->salary, 2, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td colspan="2"></td>
                             <td width="150px" style="text-align: right"><b>BONO ANTIGÜEDAD</b></td>
-                            <td style="border: 1px solid #ddd; text-align: right">{{ number_format($planilla->Bono_Antiguedad, 2, ',', '.') }}</td>
+                            <td style="border: 1px solid #ddd; text-align: right">{{ number_format($planilla ? $planilla->Bono_Antiguedad : $payment->paymentschedulesdetail->seniority_bonus_amount, 2, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td colspan="2"></td>
                             <td width="150px" style="text-align: right"><b>APORTE AFP</b></td>
-                            <td style="border: 1px solid #ddd; text-align: right">{{ number_format($planilla->Total_Aportes_Afp, 2, ',', '.') }}</td>
+                            <td style="border: 1px solid #ddd; text-align: right">{{ number_format($planilla ? $planilla->Total_Aportes_Afp : $payment->paymentschedulesdetail->labor_total, 2, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td colspan="2"></td>
                             <td width="150px" style="text-align: right"><b>DESCUENTOS O MULTAS</b></td>
-                            <td style="border: 1px solid #ddd; text-align: right">{{ number_format($planilla->Total_Descuento, 2, ',', '.') }}</td>
+                            <td style="border: 1px solid #ddd; text-align: right">{{ number_format($planilla ? $planilla->Total_Descuento : $payment->paymentschedulesdetail->faults_amount, 2, ',', '.') }}</td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="text-align: right"><h2 style="margin: 0px; margin-top: 20px"> <small style="font-size: 12px">LÍQUIDO PAGABLE </small> &nbsp; {{ number_format($planilla->Liquido_Pagable, 2, ',', '.') }}</h2></td>
+                            <td colspan="4" style="text-align: right"><h2 style="margin: 0px; margin-top: 20px"> <small style="font-size: 12px">LÍQUIDO PAGABLE </small> &nbsp; {{ number_format($planilla ? $planilla->Liquido_Pagable : $payment->paymentschedulesdetail->liquid_payable, 2, ',', '.') }}</h2></td>
                         </tr>
                         <tr>
                             <td colspan="4" style="text-align: right">
-                                <h3 style="margin: 0px">Son: {{ $planilla->Literal }}</h3>
+                                <h3 style="margin: 0px">Son: {{ $planilla ? $planilla->Literal : NumerosEnLetras::convertir($payment->paymentschedulesdetail->liquid_payable, 'Bolivianos', true) }}</h3>
                             </td>
                         </tr>
                     </table>

@@ -21,8 +21,8 @@
                             </div>
                             <form class="form_search" id="form-ministerio" action="{{ route('reports.social_security.exports.list') }}" method="post">
                                 @csrf
-                                <input type="hidden" name="type">
-                                <input type="hidden" name="form" value="form-ministerio">
+                                <input type="hidden" name="type_report" value="#form-ministerio">
+                                <input type="hidden" name="type_export">
                                 <div class="form-group">
                                     <select name="procedure_type_id" class="form-control select2">
                                         @foreach (\App\Models\ProcedureType::where('deleted_at', NULL)->get() as $item)
@@ -45,10 +45,10 @@
 
                             <form class="form_search" id="form-afp" style="display: none" action="{{ route('reports.social_security.exports.list') }}" method="post">
                                 @csrf
-                                <input type="hidden" name="type">
-                                <input type="hidden" name="form" value="form-afp">
+                                <input type="hidden" name="type_report" value="#form-afp">
+                                <input type="hidden" name="type_export">
                                 <div class="form-group">
-                                    <select name="procedure_type_id" class="form-control select2" required>
+                                    <select name="afp" class="form-control select2" required>
                                         <option value="1">Futuro</option>
                                         <option value="2">Previsión</option>
                                     </select>
@@ -93,7 +93,6 @@
 
             $('.radio-type').click(function(){
                 let target = $('.radio-type:checked').data('target');
-                console.log(target)
                 $('.form_search').fadeOut('fast', () => $(target).fadeIn('fast'));
             });
 
@@ -118,10 +117,10 @@
 
         function report_export(type, form){
             $(form).attr('target', '_blank');
-            $(form+' input[name="type"]').val(type);
+            $(form+' input[name="type_export"]').val(type);
             window.form_search.submit();
             $(form).removeAttr('target');
-            $(form+' input[name="type"]').val('');
+            $(form+' input[name="type_export"]').val('');
         }
     </script>
 @stop

@@ -62,7 +62,6 @@
                         @endphp
                         <tbody id="dataTable-body">
                             @forelse ($paymentschedule as $item)
-                            {{-- {{ dd($item) }} --}}
                             <tr>
                                 <td>{{ $item->item }}</td>
                                 <td class="text-selected">{{ $item->contract->direccion_administrativa->NOMBRE }}</td>
@@ -110,7 +109,7 @@
                                         <button type="button" onclick='setValuePay(@json($item), @json($cashier), true)' data-toggle="modal" data-target="#pagar-modal" class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
                                     @endif
                                     @if ($item->status == 'pagado')
-                                        <button type="button" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+                                        <button type="button" onclick="print_recipe({{ $item->payment->id }}, 'sueldo')" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
                                     @endif
                                 </td>
                             </tr>

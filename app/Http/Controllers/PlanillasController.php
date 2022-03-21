@@ -118,7 +118,7 @@ class PlanillasController extends Controller
                 $stipend = Stipend::with('payment.cashier.user')->where('ci', 'like', '%'. $request->ci.'%')->where('deleted_at', NULL)->get();
 
                 $ci = $request->ci;
-                $paymentschedule = PaymentschedulesDetail::with(['contract', 'paymentschedule.period'])
+                $paymentschedule = PaymentschedulesDetail::with(['contract', 'paymentschedule.period', 'payment'])
                                         ->whereHas('paymentschedule', function($q){
                                             $q->where('deleted_at', NULL);
                                         })
@@ -274,7 +274,7 @@ class PlanillasController extends Controller
             return response()->json(['success' => 1, 'payment_id' => $payment->id]);
         } catch (\Throwable $th) {
             DB::rollback();
-            dd($th);
+            // dd($th);
             return response()->json(['error' => 1]);
         }
     }
@@ -356,19 +356,25 @@ class PlanillasController extends Controller
             return redirect()->route('voyager.cashiers.show', ['id' => $request->id])->with(['message' => 'Pago anulado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
-            dd($th);
+            // dd($th);
             return redirect()->route('voyager.cashiers.show', ['id' => $request->id])->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
 
     public function planillas_pagos_print($id){
-        $payment = CashiersPayment::with(['cashier.user'])->where('id', $id)->first();
-        $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
+        $payment = CashiersPayment::with(['cashier.user', 'paymentschedulesdetail.contract.person', 'paymentschedulesdetail.paymentschedule.direccion_administrativa'])->where('id', $id)->first();
+        // dd($payment);
+        $planilla = null;
+        if($payment->planilla_haber_id){
+            $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
                         ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
                         ->where('p.id', $payment->planilla_haber_id)
                         ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
-                        ->first();
+                        ->first();    
+        }
+        // dd($payment);
+        
         return view('planillas.payment-recipe', compact('payment', 'planilla'));
     }
 
