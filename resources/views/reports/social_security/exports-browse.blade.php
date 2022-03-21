@@ -12,15 +12,17 @@
                             <h1 class="page-title">
                                 <i class="voyager-dollar"></i> Exportación de pagos
                             </h1>
-                            {{-- <div class="alert alert-info">
-                                <strong>Información:</strong>
-                                <p>Puede obtener el valor de cada parámetro en cualquier lugar de su sitio llamando <code>setting('group.key')</code></p>
-                            </div> --}}
                         </div>
                         <div class="col-md-4" style="margin-top: 30px">
-                            <form name="form_search" id="form-search" action="{{ route('reports.social_security.exports.list') }}" method="post">
+                            <div class="col-md-12 text-right" style="margin-bottom: 20px">
+                                <label class="radio-inline"><input type="radio" class="radio-type" name="option" value="1" data-target="#form-ministerio" checked>Ministerio de trabajo</label>
+                                <label class="radio-inline"><input type="radio" class="radio-type" name="option" value="2" data-target="#form-afp">AFP's</label>
+                                {{-- <label class="radio-inline"><input type="radio" name="optradio">Option 3</label> --}}
+                            </div>
+                            <form class="form_search" id="form-ministerio" action="{{ route('reports.social_security.exports.list') }}" method="post">
                                 @csrf
                                 <input type="hidden" name="type">
+                                <input type="hidden" name="form" value="form-ministerio">
                                 <div class="form-group">
                                     <select name="procedure_type_id" class="form-control select2">
                                         @foreach (\App\Models\ProcedureType::where('deleted_at', NULL)->get() as $item)
@@ -29,7 +31,30 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <select name="period_id" class="form-control select2">
+                                    <select name="period_id" class="form-control select2" required>
+                                        @foreach (\App\Models\Period::all() as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="text-right">
+                                    <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
+                                </div>
+                                <br>
+                            </form>
+
+                            <form class="form_search" id="form-afp" style="display: none" action="{{ route('reports.social_security.exports.list') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="type">
+                                <input type="hidden" name="form" value="form-afp">
+                                <div class="form-group">
+                                    <select name="procedure_type_id" class="form-control select2" required>
+                                        <option value="1">Futuro</option>
+                                        <option value="2">Previsión</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select name="period_id" class="form-control select2" required>
                                         @foreach (\App\Models\Period::all() as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach
@@ -66,11 +91,17 @@
     <script>
         $(document).ready(function() {
 
-            $('#form-search').on('submit', function(e){
+            $('.radio-type').click(function(){
+                let target = $('.radio-type:checked').data('target');
+                console.log(target)
+                $('.form_search').fadeOut('fast', () => $(target).fadeIn('fast'));
+            });
+
+            $('.form_search').on('submit', function(e){
                 e.preventDefault();
                 $('#div-results').empty();
                 $('#div-results').loading({message: 'Cargando...'});
-                $.post($('#form-search').attr('action'), $('#form-search').serialize(), function(res){
+                $.post($(this).attr('action'), $(this).serialize(), function(res){
                     $('#div-results').html(res);
                 })
                 .fail(function() {
@@ -85,12 +116,12 @@
             });
         });
 
-        function report_export(type){
-            $('#form-search').attr('target', '_blank');
-            $('#form-search input[name="type"]').val(type);
+        function report_export(type, form){
+            $(form).attr('target', '_blank');
+            $(form+' input[name="type"]').val(type);
             window.form_search.submit();
-            $('#form-search').removeAttr('target');
-            $('#form-search input[name="type"]').val('');
+            $(form).removeAttr('target');
+            $(form+' input[name="type"]').val('');
         }
     </script>
 @stop
