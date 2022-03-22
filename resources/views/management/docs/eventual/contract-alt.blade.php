@@ -16,7 +16,7 @@
 
 @section('content')
     <div class="content" style="text-align: justify">
-        <h2 class="text-center" style="font-size: 18px">CONTRATO DE PRESTACI&Oacute;N DE SERVICIOS PARA PERSONAL EVENTUAL</h2>
+        <h2 class="text-center" style="font-size: 18px">CONTRATO DE PRESTACI&Oacute;N DE SERVICIOS PARA PERSONAL EVENTUAL <br> <small>GAD-BENI-C.E-{{ $code }}</small></h2>
         <p>&nbsp;</p>
         <p>Conste por el presente Contrato de Prestaci&oacute;n de Servicio de Personal EVENTUAL celebrado de conformidad a las siguientes cl&aacute;usulas y condiciones</p>
         <p>&nbsp;</p>

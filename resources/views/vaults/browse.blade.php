@@ -24,7 +24,7 @@
                             @if ($vault)
                                 @if ($vault->status == 'activa')
                                     <a href="#" data-toggle="modal" data-target="#vaults-details-modal" class="btn btn-success">
-                                        <i class="voyager-dollar"></i> <span>Agregar ingreso</span>
+                                        <i class="voyager-dollar"></i> <span>Agregar movimiento</span>
                                     </a>
                                     <a href="{{ route('vaults.close', ['id' => $vault ? $vault->id : 0]) }}" class="btn btn-danger">
                                         <i class="voyager-lock"></i> <span>Cerrar Bóveda</span>
@@ -199,12 +199,12 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title"><i class="voyager-dollar"></i> Ingreso de efectivo a bóveda</h4>
+                        <h4 class="modal-title"><i class="voyager-dollar"></i> Movimiento de efectivo a bóveda</h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-6" style="margin:0px">
-                                <div class="panel-body" style="padding-top:0;max-height:400px;overflow-y:auto">
+                            <div class="col-md-7" style="margin:0px">
+                                <div class="panel-body" style="padding-top:0;max-height:500px;overflow-y:auto">
                                     <table class="table table-hover">
                                         <thead>
                                             <tr>
@@ -217,8 +217,12 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="col-md-6" style="margin:0px">
-                                <h3>Detalles de ingreso <br> <small style="font-size: 12px">Los campos son opcionales y solo se deben rellenar con fines informativos.</small></h3><br>
+                            <div class="col-md-5" style="margin:0px">
+                                <h3 class="text-muted">Detalles de movimiento <br> <small style="font-size: 12px">Los campos son opcionales y solo se deben rellenar con fines informativos.</small></h3><br>
+                                <div class="form-group text-center">
+                                    <label class="radio-inline"><input type="radio" name="type" value="ingreso" checked>Ingreso</label> &nbsp;&nbsp;
+                                    <label class="radio-inline"><input type="radio" name="type" value="egreso">Egreso</label>
+                                </div>
                                 <div class="form-group">
                                     <label for="bill_number">N&deg; de cheque</label>
                                     <input type="text" name="bill_number" class="form-control" placeholder="545645" />
@@ -229,7 +233,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Detalles</label>
-                                    <textarea name="description" class="form-control" rows="3"></textarea>
+                                    <textarea name="description" class="form-control" rows="4"></textarea>
                                 </div>
                                 <div class="form-group text-right">
                                     <label class="checkbox-inline"><input type="checkbox" value="1" required>Aceptar y guardar registro de caja</label>
@@ -267,7 +271,7 @@
                                 <td><h4><img src="{{ asset('images/cash/${value}.jpg') }}" alt="${value} Bs." width="70px"> ${value} Bs. </h4></td>
                                 <td>
                                     <input type="hidden" name="cash_value[]" value="${value}" required>
-                                    <input type="number" name="quantity[]" min="0" step="1" style="width:80px" data-value="${value}" class="form-control input-corte" value="0" required>
+                                    <input type="number" name="quantity[]" min="0" step="1" style="width:90px" data-value="${value}" class="form-control input-corte" value="0" required>
                                 </td>
                                 <td><label id="label-${value.replace('.', '')}">0.00 Bs.</label><input type="hidden" class="input-subtotal" id="input-${value.replace('.', '')}"></td>
                             </tr>`);

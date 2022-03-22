@@ -21,6 +21,7 @@ use App\Models\PaymentschedulesDetail;
 
 // Exports
 use App\Exports\MinisterioTrabajoExport;
+use App\Exports\AFPExport;
 
 class ReportsController extends Controller
 {
@@ -506,7 +507,8 @@ class ReportsController extends Controller
                             'p.Periodo as periodo',
                             'p.Total_Ganado as total',
                             'p.Total_Aportes_Afp as total_afp'
-                        )->get();
+                        )
+                        ->orderBy('p.Periodo', 'ASC')->get();
         $cont = 0;
         foreach ($planillas as $item) {
             // Obtener detalle de pago
@@ -608,19 +610,22 @@ class ReportsController extends Controller
 
     public function social_security_exports_list(Request $request){
         // dd($request->all());
+        $paymentschedule_id = $request->paymentschedule_id;
         $period_id = $request->period_id;
         $procedure_type_id = $request->procedure_type_id;
         $type_report = $request->type_report;
         $afp = $request->afp;
+        $title = 'data';
         if($type_report == '#form-ministerio'){
             $data = PaymentschedulesDetail::with('contract')
             ->whereHas('paymentschedule', function($q) use($period_id, $procedure_type_id){
                 $q->where('period_id', $period_id)->where('procedure_type_id', $procedure_type_id)->where('deleted_at', NULL);
             })->where('deleted_at', NULL)->get();
+            $title = 'ministerio de trabajo '.date('d-m-Y H:i:s');
         }elseif($type_report == '#form-afp'){
-            $data = PaymentschedulesDetail::with(['contract'])
-            ->whereHas('paymentschedule', function($q) use($period_id){
-                $q->where('period_id', $period_id)->where('deleted_at', NULL);
+            $data = PaymentschedulesDetail::with(['contract', 'paymentschedule.period'])
+            ->whereHas('paymentschedule', function($q) use($period_id, $paymentschedule_id){
+                $q->where('period_id', $period_id)->where('deleted_at', NULL)->whereRaw('(id = "'.$paymentschedule_id.'" or centralize_code like "'.$paymentschedule_id.'")');
             })
             ->whereHas('contract', function($q){
                 $q->whereRaw('(procedure_type_id = 1 or procedure_type_id = 5)')->where('deleted_at', NULL);
@@ -628,10 +633,15 @@ class ReportsController extends Controller
             ->whereHas('contract.person', function($q) use($afp){
                 $q->where('afp', $afp)->where('deleted_at', NULL);
             })->where('deleted_at', NULL)->get();
+
+            // dd($paymentschedule_id);
+
+            $title = ($afp == 1 ? 'AFP Previsión' : 'AFP Futuro').date('d-m-Y H:i:s');
         }
         
         if($request->type == 'excel'){
-            return Excel::download(new MinisterioTrabajoExport($data), 'ministerio de trabajo - '.date('d-m-Y H:i:s').'.xlsx');
+            dd($type_report);
+            return Excel::download(new MinisterioTrabajoExport($data), "$title.xlsx");
         }
         return view('reports.social_security.exports-list', compact('data', 'type_report', 'afp'));
     }

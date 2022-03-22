@@ -19,7 +19,7 @@
                     <td>{{ $item->code }}</td>
                     <td>{{ $item->type->name }}</td>
                     <td>
-                        {{ $item->person->first_name }} {{ $item->person->last_name }} <br>
+                        {{ $item->person->last_name }} {{ $item->person->first_name }}<br>
                         <b>CI</b>: {{ $item->person->ci }}
                         {!! $item->person->phone ? '<br><b>Telf</b>: '.$item->person->phone : '' !!}
                     </td>

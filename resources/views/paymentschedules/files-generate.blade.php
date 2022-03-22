@@ -28,7 +28,7 @@
                                     @endphp
                                     <tr>
                                         <td>{{ $cont }}</td>
-                                        <td>{{ $item->person->first_name }} {{ $item->person->last_name }}</td>
+                                        <td>{{ $item->person->last_name }} {{ $item->person->first_name }}</td>
                                         <td>{{ $item->person->ci }}</td>
                                         <td>{{ number_format($data->salary, 2, ',', '.') }}</td>
                                         <td>{{ $data->iva }}</td>
@@ -64,7 +64,7 @@
                                     @endphp
                                     <tr>
                                         <td>{{ $cont }}</td>
-                                        <td>{{ $item->person->first_name }} {{ $item->person->last_name }}</td>
+                                        <td>{{ $item->person->last_name }} {{ $item->person->first_name }}</td>
                                         <td>{{ $item->person->ci }}</td>
                                         <td>{{ $data->faults }}</td>
                                         <td>{{ $data->observations }}</td>

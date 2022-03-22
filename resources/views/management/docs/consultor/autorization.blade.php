@@ -6,6 +6,7 @@
     <div class="content">
         @php
             $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+            $days = array('', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
             $code = $contract->code;
         @endphp
         <div class="page-title">
@@ -35,7 +36,7 @@
                     <td>3.</td>
                     <td>Fecha de invitación:</td>
                     <td style="border: 1px solid black; padding: 5px">
-                        <b>Lunes, {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }}</b>
+                        <b>{{ $days[date('w', strtotime($contract->date_invitation))] }}, {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }}</b>
                     </td>
                 </tr>
                 <tr>

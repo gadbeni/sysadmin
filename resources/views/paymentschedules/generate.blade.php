@@ -263,7 +263,7 @@
                                     <tr>
                                         <td>{{ $cont }}</td>
                                         <td>
-                                            <b>{{ $item->person->first_name }} {{ $item->person->last_name }}</b> <br>
+                                            <b>{{ $item->person->last_name }} {{ $item->person->first_name }}</b> <br>
                                             <small>{{ $item->cargo ? $item->cargo->Descripcion : $item->job->name }}</small>
                                         </td>
                                         <td><b>{{ $item->person->ci }}</b></td>

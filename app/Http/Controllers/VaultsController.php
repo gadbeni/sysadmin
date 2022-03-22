@@ -180,7 +180,7 @@ class VaultsController extends Controller
                 'bill_number' => $request->bill_number,
                 'name_sender' => $request->name_sender,
                 'description' => $request->description,
-                'type' => 'ingreso',
+                'type' => $request->type,
                 'status' => 'aprobado'
             ]);
 

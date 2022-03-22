@@ -19,7 +19,7 @@
                                 <label class="radio-inline"><input type="radio" class="radio-type" name="option" value="2" data-target="#form-afp">AFP's</label>
                                 {{-- <label class="radio-inline"><input type="radio" name="optradio">Option 3</label> --}}
                             </div>
-                            <form class="form_search" id="form-ministerio" action="{{ route('reports.social_security.exports.list') }}" method="post">
+                            <form name="form_ministerio" class="form_search" id="form-ministerio" action="{{ route('reports.social_security.exports.list') }}" method="post">
                                 @csrf
                                 <input type="hidden" name="type_report" value="#form-ministerio">
                                 <input type="hidden" name="type_export">
@@ -43,10 +43,13 @@
                                 <br>
                             </form>
 
-                            <form class="form_search" id="form-afp" style="display: none" action="{{ route('reports.social_security.exports.list') }}" method="post">
+                            <form name="form_afp" class="form_search" id="form-afp" style="display: none" action="{{ route('reports.social_security.exports.list') }}" method="post">
                                 @csrf
                                 <input type="hidden" name="type_report" value="#form-afp">
                                 <input type="hidden" name="type_export">
+                                <div class="form-group">
+                                    <input type="text" name="paymentschedule_id" class="form-control" placeholder="Código de planilla" required>
+                                </div>
                                 <div class="form-group">
                                     <select name="afp" class="form-control select2" required>
                                         <option value="1">Futuro</option>
@@ -118,7 +121,8 @@
         function report_export(type, form){
             $(form).attr('target', '_blank');
             $(form+' input[name="type_export"]').val(type);
-            window.form_search.submit();
+            console.log($(form).attr('name'));
+            // window.[($(form).attr('name'))].submit();
             $(form).removeAttr('target');
             $(form+' input[name="type_export"]').val('');
         }
