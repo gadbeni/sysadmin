@@ -45,7 +45,7 @@
                 </div>
                 <div class="border-left">
                     <b>DE:</b> {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
-                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }}</b> <br> <br>
+                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b> <br> <br>
                     @forelse ($contract->workers as $item)
                         <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
                         <b>{{ $item->Cargo }}</b> <br> <br>
@@ -88,10 +88,7 @@
             <div style="margin-top: 80px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
                     {{ setting('firma-autorizada.name') }} <br>
-                    <b>RESPONSABLE DEL PROCESO DE CONTRATACIÓN <br>
-                        DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO – RPA <br>
-                        GAD - BENI
-                    </b>
+                    <b>{{ setting('firma-autorizada.job-alt') }}</b> <br>
                 </p>
             </div>
 

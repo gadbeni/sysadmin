@@ -40,7 +40,7 @@
             <p style="text-align: left">
                 Señor: <br>
                 {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
-                <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }}</b> <br>
+                <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b> <br>
                 Presente.–
             </p>
         </div>

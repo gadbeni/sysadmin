@@ -38,7 +38,7 @@
             <p style="text-align: left; font-size: 13px">
                 Señor: <br>
                 {{ setting('firma-autorizada.name') }} <br>
-                <b>RESPONSABLE DEL PROCESO DE CONTRATACIÓN DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO - RPA</b> <br>
+                <b>{{ setting('firma-autorizada.job-alt') }}</b> <br>
                 Presente. –
             </p>
         </div>

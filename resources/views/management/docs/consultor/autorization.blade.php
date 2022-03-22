@@ -81,7 +81,7 @@
             <div style="margin-top: 100px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
                     {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
-                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }}</b>
+                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b>
                 </p>
             </div>
 
