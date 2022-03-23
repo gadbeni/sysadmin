@@ -35,8 +35,11 @@ class ContractsController extends Controller
      */
     public function index()
     {
-        $date = date('Y-m-d');
-        Contract::where('finish', '<', $date)->update(['status' => 'concluido']);
+        if(true){
+            $date = date('Y-m-d');
+            Contract::where('finish', '<', $date)->update(['status' => 'concluido']);
+        }
+        
 
         return view('management.contracts.browse');
     }

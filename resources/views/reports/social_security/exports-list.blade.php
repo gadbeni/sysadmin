@@ -278,7 +278,26 @@
                                         @endphp
                                         <td class="text-right">{{ $worked_days }}</td>
                                         <td class="text-right">{{ number_format($total_amount, 2, ',', '.') }}</td>
-                                        <td class="text-right">1</td>
+                                        @php
+                                            // Calcular edad
+                                            $now = \Carbon\Carbon::now();
+                                            $birthday = new \Carbon\Carbon($item[0]->contract->person->birthday);
+                                            $age = $birthday->diffInYears($now);
+                                            $type = '';
+                                            if($age < 65 && $item[0]->contract->person->afp_status == 1){
+                                                $type = '1';
+                                            }
+                                            if($age >= 65 && $item[0]->contract->person->afp_status == 1){
+                                                $type = '8';
+                                            }
+                                            if($age < 65 && $item[0]->contract->person->afp_status == 0){
+                                                $type = 'C';
+                                            }
+                                            if($age >= 65 && $item[0]->contract->person->afp_status == 0){
+                                                $type = 'D';
+                                            }
+                                        @endphp
+                                        <td class="text-right">{{ $type }}</td>
                                         <td></td>
                                         @php
                                             $cont++;

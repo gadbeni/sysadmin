@@ -30,7 +30,15 @@
                 </tr>
                 <tr>
                     <td colspan="2"></td>
-                    <td style="text-align: center"><b>{{ str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '') }}</b></td>
+                    <td style="text-align: center">
+                        <b>
+                            {{ str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '') }}
+                            @if ($data->centralize)
+                                <br>
+                                <span style="color: red">({{ str_pad($data->centralize_code, 6, "0", STR_PAD_LEFT) }})</span>
+                            @endif
+                        </b>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="3" style="text-align: right">

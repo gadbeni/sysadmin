@@ -16,6 +16,7 @@
                         <tr>
                             <th>N&deg;</th>
                             <th>Dirección administrativa</th>
+                            <th>Unidad administrativa</th>
                             <th>Código</th>
                             <th>Tipo</th>
                             <th>Nombre(s)</th>
@@ -27,7 +28,7 @@
                             <th>Inicio</th>
                             <th>Fin</th>
                             <th>Programa</th>
-                            <th>Categoría programática</th>
+                            <th>Cat. prog.</th>
                             <th>Estado</th>
                         </tr>
                     </thead>
@@ -40,6 +41,7 @@
                         <tr>
                             <td>{{ $cont }}</td>
                             <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->NOMBRE : 'No definida' }}</td>
+                            <td>{{ $item->unidad_administrativa ? $item->unidad_administrativa->Nombre : '' }}</td>
                             <td>{{ $item->code }}</td>
                             <td>{{ $item->type->name }}</td>
                             <td>{{ $item->person->first_name }} </td>
@@ -77,14 +79,13 @@
                             <td>{{ $item->program->name }}</td>
                             <td>{{ $item->program->programatic_category }}</td>
                             <td>{{ $item->status }}</td>
-
                         </tr>
                         @php
                             $cont++;
                         @endphp
                         @empty
                             <tr class="odd">
-                                <td valign="top" colspan="15" class="text-center">No hay datos disponibles en la tabla</td>
+                                <td valign="top" colspan="16" class="text-center">No hay datos disponibles en la tabla</td>
                             </tr>
                         @endforelse
                     </tbody>

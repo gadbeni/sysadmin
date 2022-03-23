@@ -29,17 +29,6 @@
             <button title="Aprobar planilla" type="button" data-id="{{ $data->id }}" class="btn btn-info btn-approve" data-toggle="modal" data-target="#approve-modal"><i class="glyphicon glyphicon-ok-circle"></i> Aprobar</button>
         @endif
 
-        <div class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                Exportar <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="?{{ $centralize ? '&centralize=true' : '' }}&excel=true&type_excel=1" target="_blank">Ministerio de Trabajo</a></li>
-                <li><a href="?{{ $centralize ? '&centralize=true' : '' }}&excel=true&type_excel=2" target="_blank">AFP futuro</a></li>
-                <li><a href="?{{ $centralize ? '&centralize=true' : '' }}&excel=true&type_excel=3" target="_blank">AFP previsión</a></li>
-            </ul>
-        </div>
-
         {{-- Si la planilla está aprobada o está habilitada para pago y parte de la planilla no ha sido habilitada se mouestra el botón de habilitación --}}
         @if (($data->status == 'aprobada' || ($data->status == 'habilitada' && $data->details->where('status', 'procesado')->where('deleted_at', NULL)->count()) > 0) && auth()->user()->hasPermission('enable_paymentschedules') && !$centralize)
             <button type="button" data-toggle="modal" data-target="#enable-modal" class="btn btn-success" style="margin-left: -10px; padding: 7px 15px"><i class="voyager-dollar"></i> Habilitar</button>
