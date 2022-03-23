@@ -268,6 +268,9 @@
         td{
             font-size: 11px
         }
+        table, th, td {
+            border-collapse: collapse;
+        }
         @media all {
             div.saltopagina{
                 display: none;

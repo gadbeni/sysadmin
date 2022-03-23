@@ -174,5 +174,8 @@
         td{
             font-size: 12px
         }
+        table, th, td {
+            border-collapse: collapse;
+        }
     </style>
 @endsection

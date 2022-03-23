@@ -33,7 +33,7 @@
                     <td style="text-align: center">
                         <b>
                             {{ str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '') }}
-                            @if ($data->centralize)
+                            @if (!$centralize && $data->centralize)
                                 <br>
                                 <span style="color: red">({{ str_pad($data->centralize_code, 6, "0", STR_PAD_LEFT) }})</span>
                             @endif
@@ -49,7 +49,7 @@
         </div>
 
         <div style="margin-top: 20px">
-            <table class="table table-bordered table-hover table-details" border="1" cellpadding="2" cellspacing="0">
+            <table class="table-details" border="1" cellpadding="2" cellspacing="0">
                 <thead>
                     <tr>
                         <th rowspan="3">N&deg;</th>
@@ -188,13 +188,7 @@
                     
                     @forelse ($group_by as $key => $item_group)
                         @php
-                            // if($group){
-                            //     $details = $data->procedure_type_id == 1 ? $item_group->sortBy('contract.job_id')['details'] : $item_group['details'];
-                            // }else{
-                            //     $details = $data->procedure_type_id == 1 ? $item_group->details->sortBy('contract.job_id') : $item_group->details;
-                            // }
                             $details = $item_group['details'];
-                            // dd($item_group);
 
                             // Inicializar variables en caso de mostrar los datos agrupados
                             $total_amount_group = 0;
@@ -219,7 +213,7 @@
                                 @if ($group == 1)
                                 <td colspan="@if ($data->procedure_type_id == 2) 27 @else 26  @endif"><b>{{ $item_group['name'] }}</b></td>
                                 @else
-                                <td colspan="@if ($data->procedure_type_id == 2) 27 @else 26  @endif"><b>{{ $item_group['programatic_category'] }} - {{ $item_group['name'] }} | {{ $item_group['direccion_administrativa'] }}</b></td>
+                                <td colspan="@if ($data->procedure_type_id == 2) 27 @else 26  @endif"><b>{{ $item_group['programatic_category'] }} - {{ $item_group['name'] }} / {{ $item_group['direccion_administrativa'] }}</b></td>
                                 @endif
 
                                 @if ($data->procedure_type_id == 5 && $print_type == 2)
@@ -230,6 +224,7 @@
 
                         @forelse ($details as $item)
                             @php
+                                // dd($item);
                                 $cont++;
                                 $total_partial_salary += $item->partial_salary;
                                 $total_seniority_bonus_amount += $item->seniority_bonus_amount;
@@ -333,7 +328,9 @@
                                 @endif
                             </tr>
                         @empty
-                            
+                            <tr>
+                                <td colspan="27"><h4>No hay resultados</h4></td>
+                            </tr>
                         @endforelse
 
                         {{-- Poner footer de la forma de agrupar si existe --}}
@@ -781,6 +778,9 @@
             font-size: 11px !important;
             margin-top: 100px;
             margin-bottom: 100px;
+        }
+        table, th, td {
+            border-collapse: collapse;
         }
         .saltopagina{
             display: none;
