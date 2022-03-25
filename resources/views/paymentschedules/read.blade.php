@@ -817,8 +817,8 @@
 
                         <div class="form-group">
                             <label for="program_id">AFP</label>
-                            <select name="afp" class="form-control select2" required>
-                                <option value="">Seleccione AFP</option>
+                            <select name="afp" class="form-control select2">
+                                <option value="">Todas</option>
                                 <option value="1">Futuro</option>
                                 <option value="2">Previsión</option>
                             </select>
