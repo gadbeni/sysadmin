@@ -263,11 +263,11 @@
                                             $novelty_date = '';
                                             if(date('Ym', strtotime($item[0]->contract->start)) == $item[0]->paymentschedule->period->name){
                                                 $novelty = 'I';
-                                                $novelty_date = date('d-m-Y', strtotime($item[0]->contract->start));
+                                                $novelty_date = date('Ymd', strtotime($item[0]->contract->start));
                                             }
                                             if(date('Ym', strtotime($item[0]->contract->finish)) == $item[0]->paymentschedule->period->name){
-                                                $novelty = 'E';
-                                                $novelty_date = date('d-m-Y', strtotime($item[0]->contract->finish));
+                                                $novelty = 'R';
+                                                $novelty_date = date('Ymd', strtotime($item[0]->contract->finish));
                                             }
                                         @endphp
                                         <td>{{ $novelty }}</td>

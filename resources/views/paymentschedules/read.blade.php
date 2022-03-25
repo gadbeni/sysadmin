@@ -797,62 +797,65 @@
     @include('paymentschedules.partials.modal-close-paymentschedule', ['id' => $data->id])
 
     {{-- print modal --}}
-    <div class="modal modal-danger fade" tabindex="-1" id="print-modal" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title"><i class="glypicon glypicon-print"></i> Imprimir planilla</h4>
-                </div>
-                <div class="modal-body">
-                    
-                    <div class="form-group">
-                        <label for="print_type">Tipo de impresión</label>
-                        <select name="print_type" class="form-control select2">
-                            <option value="1">Normal</option>
-                            <option value="2">Contabilidad</option>
-                        </select>
+    <form id="form-print" method="post" action="#">
+        <div class="modal modal-danger fade" tabindex="-1" id="print-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="glypicon glypicon-print"></i> Imprimir planilla</h4>
                     </div>
+                    <div class="modal-body">
+                        
+                        <div class="form-group">
+                            <label for="print_type">Tipo de impresión</label>
+                            <select name="print_type" class="form-control select2">
+                                <option value="1">Normal</option>
+                                <option value="2">Contabilidad</option>
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="program_id">AFP</label>
-                        <select name="afp" class="form-control select2">
-                            <option value="">Todas</option>
-                            <option value="1">Futuro</option>
-                            <option value="2">Previsión</option>
-                        </select>
+                        <div class="form-group">
+                            <label for="program_id">AFP</label>
+                            <select name="afp" class="form-control select2" required>
+                                <option value="">Seleccione AFP</option>
+                                <option value="1">Futuro</option>
+                                <option value="2">Previsión</option>
+                            </select>
+                        </div>
+                        @php
+                            $contracts = collect();
+                            foreach($data->details as $item){
+                                $contracts->push($item->contract);
+                            }
+                        @endphp
+                        <div class="form-group">
+                            <label for="program_id">Programa/Proyecto</label>
+                            <select name="program_id" class="form-control select2">
+                                <option value="">Todos</option>
+                                @foreach ($contracts->groupBy('program_id') as $item)
+                                    <option value="{{ $item[0]->program->id }}">{{ $item[0]->program->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="program_id">Agrupar por</label>
+                            <select name="group" class="form-control select2">
+                                <option value="">Ninguno</option>
+                                <option value="1">Dirección administrativa</option>
+                                <option value="2">Programas/Proyectos</option>
+                            </select>
+                        </div>
                     </div>
-                    @php
-                        $contracts = collect();
-                        foreach($data->details as $item){
-                            $contracts->push($item->contract);
-                        }
-                    @endphp
-                    <div class="form-group">
-                        <label for="program_id">Programa/Proyecto</label>
-                        <select name="program_id" class="form-control select2">
-                            <option value="">Todos</option>
-                            @foreach ($contracts->groupBy('program_id') as $item)
-                                <option value="{{ $item[0]->program->id }}">{{ $item[0]->program->name }}</option>
-                            @endforeach
-                        </select>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-danger" value="Aceptar">
                     </div>
-                    <div class="form-group">
-                        <label for="program_id">Agrupar por</label>
-                        <select name="group" class="form-control select2">
-                            <option value="">Ninguno</option>
-                            <option value="1">Dirección administrativa</option>
-                            <option value="2">Programas/Proyectos</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <input type="button" class="btn btn-danger btn-print" value="Aceptar">
                 </div>
             </div>
         </div>
-    </div>
+    </form>
+        
     
 @stop
 
@@ -875,13 +878,14 @@
         $(document).ready(function () {
             var centralize = "{{ $centralize ? '?centralize=true' : '?' }}";
 
-            $('.btn-print').click(function(){
+            $('#form-print').submit(function(e){
+                e.preventDefault();
                 $('#print-modal').modal('toggle');
                 let afp = '&afp='+$('#print-modal select[name="afp"] option:selected').val();
                 let program = '&program='+$('#print-modal select[name="program_id"] option:selected').val();
                 let group = '&group='+$('#print-modal select[name="group"] option:selected').val();
                 let print_type = '&print_type='+$('#print-modal select[name="print_type"] option:selected').val();
-                // console.log(afp,program,group)
+                console.log(afp,program,group)
                 window.open(centralize+afp+program+group+print_type+'&print=true', '_blank');
             });
 

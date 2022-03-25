@@ -440,12 +440,12 @@
                         <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="100px"></td>
                         <td style="text-align: right">
                             <h3 style="margin: 0px">PLANILLA DE PAGO HABERES AL PERSONAL DEPENDIENTE GAD-BENI</h3>
-                            <span>CORRESPONDIENTE AL MES DE: {{ strtoupper($months[intval($month)]) }} DE {{ $year }} | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }}</span>
+                            <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }} @endif</span>
                             @if ($centralize)
-                                <h3 style="margin: 0px">{{ $data->procedure_type->name }}</h3>
+                                <h3 style="margin: 0px">{{ Str::upper($data->procedure_type->name) }}</h3>
                             @else
-                                <h3 style="margin: 0px">{{ $data->direccion_administrativa->NOMBRE }}</h3>
-                                <span>{{ $data->procedure_type->name }}</span>
+                                <h3 style="margin: 0px">{{ $data->direccion_administrativa->NOMBRE }} {!! $program ? '<br>'.$program->name : '' !!}</h3>
+                                <span>{{ Str::upper($data->procedure_type->name) }}</span>
                             @endif
                         </td>
                         <td style="text-align:center; width: 90px">

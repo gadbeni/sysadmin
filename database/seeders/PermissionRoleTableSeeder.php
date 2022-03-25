@@ -71,6 +71,8 @@ class PermissionRoleTableSeeder extends Seeder
         $role = Role::where('name', 'caja_cajero')->firstOrFail();
         $permissions = Permission::whereRaw('   table_name = "admin" or
                                                 `key` = "browse_planillaspagos" or
+                                                `key` = "browse_paymentschedules" or
+                                                `key` = "read_paymentschedules" or
                                                 `key` = "enable_paymentschedules" or
                                                 `key` = "close_paymentschedules" or
                                                 table_name = "planillas_adicionales" or

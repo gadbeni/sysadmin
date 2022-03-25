@@ -125,10 +125,19 @@
                                         // Si el fin su contrato finaliza el mes actual
                                         if($period_finish == $period->name){
                                             $finish_day = date('d', strtotime($item->finish));
+
+                                            if(date('m', strtotime($item->finish)) == 2)){
+                                                if($finish_day == 28){
+                                                    $days_enabled_worker = 30;
+                                                }
+                                            }
+
                                             $finish_day = $finish_day > 30 ? 30 : $finish_day;
-                                            if($finish_day < 30 || date('m', strtotime($item->finish)) != 2){
+                                            // Si es menor a 30 días se le resta los días que faltan para llegar a 30
+                                            if($finish_day < 30){
                                                 $days_enabled_worker -= 30 - $finish_day;
                                             }
+                                            // *** NOTA: Falta calcular si es año bisiesto ***
                                         }
 
                                         // Sueldo actual
