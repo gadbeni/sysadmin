@@ -126,7 +126,7 @@
                                         if($period_finish == $period->name){
                                             $finish_day = date('d', strtotime($item->finish));
 
-                                            if(date('m', strtotime($item->finish)) == 2)){
+                                            if(date('m', strtotime($item->finish)) == 2){
                                                 if($finish_day == 28){
                                                     $days_enabled_worker = 30;
                                                 }

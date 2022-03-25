@@ -15,7 +15,7 @@
                     <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="100px"></td>
                     <td style="text-align: right">
                         <h3 style="margin: 0px">PLANILLA DE PAGO HABERES AL PERSONAL DEPENDIENTE GAD-BENI</h3>
-                        <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }} @endif</span>
+                        <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }} @else | Todas las AFP's @endif</span>
                         @if ($centralize)
                             <h3 style="margin: 0px">{{ Str::upper($data->procedure_type->name) }}</h3>
                         @else
@@ -440,7 +440,7 @@
                         <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="100px"></td>
                         <td style="text-align: right">
                             <h3 style="margin: 0px">PLANILLA DE PAGO HABERES AL PERSONAL DEPENDIENTE GAD-BENI</h3>
-                            <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }} @endif</span>
+                            <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }} @else | Todas las AFP's @endif</span>
                             @if ($centralize)
                                 <h3 style="margin: 0px">{{ Str::upper($data->procedure_type->name) }}</h3>
                             @else
