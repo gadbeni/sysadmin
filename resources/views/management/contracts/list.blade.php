@@ -92,8 +92,8 @@
                                 @if ($item->status != 'concluido' && $item->status != 'firmado' && ($item->cargo_id || $item->job_id))
                                 <li><a href="#" title="Promover a {{ $netx_status }}" data-toggle="modal" data-target="#status-modal" onclick="changeStatus({{ $item->id }}, '{{ $netx_status }}')">Promover</a></li>
                                 @endif
-                                {{-- Si está firmado y es de personal permanente --}}
-                                @if ($item->status == 'firmado' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('finish_contracts'))
+                                {{-- Si está firmado --}}
+                                @if ($item->status == 'firmado' && auth()->user()->role_id == 1)
                                 <li><a href="#" title="Finalizar" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }})">Finalizar</a></li>
                                 @endif
                                 {{-- si está concluido y es permanente --}}

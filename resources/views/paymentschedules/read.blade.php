@@ -420,7 +420,7 @@
                                     @endphp
                                     <tbody>
                                         <tr>
-                                            <td><b>12000 SERVICIOS NO PERMANENTES</b></td>
+                                            <td><b>{{ $data->procedure_type_id == 1 ? '10000 SERVICIOS PERSONALES' : '12000 SERVICIOS NO PERMANENTES' }}</b></td>
                                             <td></td>
                                             <td class="text-right"><b><u>{{ number_format($total_amount + $lactation_amount + $total_social_security, 2, ',', '.') }}</u></b></td>
                                             {{-- ========== --}}
@@ -428,7 +428,7 @@
                                             <td></td>
                                         </tr>
                                         <tr>
-                                            <td>12000 Servicios no Permanentes</td>
+                                            <td>{{ $data->procedure_type_id == 1 ? '11000 Empleados Permanentes' : '12000 Servicios no Permanentes' }}</td>
                                             <td></td>
                                             <td class="text-right">{{ number_format($total_amount + $lactation_amount, 2, ',', '.') }}</td>
                                             {{-- ========== --}}
@@ -455,7 +455,7 @@
                                             <td></td>
                                         </tr>
                                         <tr>
-                                            <td>12100 Personal Eventual</td>
+                                            <td>{{ $data->procedure_type_id == 1 ? '11700 Empleados Permanentes' : '12100 Personal Eventual' }}</td>
                                             <td></td>
                                             <td class="text-right">{{ number_format($total_partial_salary, 2, ',', '.') }}</td>
                                             {{-- ========== --}}
