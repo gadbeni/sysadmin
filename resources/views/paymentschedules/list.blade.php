@@ -8,7 +8,7 @@
                     <th>Tipo planilla</th>
                     <th>N&deg; de personas</th>
                     <th>Monto</th>
-                    <th>Estado</th>
+                    <th style="min-width: 200px">Detalles</th>
                     <th>Creado por</th>
                     <th>Acciones</th>
                 </tr>
@@ -60,7 +60,19 @@
                                         $label = 'default';
                                         break;
                                 }
+                                $details = $item->details->groupBy('contract.person.afp');
+                                $afp_total = 0;
                             @endphp
+                            @foreach ($details as $key => $detail)
+                                @php
+                                    $patronal = $detail->sum('common_risk') + $detail->sum('solidary_employer') + $detail->sum('housing_employer');
+                                    $labor = $detail->sum('labor_total');
+
+                                    $afp_total += $patronal + $labor;
+                                @endphp
+                                <span>{{ $key == '1' ? 'Futuro' : 'Previsión' }}</span>:  {{number_format($patronal + $labor, 2, ',', '.') }} (<b>{{ $detail->count() }}</b>)<br>
+                            @endforeach
+                            <b>TOTAL : {{ number_format($afp_total, 2, ',', '.') }}</b> <br>
                             <label class="label label-{{ $label }}">{{ ucfirst($item->status) }}</label>
                         </td>
                         <td>

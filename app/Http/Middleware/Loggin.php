@@ -26,7 +26,7 @@ class Loggin
                     'name' => Auth::user()->name,
                     'email' => Auth::user()->email,
                     'ip' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
+                    // 'user_agent' => request()->userAgent(),
                     'url' => request()->url(),
                     'method' => request()->method(),
                     'input' => request()->except(['password', '_token', '_method']),
@@ -35,7 +35,7 @@ class Loggin
             } catch (\Throwable $th) {
                 $data = [
                     'ip' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
+                    // 'user_agent' => request()->userAgent(),
                     'url' => request()->url(),
                     'method' => request()->method(),
                     'input' => request()->except(['password', '_token', '_method']),

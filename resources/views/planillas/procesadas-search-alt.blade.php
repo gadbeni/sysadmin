@@ -104,18 +104,20 @@
                                        <br><small>Por {{ $cashiers_payment->cashier->user->name }} <br> {{ date('d-m-Y', strtotime($cashiers_payment->created_at)) }} <br> {{ date('H:i:s', strtotime($cashiers_payment->created_at)) }} </small>
                                     @endif
                                 </td>
-                                <td class="text-right">
-                                    @if ($item->status == 'habilitado')
-                                        <button type="button" onclick='setValuePay(@json($item), @json($cashier), true)' data-toggle="modal" data-target="#pagar-modal" class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
-                                    @endif
-                                    @if ($item->status == 'pagado')
-                                        <button type="button" onclick="print_recipe({{ $item->payment->id }}, 'sueldo')" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
-                                    @endif
-                                </td>
+                                @if ($cashier || Auth::user()->role_id == 1)
+                                    <td width="100px" class="text-right">
+                                        @if ($item->status == 'habilitado')
+                                            <button type="button" onclick='setValuePay(@json($item), @json($cashier), true)' data-toggle="modal" data-target="#pagar-modal" class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
+                                        @endif
+                                        @if ($item->status == 'pagado')
+                                            <button type="button" onclick="print_recipe({{ $item->payment->id }}, 'sueldo')" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+                                        @endif
+                                    </td>
+                                @endif
                             </tr>
                             @empty
                                 <tr>
-                                    <td @if (Auth::user()->role_id == 1) colspan="14" @else colspan="13" @endif><h4 class="text-center">No hay registros</h4></td>
+                                    <td @if ($cashier || Auth::user()->role_id == 1) colspan="14" @else colspan="13" @endif><h4 class="text-center">No hay registros</h4></td>
                                 </tr>
                             @endforelse
                         </tbody>

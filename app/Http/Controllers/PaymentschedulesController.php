@@ -46,7 +46,7 @@ class PaymentschedulesController extends Controller
         $paginate = request('paginate') ?? 10;
         $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details' => function($query){
                         $query->where('deleted_at', NULL);
-                    }])
+                    }, 'details.contract.person'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->where(function($query) use ($search){
                         if($search){
