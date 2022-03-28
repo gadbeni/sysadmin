@@ -59,7 +59,8 @@ class PaymentschedulesController extends Controller
                             ->OrWhereHas('user', function($query) use($search){
                                 $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
                             })
-                            ->OrWhereRaw($search ? "centralize_code like '%$search%'" : 1);
+                            ->OrWhereRaw($search ? "id = '".intval($search)."'" : 1)
+                            ->OrWhereRaw($search ? "centralize_code like '%".intval(explode('-', $search)[0])."-c%'" : 1);
                         }
                     })
                     ->where('status', '!=', 'borrador')

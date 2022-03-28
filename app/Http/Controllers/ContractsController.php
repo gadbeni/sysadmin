@@ -64,6 +64,8 @@ class ContractsController extends Controller
                             ->OrWhereHas('user', function($query) use($search){
                                 $query->whereRaw("name like '%$search%'");
                             })
+                            ->OrWhereRaw($search ? "id = '$search'" : 1)
+                            ->OrWhereRaw($search ? "code like '%$search%'" : 1)
                             ->OrWhereRaw($search ? "status like '%$search%'" : 1);
                         }
                     })
@@ -373,7 +375,7 @@ class ContractsController extends Controller
     // **** Métodos funcionales ****
     public function enabled_to_delete($id){
         $contracts = PaymentschedulesDetail::where('contract_id', $id)
-                        ->whereRaw("(status = 'procesada' OR status = 'enviada' OR status = 'aprobada' OR status = 'habilitada')")
+                        ->whereRaw("(status = 'procesado' OR status = 'enviado' OR status = 'aprobado' OR status = 'habilitado')")
                         ->where('deleted_at', NULL)->first();
         return $contracts ? false : true;
     }
