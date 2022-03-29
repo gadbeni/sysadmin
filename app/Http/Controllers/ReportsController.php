@@ -161,7 +161,8 @@ class ReportsController extends Controller
                                         ->whereHas('paymentschedule', function($q) use($period_id, $procedure_type_id, $id_planilla){
                                             $q->whereRaw($period_id ? "period_id = $period_id" : 1)
                                                 ->whereRaw($procedure_type_id ? "procedure_type_id = $procedure_type_id" : "(procedure_type_id = 1 or procedure_type_id = 5)")
-                                                ->whereRaw($id_planilla ? 'id = "'.intval($id_planilla).'"' : 1);
+                                                ->whereRaw($id_planilla ? 'id = "'.intval($id_planilla).'"' : 1)
+                                                ->where('deleted_at', NULL);
                                         })
                                         ->whereHas('contract.person', function($q) use($afp){
                                             $q->whereRaw($afp ? "afp = $afp" : 1);

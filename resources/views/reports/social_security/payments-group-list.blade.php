@@ -147,7 +147,7 @@
                                     <td>{{ $afp[0]->paymentschedule->period->name }}</td>
                                     <td>{{ $afp[0]->paymentschedule->direccion_administrativa->NOMBRE }}</td>
                                     <td>{{ $afp[0]->paymentschedule->procedure_type->name }}</td>
-                                    <td>{{ str_pad($afp[0]->paymentschedule->id, 6, "0", STR_PAD_LEFT) }}</td>
+                                    <td>{{ str_pad($afp[0]->paymentschedule->id, 6, "0", STR_PAD_LEFT).($afp[0]->paymentschedule->aditional ? '-A' : '') }}</td>
                                     <td style="text-align: right">{{ $afp->count() }}</td>
                                     <td>{{ $key == 1 ? 'Futuro' : 'Previsión' }}</td>
                                     <td style="text-align: right">{{ number_format($afp->sum('partial_salary') + $afp->sum('seniority_bonus_amount'), 2, ',', '.') }}</td>

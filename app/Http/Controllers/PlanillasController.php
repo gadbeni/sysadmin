@@ -363,7 +363,6 @@ class PlanillasController extends Controller
 
     public function planillas_pagos_print($id){
         $payment = CashiersPayment::with(['cashier.user', 'paymentschedulesdetail.contract.person', 'paymentschedulesdetail.paymentschedule.direccion_administrativa'])->where('id', $id)->first();
-        // dd($payment);
         $planilla = null;
         if($payment->planilla_haber_id){
             $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
@@ -375,7 +374,7 @@ class PlanillasController extends Controller
         }
         // dd($payment);
         
-        return view('planillas.payment-recipe', compact('payment', 'planilla'));
+        return view('planillas.payment-recipe-alt', compact('payment', 'planilla'));
     }
 
     public function planillas_pagos_print_group($id){
