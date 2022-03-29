@@ -33,6 +33,7 @@
                         </td>
                         <td class="text-right">{{ number_format($item->details->sum('liquid_payable'), 2, ',', '.') }}</td>
                         <td>
+                            <b>Total ganado: {{ number_format($item->details->sum('partial_salary') + $item->details->sum('seniority_bonus_amount'), 2, ',', '.') }}</b> <br>
                             @php
                                 switch ($item->status) {
                                     case 'anulada':
@@ -72,7 +73,7 @@
                                 @endphp
                                 <span>{{ $key == '1' ? 'Futuro' : 'Previsión' }}</span>:  {{number_format($patronal + $labor, 2, ',', '.') }} (<b>{{ $detail->count() }}</b>)<br>
                             @endforeach
-                            <b>TOTAL : {{ number_format($afp_total, 2, ',', '.') }}</b> <br>
+                            <b>Total AFP : {{ number_format($afp_total, 2, ',', '.') }}</b> <br>
                             <label class="label label-{{ $label }}">{{ ucfirst($item->status) }}</label>
                         </td>
                         <td>

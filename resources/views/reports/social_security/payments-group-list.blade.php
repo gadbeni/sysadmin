@@ -137,6 +137,46 @@
                         @empty
                             
                         @endforelse
+
+                        @foreach ($planillas_alt->groupBy('paymentschedule_id') as $item)
+                            {{-- {{ dd($item->groupBy('contract.person.afp')) }} --}}
+                            @foreach ($item->groupBy('contract.person.afp') as $key => $afp)
+                                <tr>
+                                    <td>{{ $cont }}</td>
+                                    <td></td>
+                                    <td>{{ $afp[0]->paymentschedule->period->name }}</td>
+                                    <td>{{ $afp[0]->paymentschedule->direccion_administrativa->NOMBRE }}</td>
+                                    <td>{{ $afp[0]->paymentschedule->procedure_type->name }}</td>
+                                    <td>{{ str_pad($afp[0]->paymentschedule->id, 6, "0", STR_PAD_LEFT) }}</td>
+                                    <td style="text-align: right">{{ $afp->count() }}</td>
+                                    <td>{{ $key == 1 ? 'Futuro' : 'Previsión' }}</td>
+                                    <td style="text-align: right">{{ number_format($afp->sum('partial_salary') + $afp->sum('seniority_bonus_amount'), 2, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($afp->sum('common_risk') + $afp->sum('solidary_employer') + $afp->sum('housing_employer') + $afp->sum('labor_total'), 2, ',', '.') }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td style="text-align: right">{{ number_format(($afp->sum('partial_salary') + $afp->sum('seniority_bonus_amount')) * 0.1, 2, ',', '.') }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                @php
+                                    $cont++;
+                                    $total_personas += $afp->count();
+                                    $total_ganado += $afp->sum('partial_salary') + $afp->sum('seniority_bonus_amount');
+                                    $total_afp += $afp->sum('common_risk') + $afp->sum('solidary_employer') + $afp->sum('housing_employer') + $afp->sum('labor_total');
+                                    // $total_multa_afp += count($item->detalle_pago) > 0 ? $item->detalle_pago[0]->penalty_payment : 0;
+                                    $total_cc += ($afp->sum('partial_salary') + $afp->sum('seniority_bonus_amount')) * 0.1;
+                                    // $total_multa_cc += count($item->detalle_pago) > 0 ? $item->detalle_pago[0]->penalty_check : 0;
+                                @endphp
+                            @endforeach
+                        @endforeach
+
                         <tr>
                             <td colspan="6"><b>TOTAL</b></td>
                             <td style="text-align: right"><b>{{ $total_personas }}</b></td>

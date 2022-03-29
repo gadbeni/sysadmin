@@ -18,6 +18,7 @@ use App\Models\DireccionAdministrativa;
 use App\Models\Contract;
 use App\Models\Period;
 use App\Models\PaymentschedulesDetail;
+use App\Models\ProcedureType;
 
 // Exports
 use App\Exports\MinisterioTrabajoExport;
@@ -119,7 +120,8 @@ class ReportsController extends Controller
 
     public function social_security_payments_list(Request $request){
         // Planilla no centralizada
-
+        // dd($request->all());
+        $planillas_alt = [];
         switch ($request->tipo_planilla) {
             case '1':
                 $periodo = $request->periodo;
@@ -144,6 +146,30 @@ class ReportsController extends Controller
                                         ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
                                         ->orderBy('ph.idPlanillaprocesada')
                                         ->selectRaw('ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, ROUND(SUM(ph.Total_Aportes_Afp), 2) as Total_Aportes_Afp, ROUND(SUM(ph.Riesgo_Comun), 2) as riesgo_comun, count(ph.Total_Aportes_Afp) as cantidad_personas, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp')
+                                        ->get();
+
+                    // Nueva planilla
+                    $afp = $request->afp ?? NULL;
+                    $period = Period::where('name', $request->periodo)->where('deleted_at', NULL)->first();
+                    $period_id = $period ? $period->id : NULL;
+                    $procedure_type = ProcedureType::where('planilla_id', $request->t_planilla ?? 0)->where('deleted_at', NULL)->first();
+                    $procedure_type_id = $procedure_type ? $procedure_type->id : NULL;
+                    $direccion_administrativa_id = $request->id_da;
+                    $id_planilla = $request->id_planilla;
+
+                    $planillas_alt = PaymentschedulesDetail::with(['paymentschedule.period', 'paymentschedule.direccion_administrativa', 'paymentschedule.procedure_type', 'contract.person'])
+                                        ->whereHas('paymentschedule', function($q) use($period_id, $procedure_type_id, $id_planilla){
+                                            $q->whereRaw($period_id ? "period_id = $period_id" : 1)
+                                                ->whereRaw($procedure_type_id ? "procedure_type_id = $procedure_type_id" : "(procedure_type_id = 1 or procedure_type_id = 5)")
+                                                ->whereRaw($id_planilla ? 'id = "'.intval($id_planilla).'"' : 1);
+                                        })
+                                        ->whereHas('contract.person', function($q) use($afp){
+                                            $q->whereRaw($afp ? "afp = $afp" : 1);
+                                        })
+                                        ->whereHas('paymentschedule', function($q) use($direccion_administrativa_id){
+                                            $q->whereRaw($direccion_administrativa_id ? "direccion_administrativa_id = $direccion_administrativa_id" : 1);
+                                        })
+                                        ->where('deleted_at', NULL)
                                         ->get();
                 }else{
                     $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
@@ -234,9 +260,6 @@ class ReportsController extends Controller
                 // dd($da);
                 break;
                 
-            default:
-                # code...
-                break;
         }
         
         if($request->group_afp && ($request->tipo_planilla == 1 || $request->tipo_planilla == 2)){
@@ -267,19 +290,17 @@ class ReportsController extends Controller
         if($request->type == 'print'){
             if($request->tipo_planilla == 1 || $request->tipo_planilla == 2){
                 if($request->group_afp){
-                    return view('reports.social_security.payments-group-list-print', compact('planillas'));
+                    return view('reports.social_security.payments-group-list-print', compact('planillas', 'planillas_alt'));
                 }else{
                     return view('reports.social_security.payments-list-print', compact('planillas'));
                 }
             }else{
                 return view('reports.social_security.payments-details-list-print', compact('da'));
             }
-        }elseif($request->type == 'excel'){
-            return null;
         }else{
             if($request->tipo_planilla == 1 || $request->tipo_planilla == 2){
                 if($request->group_afp){
-                    return view('reports.social_security.payments-group-list', compact('planillas'));
+                    return view('reports.social_security.payments-group-list', compact('planillas', 'planillas_alt'));
                 }else{
                     return view('reports.social_security.payments-list', compact('planillas'));
                 }
