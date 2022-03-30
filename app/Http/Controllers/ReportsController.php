@@ -19,6 +19,7 @@ use App\Models\Contract;
 use App\Models\Period;
 use App\Models\PaymentschedulesDetail;
 use App\Models\ProcedureType;
+use App\Models\Job;
 
 // Exports
 use App\Exports\MinisterioTrabajoExport;
@@ -113,15 +114,30 @@ class ReportsController extends Controller
         }
     }
 
+    public function humans_resources_jobs_index(){
+        return view('reports.rr_hh.jobs-browse');
+    }
+
+    public function humans_resources_jobs_list(Request $request){
+        $jobs = Job::with(['direccion_administrativa', 'contract' => function($q){
+                        $q->where('status', '<>', 'anulado')->where('status', '<>', 'concluido')->where('deleted_at', NULL);
+                    }, 'contract.person'])
+                    ->where('deleted_at', NULL)->get();
+        // dd($jobs);
+        if($request->print){
+            return view('reports.rr_hh.jobs-print', compact('jobs'));
+        }else{
+            return view('reports.rr_hh.jobs-list', compact('jobs'));
+        }
+    }
+
     public function social_security_payments_index(){
         $direcciones_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
         return view('reports.social_security.payments-browse', compact('direcciones_administrativa'));
     }
 
     public function social_security_payments_list(Request $request){
-        // Planilla no centralizada
-        // dd($request->all());
-        $planillas_alt = [];
+        $planillas_alt = collect([]);
         switch ($request->tipo_planilla) {
             case '1':
                 $periodo = $request->periodo;
@@ -144,6 +160,7 @@ class ReportsController extends Controller
                                         ->whereRaw($request->id_planilla ? 'ph.idPlanillaprocesada = '.$request->id_planilla : 1)
                                         ->whereRaw('(tp.ID = 1 or tp.ID = 2)')
                                         ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
+                                        ->orderBy('ph.Periodo')
                                         ->orderBy('ph.idPlanillaprocesada')
                                         ->selectRaw('ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, ROUND(SUM(ph.Total_Aportes_Afp), 2) as Total_Aportes_Afp, ROUND(SUM(ph.Riesgo_Comun), 2) as riesgo_comun, count(ph.Total_Aportes_Afp) as cantidad_personas, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp')
                                         ->get();
@@ -151,7 +168,11 @@ class ReportsController extends Controller
                     // Nueva planilla
                     $afp = $request->afp ?? NULL;
                     $period = Period::where('name', $request->periodo)->where('deleted_at', NULL)->first();
-                    $period_id = $period ? $period->id : NULL;
+                    if($request->periodo){
+                        $period_id = $period ? $period->id : 'none';
+                    }else{
+                        $period_id = NULL;
+                    }
                     $procedure_type = ProcedureType::where('planilla_id', $request->t_planilla ?? 0)->where('deleted_at', NULL)->first();
                     $procedure_type_id = $procedure_type ? $procedure_type->id : NULL;
                     $direccion_administrativa_id = $request->id_da;
@@ -159,7 +180,7 @@ class ReportsController extends Controller
 
                     $planillas_alt = PaymentschedulesDetail::with(['paymentschedule.period', 'paymentschedule.direccion_administrativa', 'paymentschedule.procedure_type', 'contract.person'])
                                         ->whereHas('paymentschedule', function($q) use($period_id, $procedure_type_id, $id_planilla){
-                                            $q->whereRaw($period_id ? "period_id = $period_id" : 1)
+                                            $q->whereRaw($period_id ? "period_id = '$period_id'" : 1)
                                                 ->whereRaw($procedure_type_id ? "procedure_type_id = $procedure_type_id" : "(procedure_type_id = 1 or procedure_type_id = 5)")
                                                 ->whereRaw($id_planilla ? 'id = "'.intval($id_planilla).'"' : 1)
                                                 ->where('deleted_at', NULL);

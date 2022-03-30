@@ -95,11 +95,12 @@ class PermissionsTableSeeder extends Seeder
   
         // Planillas
         $keys = [
+            'read_centralize_paymentschedules',
             'approve_paymentschedules',
             'enable_paymentschedules',
             'close_paymentschedules',
             'print_paymentschedules',
-            'browse_paymentschedulesfiles',
+            'browse_paymentschedulesfilesindex',
             'add_paymentschedulesfiles',
             'delete_paymentschedulesfiles'
         ];
@@ -137,7 +138,8 @@ class PermissionsTableSeeder extends Seeder
         // Reports RRHH
         $keys = [
             'browse_reportshumans-resourcescontraloria',
-            'browse_reportshumans-resourcesaniversarios'
+            'browse_reportshumans-resourcesaniversarios',
+            'browse_reportshumans-resourcesjobs'
         ];
 
         foreach ($keys as $key) {

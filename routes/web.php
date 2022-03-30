@@ -168,9 +168,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     // *Recursos humanos
     Route::get('reports/humans-resources/contraloria', [ReportsController::class, 'humans_resources_contraloria_index'])->name('reports.humans_resources.contraloria');
     Route::post('reports/humans-resources/contraloria/list', [ReportsController::class, 'humans_resources_contraloria_list'])->name('reports.humans_resources.contraloria.list');
-
     Route::get('reports/humans-resources/aniversarios', [ReportsController::class, 'humans_resources_aniversarios_index'])->name('reports.humans_resources.aniversarios');
     Route::post('reports/humans-resources/aniversarios/list', [ReportsController::class, 'humans_resources_aniversarios_list'])->name('reports.humans_resources.aniversarios.list');
+    Route::get('reports/humans-resources/jobs', [ReportsController::class, 'humans_resources_jobs_index'])->name('reports.humans_resources.jobs');
+    Route::post('reports/humans-resources/jobs/list', [ReportsController::class, 'humans_resources_jobs_list'])->name('reports.humans_resources.jobs.list');
 
     // *Previsión social
     Route::get('reports/social-security/payments', [ReportsController::class, 'social_security_payments_index'])->name('reports.social_security.payments');

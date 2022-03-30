@@ -107,7 +107,7 @@
                             @endif
 
                             @if ($item->status != 'borrador' && auth()->user()->hasPermission('read_paymentschedules'))
-                                @if ($item->centralize_code && auth()->user()->hasPermission('enable_paymentschedules'))
+                                @if ($item->centralize_code && auth()->user()->hasPermission('read_centralize_paymentschedules'))
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
                                             <span class="hidden-xs hidden-sm">Ver <span class="caret"></span>

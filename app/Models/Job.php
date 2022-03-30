@@ -14,4 +14,8 @@ class Job extends Model
     public function direccion_administrativa(){
         return $this->belongsTo(DireccionAdministrativa::class, 'direccion_administrativa_id', 'ID');
     }
+
+    public function contract(){
+        return $this->hasOne(Contract::class);
+    }
 }

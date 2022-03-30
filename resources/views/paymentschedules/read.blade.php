@@ -8,17 +8,6 @@
         <a href="{{ route('paymentschedules.index') }}" class="btn btn-warning">
             <span class="glyphicon glyphicon-list"></span>&nbsp; Volver a la lista
         </a>
-        {{-- <div class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-              AFP's <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="?{{ $centralize ? '&centralize=true' : '' }}">Todas</a></li>
-                <li><a href="?afp=1{{ $centralize ? '&centralize=true' : '' }}">Futuro</a></li>
-                <li><a href="?afp=2{{ $centralize ? '&centralize=true' : '' }}">Previsión</a></li>
-            </ul>
-        </div> --}}
-
         <button class="btn btn-danger" data-toggle="modal" data-target="#print-modal"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
 
         @if ($data->status == 'procesada' && auth()->user()->hasPermission('add_paymentschedules'))
@@ -29,7 +18,7 @@
             <button title="Aprobar planilla" type="button" data-id="{{ $data->id }}" class="btn btn-info btn-approve" data-toggle="modal" data-target="#approve-modal"><i class="glyphicon glyphicon-ok-circle"></i> Aprobar</button>
         @endif
 
-        {{-- Si la planilla está aprobada o está habilitada para pago y parte de la planilla no ha sido habilitada se mouestra el botón de habilitación --}}
+        {{-- Si la planilla está aprobada o está habilitada para pago y parte de la planilla no ha sido habilitada se muestra el botón de habilitación --}}
         @if (($data->status == 'aprobada' || ($data->status == 'habilitada' && $data->details->where('status', 'procesado')->where('deleted_at', NULL)->count()) > 0) && auth()->user()->hasPermission('enable_paymentschedules') && !$centralize)
             <button type="button" data-toggle="modal" data-target="#enable-modal" class="btn btn-success" style="margin-left: -10px; padding: 7px 15px"><i class="voyager-dollar"></i> Habilitar</button>
         @endif

@@ -141,12 +141,12 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
-                                            `key` = 'enable_paymentschedules' or
+                                            `key` = 'read_centralize_paymentschedules' or
                                             `key` = 'add_paymentschedules' or
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
                                             `key` = 'print_paymentschedules' or
-                                            `key` = 'browse_paymentschedulesfiles' or
+                                            `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
                                             `key` = 'delete_paymentschedulesfiles' or
                                             table_name = 'reports_rrhh'")->get();
@@ -162,11 +162,12 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
+                                            `key` = 'read_centralize_paymentschedules' or
                                             `key` = 'add_paymentschedules' or
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
                                             `key` = 'print_paymentschedules' or
-                                            `key` = 'browse_paymentschedulesfiles' or
+                                            `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
                                             `key` = 'delete_paymentschedulesfiles' or
                                             table_name = 'reports_rrhh'")->get();
@@ -182,11 +183,12 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
+                                            `key` = 'read_centralize_paymentschedules' or
                                             `key` = 'add_paymentschedules' or
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
                                             `key` = 'print_paymentschedules' or
-                                            `key` = 'browse_paymentschedulesfiles' or
+                                            `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
                                             `key` = 'delete_paymentschedulesfiles' or
                                             table_name = 'reports_rrhh' or
@@ -205,7 +207,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
                                             `key` = 'print_paymentschedules' or
-                                            `key` = 'browse_paymentschedulesfiles' or
+                                            `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
                                             `key` = 'delete_paymentschedulesfiles' or
                                             table_name = 'seniority_bonus_people'")->get();
@@ -226,7 +228,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
                                             `key` = 'print_paymentschedules' or
-                                            `key` = 'browse_paymentschedulesfiles' or
+                                            `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
                                             `key` = 'delete_paymentschedulesfiles' or
                                             table_name = 'reports_contracts'")->get();
@@ -246,7 +248,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
                                             `key` = 'print_paymentschedules' or
-                                            `key` = 'browse_paymentschedulesfiles' or
+                                            `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
                                             `key` = 'delete_paymentschedulesfiles' or
                                             table_name = 'reports_contracts'")->get();
@@ -270,7 +272,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
                                             `key` = 'print_paymentschedules' or
-                                            `key` = 'browse_paymentschedulesfiles' or
+                                            `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
                                             `key` = 'delete_paymentschedulesfiles'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
@@ -290,7 +292,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
                                             `key` = 'print_paymentschedules' or
-                                            `key` = 'browse_paymentschedulesfiles' or
+                                            `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
                                             `key` = 'delete_paymentschedulesfiles' or
                                             table_name = 'reports_contracts'")->get();
@@ -310,7 +312,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
                                             `key` = 'print_paymentschedules' or
-                                            `key` = 'browse_paymentschedulesfiles' or
+                                            `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
                                             `key` = 'delete_paymentschedulesfiles' or
                                             table_name = 'reports_contracts'")->get();
@@ -328,7 +330,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
                                             `key` = 'print_paymentschedules' or
-                                            `key` = 'browse_paymentschedulesfiles' or
+                                            `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
                                             `key` = 'delete_paymentschedulesfiles'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
