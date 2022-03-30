@@ -122,6 +122,7 @@ class ReportsController extends Controller
         $jobs = Job::with(['direccion_administrativa', 'contract' => function($q){
                         $q->where('status', '<>', 'anulado')->where('status', '<>', 'concluido')->where('deleted_at', NULL);
                     }, 'contract.person'])
+                    ->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id = ".$request->direccion_administrativa_id : 1)
                     ->where('deleted_at', NULL)->get();
         // dd($jobs);
         if($request->print){

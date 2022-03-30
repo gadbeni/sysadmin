@@ -81,13 +81,21 @@ class PermissionRoleTableSeeder extends Seeder
 
         // Roles de previsión social
         $role = Role::where('name', 'prevision_director')->firstOrFail();
-        $permissions = Permission::whereRaw('table_name = "admin" or table_name = "reports_social_security"')->get();
+        $permissions = Permission::whereRaw('table_name = "admin" or
+                                                table_name = "reports_social_security" or 
+                                                `key` = "browse_paymentschedules" or
+                                                `key` = "read_paymentschedules" or
+                                                `key` = "read_centralize_paymentschedules"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'prevision_jefe_seccion')->firstOrFail();
         $permissions = Permission::whereRaw('   table_name = "admin" or
                                                 table_name = "social-security" or
                                                 table_name = "dependences" or
+                                                `key` = "browse_paymentschedules" or
+                                                `key` = "read_paymentschedules" or
+                                                `key` = "read_centralize_paymentschedules" or
+                                                `key` = "browse_planillaspagos" or
                                                 table_name = "social_security_types" or
                                                 table_name = "checks_beneficiaries" or
                                                 table_name = "social-securitypayments" or
@@ -100,6 +108,10 @@ class PermissionRoleTableSeeder extends Seeder
         $permissions = Permission::whereRaw('   table_name = "admin" or
                                                 table_name = "social-security" or
                                                 table_name = "dependences" or
+                                                `key` = "browse_paymentschedules" or
+                                                `key` = "read_paymentschedules" or
+                                                `key` = "read_centralize_paymentschedules" or
+                                                `key` = "browse_planillaspagos" or
                                                 `key` = "browse_reportssocial-securitypayments" or
                                                 `key` = "browse_reportssocial-securityspreadsheetspayments" or
                                                 `key` = "browse_reportssocial-securitycaratula" or
@@ -203,6 +215,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'add_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
+                                            `key` = 'read_centralize_paymentschedules' or
                                             `key` = 'add_paymentschedules' or
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
@@ -224,6 +237,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
+                                            `key` = 'read_centralize_paymentschedules' or
                                             `key` = 'add_paymentschedules' or
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
@@ -244,6 +258,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
+                                            `key` = 'read_centralize_paymentschedules' or
                                             `key` = 'add_paymentschedules' or
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
@@ -268,6 +283,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
+                                            `key` = 'read_centralize_paymentschedules' or
                                             `key` = 'add_paymentschedules' or
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
@@ -288,6 +304,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
+                                            `key` = 'read_centralize_paymentschedules' or
                                             `key` = 'add_paymentschedules' or
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
@@ -308,6 +325,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
+                                            `key` = 'read_centralize_paymentschedules' or
                                             `key` = 'add_paymentschedules' or
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
@@ -326,6 +344,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'add_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
+                                            `key` = 'read_centralize_paymentschedules' or
                                             `key` = 'add_paymentschedules' or
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or

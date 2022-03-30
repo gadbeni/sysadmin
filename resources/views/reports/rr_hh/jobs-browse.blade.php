@@ -30,7 +30,7 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <select name="mes" class="form-control select2">
+                                    <select name="direccion_administrativa_id" class="form-control select2">
                                         <option value="">Todas las direcciones administrativas</option>
                                         @foreach (App\Models\DireccionAdministrativa::where('Estado', 1)->get() as $item)
                                         <option value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>

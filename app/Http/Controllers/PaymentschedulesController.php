@@ -63,6 +63,7 @@ class PaymentschedulesController extends Controller
                             ->OrWhereRaw($search ? "centralize_code like '%".intval(explode('-', $search)[0])."-c%'" : 1);
                         }
                     })
+                    ->whereRaw(Auth::user()->role_id >= 6 && Auth::user()->role_id <= 8 ? 'status = "aprobada" or status = "habilitada" or status = "pagada"' : 1)
                     ->where('status', '!=', 'borrador')
                     ->where('status', '!=', 'anulada')
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);

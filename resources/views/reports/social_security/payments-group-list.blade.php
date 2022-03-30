@@ -139,7 +139,6 @@
                         @endforelse
 
                         @foreach ($planillas_alt->groupBy('paymentschedule_id') as $item)
-                            {{-- {{ dd($item->groupBy('contract.person.afp')) }} --}}
                             @foreach ($item->groupBy('contract.person.afp') as $key => $afp)
                                 <tr>
                                     <td>{{ $cont }}</td>
