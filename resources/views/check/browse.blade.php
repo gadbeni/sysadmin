@@ -57,7 +57,7 @@
                                             <th>Fecha Cheque</th>
                                             <th>Monto </th>
                                             
-                                            <th>Resumen</th>
+                                            <th>Detalle</th>
                                             <th>Estado</th>
                                             <th>Acciones</th>
                                         </tr>
@@ -662,7 +662,7 @@
                         div+=           '<div class="input-group-prepend">'
                         div+=                '<span class="input-group-text"><b>Ci:</b></span>'
                         div+=            '</div>'
-                        div+=            '<input type="text" id="ci" class="form-control" name="ci" required>'
+                        div+=            '<input type="text" id="ci" class="form-control" name="ci">'
                         div+=        '</div>'
                     $('#div_cis').html(div);
                 }
@@ -749,7 +749,7 @@
                     html_cant+=                 '</div>' 
                     html_cant+=                 '<div class="col-md-6">'
                     html_cant+=                     '<div class="input-group-prepend">'
-                    html_cant+=                         '<span class="input-group-text"><b>Resumen:</b></span>'
+                    html_cant+=                         '<span class="input-group-text"><b>Beneficiario:</b></span>'
                     html_cant+=                     '</div>'
                     html_cant+=                    '<input type="text" class="form-control" name="resumen[]" required>'
                     html_cant+=                '</div>'                                 
@@ -791,7 +791,7 @@
                         div+=           '<div class="input-group-prepend">'
                         div+=                '<span class="input-group-text"><b>Ci:</b></span>'
                         div+=            '</div>'                                
-                        div+=            '<input type="text" class="form-control" name="ci" required>'
+                        div+=            '<input type="text" class="form-control" name="ci">'
                         div+=        '</div>'
                     $('#div_ci').html(div);
                 }
@@ -810,7 +810,7 @@
                         div+=           '<div class="input-group-prepend">'
                         div+=                '<span class="input-group-text"><b>Ci:</b></span>'
                         div+=            '</div>'                                
-                        div+=            '<input type="text" class="form-control" name="ci" required>'
+                        div+=            '<input type="text" class="form-control" name="ci">'
                         div+=        '</div>'
                     $('#div_ci').html(div);
                 }
@@ -856,7 +856,7 @@
                         div+=           '<div class="input-group-prepend">'
                         div+=                '<span class="input-group-text"><b>Ci:</b></span>'
                         div+=            '</div>'                                
-                        div+=            '<input type="text" class="form-control" name="ci" required>'
+                        div+=            '<input type="text" class="form-control" name="ci">'
                         div+=        '</div>'
                     $('#div_cis').html(div);
                 }
@@ -875,7 +875,7 @@
                         div+=           '<div class="input-group-prepend">'
                         div+=                '<span class="input-group-text"><b>Ci:</b></span>'
                         div+=            '</div>'                                
-                        div+=            '<input type="text" class="form-control" name="ci" required>'
+                        div+=            '<input type="text" class="form-control" name="ci">'
                         div+=        '</div>'
                     $('#div_cis').html(div);
                 }
