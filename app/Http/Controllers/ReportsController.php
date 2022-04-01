@@ -20,6 +20,7 @@ use App\Models\Period;
 use App\Models\PaymentschedulesDetail;
 use App\Models\ProcedureType;
 use App\Models\Job;
+use App\Models\Cargo;
 
 // Exports
 use App\Exports\MinisterioTrabajoExport;
@@ -119,16 +120,27 @@ class ReportsController extends Controller
     }
 
     public function humans_resources_jobs_list(Request $request){
-        $jobs = Job::with(['direccion_administrativa', 'contract' => function($q){
-                        $q->where('status', '<>', 'anulado')->where('status', '<>', 'concluido')->where('deleted_at', NULL);
+        $procedure_type_id = $request->procedure_type_id;
+        $procedure_type = ProcedureType::find($procedure_type_id);
+        if($request->procedure_type_id == 1){
+            $jobs = Job::with(['direccion_administrativa', 'contract' => function($q) use($procedure_type_id){
+                        $q->where('status', '<>', 'anulado')->where('status', '<>', 'concluido')
+                        ->where('procedure_type_id', $procedure_type_id)->where('deleted_at', NULL);
                     }, 'contract.person'])
                     ->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id = ".$request->direccion_administrativa_id : 1)
                     ->where('deleted_at', NULL)->get();
-        // dd($jobs);
-        if($request->print){
-            return view('reports.rr_hh.jobs-print', compact('jobs'));
         }else{
-            return view('reports.rr_hh.jobs-list', compact('jobs'));
+            // $jobs = Contract::with(['direccion_administrativa', 'person', 'cargo'])
+            //             ->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id = ".$request->direccion_administrativa_id : 1)
+            //             ->where('procedure_type_id', $procedure_type_id)->where('status', '<>', 'anulado')->where('status', '<>', 'concluido')
+            //             ->where('cargo_id', '<>', NULL)->where('deleted_at', NULL)->get();
+            $jobs = collect([]);
+        }
+
+        if($request->print){
+            return view('reports.rr_hh.jobs-print', compact('jobs', 'procedure_type'));
+        }else{
+            return view('reports.rr_hh.jobs-list', compact('jobs', 'procedure_type'));
         }
     }
 
@@ -775,8 +787,6 @@ class ReportsController extends Controller
             $tip ='=';
         }
 
-        // return $request;
-// dd($request);
         if($request->tipo == 'registrado')
         {
             

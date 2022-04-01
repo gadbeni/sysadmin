@@ -129,6 +129,8 @@
                                         @case(5)
                                             @if ($item->direccion_administrativa->Tipo == 3 || $item->direccion_administrativa->Tipo == 4)
                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-alt']) }}" target="_blank">Contrato</a></li>
+                                            @elseif ($item->direccion_administrativa_id == 5 || $item->direccion_administrativa_id == 36 || $item->direccion_administrativa_id == 57)
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-health']) }}" target="_blank">Contrato</a></li>
                                             @else
                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract']) }}" target="_blank">Contrato</a></li>
                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-desigancion']) }}" target="_blank">Memorandum</a></li>

@@ -48,6 +48,7 @@ class PaymentschedulesController extends Controller
                         $query->where('deleted_at', NULL);
                     }, 'details.contract.person'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
+                    ->whereRaw(Auth::user()->role_id >= 6 && Auth::user()->role_id <= 8 ? '(status = "aprobada" or status = "habilitada" or status = "pagada")' : 1)
                     ->where(function($query) use ($search){
                         if($search){
                             $query->OrwhereHas('period', function($query) use($search){
@@ -63,7 +64,6 @@ class PaymentschedulesController extends Controller
                             ->OrWhereRaw($search ? "centralize_code like '%".intval(explode('-', $search)[0])."-c%'" : 1);
                         }
                     })
-                    ->whereRaw(Auth::user()->role_id >= 6 && Auth::user()->role_id <= 8 ? 'status = "aprobada" or status = "habilitada" or status = "pagada"' : 1)
                     ->where('status', '!=', 'borrador')
                     ->where('status', '!=', 'anulada')
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
@@ -138,17 +138,6 @@ class PaymentschedulesController extends Controller
     {
         DB::beginTransaction();
         try {
-
-            // Verificar si no existe una planilla generada para la DA, el periodo y tipo de planilla
-            // $paymentschedule = Paymentschedule::where([
-            //     'direccion_administrativa_id' =>  $request->direccion_administrativa_id,
-            //     'period_id' => $request->period_id,
-            //     'procedure_type_id' => $request->procedure_type_id,
-            //     'deleted_at' => NULL,
-            // ])->first();
-            // if($paymentschedule){
-            //     return redirect()->route('paymentschedules.index')->with(['message' => 'Ya se generó una planilla con los datos ingresados.', 'alert-type' => 'error']);
-            // }
 
             // Buscar o registrar nueva planilla
             if($request->paymentschedule_id && !$request->aditional){
@@ -260,6 +249,8 @@ class PaymentschedulesController extends Controller
 
         $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract' => function($q){
                         $q->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
+                    }, 'details' => function($q){
+                        $q->where('deleted_at', NULL);
                     }])
                     ->where('id', $id)->where('deleted_at', NULL)->first();
         
@@ -267,7 +258,7 @@ class PaymentschedulesController extends Controller
             $centralize_code = $data->centralize_code;
             $data->details = PaymentschedulesDetail::with(['contract.program', 'contract.type'])
                             ->whereHas('paymentschedule', function($q) use($centralize_code){
-                                $q->where('centralize_code', $centralize_code);
+                                $q->where('centralize_code', $centralize_code)->where('deleted_at', NULL);
                             })
                             ->where('deleted_at', NULL)
                             ->get();
@@ -299,16 +290,7 @@ class PaymentschedulesController extends Controller
         if($print){
             return view('paymentschedules.print', compact('data', 'afp', 'centralize', 'program', 'group', 'print_type'));
         }
-        // else if($excel){
-        //     if($type_excel == 1){
-        //         return Excel::download(new MinisterioTrabajoExport($data->details), 'ministerio de trabajo - '.$data->procedure_type->name.' - '.$data->period->name.'.xlsx');
-        //     }else if($type_excel == 2){
-        //         $data = $data->details;
-        //         return view('paymentschedules.partials.reporte_afp_futuro', compact('data'));
-        //     }else if($type_excel == 3){
-        //         return 'En desarrollo';
-        //     }
-        // }
+
         return view('paymentschedules.read', compact('data', 'afp', 'centralize'));
     }
 
@@ -451,6 +433,8 @@ class PaymentschedulesController extends Controller
             if($request->observations == ''){
                 return response()->json(['error' => 'Debe describir un motivo de anulación']);
             }
+
+            // Buscar que ningun item de planilla se haya pagado
 
             $paymentschedule = Paymentschedule::findOrFail($request->id);
             $paymentschedule->status = 'anulada';

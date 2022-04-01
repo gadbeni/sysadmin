@@ -155,7 +155,7 @@
                     @php
                         $data_group = [];
                         if($group){
-                            $data_group = $group == 1 ? $data->details->groupBy('contract.direccion_administrativa_id') : $data->details->groupBy('contract.program_id');
+                            $data_group = $group == 1 ? $data->details->groupBy('paymentschedule.direccion_administrativa_id') : $data->details->groupBy('contract.program_id');
 
                             if($group == 1){
                                 $data_group = $data_group->map(function($item, $key){

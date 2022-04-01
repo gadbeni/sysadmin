@@ -11,6 +11,7 @@
                 <table id="dataTable" class="table table-bordered">
                     <thead>
                         <tr>
+                            <th>N&deg;</th>
                             <th>ITEM</th>
                             <th>CARGO</th>
                             <th>SUELDO</th>
@@ -29,6 +30,7 @@
                         @forelse ($jobs as $item)
                             {{-- {{ dd($item) }} --}}
                             <tr>
+                                <td>{{ $cont }}</td>
                                 <td>{{ $item->item }}</td>
                                 <td>{{ $item->name }}</td>
                                 <td style="text-align: right">{{ number_format($item->salary, 2, ',', '.') }}</td>
@@ -36,14 +38,14 @@
                                 <td>{!! $item->contract ? $item->contract->code : '<b style="color: red">Acéfalo</b>' !!}</td>
                                 <td>{{ $item->contract ? $item->contract->person->last_name.' '.$item->contract->person->first_name : '' }}</td>
                                 <td>{{ $item->contract ? date('d/m/Y', strtotime($item->contract->start)) : '' }}</td>
-                                <td>{{ $item->contract ? $item->contract->finish ? date('d/m/Y', strtotime($item->contract->finish)) : '' : '' }}</td>
+                                <td>{{ $item->contract ? $item->contract->finish ? date('d/m/Y', strtotime($item->contract->finish)) : 'No definido' : '' }}</td>
                             </tr>
                             @php
                                 $cont++;
                             @endphp
                         @empty
                             <tr>
-                                <td colspan="8"><h4 class="text-center">No hay resultados</h4></td>
+                                <td colspan="9"><h4 class="text-center">No hay resultados</h4></td>
                             </tr>
                         @endforelse
                     </tbody>

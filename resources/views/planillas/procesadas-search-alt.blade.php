@@ -51,9 +51,7 @@
                                 <th style="width: 80px">DÍAS TRAB.</th>
                                 <th>LÍQUIDO</th>
                                 <th style="width: 100px">ESTADO</th>
-                                @if ($cashier || Auth::user()->role_id == 1)
                                 <th>ACCIONES</th>
-                                @endif
                             </tr>
                         </thead>
                         @php
@@ -104,20 +102,18 @@
                                        <br><small>Por {{ $cashiers_payment->cashier->user->name }} <br> {{ date('d-m-Y', strtotime($cashiers_payment->created_at)) }} <br> {{ date('H:i:s', strtotime($cashiers_payment->created_at)) }} </small>
                                     @endif
                                 </td>
-                                @if ($cashier || Auth::user()->role_id == 1)
-                                    <td width="100px" class="text-right">
-                                        @if ($item->status == 'habilitado')
-                                            <button type="button" onclick='setValuePay(@json($item), @json($cashier), true)' data-toggle="modal" data-target="#pagar-modal" class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
-                                        @endif
-                                        @if ($item->status == 'pagado')
-                                            <button type="button" onclick="print_recipe({{ $item->payment->id }}, 'sueldo')" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
-                                        @endif
-                                    </td>
-                                @endif
+                                <td width="100px" class="text-right">
+                                    @if ($cashier && $item->status == 'habilitado')
+                                        <button type="button" onclick='setValuePay(@json($item), @json($cashier), true)' data-toggle="modal" data-target="#pagar-modal" class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
+                                    @endif
+                                    @if ($item->status == 'pagado')
+                                        <button type="button" onclick="print_recipe({{ $item->payment->id }}, 'sueldo')" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+                                    @endif
+                                </td>
                             </tr>
                             @empty
                                 <tr>
-                                    <td @if ($cashier || Auth::user()->role_id == 1) colspan="14" @else colspan="13" @endif><h4 class="text-center">No hay registros</h4></td>
+                                    <td colspan="12"><h4 class="text-center">No hay registros</h4></td>
                                 </tr>
                             @endforelse
                         </tbody>

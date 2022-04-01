@@ -30,7 +30,7 @@
         <p>&nbsp;</p>
         <ol start="2">
             <li>
-                <p>El se&ntilde;or (a) {{ $contract->person->first_name }} {{ $contract->person->last_name }}, mayor de edad, h&aacute;bil por Ley, con C&eacute;dula de Identidad {{ $contract->person->ci }}, con domicilio ubicado en {{ $contract->person->address }}, que en lo sucesivo se denominar&aacute; el/la <strong>CONTRATADO (A).</strong></p>
+                <p>{{ $contract->person->gender == 'masculino' ? 'El señor' : 'La señora' }} {{ $contract->person->first_name }} {{ $contract->person->last_name }}, mayor de edad, h&aacute;bil por Ley, con C&eacute;dula de Identidad {{ $contract->person->ci }}, con domicilio ubicado en {{ $contract->person->address }}, que en lo sucesivo se denominar&aacute; el/la <strong>CONTRATADO (A).</strong></p>
             </li>
         </ol>
         <p><strong>CL&Aacute;USULA SEGUNDA. - (ANTECEDENTES)</strong>.</p>
@@ -208,7 +208,7 @@
         <p>&nbsp;</p>
         <p><strong>CL&Aacute;USULA D&Eacute;CIMA TERCERA. - (Soluci&oacute;n de Controversias).- </strong>En caso de surgir controversias entre el <strong>CONTRATANTE </strong>y <strong>CONTRATADO(A) </strong>durante la ejecuci&oacute;n del presente contrato, las partes acudir&aacute;n a los t&eacute;rminos y condiciones del contrato establecidos en los T&eacute;rminos de Referencia.&nbsp;</p>
         <p>&nbsp;</p>
-        <p><strong>CL&Aacute;USULA D&Eacute;CIMA CUARTA. - (De la Conformidad): </strong>El <strong>CONTRATANTE </strong>a trav&eacute;s de su personero legal mencionado en la cl&aacute;usula primera y el Sr(a) {{ $contract->person->first_name }} {{ $contract->person->last_name }} </strong>en su condici&oacute;n de <strong>CONTRATADO (A) </strong>declaran su plena conformidad con las cl&aacute;usulas del presente contrato y se comprometen a su fiel y estricto cumplimiento, firmando para su constancia al pie del mismo.</p>
+        <p><strong>CL&Aacute;USULA D&Eacute;CIMA CUARTA. - (De la Conformidad): </strong>El <strong>CONTRATANTE </strong>a trav&eacute;s de su personero legal mencionado en la cl&aacute;usula primera y {{ $contract->person->gender == 'masculino' ? 'el señor' : 'la señora' }} {{ $contract->person->first_name }} {{ $contract->person->last_name }} </strong>en su condici&oacute;n de <strong>CONTRATADO (A) </strong>declaran su plena conformidad con las cl&aacute;usulas del presente contrato y se comprometen a su fiel y estricto cumplimiento, firmando para su constancia al pie del mismo.</p>
         <p>&nbsp;</p>
         <p>Este documento, conforme a disposici&oacute;n legal de control fiscal vigente, ser&aacute; registrado ante la Contralor&iacute;a General del Estado en idioma espa&ntilde;ol.</p>
         <p>&nbsp;</p>

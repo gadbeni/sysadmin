@@ -22,11 +22,11 @@
                                 @csrf
                                 <input type="hidden" name="print">
                                 <div class="form-group">
-                                    {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
-                                    <select name="t_planilla" class="form-control select2">
-                                        {{-- <option selected disabled>Tipo de planilla</option> --}}
+                                    <select name="procedure_type_id" class="form-control select2" required>
+                                        <option selected disabled value="">Tipo de planilla</option>
                                         <option value="1">Permanente</option>
-                                        {{-- <option value="2">Inversión</option> --}}
+                                        <option value="5">Inversión</option>
+                                        <option value="2">Consultores de línea</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
