@@ -191,8 +191,8 @@
                                         $housing_employer = 0;
                                         $health = 0;
 
-                                        // Si los días trabajados son >= 20 y la planilla no es de consutoría
-                                        if($days_enabled_worker >= 20 || $procedure_type_id != 2){
+                                        // Si no es consultor o si es c onsultor y <= 20
+                                        if($procedure_type_id != 2 || ($procedure_type_id == 2 && $days_enabled_worker >= 20 && $salary >= $minimum_salary)){
                                             $solidary = $total_amout * 0.005;
                                             $common_risk = $total_amout *0.0171;
                                             $retirement = $total_amout * 0.1;
