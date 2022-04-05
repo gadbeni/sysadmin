@@ -683,6 +683,7 @@
     {{-- approve modal --}}
     <form id="form-approve" class="form-submit" action="{{ route('paymentschedules.update.status') }}" method="POST">
         @csrf
+        <input type="hidden" name="status" value="aprobada">
         <div class="modal modal-info fade submit-modal" tabindex="-1" id="approve-modal" role="dialog">
             <div class="modal-dialog @if($data->centralize) modal-lg @endif">
                 <div class="modal-content">
@@ -694,7 +695,6 @@
                         {{-- Si el usuario es encargo de RRHH de una DA desconcentrada --}}
                         @if (Auth::user()->direccion_administrativa_id || !$data->centralize)
                             <input type="hidden" name="id" value="{{ $data->id }}">
-                            <input type="hidden" name="status" value="aprobada">
                             <div class="col-md-12">
                                 <p class="text-muted">
                                     <b>Advertencia!</b> <br>
@@ -703,7 +703,6 @@
                             </div>
                         @else
                             <input type="hidden" name="centralize" value="1">
-                            
                             <div class="form-group">
                                 @php
                                     $paymentschedule = \App\Models\Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details' => function($query){

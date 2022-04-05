@@ -319,6 +319,7 @@ class PaymentschedulesController extends Controller
 
     public function update_status(Request $request)
     {
+        // dd($request->all());
         DB::beginTransaction();
         try {
             
@@ -343,6 +344,12 @@ class PaymentschedulesController extends Controller
                         foreach ($paymentschedule->details as $item) {
                             $paymentschedules_joined->push($item);
                         }
+
+                        PaymentschedulesHistory::create([
+                            'paymentschedule_id' => $paymentschedule->id,
+                            'user_id' => Auth::user()->id,
+                            'type' => $request->status
+                        ]);
                     }
 
                     // dd($paymentschedules_joined);
@@ -397,13 +404,13 @@ class PaymentschedulesController extends Controller
                         'status' => 'pagado',
                     ]);
                 }
-            }
 
-            PaymentschedulesHistory::create([
-                'paymentschedule_id' => $request->id,
-                'user_id' => Auth::user()->id,
-                'type' => $request->status
-            ]);
+                PaymentschedulesHistory::create([
+                    'paymentschedule_id' => $request->id,
+                    'user_id' => Auth::user()->id,
+                    'type' => $request->status
+                ]);
+            }
             
             DB::commit();
             return response()->json(['message' => 'Cambio realizado exitosamente.']);
