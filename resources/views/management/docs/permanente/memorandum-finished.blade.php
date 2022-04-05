@@ -4,7 +4,7 @@
 
 @php
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-    $code = $contract->finished->code;
+    $code = $contract->finished ? $contract->finished->code : $contract->code.'-F';
 @endphp
 
 @section('qr_code')

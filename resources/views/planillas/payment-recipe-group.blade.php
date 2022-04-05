@@ -122,7 +122,7 @@
                 <tr>
                     <td>
                         <b>NIVEL SALARIAL: </b> {{ $item->contract->cargo ? $item->contract->cargo->nivel->where('IdPlanilla', $item->contract->cargo->idPlanilla)->first()->NumNivel : $item->contract->job->level }} <br>
-                        <b>SUELDO MENSUAL: </b> {{ number_format($item->contract->cargo ? $item->contract->cargo->nivel->where('IdPlanilla', $item->contract->cargo->idPlanilla)->first()->Sueldo : $item->contract->job->amount, 2 , ',', '.') }} <br>
+                        <b>SUELDO MENSUAL: </b> {{ number_format($item->salary, 2 , ',', '.') }} <br>
                         <b>SUELDO PARCIAL: </b> {{ number_format($item->partial_salary, 2, ',', '.') }} <br>
                         <b>BONO ANTIGÜEDAD: </b> {{ number_format($item->seniority_bonus_amount, 2, ',', '.') }} <br>
                         <b>TOTAL GANADO: </b> {{ number_format($item->partial_salary + $item->seniority_bonus_amount, 2, ',', '.') }} <br>

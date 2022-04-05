@@ -83,11 +83,7 @@
                         </td>
                         <td class="no-sort no-click bread-actions text-right">
 
-                            {{-- Si el usuario Pertenece a una DA descontrada se habilita la planilla directamente --}}
-                            @if (Auth::user()->direccion_administrativa_id && $item->status == 'procesada')
-                            <button title="Habilitar para pagos" type="button" data-id="{{ $item->id }}" data-toggle="modal" data-target="#enable-modal" class="btn btn-default btn-enable"><i class="voyager-dollar"></i> Habilitar</button>
-                            {{-- Si la planilla está procesada --}}
-                            @elseif ($item->status == 'procesada' && auth()->user()->hasPermission('edit_paymentschedules'))
+                            @if ($item->status == 'procesada' && (auth()->user()->hasPermission('edit_paymentschedules') || Auth::user()->direccion_administrativa_id))
                                 <button type="button" data-id="{{ $item->id }}" class="btn btn-default btn-send" data-toggle="modal" data-target="#send-modal"><i class="glyphicon glyphicon-share-alt"></i> Enviar</button>
                             @endif
 
@@ -101,8 +97,8 @@
                                 <button title="Habilitar para pagos" type="button" data-id="{{ $item->id }}" data-toggle="modal" data-target="#enable-modal" class="btn btn-default btn-enable"><i class="voyager-dollar"></i> Habilitar</button>
                             @endif
 
-                            {{-- Si la planilla está habiliatda y todos ninguno de los funcionarios está con pago procesado para pago se muestra el botón de pagada --}}
-                            @if ($item->status == 'habilitada' && $item->details->where('status', 'procesado')->where('deleted_at', NULL)->count() == 0 && (auth()->user()->hasPermission('close_paymentschedules') || Auth::user()->direccion_administrativa_id) )
+                            {{-- Si la planilla está habiliatda y ninguno de los funcionarios está con pago procesado para pago o la planilla está aprobada y el usuario es de una DA desconcentrada se muestra el botón de pagada --}}
+                            @if ($item->status == 'habilitada' && $item->details->where('status', 'procesado')->where('deleted_at', NULL)->count() == 0 && auth()->user()->hasPermission('close_paymentschedules') || ($item->status == 'aprobada' && Auth::user()->direccion_administrativa_id) )
                                 <button type="button" data-id="{{ $item->id }}" data-toggle="modal" data-target="#close-modal" class="btn btn-default btn-close"><i class="voyager-lock"></i> Cerrar</button>
                             @endif
 

@@ -112,7 +112,7 @@
             <tr>
                 <td>
                     <b>NIVEL SALARIAL: </b> {{ $planilla ? $planilla->Nivel : ($payment->paymentschedulesdetail->contract->cargo ? $payment->paymentschedulesdetail->contract->cargo->nivel->where('IdPlanilla', $payment->paymentschedulesdetail->contract->cargo->idPlanilla)->first()->NumNivel : $payment->paymentschedulesdetail->contract->job->level) }} <br>
-                    <b>SUELDO MENSUAL: </b> {{ number_format($planilla ? $planilla->Sueldo_Mensual : ($payment->paymentschedulesdetail->contract->cargo ? $payment->paymentschedulesdetail->contract->cargo->nivel->where('IdPlanilla', $payment->paymentschedulesdetail->contract->cargo->idPlanilla)->first()->Sueldo : $payment->paymentschedulesdetail->contract->job->amount), 2 , ',', '.') }} <br>
+                    <b>SUELDO MENSUAL: </b> {{ number_format($planilla ? $planilla->Sueldo_Mensual : $payment->paymentschedulesdetail->salary, 2 , ',', '.') }} <br>
                     <b>SUELDO PARCIAL: </b> {{ number_format($planilla ? $planilla->Sueldo_Parcial : $payment->paymentschedulesdetail->partial_salary, 2, ',', '.') }} <br>
                     <b>BONO ANTIGÜEDAD: </b> {{ number_format($planilla ? $planilla->Bono_Antiguedad : $payment->paymentschedulesdetail->seniority_bonus_amount, 2, ',', '.') }} <br>
                     <b>TOTAL GANADO: </b> {{ number_format($planilla ? $planilla->Total_Ganado : $payment->paymentschedulesdetail->partial_salary + $payment->paymentschedulesdetail->seniority_bonus_amount, 2, ',', '.') }} <br>

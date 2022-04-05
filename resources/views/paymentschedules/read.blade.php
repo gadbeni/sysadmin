@@ -10,7 +10,7 @@
         </a>
         <button class="btn btn-danger" data-toggle="modal" data-target="#print-modal"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
 
-        @if ($data->status == 'procesada' && auth()->user()->hasPermission('add_paymentschedules'))
+        @if ($data->status == 'procesada' && (auth()->user()->hasPermission('edit_paymentschedules') || Auth::user()->direccion_administrativa_id))
             <button type="button" data-id="{{ $data->id }}" class="btn btn-dark btn-send" data-toggle="modal" data-target="#send-modal"><i class="glyphicon glyphicon-share-alt"></i> Enviar</button>
         @endif
 
@@ -24,7 +24,7 @@
         @endif
 
         {{-- Si la planilla está habiliatda y todos ninguno de los funcionarios está con pago procesado para pago se muestra el botón de pagada --}}
-        @if ( !$centralize && $data->status == 'habilitada' && $data->details->where('status', 'procesado')->where('deleted_at', NULL)->count() == 0 && auth()->user()->hasPermission('close_paymentschedules') )
+        @if (!$centralize && $data->status == 'habilitada' && $data->details->where('status', 'procesado')->where('deleted_at', NULL)->count() == 0 && auth()->user()->hasPermission('close_paymentschedules') )
             <button type="button" data-toggle="modal" data-target="#close-modal" class="btn btn-primary"><i class="voyager-lock"></i> Cerrar planilla</button>
         @endif
     </h1>

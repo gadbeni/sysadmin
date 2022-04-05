@@ -94,7 +94,7 @@
                                 @endif
                                 {{-- Si está firmado --}}
                                 @if ($item->status == 'firmado' && auth()->user()->role_id == 1)
-                                <li><a href="#" title="Finalizar" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }})">Finalizar</a></li>
+                                <li><a href="#" title="Finalizar" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}')">Finalizar</a></li>
                                 @endif
                                 {{-- si está concluido y es permanente --}}
                                 @if ($item->status == 'concluido' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('finish_contracts'))
@@ -133,6 +133,7 @@
                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-health']) }}" target="_blank">Contrato</a></li>
                                             @else
                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract']) }}" target="_blank">Contrato</a></li>
+                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-inamovible']) }}" target="_blank">Contrato inamovible</a></li>
                                             <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-desigancion']) }}" target="_blank">Memorandum</a></li>
                                             @endif
 

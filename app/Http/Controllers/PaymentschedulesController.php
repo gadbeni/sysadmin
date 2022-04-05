@@ -399,7 +399,7 @@ class PaymentschedulesController extends Controller
                     }
                 }
 
-                if($request->status == 'pagada' && Auth::user()->direccion_administrativa_id){
+                if($request->status == 'pagada' && ($request->pay_all || Auth::user()->direccion_administrativa_id)){
                     PaymentschedulesDetail::where('paymentschedule_id', $request->id)->where('deleted_at', NULL)->update([
                         'status' => 'pagado',
                     ]);
