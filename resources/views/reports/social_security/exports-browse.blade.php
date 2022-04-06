@@ -121,8 +121,17 @@
         function report_export(type, form){
             $(form).attr('target', '_blank');
             $(form+' input[name="type_export"]').val(type);
-            console.log($(form).attr('name'));
-            // window.[($(form).attr('name'))].submit();
+            switch ($(form).attr('name')) {
+                case 'form_afp':
+                    window.form_afp.submit();
+                    break;
+                case 'form_ministerio':
+                    window.form_ministerio.submit();
+                    break;
+            
+                default:
+                    break;
+            }
             $(form).removeAttr('target');
             $(form+' input[name="type_export"]').val('');
         }

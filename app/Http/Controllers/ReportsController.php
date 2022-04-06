@@ -670,6 +670,7 @@ class ReportsController extends Controller
         $paymentschedule_id = $request->paymentschedule_id;
         $procedure_type_id = $request->procedure_type_id;
         $type_report = $request->type_report;
+        $type_export = $request->type_export;
         $afp = $request->afp;
         $title = 'data';
         if($type_report == '#form-ministerio'){
@@ -681,7 +682,7 @@ class ReportsController extends Controller
         }elseif($type_report == '#form-afp'){
             $data = PaymentschedulesDetail::with(['contract', 'paymentschedule.period'])
             ->whereHas('paymentschedule', function($q) use($paymentschedule_id){
-                $q->where('deleted_at', NULL)->whereRaw('(id = "'.$paymentschedule_id.'" or centralize_code like "'.$paymentschedule_id.'")');
+                $q->where('deleted_at', NULL)->whereRaw('(id = "'.intval($paymentschedule_id).'" or centralize_code like "'.intval(explode('-', $paymentschedule_id)[0]).'-c")');
             })
             ->whereHas('contract', function($q){
                 $q->whereRaw('(procedure_type_id = 1 or procedure_type_id = 5)')->where('deleted_at', NULL);
@@ -689,15 +690,17 @@ class ReportsController extends Controller
             ->whereHas('contract.person', function($q) use($afp){
                 $q->where('afp', $afp)->where('deleted_at', NULL);
             })->where('deleted_at', NULL)->get();
-
-            // dd($paymentschedule_id);
-
-            $title = ($afp == 1 ? 'AFP Previsión' : 'AFP Futuro').date('d-m-Y H:i:s');
         }
         
-        if($request->type == 'excel'){
-            dd($type_report);
-            return Excel::download(new MinisterioTrabajoExport($data), "$title.xlsx");
+        if($type_export == 'excel'){
+            if($type_report == '#form-ministerio'){
+                // dd($data);
+                return Excel::download(new MinisterioTrabajoExport($data), 'Ministerios de trabajo '.date('d-m-Y H:i:s').".xlsx");
+            }elseif($type_report == '#form-afp'){
+                $title = ($afp == 1 ? 'AFP Futuro' : 'AFP Previsión').date('d-m-Y H:i:s');
+                // dd($data, $afp);
+                return Excel::download(new AfpExport($data, $afp), "$title .xlsx");
+            }
         }
         return view('reports.social_security.exports-list', compact('data', 'type_report', 'afp'));
     }

@@ -2,7 +2,7 @@
 <div class="col-md-12 text-right">
     @if (count($data))
         {{-- <button type="button" onclick="report_export('excel')" class="btn btn-success"><i class="glyphicon glyphicon-cloud-download"></i> Excel</button> --}}
-        {{-- <button type="button" onclick="report_export('excel', '{{ $type_report }}')" class="btn btn-success"><i class="glyphicon glyphicon-cloud-download"></i> Excel</button> --}}
+        <button type="button" onclick="report_export('excel', '{{ $type_report }}')" class="btn btn-success"><i class="glyphicon glyphicon-cloud-download"></i> Excel</button>
     @endif
 </div>
 <div class="col-md-12">
@@ -155,7 +155,7 @@
                                                 $novelty_date = date('d-m-Y', strtotime($item->contract->start));
                                             }
                                             if(date('Ym', strtotime($item->contract->finish)) == $item->paymentschedule->period->name){
-                                                $novelty = 'E';
+                                                $novelty = 'R';
                                                 $novelty_date = date('d-m-Y', strtotime($item->contract->finish));
                                             }
                                         @endphp

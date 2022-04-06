@@ -31,7 +31,7 @@ class AFPExport implements WithColumnFormatting, FromCollection
                     $novelty_date = date('d-m-Y', strtotime($item->contract->start));
                 }
                 if(date('Ym', strtotime($item->contract->finish)) == $item->paymentschedule->period->name){
-                    $novelty = 'E';
+                    $novelty = 'R';
                     $novelty_date = date('d-m-Y', strtotime($item->contract->finish));
                 }
 
@@ -57,14 +57,14 @@ class AFPExport implements WithColumnFormatting, FromCollection
                     'M' => $novelty_date ? Date::stringToExcel($novelty_date) : '',
                     'N' => $item->worked_days,
                     'O' => 'N',
-                    'P' => $age < 65 && $item->contract->person->afp_status == 1 ? $total_amount : 0,
-                    'Q' => $age >= 65 && $item->contract->person->afp_status == 1 ? $total_amount : 0,
-                    'R' => $age < 65 && $item->contract->person->afp_status == 0 ? $total_amount : 0,
-                    'S' => $age >= 65 && $item->contract->person->afp_status == 0 ? $total_amount : 0,
-                    'T' => 0,
+                    'P' => $age < 65 && $item->contract->person->afp_status == 1 ? $total_amount : 0.0,
+                    'Q' => $age >= 65 && $item->contract->person->afp_status == 1 ? $total_amount : 0.0,
+                    'R' => $age < 65 && $item->contract->person->afp_status == 0 ? $total_amount : 0.0,
+                    'S' => $age >= 65 && $item->contract->person->afp_status == 0 ? $total_amount : 0.0,
+                    'T' => 0.0,
                     'U' => $total_amount,
                     'V' => $item->partial_salary,
-                    'W' => 0,
+                    'W' => 0.0,
                 ]);
                 $cont++;
             }
@@ -74,11 +74,11 @@ class AFPExport implements WithColumnFormatting, FromCollection
                 $novelty_date = '';
                 if(date('Ym', strtotime($item[0]->contract->start)) == $item[0]->paymentschedule->period->name){
                     $novelty = 'I';
-                    $novelty_date = date('d-m-Y', strtotime($item[0]->contract->start));
+                    $novelty_date = date('Ymd', strtotime($item[0]->contract->start));
                 }
                 if(date('Ym', strtotime($item[0]->contract->finish)) == $item[0]->paymentschedule->period->name){
-                    $novelty = 'E';
-                    $novelty_date = date('d-m-Y', strtotime($item[0]->contract->finish));
+                    $novelty = 'R';
+                    $novelty_date = date('Ymd', strtotime($item[0]->contract->finish));
                 }
                 $worked_days = $item->sum('worked_days');
                 $total_amount = $item->sum('partial_salary') + $item->sum('seniority_bonus_amount');
@@ -112,12 +112,23 @@ class AFPExport implements WithColumnFormatting, FromCollection
         if($this->type == 1){
             return [
                 'M' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+                'N' => NumberFormat::FORMAT_NUMBER,
+                'P' => NumberFormat::FORMAT_NUMBER,
+                'Q' => NumberFormat::FORMAT_NUMBER,
+                'R' => NumberFormat::FORMAT_NUMBER,
+                'S' => NumberFormat::FORMAT_NUMBER,
+                'T' => NumberFormat::FORMAT_NUMBER,
+                'U' => NumberFormat::FORMAT_NUMBER,
+                'V' => NumberFormat::FORMAT_NUMBER,
+                'W' => NumberFormat::FORMAT_NUMBER,
             ];
         }
 
         if($this->type == 2){
             return [
                 'L' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+                'M' => NumberFormat::FORMAT_NUMBER,
+                'N' => NumberFormat::FORMAT_NUMBER,
             ];
         }
     }
