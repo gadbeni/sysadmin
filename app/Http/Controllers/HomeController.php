@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Aguinaldo;
+use App\Models\PaymentschedulesDetail;
 
 class HomeController extends Controller
 {
@@ -14,19 +15,13 @@ class HomeController extends Controller
 
     public function search_payroll_by_ci(Request $request){
         $search = $request->search;
-        $person = DB::connection('mysqlgobe')->table('contribuyente')
-                        ->where('N_Carnet', $search)
-                        ->first();
-        if($person){
-            $data = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                        ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
-                        ->where('p.pagada', 1)
-                        ->where('p.CedulaIdentidad', $search)
-                        ->where('p.Periodo', '>=', '202105')
-                        ->select('p.*', 'p.ITEM as item', 'pp.Estado as estado_planilla_procesada')
-                        ->orderBy('p.ID', 'DESC')->limit(3)->get();
-            $aguinaldo = Aguinaldo::with('payment.cashier.user')->where('ci', $search)->where('deleted_at', NULL)->where('estado', 'pendiente')->first();
-            return response()->json(['search' => $data, 'aguinaldo' => $aguinaldo]);
+    
+        if($search){
+            $data = PaymentschedulesDetail::with('paymentschedule.period')->whereHas('contract.person', function($q) use ($search){
+                $q->where('ci', $search);
+            })->where('status', 'habilitado')->where('deleted_at', NULL)->limit(2)->get();
+            // $aguinaldo = Aguinaldo::with('payment.cashier.user')->where('ci', $search)->where('deleted_at', NULL)->where('estado', 'pendiente')->first();
+            return response()->json(['search' => $data]);
         }else{
             return response()->json(['error' => 'La cédula de identidad ingresada no está registrada en el sistema.']);
         }

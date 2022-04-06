@@ -266,7 +266,7 @@
                                         <tr>
                                             <td>{{ $cont }}</td>
                                             <td>
-                                                <b>{{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }}</b> <br>
+                                                <b>{{ $item->contract->person->last_name }} {{ $item->contract->person->first_name }}</b> <br>
                                                 <small>{{ $item->job }}</small>
                                             </td>
                                             <td><b>{{ $item->contract->person->ci }}</b></td>

@@ -31,6 +31,23 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <select name="status" class="form-control select2">
+                                            <option value="">Todos</option>
+                                            <option value="elaborado">Elaborados</option>
+                                            <option value="enviado">Enviado</option>
+                                            <option value="firmado">Firmado</option>
+                                            <option value="concluido">Concluido</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="direccion_administrativa_id" class="form-control select2">
+                                            <option value="">Todas las direcciones administrativas</option>
+                                            @foreach (App\Models\DireccionAdministrativa::where('Estado', 1)->get() as $item)
+                                            <option value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     <div class="text-right">
                                         <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
                                     </div>

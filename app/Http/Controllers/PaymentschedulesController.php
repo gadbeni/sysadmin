@@ -390,7 +390,6 @@ class PaymentschedulesController extends Controller
                 }
                 
                 if($request->status == 'habilitada'){
-                    $cont = 1;
                     foreach ($paymentschedule->details->where('status', 'procesado') as $item) {
                         $detail = PaymentschedulesDetail::where('id', $item->id)->where('deleted_at', NULL)->first();
                         if(!$request->afp || $request->afp == $detail->contract->person->afp){

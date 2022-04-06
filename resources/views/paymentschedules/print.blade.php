@@ -77,7 +77,7 @@
 
                         @if ($print_type == 1)
                         <th rowspan="3">FIRMA</th>
-                        <th rowspan="3">ITEM</th>
+                        <th rowspan="3">N&deg;</th>
                         @endif
 
                         {{-- Si es planilla de funcionamiento se muestran los aportes patronales--}}
@@ -306,7 +306,7 @@
                                 <tr>
                                     <td>@if($group) {{ $cont }} @else {{ $item->item ?? $cont }} @endif</td>
                                     <td>
-                                        <b>{{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }}</b> <br>
+                                        <b>{{ $item->contract->person->last_name }} {{ $item->contract->person->first_name }}</b> <br>
                                         <small>{{ $item->job }}</small>
                                     </td>
                                     <td><b>{{ $item->contract->person->ci }}</b></td>

@@ -129,7 +129,7 @@
                                         <li><a href="#" class="btn-descentralize" data-id="{{ $item->id }}" data-toggle="modal" data-target="#descentralize-modal" title="Descentralizar">Descentralizar</a></li>
                                     @endif
 
-                                    @if (($item->status == 'habilitada' || $item->status == 'pagada') && (auth()->user()->hasPermission('print_paymentschedules') || Auth::user()->role_id == 1))
+                                    @if ( ($item->status == 'aprobada' || $item->status == 'habilitada' || $item->status == 'pagada') && (auth()->user()->hasPermission('print_paymentschedules') || Auth::user()->role_id == 1) )
                                         <li><a title="Imprimir boleta" href="{{ route('planillas.pagos.print.group', ['id' => $item->id]) }}" target="_blank">Imprimir Boleta</a></li>
                                     @endif  
                                 </ul>

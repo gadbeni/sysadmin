@@ -355,25 +355,24 @@
                         return;
                     }
 
-                    if(res.aguinaldo){
-                      Swal.fire({
-                        title: 'Cobro de aguinaldo',
-                        text: 'Puede realizar el cobro de aguinaldo en caja!',
-                        icon: 'success',
-                        confirmButtonText: 'Entendido'
-                      });
-                      return;
-                    }
-
+                    // if(res.aguinaldo){
+                    //   Swal.fire({
+                    //     title: 'Cobro de aguinaldo',
+                    //     text: 'Puede realizar el cobro de aguinaldo en caja!',
+                    //     icon: 'success',
+                    //     confirmButtonText: 'Entendido'
+                    //   });
+                    //   return;
+                    // }
                     let months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                     if(res.search.length > 0){
                       let data = '';
                       res.search.forEach(function(item){
-                        data += `${months[parseInt(item.Mes)]}, `;
+                        data += `${months[parseInt(parseInt(item.paymentschedule.period.name.substr(4, 2)))]} y `;
                       });
                       Swal.fire({
-                        title: `Habilitado para pago del mes de ${data.substr(0, data.length-2)}.`,
-                        text: 'Puedes pasar por caja a realizar el cobro.',
+                        title: `Habilitado para pago del mes de ${data.substr(0, data.length-3)}`,
+                        text: 'Puedes pasar por caja a realizar el cobro',
                         icon: 'success',
                         confirmButtonText: 'Entendido'
                       });

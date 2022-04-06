@@ -80,8 +80,9 @@ class ReportsController extends Controller
                             $q->where('Estado', 1);
                         }, 'job.direccion_administrativa', 'direccion_administrativa', 'unidad_administrativa', 'type'])
                         ->whereRaw($request->procedure_type_id ? "procedure_type_id = ".$request->procedure_type_id : 1)
+                        ->whereRaw($request->status ? "status = '".$request->status."'" : 1)
+                        ->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id = ".$request->direccion_administrativa_id : 1)
                         ->where('deleted_at', NULL)->get();
-        // dd($contracts);
         if($request->print){
             return view('reports.contracts.contracts-print', compact('contracts'));
         }else{
