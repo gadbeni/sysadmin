@@ -40,7 +40,7 @@
                 {{ $contract->person->gender == 'masculino' ? 'Señor' : 'Señora' }}: <br>
                 {{ $contract->person->first_name }} {{ $contract->person->last_name }} <br>
                 {!! $contract->person->phone ? 'Cel. '.$contract->person->phone.'<br>' : '' !!}
-                Presente .–
+                Presente.-
             </p>
         </div>
         <div class="page-title">
@@ -57,7 +57,7 @@
                 <b>PLAZO DE PRESTACIÓN DE SERVICIO:</b> El consultor prestará el servicio a partir del siguiente día hábil de la firma de contrato hasta el {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}. <br>
                 <b>DEPENDENCIA DEL CONSULTOR:</b> el consultor estará bajo la dependencia directa de la/el {{ Str::upper($contract->unidad_administrativa->Nombre) }}. <br>
                 <b>FORMA DE PAGO:</b> la cancelación se realizará en pagos mensuales, en moneda nacional, previa presentación de informes, solicitud de pago por parte del adjudicatario y debidamente aprobado por la unidad solicitante. <br>
-                En tal sentido, <b><u>le invito</u></b> presentar su Currículum Vitae debidamente documentado y Declaración Jurada de No Incompatibilidad, a ser presentado en la oficina de la Dirección Administrativa, dependiente de la Secretaria Dptal de Administración Finanzas, ubicada en el Edificio Central, Plaza Principal “Mcal. José Ballivián” Acera Sur, hasta el día {{ date('d', strtotime($contract->date_limit_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_limit_invitation)))] }} de {{ date('Y', strtotime($contract->date_limit_invitation)) }}. <br><br>
+                En tal sentido, <b><u>le invito</u></b> presentar su Currículum Vitae debidamente documentado y Declaración Jurada de No Incompatibilidad, a ser presentado en la oficina de la Unidad de Contrataciones de bienes y servicios, dependiente de la Secretaria Departamental de Administración Finanzas, ubicada en el edificio ex COORDEBENI Calle Cochabamba y Joaquin de la Sierra, hasta el día {{ date('d', strtotime($contract->date_limit_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_limit_invitation)))] }} de {{ date('Y', strtotime($contract->date_limit_invitation)) }}. <br><br>
                 Adjunto Términos de Referencia y Formato de Declaración Jurada de No Incompatibilidad <br><br>
                 Sin otro particular, lo saludo a usted con toda atención.
             </p>

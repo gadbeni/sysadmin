@@ -104,19 +104,11 @@
                         <table>
                             <tr>
                                 <td>&#10003;</td>
-                                <td>Fotocopia simple del Certificado de Trabajo o Contrato. Deben cubrir la expreriencia  el nivel de la escala (los memorándums de desiganción no serán aceptados como referentes debido a que indica la fecha de inicio de contrato pero no su conclusión)</td>
+                                <td>Certificado No Deudor a la Gobernación (original).</td>
                             </tr>
                             <tr>
                                 <td>&#10003;</td>
-                                <td>Fotocopia simple del Certificado que acredite su nivel de estudios (Título en provisión nacional, Título académico, Certificado a Nivel Técnico Medio/Superior, Título de Bachiller, etc.), de acuerdo a la escala</td>
-                            </tr>
-                            <tr>
-                                <td>&#10003;</td>
-                                <td>Certificado No Deudor a la Gobernación (original)</td>
-                            </tr>
-                            <tr>
-                                <td>&#10003;</td>
-                                <td>Fotocopia de C.I. legible</td>
+                                <td>Fotocopia de C.I. legible.</td>
                             </tr>
                             <tr>
                                 <td>&#10003;</td>

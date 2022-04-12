@@ -57,13 +57,13 @@ class AFPExport implements WithColumnFormatting, FromCollection
                     'M' => $novelty_date ? Date::stringToExcel($novelty_date) : '',
                     'N' => $item->worked_days,
                     'O' => 'N',
-                    'P' => $age < 65 && $item->contract->person->afp_status == 1 ? $total_amount : 0.0,
-                    'Q' => $age >= 65 && $item->contract->person->afp_status == 1 ? $total_amount : 0.0,
-                    'R' => $age < 65 && $item->contract->person->afp_status == 0 ? $total_amount : 0.0,
-                    'S' => $age >= 65 && $item->contract->person->afp_status == 0 ? $total_amount : 0.0,
+                    'P' => $age < 65 && $item->contract->person->afp_status == 1 ? number_format($total_amount, 2, '.', '') : 0.0,
+                    'Q' => $age >= 65 && $item->contract->person->afp_status == 1 ? number_format($total_amount, 2, '.', '') : 0.0,
+                    'R' => $age < 65 && $item->contract->person->afp_status == 0 ? number_format($total_amount, 2, '.', '') : 0.0,
+                    'S' => $age >= 65 && $item->contract->person->afp_status == 0 ? number_format($total_amount, 2, '.', '') : 0.0,
                     'T' => 0.0,
-                    'U' => $total_amount,
-                    'V' => $item->partial_salary,
+                    'U' => number_format($total_amount, 2, '.', ''),
+                    'V' => number_format($total_amount, 2, '.', ''),
                     'W' => 0.0,
                 ]);
                 $cont++;
@@ -95,7 +95,7 @@ class AFPExport implements WithColumnFormatting, FromCollection
                     'I' => explode(' ', $item[0]->contract->person->first_name)[0],
                     'J' => count(explode(' ', $item[0]->contract->person->first_name)) > 1 ? explode(' ', $item[0]->contract->person->first_name)[1] : '',
                     'K' => $novelty,
-                    'L' => $novelty_date ? Date::stringToExcel($novelty_date) : '',
+                    'L' => $novelty_date ? $novelty_date : '',
                     'M' => $worked_days,
                     'N' => $total_amount,
                     'O' => 1,
@@ -124,12 +124,47 @@ class AFPExport implements WithColumnFormatting, FromCollection
             ];
         }
 
-        if($this->type == 2){
-            return [
-                'L' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-                'M' => NumberFormat::FORMAT_NUMBER,
-                'N' => NumberFormat::FORMAT_NUMBER,
-            ];
-        }
+        return [];
     }
+    
+    function format_string($cadena){
+		
+		//Reemplazamos la A y a
+		$cadena = str_replace(
+		array('Á', 'À', 'Â', 'Ä', 'á', 'à', 'ä', 'â', 'ª'),
+		array('A', 'A', 'A', 'A', 'a', 'a', 'a', 'a', 'a'),
+		$cadena);
+
+		//Reemplazamos la E y e
+		$cadena = str_replace(
+		array('É', 'È', 'Ê', 'Ë', 'é', 'è', 'ë', 'ê'),
+		array('E', 'E', 'E', 'E', 'e', 'e', 'e', 'e'),
+		$cadena);
+
+		//Reemplazamos la I y i
+		$cadena = str_replace(
+		array('Í', 'Ì', 'Ï', 'Î', 'í', 'ì', 'ï', 'î'),
+		array('I', 'I', 'I', 'I', 'i', 'i', 'i', 'i'),
+		$cadena);
+
+		//Reemplazamos la O y o
+		$cadena = str_replace(
+		array('Ó', 'Ò', 'Ö', 'Ô', 'ó', 'ò', 'ö', 'ô'),
+		array('O', 'O', 'O', 'O', 'o', 'o', 'o', 'o'),
+		$cadena);
+
+		//Reemplazamos la U y u
+		$cadena = str_replace(
+		array('Ú', 'Ù', 'Û', 'Ü', 'ú', 'ù', 'ü', 'û'),
+		array('U', 'U', 'U', 'U', 'u', 'u', 'u', 'u'),
+		$cadena);
+
+		//Reemplazamos la N, n, C y c
+		$cadena = str_replace(
+		array('Ñ', 'ñ', 'Ç', 'ç'),
+		array('N', 'n', 'C', 'c'),
+		$cadena);
+		
+		return $cadena;
+	}
 }

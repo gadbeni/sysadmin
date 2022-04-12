@@ -85,7 +85,7 @@
             <h2>SISTEMA DE GESTIÓN DE PAGOS</h2>
             <div class="input-group mb-3 mt-5 input-group-lg">
                 @csrf
-                <input type="number" name="search" class="form-control" placeholder="Número de CI" aria-label="" aria-describedby="basic-addon1" required>
+                <input type="search" name="search" class="form-control" placeholder="Número de CI" aria-label="" aria-describedby="basic-addon1" required>
                 <div class="input-group-prepend">
                     <button class="btn btn-secondary" type="submit" style="height: 50px"><i class="bi bi-search"></i></button>
                 </div>
