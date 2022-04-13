@@ -23,4 +23,8 @@ class Person extends Model
     public function seniority_bonus(){
         return $this->hasMany(SeniorityBonusPerson::class, 'person_id');
     }
+
+    public function city(){
+        return $this->belongsTo(City::class);
+    }
 }

@@ -17,6 +17,7 @@ use App\Http\Controllers\CheckController;
 use App\Http\Controllers\PeriodsController;
 use App\Http\Controllers\PaymentschedulesController;
 use App\Http\Controllers\ImportsController;
+use App\Http\Controllers\PeopleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,9 @@ Route::post('search', [HomeController::class, 'search_payroll_by_ci'])->name('ho
 
 Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Voyager::routes();
+
+    Route::get('people', [PeopleController::class, 'index'])->name('voyager.people.index');
+    Route::get('people/ajax/list/{search?}', [PeopleController::class, 'list']);
 
     Route::post('cashiers/store', [CashiersController::class, 'store'])->name('cashiers.store');
     Route::delete('cashiers/destroy/{id}', [CashiersController::class, 'destroy'])->name('voyager.cashiers.destroy');

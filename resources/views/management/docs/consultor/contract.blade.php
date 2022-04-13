@@ -68,7 +68,7 @@
                 <p>T&eacute;rminos de Referencia.</p>
             </li>
             <li>
-                <p>Certificado de no adeudo emitido por la Unidad de Cierre y Cargo del Gobierno Aut&oacute;nomo Departamental del Beni.</p>
+                <p>Certificado de no adeudo emitido por la Unidad de Cierre y Cargo del Gobierno Aut&oacute;nomo Departamental del Beni, si corresponde.</p>
             </li>
             <li>
                 <p>Certificaci&oacute;n Presupuestaria.</p>
@@ -76,9 +76,9 @@
             <li>
                 <p>Rupe</p>
             </li>
-            <li>
+            {{-- <li>
                 <p>PAC</p>
-            </li>
+            </li> --}}
             <li>
                 <p>Fotocopia de Numero de Identificaci&oacute;n Tributaria (NIT)</p>
             </li>
