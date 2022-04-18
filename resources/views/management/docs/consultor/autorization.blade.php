@@ -69,7 +69,7 @@
                     <td>7.</td>
                     <td>Precio Referencial en Bs.:</td>
                     <td style="border: 1px solid black; padding: 5px">
-                        <b>Bs. {{ NumerosEnLetras::convertir($total, 'Bolivianos', true) }}</b>
+                        <b>Bs. {{ NumerosEnLetras::convertir(number_format($total, 2, '.', ''), 'Bolivianos', true) }}</b>
                     </td>
                 </tr>
             </table>

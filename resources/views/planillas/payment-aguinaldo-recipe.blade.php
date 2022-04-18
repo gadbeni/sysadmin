@@ -134,7 +134,7 @@
                         </tr>
                         <tr>
                             <td colspan="4" style="text-align: right">
-                                <h3 style="margin: 0px">Son: {{ NumerosEnLetras::convertir($payment->liquido_pagable, 'Bolivianos', true) }}</h3>
+                                <h3 style="margin: 0px">Son: {{ NumerosEnLetras::convertir(number_format($payment->liquido_pagable, 2, '.', ''), 'Bolivianos', true) }}</h3>
                             </td>
                         </tr>
                     </table>

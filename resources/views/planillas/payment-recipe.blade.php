@@ -165,7 +165,7 @@
                         </tr>
                         <tr>
                             <td colspan="4" style="text-align: right">
-                                <h3 style="margin: 0px">Son: {{ $planilla ? $planilla->Literal : NumerosEnLetras::convertir($payment->paymentschedulesdetail->liquid_payable, 'Bolivianos', true) }}</h3>
+                                <h3 style="margin: 0px">Son: {{ $planilla ? $planilla->Literal : NumerosEnLetras::convertir(number_format($payment->paymentschedulesdetail->liquid_payable, 2, '.', ''), 'Bolivianos', true) }}</h3>
                             </td>
                         </tr>
                     </table>

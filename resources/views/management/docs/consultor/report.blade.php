@@ -119,7 +119,7 @@
                     </tr>
                     <tr>
                         <td>{{ $contract->person->first_name }} {{ $contract->person->last_name }}</td>
-                        <td>Bs.- {{ NumerosEnLetras::convertir($total, 'Bolivianos', true) }}</td>
+                        <td>Bs.- {{ NumerosEnLetras::convertir(number_format($total, 2, '.', ''), 'Bolivianos', true) }}</td>
                         <td>DEL {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }} AL {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}</td>
                     </tr>
                 </table>

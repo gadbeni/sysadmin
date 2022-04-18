@@ -145,7 +145,7 @@
                 <tr>
                     <td>
                         <br>
-                        <b>LÍQUIDO PAGABLE: </b> {{ NumerosEnLetras::convertir($item->liquid_payable, 'Bolivianos', true) }}
+                        <b>LÍQUIDO PAGABLE: </b> {{ NumerosEnLetras::convertir(number_format($item->liquid_payable, 2, '.', ''), 'Bolivianos', true) }}
                         <br> <br>
                     </td>
                 </tr>

@@ -135,7 +135,7 @@
             <tr>
                 <td>
                     <br>
-                    <b>LÍQUIDO PAGABLE: </b> {{ $planilla ? $planilla->Liquido_Pagable.' '.$planilla->Literal : NumerosEnLetras::convertir($payment->paymentschedulesdetail->liquid_payable, 'Bolivianos', true) }}
+                    <b>LÍQUIDO PAGABLE: </b> {{ $planilla ? $planilla->Liquido_Pagable.' '.$planilla->Literal : NumerosEnLetras::convertir(number_format($payment->paymentschedulesdetail->liquid_payable, 2, '.', ''), 'Bolivianos', true) }}
                     <br> <br>
                 </td>
             </tr>
