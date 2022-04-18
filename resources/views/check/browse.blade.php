@@ -220,7 +220,14 @@
                             <br>
                             <p><b>Desea entregar el cheque....!</b></p>
                         </div>
-
+                        <div class="row">    
+                            <div class="col-md-12">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text"><b>Fecha Salida:</b></span>
+                                </div>
+                                <input type="date" step="any" class="form-control" id="fentregar" name="fentregar" required>
+                            </div>                                                                         
+                        </div>
                         <div class="row">   
                             <div class="col-md-12">
                                 <div class="input-group-prepend">
