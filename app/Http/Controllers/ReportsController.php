@@ -192,7 +192,9 @@ class ReportsController extends Controller
                     $direccion_administrativa_id = $request->id_da;
                     $id_planilla = $request->id_planilla;
 
-                    $planillas_alt = PaymentschedulesDetail::with(['paymentschedule.period', 'paymentschedule.direccion_administrativa', 'paymentschedule.procedure_type', 'contract.person'])
+                    $planillas_alt = PaymentschedulesDetail::with(['paymentschedule.period', 'paymentschedule.direccion_administrativa', 'paymentschedule.procedure_type', 'contract.person', 'paymentschedule.check_payments' => function($q){
+                                            $q->where('deleted_at', NULL);
+                                        }])
                                         ->whereHas('paymentschedule', function($q) use($period_id, $procedure_type_id, $id_planilla){
                                             $q->whereRaw($period_id ? "period_id = '$period_id'" : 1)
                                                 ->whereRaw($procedure_type_id ? "procedure_type_id = $procedure_type_id" : "(procedure_type_id = 1 or procedure_type_id = 5)")

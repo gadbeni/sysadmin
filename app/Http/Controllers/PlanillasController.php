@@ -16,6 +16,7 @@ use App\Models\CashiersPaymentsDelete;
 use App\Models\PlanillasHistory;
 use App\Models\Aguinaldo;
 use App\Models\Stipend;
+use App\Models\Paymentschedule;
 use App\Models\PaymentschedulesDetail;
 use App\Models\Period;
 use App\Models\ProcedureType;
@@ -141,7 +142,7 @@ class PlanillasController extends Controller
     public function planillas_pagos_search_by_id(){
         $search = \Request::query('q');
         if($search){
-            return DB::connection('mysqlgobe')->table('planillahaberes as ph')
+            $data = DB::connection('mysqlgobe')->table('planillahaberes as ph')
                         ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
                         ->join('planilla as p', 'p.ID', 'pp.idPlanilla')
                         ->join('tplanilla as tp', 'tp.ID', 'ph.Tplanilla')
@@ -149,8 +150,42 @@ class PlanillasController extends Controller
                         ->whereRaw(Auth::user()->direccion_administrativa_id ? 'ph.idDa = '.Auth::user()->direccion_administrativa_id : 1)
                         ->groupBy('ph.Afp', 'ph.idPlanillaprocesada')
                         ->orderBy('ph.idPlanillaprocesada')
-                        ->selectRaw('ph.ID as id, ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, sum(ph.Total_Aportes_Afp) as total_aportes_afp, count(ph.Total_Aportes_Afp) as cantidad_personas, ph.pagada as certificacion, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp, SUM(ph.Riesgo_Comun) as total_riesgo_comun')
+                        ->selectRaw('
+                            ph.ID as id,
+                            ph.idPlanillaprocesada,
+                            ph.Periodo,
+                            tp.Nombre as tipo_planilla,
+                            sum(ph.Total_Aportes_Afp) as total_aportes_afp,
+                            count(ph.Total_Aportes_Afp) as cantidad_personas,
+                            ph.pagada as certificacion,
+                            sum(ph.Total_Ganado) as total_ganado,
+                            ph.Direccion_Administrativa,
+                            ph.Afp,
+                            SUM(ph.Riesgo_Comun) as total_riesgo_comun')
                         ->get();
+
+            $paymentschedule = Paymentschedule::with(['details.contract.person', 'period'])
+                                        ->whereHas('details', function($q){
+                                            $q->where('deleted_at', NULL);
+                                        })
+                                        ->whereRaw($search ? "id = '".intval($search)."'" : 1)
+                                        ->where('deleted_at', NULL)->get();
+
+            foreach ($paymentschedule as $item) {
+                foreach ($item->details->groupBy('contract.person.afp') as $key => $value) {
+                    $data->push([
+                        'id' => $item->id,
+                        'Periodo' => $item->period->name,
+                        'total_aportes_afp' => $value->sum('labor_total'),
+                        'cantidad_personas' => count($value),
+                        'total_ganado' => $value->sum('partial_salary') + $value->sum('seniority_bonus_amount'),
+                        'Afp' => $key,
+                        'total_riesgo_comun' => $value->sum('common_risk')
+                    ]);
+                }
+            }
+
+            return response()->json($data);
         }
     }
 

@@ -10,7 +10,7 @@ class ChecksPayment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'planilla_haber_id', 'spreadsheet_id', 'number', 'amount', 'checks_beneficiary_id', 'date_print', 'observations', 'status'
+        'user_id', 'planilla_haber_id', 'paymentschedule_id', 'afp', 'spreadsheet_id', 'number', 'amount', 'checks_beneficiary_id', 'date_print', 'observations', 'status'
     ];
 
     public function user(){
@@ -18,7 +18,7 @@ class ChecksPayment extends Model
     }
 
     public function beneficiary(){
-        return $this->belongsTo(ChecksBeneficiary::class, 'checks_beneficiary_id');
+        return $this->belongsTo(ChecksBeneficiary::class, 'checks_beneficiary_id')->withTrashed();
     }
     public function spreadsheet(){
         return $this->belongsTo(Spreadsheet::class);

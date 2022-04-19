@@ -196,7 +196,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-default">test</button>
+                        {{-- <button type="submit" class="btn btn-default">test</button> --}}
                         <button type="button" class="btn btn-success btn-submit" onclick="sendForm('form-pagar', 'Pago realizado exitosamente.')">Sí, pagar</button>
                     </div>
                 </div>

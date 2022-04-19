@@ -34,4 +34,8 @@ class Paymentschedule extends Model
     public function user(){
         return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
+
+    public function check_payments(){
+        return $this->hasMany(ChecksPayment::class, 'paymentschedule_id');
+    }
 }
