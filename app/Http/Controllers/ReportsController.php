@@ -90,6 +90,10 @@ class ReportsController extends Controller
         }
     }
 
+    public function paymentschedules_details_status_index(){
+        return view('reports.paymentschedules.paymentschedules_details_status-browse');
+    }
+
     public function humans_resources_aniversarios_index(){
         return view('reports.rr_hh.aniversarios-browse');
     }
@@ -193,6 +197,8 @@ class ReportsController extends Controller
                     $id_planilla = $request->id_planilla;
 
                     $planillas_alt = PaymentschedulesDetail::with(['paymentschedule.period', 'paymentschedule.direccion_administrativa', 'paymentschedule.procedure_type', 'contract.person', 'paymentschedule.check_payments' => function($q){
+                                            $q->where('deleted_at', NULL);
+                                        }, 'paymentschedule.payroll_payments' => function($q){
                                             $q->where('deleted_at', NULL);
                                         }])
                                         ->whereHas('paymentschedule', function($q) use($period_id, $procedure_type_id, $id_planilla){

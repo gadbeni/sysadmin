@@ -19,6 +19,10 @@
                         @method('PUT')
                     @endif
                     <input type="hidden" name="redirect">
+
+                    {{-- Parámetro en caso de que la planilla sea de la base de datos nueva --}}
+                    <input type="hidden" name="afp_alt">
+
                     <div class="panel panel-bordered">
                         <div class="panel-body">
                             <div class="row">
@@ -27,7 +31,7 @@
                                     <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="1" checked>No centralizadas</label>
                                     @if (!Auth::user()->direccion_administrativa_id)
                                     <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="2">Centralizadas</label>
-                                    <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="3">Manual</label>
+                                    {{-- <label class="radio-inline"><input type="radio" name="type" class="radio-type" value="3">Manual</label> --}}
                                     @endif
                                 </div>
                                 <div class="form-group col-md-12 div-no-centralizada">
@@ -166,16 +170,24 @@
                         }
                     },
                     minimumInputLength: 3,
-                    templateResult: formatRepo,
+                    templateResult: formatResult,
                     templateSelection: data => {
                         if(data.id){
                             planillaSelect = data;
-                            return `${data.idPlanillaprocesada} - ${data.Afp == 1 ? 'AFP Futuro' : 'AFP Previsión'}`;
+                            return `${data.idPlanillaprocesada ? data.idPlanillaprocesada : String(data.id).padStart(6, 0)} - ${data.Afp == 1 ? 'AFP Futuro' : 'AFP Previsión'}`;
                         }
                     }
                 }).change(function(){
                     $('#select-checks_beneficiary_id').val('').trigger('change');
                     if(planillaSelect){
+                        
+                        // Si no es una planilla del anterior sistema se obtiene la afp para alacenarla en el controlador
+                        if(!planillaSelect.idPlanillaprocesada){
+                            $('#form input[name="afp_alt"]').val(planillaSelect.Afp);
+                        }else{
+                            $('#form input[name="afp_alt"]').val('');
+                        }
+
                         $('#alert-details').fadeIn();
                         $('#alert-details').html(`
                             Cantidad de personas: <b>${planillaSelect.cantidad_personas}</b> <br>
@@ -272,7 +284,7 @@
             });
         });
 
-        function formatRepo(data) {
+        function formatResult(data) {
             if (data.loading) {
                 return 'Buscando...';
             }
@@ -280,10 +292,10 @@
             var $container = $(
                 `<div class="option-select2-custom">
                     <h4>
-                        ${data.idPlanillaprocesada} <br>
+                        ${data.idPlanillaprocesada ? data.idPlanillaprocesada : String(data.id).padStart(6, 0)} <br>
                         <p style="font-size: 13px; margin-top: 5px">
                             ${data.Afp == 1 ? 'AFP Futuro' : 'AFP Previsión'} - ${data.Periodo} <br>
-                            ${data.total_ganado.toFixed(2)} Bs. - ${data.cantidad_personas} Persona(s)
+                            ${new Intl.NumberFormat('es-ES').format(data.total_ganado.toFixed(2))} Bs. - ${data.cantidad_personas} Persona(s)
                         </p>
                     </h4>
                 </div>`

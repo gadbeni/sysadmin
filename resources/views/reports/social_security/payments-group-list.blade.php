@@ -154,10 +154,38 @@
                                     <td>{{ $key == 1 ? 'Futuro' : 'Previsión' }}</td>
                                     <td style="text-align: right">{{ number_format($afp->sum('partial_salary') + $afp->sum('seniority_bonus_amount'), 2, ',', '.') }}</td>
                                     <td style="text-align: right">{{ number_format($afp->sum('common_risk') + $afp->sum('solidary_employer') + $afp->sum('housing_employer') + $afp->sum('labor_total'), 2, ',', '.') }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>
+                                        @foreach ($paymentschedule->payroll_payments as $payroll_payment)
+                                            {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
+                                            @if($payroll_payment->afp == $key)
+                                            {{ $payroll_payment->fpc_number }} <br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($paymentschedule->payroll_payments as $payroll_payment)
+                                            {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
+                                            @if($payroll_payment->afp == $key)
+                                            {{ $payroll_payment->date_payment_cc ? date('d/m/Y', strtotime($payroll_payment->date_payment_cc)) : '' }}<br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($paymentschedule->payroll_payments as $payroll_payment)
+                                            {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
+                                            @if($payroll_payment->afp == $key)
+                                            {{ $payroll_payment->payment_id }} <br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($paymentschedule->payroll_payments as $payroll_payment)
+                                            {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
+                                            @if($payroll_payment->afp == $key)
+                                            {{ number_format($payroll_payment->penalty_payment, 2, ',', '.') }}<br>
+                                            @endif
+                                        @endforeach
+                                    </td>
                                     <td style="text-align: right">{{ number_format(($afp->sum('partial_salary') + $afp->sum('seniority_bonus_amount')) * 0.1, 2, ',', '.') }}</td>
                                     <td>
                                         @foreach ($paymentschedule->check_payments as $check_payment)
@@ -167,12 +195,54 @@
                                             @endif
                                         @endforeach
                                     </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>
+                                        @foreach ($paymentschedule->payroll_payments as $payroll_payment)
+                                            {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
+                                            @if($payroll_payment->afp == $key)
+                                            {{ $payroll_payment->deposit_number }} <br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($paymentschedule->payroll_payments as $payroll_payment)
+                                            {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
+                                            @if($payroll_payment->afp == $key)
+                                            {{ $payroll_payment->date_payment_cc ? date('d/m/Y', strtotime($payroll_payment->date_payment_cc)) : '' }}<br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($paymentschedule->payroll_payments as $payroll_payment)
+                                            {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
+                                            @if($payroll_payment->afp == $key)
+                                            {{ $payroll_payment->gtc_number }} <br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($paymentschedule->payroll_payments as $payroll_payment)
+                                            {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
+                                            @if($payroll_payment->afp == $key)
+                                            {{ $payroll_payment->check_id }} <br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($paymentschedule->payroll_payments as $payroll_payment)
+                                            {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
+                                            @if($payroll_payment->afp == $key)
+                                            {{ $payroll_payment->recipe_number }} <br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($paymentschedule->payroll_payments as $payroll_payment)
+                                            {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
+                                            @if($payroll_payment->afp == $key)
+                                            {{ number_format($payroll_payment->penalty_check, 2, ',', '.') }}<br>
+                                            @endif
+                                        @endforeach
+                                    </td>
                                 </tr>
                                 @php
                                     $cont++;

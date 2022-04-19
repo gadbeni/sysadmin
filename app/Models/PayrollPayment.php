@@ -12,7 +12,7 @@ class PayrollPayment extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'user_id', 'planilla_haber_id', 'spreadsheet_id', 'date_payment_afp', 'fpc_number', 'payment_id', 'penalty_payment', 'date_payment_cc', 'gtc_number', 'recipe_number', 'deposit_number', 'check_id', 'penalty_check', 'manual'
+        'user_id', 'planilla_haber_id', 'paymentschedule_id', 'afp', 'spreadsheet_id', 'date_payment_afp', 'fpc_number', 'payment_id', 'penalty_payment', 'date_payment_cc', 'gtc_number', 'recipe_number', 'deposit_number', 'check_id', 'penalty_check', 'manual'
     ];
 
     public function user(){
@@ -25,5 +25,9 @@ class PayrollPayment extends Model
 
     public function planilla_haber(){
         return $this->belongsTo(Planillahaber::class, 'planilla_haber_id', 'ID');
+    }
+
+    public function paymentschedule(){
+        return $this->belongsTo(Paymentschedule::class, 'paymentschedule_id');
     }
 }

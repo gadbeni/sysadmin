@@ -30,7 +30,7 @@ class SocialSecurityController extends Controller
 
     public function checks_list($search = null){
         $paginate = request('paginate') ?? 10;
-        $data = ChecksPayment::with(['user', 'beneficiary.type', 'planilla_haber.tipo', 'spreadsheet', 'derivations.office'])
+        $data = ChecksPayment::with(['user', 'beneficiary.type', 'planilla_haber.tipo', 'spreadsheet', 'derivations.office', 'paymentschedule.procedure_type', 'paymentschedule.period'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')
                     ->where(function($query) use ($search){
@@ -215,7 +215,7 @@ class SocialSecurityController extends Controller
     }
 
     public function payments_list(){
-        $data = PayrollPayment::with(['planilla_haber', 'planilla_haber.tipo', 'planilla_haber.planilla_procesada', 'spreadsheet'])
+        $data = PayrollPayment::with(['planilla_haber', 'planilla_haber.tipo', 'planilla_haber.planilla_procesada', 'spreadsheet', 'paymentschedule.details', 'paymentschedule.procedure_type', 'paymentschedule.period'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
                     ->where('deleted_at', NULL)->get();
         // return $data;
@@ -228,6 +228,8 @@ class SocialSecurityController extends Controller
             ->addColumn('planilla_id', function($row){                    
                 if($row->planilla_haber){
                     return  '<b>'.($row->planilla_haber->tipo ? $row->planilla_haber->tipo->Nombre : 'No definido').' - '.$row->planilla_haber->Periodo.'</b> <br><small>Planilla: </small>'.$row->planilla_haber->idPlanillaprocesada.' - '.($row->planilla_haber->Afp == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($row->planilla_haber->planilla_procesada ? $row->planilla_haber->planilla_procesada->Monto : 0, 2, ',', '.');
+                }elseif($row->paymentschedule){
+                    return  '<b>'.$row->paymentschedule->procedure_type->name.' - '.$row->paymentschedule->period->name.'</b> <br><small>Planilla: </small>'.str_pad($row->paymentschedule->id, 6, "0", STR_PAD_LEFT).' - '.($row->afp == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($row->paymentschedule->details->sum('partial_salary') + $row->paymentschedule->details->sum('seniority_bonus_amount'), 2, ',', '.');
                 }elseif($row->spreadsheet){
                     return '<label class="label label-danger">Planilla manual</label> <br> <b>'.($row->spreadsheet->tipo_planilla_id == 1 ? 'Funcionamiento' : 'Inversión').' - '.$row->spreadsheet->year.str_pad($row->spreadsheet->month, 2, "0", STR_PAD_LEFT).'</b> <br> '.$row->spreadsheet->codigo_planilla.' - '.($row->spreadsheet->afp_id == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($row->spreadsheet->total, 2, ',', '.');
                 }
@@ -294,7 +296,12 @@ class SocialSecurityController extends Controller
             if($request->planilla_haber_id || $request->spreadsheet_id){
                 PayrollPayment::create([
                     'user_id' => Auth::user()->id,
-                    'planilla_haber_id' => $request->planilla_haber_id,
+                    
+                    // Si se envía el tipo de apf la planilla pertenece a la base de datos del nuevo sistema
+                    'planilla_haber_id' => $request->afp_alt ? NULL : $request->planilla_haber_id,
+                    'paymentschedule_id' => $request->afp_alt ? $request->planilla_haber_id : NULL,
+                    'afp' => $request->afp_alt,
+
                     'spreadsheet_id' => $request->spreadsheet_id,
                     'date_payment_afp' => $request->date_payment_afp,
                     'payment_id' => $request->payment_id,

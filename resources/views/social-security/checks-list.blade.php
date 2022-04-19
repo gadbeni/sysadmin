@@ -49,6 +49,14 @@
                                         <b><small>Monto:</small></b> {{ number_format($row->amount, 2, ',', '.') }} <br>
                                         {!! $status !!}
                                     </p>
+                                @elseif ($row->paymentschedule)
+                                    <p>
+                                        <b><small>N&deg;:</small></b> {{ $row->number }} <br>
+                                        <b>{{ $row->paymentschedule->procedure_type->name.' - '.$row->paymentschedule->period->name }}</b><br>
+                                        <b><small>Planilla:</small></b> {{ str_pad($row->paymentschedule->id, 6, "0", STR_PAD_LEFT).' - '.($row->afp == 1 ? 'Futuro' : 'Previsión') }} <br>
+                                        <b><small>Monto:</small></b> {{ number_format($row->amount, 2, ',', '.') }} <br>
+                                        {!! $status !!}
+                                    </p>
                                 @elseif($row->spreadsheet)
                                     <p>
                                         <label class="label label-danger">Planilla manual</label> <br>

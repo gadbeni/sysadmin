@@ -38,4 +38,8 @@ class Paymentschedule extends Model
     public function check_payments(){
         return $this->hasMany(ChecksPayment::class, 'paymentschedule_id');
     }
+
+    public function payroll_payments(){
+        return $this->hasMany(PayrollPayment::class, 'paymentschedule_id');
+    }
 }

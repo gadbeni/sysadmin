@@ -31,4 +31,8 @@ class ChecksPayment extends Model
     public function derivations(){
         return $this->hasMany(ChecksPaymentsDerivations::class, 'checks_payment_id');
     }
+
+    public function paymentschedule(){
+        return $this->belongsTo(Paymentschedule::class, 'paymentschedule_id');
+    }
 }

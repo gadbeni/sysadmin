@@ -209,6 +209,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('reports/contracts/contracts', [ReportsController::class, 'contracts_contracts_index'])->name('reports.contracts.contracts.index');
     Route::post('reports/contracts/contracts/list', [ReportsController::class, 'contracts_contracts_list'])->name('reports.contracts.contracts.list');
 
+    // Paymentschedules
+    Route::get('reports/paymentschedules/details-status', [ReportsController::class, 'paymentschedules_details_status_index'])->name('reports.paymentschedules.details.status.index');
+    Route::post('reports/paymentschedules/details-status/list', [ReportsController::class, 'paymentschedules_details_status_list'])->name('reports.paymentschedules.details.status.list');
+
     
     // Complementos
     Route::get('plugins/cashiers/tickets', [PluginsController::class, 'cashiers_tickets'])->name('cashiers.tickets');
