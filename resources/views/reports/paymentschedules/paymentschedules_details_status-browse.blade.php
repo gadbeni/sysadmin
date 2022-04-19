@@ -20,9 +20,17 @@
                                 </div> --}}
                             </div>
                             <div class="col-md-4" style="margin-top: 30px">
-                                <form name="form_search" id="form-search" action="{{ route('reports.contracts.contracts.list') }}" method="post">
+                                <form name="form_search" id="form-search" action="{{ route('reports.paymentschedules.details.status.list') }}" method="post">
                                     @csrf
                                     <input type="hidden" name="print">
+                                    <div class="form-group">
+                                        <select name="direccion_administrativa_id" class="form-control select2">
+                                            <option value="">Todas las direcciones administrativas</option>
+                                            @foreach (App\Models\DireccionAdministrativa::where('Estado', 1)->get() as $item)
+                                            <option value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     <div class="form-group">
                                         <select name="procedure_type_id" class="form-control select2">
                                             <option selected value="">Todos los tipos de contratos</option>
@@ -32,19 +40,10 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <select name="status" class="form-control select2">
-                                            <option value="">Todos</option>
-                                            <option value="elaborado">Elaborados</option>
-                                            <option value="enviado">Enviado</option>
-                                            <option value="firmado">Firmado</option>
-                                            <option value="concluido">Concluido</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <select name="direccion_administrativa_id" class="form-control select2">
-                                            <option value="">Todas las direcciones administrativas</option>
-                                            @foreach (App\Models\DireccionAdministrativa::where('Estado', 1)->get() as $item)
-                                            <option value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
+                                        <select name="period_id" class="form-control select2" required>
+                                            <option selected value="">Seleccione el periodo</option>
+                                            @foreach (App\Models\Period::where('deleted_at', NULL)->get() as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>

@@ -94,6 +94,27 @@ class ReportsController extends Controller
         return view('reports.paymentschedules.paymentschedules_details_status-browse');
     }
 
+    public function paymentschedules_details_status_list(Request $request){
+        $payments = PaymentschedulesDetail::with(['paymentschedule', 'contract.person', 'contract.job', 'contract.cargo', 'contract.type', 'contract.program', 'contract.direccion_administrativa', 'contract.unidad_administrativa', 'payment'])
+                        ->whereHas('paymentschedule', function($q) use ($request){
+                            $q->where('period_id', $request->period_id)->where('status', 'habilitada')->where('deleted_at', NULL);
+                        })
+                        ->whereHas('paymentschedule', function($q) use ($request){
+                            $q->whereRaw($request->direccion_administrativa_id ? 'direccion_administrativa_id = '.$request->direccion_administrativa_id : 1);
+                        })
+                        ->whereHas('contract', function($q) use ($request){
+                            $q->whereRaw($request->procedure_type_id ? 'procedure_type_id = '.$request->procedure_type_id : 1);
+                        })
+                        ->where('status', '<>', 'anulado')->where('deleted_at', NULL)->get();
+        // dd($payments);
+
+        if($request->print){
+            return view('reports.paymentschedules.paymentschedules_details_status-print', compact('payments'));
+        }else{
+            return view('reports.paymentschedules.paymentschedules_details_status-list', compact('payments'));
+        }
+    }
+
     public function humans_resources_aniversarios_index(){
         return view('reports.rr_hh.aniversarios-browse');
     }

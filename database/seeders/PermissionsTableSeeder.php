@@ -139,7 +139,8 @@ class PermissionsTableSeeder extends Seeder
         $keys = [
             'browse_reportshumans-resourcescontraloria',
             'browse_reportshumans-resourcesaniversarios',
-            'browse_reportshumans-resourcesjobs'
+            'browse_reportshumans-resourcesjobs',
+            'browse_reportspaymentschedulesdetails-status'
         ];
 
         foreach ($keys as $key) {
