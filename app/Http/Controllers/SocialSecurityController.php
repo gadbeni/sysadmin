@@ -65,7 +65,12 @@ class SocialSecurityController extends Controller
             if($request->planilla_haber_id || $request->spreadsheet_id){
                 ChecksPayment::create([
                     'user_id' => Auth::user()->id,
-                    'planilla_haber_id' => $request->planilla_haber_id,
+                    
+                    // Si se envía el tipo de apf la planilla pertenece a la base de datos del nuevo sistema
+                    'planilla_haber_id' => $request->afp_alt ? NULL : $request->planilla_haber_id,
+                    'paymentschedule_id' => $request->afp_alt ? $request->planilla_haber_id : NULL,
+                    'afp' => $request->afp_alt,
+
                     'spreadsheet_id' => $request->spreadsheet_id,
                     'number' => $request->number,
                     'amount' => $request->amount,

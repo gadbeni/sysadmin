@@ -140,13 +140,16 @@
 
                         @foreach ($planillas_alt->groupBy('paymentschedule_id') as $item)
                             @foreach ($item->groupBy('contract.person.afp') as $key => $afp)
+                                @php
+                                    $paymentschedule = $afp[0]->paymentschedule;
+                                @endphp
                                 <tr>
                                     <td>{{ $cont }}</td>
                                     <td></td>
-                                    <td>{{ $afp[0]->paymentschedule->period->name }}</td>
-                                    <td>{{ $afp[0]->paymentschedule->direccion_administrativa->NOMBRE }}</td>
-                                    <td>{{ $afp[0]->paymentschedule->procedure_type->name }}</td>
-                                    <td>{{ str_pad($afp[0]->paymentschedule->id, 6, "0", STR_PAD_LEFT).($afp[0]->paymentschedule->aditional ? '-A' : '') }}</td>
+                                    <td>{{ $paymentschedule->period->name }}</td>
+                                    <td>{{ $paymentschedule->direccion_administrativa->NOMBRE }}</td>
+                                    <td>{{ $paymentschedule->procedure_type->name }}</td>
+                                    <td>{{ str_pad($paymentschedule->id, 6, "0", STR_PAD_LEFT).($paymentschedule->aditional ? '-A' : '') }}</td>
                                     <td style="text-align: right">{{ $afp->count() }}</td>
                                     <td>{{ $key == 1 ? 'Futuro' : 'Previsión' }}</td>
                                     <td style="text-align: right">{{ number_format($afp->sum('partial_salary') + $afp->sum('seniority_bonus_amount'), 2, ',', '.') }}</td>
@@ -156,7 +159,14 @@
                                     <td></td>
                                     <td></td>
                                     <td style="text-align: right">{{ number_format(($afp->sum('partial_salary') + $afp->sum('seniority_bonus_amount')) * 0.1, 2, ',', '.') }}</td>
-                                    <td></td>
+                                    <td>
+                                        @foreach ($paymentschedule->check_payments as $check_payment)
+                                            {{-- Mostar solo los cheques a los seguros de salud --}}
+                                            @if (strpos(strtolower($check_payment->beneficiary->type->name), 'salud') !== false)
+                                            {{ $check_payment->number }} <br>
+                                            @endif
+                                        @endforeach
+                                    </td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
