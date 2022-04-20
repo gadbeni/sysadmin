@@ -95,6 +95,7 @@ class ReportsController extends Controller
     }
 
     public function paymentschedules_details_status_list(Request $request){
+        $period = Period::where('id', $request->period_id)->first();
         $payments = PaymentschedulesDetail::with(['paymentschedule', 'contract.person', 'contract.job', 'contract.cargo', 'contract.type', 'contract.program', 'contract.direccion_administrativa', 'contract.unidad_administrativa', 'payment'])
                         ->whereHas('paymentschedule', function($q) use ($request){
                             $q->where('period_id', $request->period_id)->where('status', 'habilitada')->where('deleted_at', NULL);
@@ -109,7 +110,7 @@ class ReportsController extends Controller
         // dd($payments);
 
         if($request->print){
-            return view('reports.paymentschedules.paymentschedules_details_status-print', compact('payments'));
+            return view('reports.paymentschedules.paymentschedules_details_status-print', compact('payments', 'period'));
         }else{
             return view('reports.paymentschedules.paymentschedules_details_status-list', compact('payments'));
         }

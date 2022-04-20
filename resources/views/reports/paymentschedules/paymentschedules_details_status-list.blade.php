@@ -35,6 +35,8 @@
                     <tbody>
                         @php
                             $cont = 1;
+                            $salary_total = 0;
+                            $payment_total = 0;
                         @endphp
                         @forelse ($payments as $item)
                         {{-- {{ dd($item->contract->contract) }} --}}
@@ -45,7 +47,7 @@
                             <td>{{ $item->contract->unidad_administrativa ? $item->contract->unidad_administrativa->Nombre : '' }}</td>
                             <td>{{ $item->contract->code }}</td>
                             <td>{{ $item->contract->type->name }}</td>
-                            <td>{{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }}</td>
+                            <td>{{ $item->contract->person->last_name }} {{ $item->contract->person->first_name }}</td>
                             <td>{{ $item->contract->person->ci }}</td>
                             <td>
                                 @if ($item->contract->cargo)
@@ -68,8 +70,14 @@
                             <td>
                                 @if ($item->contract->cargo)
                                     {{ number_format($item->contract->cargo->nivel->where('IdPlanilla', $item->contract->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.') }}
+                                    @php
+                                        $salary_total += $item->contract->cargo->nivel->where('IdPlanilla', $item->contract->cargo->idPlanilla)->first()->Sueldo;
+                                    @endphp
                                 @elseif ($item->contract->job)
                                     {{ number_format($item->contract->job->salary, 2, ',', '.') }}
+                                    @php
+                                        $salary_total += $item->contract->job->salary;
+                                    @endphp
                                 @else
                                     0.00
                                 @endif
@@ -87,12 +95,19 @@
                         </tr>
                         @php
                             $cont++;
+                            $payment_total += $item->payment ? $item->payment->amount : 0;
                         @endphp
                         @empty
                             <tr class="odd">
                                 <td valign="top" colspan="12" class="text-center">No hay datos disponibles en la tabla</td>
                             </tr>
                         @endforelse
+
+                        <tr>
+                            <td colspan="10" class="text-right">Total</td>
+                            <td>{{ number_format($salary_total, 2, ',', '.') }}</td>
+                            <td>{{ number_format($payment_total, 2, ',', '.') }}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

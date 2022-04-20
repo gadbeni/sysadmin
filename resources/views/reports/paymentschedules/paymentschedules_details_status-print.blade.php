@@ -10,6 +10,7 @@
                 <td style="text-align: right">
                     <h2 style="margin-bottom: 0px; margin-top: 5px">
                         REPORTE DE CONTRATOS <br>
+                        <small>Periodo {{ $period->name }}</small> <br>
                         @php
                             $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                         @endphp
@@ -47,9 +48,10 @@
             <tbody>
                 @php
                     $cont = 1;
+                    $salary_total = 0;
+                    $payment_total = 0;
                 @endphp
                 @forelse ($payments as $item)
-                {{-- {{ dd($item->contract->contract) }} --}}
                 <tr>
                     <td>{{ $cont }}</td>
                     <td>{{ str_pad($item->paymentschedule->id, 6, "0", STR_PAD_LEFT) }}</td>
@@ -57,7 +59,7 @@
                     <td>{{ $item->contract->unidad_administrativa ? $item->contract->unidad_administrativa->Nombre : '' }}</td>
                     <td>{{ $item->contract->code }}</td>
                     <td>{{ $item->contract->type->name }}</td>
-                    <td>{{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }}</td>
+                    <td>{{ $item->contract->person->last_name }} {{ $item->contract->person->first_name }}</td>
                     <td>{{ $item->contract->person->ci }}</td>
                     <td>
                         @if ($item->contract->cargo)
@@ -70,11 +72,17 @@
                     </td>
                     <td>
                         @if ($item->contract->cargo)
-                            {{ $item->contract->cargo->nivel->where('IdPlanilla', $item->contract->cargo->idPlanilla)->first()->NumNivel }}
+                            {{ number_format($item->contract->cargo->nivel->where('IdPlanilla', $item->contract->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.') }}
+                            @php
+                                $salary_total += $item->contract->cargo->nivel->where('IdPlanilla', $item->contract->cargo->idPlanilla)->first()->Sueldo;
+                            @endphp
                         @elseif ($item->contract->job)
-                            {{ $item->contract->job->level }}
+                            {{ number_format($item->contract->job->salary, 2, ',', '.') }}
+                            @php
+                                $salary_total += $item->contract->job->salary;
+                            @endphp
                         @else
-                            No definido
+                            0.00
                         @endif
                     </td>
                     <td>
@@ -99,12 +107,19 @@
                 </tr>
                 @php
                     $cont++;
+                    $payment_total += $item->payment ? $item->payment->amount : 0;
                 @endphp
                 @empty
                     <tr class="odd">
                         <td valign="top" colspan="12" class="text-center">No hay datos disponibles en la tabla</td>
                     </tr>
                 @endforelse
+
+                <tr>
+                    <td colspan="10" class="text-right">Total</td>
+                    <td>{{ number_format($salary_total, 2, ',', '.') }}</td>
+                    <td>{{ number_format($payment_total, 2, ',', '.') }}</td>
+                </tr>
             </tbody>
         </table>
     </div>

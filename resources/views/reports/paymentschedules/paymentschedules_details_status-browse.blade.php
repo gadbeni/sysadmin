@@ -2,7 +2,7 @@
 
 @section('page_title', 'Reporte de Pagos de Planillas')
 
-@if(auth()->user()->hasPermission('browse_reportscontractscontracts'))
+@if(auth()->user()->hasPermission('browse_reportspaymentschedulesdetails-status'))
 
     @section('page_header')
         <div class="container-fluid">

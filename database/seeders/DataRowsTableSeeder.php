@@ -1217,7 +1217,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191"}}',
-                'order' => 17,
+                'order' => 20,
             ),
             75 => 
             array (
@@ -1249,7 +1249,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 19,
+                'order' => 22,
             ),
             77 => 
             array (
@@ -1265,7 +1265,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 20,
+                'order' => 23,
             ),
             78 => 
             array (
@@ -1281,7 +1281,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 21,
+                'order' => 24,
             ),
             79 => 
             array (
@@ -1569,7 +1569,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"default":1}',
-                'order' => 14,
+                'order' => 15,
             ),
             97 => 
             array (
@@ -1601,7 +1601,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
             'details' => '{"options":{"1":"Soltero(a)","2":"Casado(a)"},"display":{"width":6}}',
-                'order' => 16,
+                'order' => 17,
             ),
             99 => 
             array (
@@ -1617,7 +1617,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191|unique:people"},"display":{"width":6}}',
-                'order' => 15,
+                'order' => 16,
             ),
             100 => 
             array (
@@ -3137,7 +3137,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{}',
-                'order' => 18,
+                'order' => 21,
             ),
             195 => 
             array (
@@ -3154,6 +3154,38 @@ class DataRowsTableSeeder extends Seeder
                 'delete' => 0,
                 'details' => '{}',
                 'order' => 14,
+            ),
+            196 => 
+            array (
+                'id' => 214,
+                'data_type_id' => 9,
+                'field' => 'image',
+                'type' => 'image',
+                'display_name' => 'Fotografía',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"display":{"width":6},"resize":{"width":"1000","height":null},"quality":"70%","upsize":true,"thumbnails":[{"name":"medium","scale":"50%"},{"name":"small","scale":"25%"},{"name":"cropped","crop":{"width":"300","height":"250"}}]}',
+                'order' => 19,
+            ),
+            197 => 
+            array (
+                'id' => 215,
+                'data_type_id' => 9,
+                'field' => 'number_account',
+                'type' => 'text',
+                'display_name' => 'Número de cuenta',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
+                'order' => 18,
             ),
         ));
         
