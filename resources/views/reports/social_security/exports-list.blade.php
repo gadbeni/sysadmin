@@ -133,90 +133,98 @@
                             <tbody>
                                 @php
                                     $cont = 1;
+                                    $data = $group_by ? $data->groupBy('contract.program.name') : ['' => $data];
                                 @endphp
-                                @foreach($data as $item)
-                                    <tr>
-                                        <td>{{ $cont }}</td>
-                                        <td>CI</td>
-                                        <td>{{ $item->contract->person->ci }}</td>
-                                        <td></td>
-                                        <td>{{ $item->contract->person->nua_cua }}</td>
-                                        <td>{{ explode(' ', $item->contract->person->last_name)[0] }}</td>
-                                        <td>{{ count(explode(' ', $item->contract->person->last_name)) > 1 ? explode(' ', $item->contract->person->last_name)[1] : '' }}</td>
-                                        <td></td>
-                                        <td>{{ explode(' ', $item->contract->person->first_name)[0] }}</td>
-                                        <td>{{ count(explode(' ', $item->contract->person->first_name)) > 1 ? explode(' ', $item->contract->person->first_name)[1] : '' }}</td>
-                                        <td>BENI</td>
-                                        @php
-                                            $novelty = '';
-                                            $novelty_date = '';
-                                            if(date('Ym', strtotime($item->contract->start)) == $item->paymentschedule->period->name){
-                                                $novelty = 'I';
-                                                $novelty_date = date('d-m-Y', strtotime($item->contract->start));
-                                            }
-                                            if(date('Ym', strtotime($item->contract->finish)) == $item->paymentschedule->period->name){
-                                                $novelty = 'R';
-                                                $novelty_date = date('d-m-Y', strtotime($item->contract->finish));
-                                            }
-                                        @endphp
-                                        <td>{{ $novelty }}</td>
-                                        <td>{{ $novelty_date }}</td>
-                                        <td class="text-right">{{ $item->worked_days }}</td>
-                                        <td>N</td>
-                                        <td class="text-right">
+                                @foreach ($data as $key => $value)
+                                    @if ($group_by)
+                                        <tr>
+                                            <td colspan="23"><b>{{ $key }}</b></td>
+                                        </tr>
+                                    @endif
+                                    @foreach($value as $item)
+                                        <tr>
+                                            <td>{{ $cont }}</td>
+                                            <td>CI</td>
+                                            <td>{{ $item->contract->person->ci }}</td>
+                                            <td></td>
+                                            <td>{{ $item->contract->person->nua_cua }}</td>
+                                            <td>{{ explode(' ', $item->contract->person->last_name)[0] }}</td>
+                                            <td>{{ count(explode(' ', $item->contract->person->last_name)) > 1 ? explode(' ', $item->contract->person->last_name)[1] : '' }}</td>
+                                            <td></td>
+                                            <td>{{ explode(' ', $item->contract->person->first_name)[0] }}</td>
+                                            <td>{{ count(explode(' ', $item->contract->person->first_name)) > 1 ? explode(' ', $item->contract->person->first_name)[1] : '' }}</td>
+                                            <td>BENI</td>
                                             @php
-                                                // Calcular edad
-                                                $now = \Carbon\Carbon::now();
-                                                $birthday = new \Carbon\Carbon($item->contract->person->birthday);
-                                                $age = $birthday->diffInYears($now);
-                                                $total_amount = $item->partial_salary + $item->seniority_bonus_amount;
-                                                
-                                                $total = 0;
-                                                // Si es menor a 65 años y aporta
-                                                if($age < 65 && $item->contract->person->afp_status == 1){
-                                                    $total = $total_amount;
+                                                $novelty = '';
+                                                $novelty_date = '';
+                                                if(date('Ym', strtotime($item->contract->start)) == $item->paymentschedule->period->name){
+                                                    $novelty = 'I';
+                                                    $novelty_date = date('d-m-Y', strtotime($item->contract->start));
+                                                }
+                                                if(date('Ym', strtotime($item->contract->finish)) == $item->paymentschedule->period->name){
+                                                    $novelty = 'R';
+                                                    $novelty_date = date('d-m-Y', strtotime($item->contract->finish));
                                                 }
                                             @endphp
-                                            {{ number_format($total, 2, ',', '.') }}
-                                        </td>
-                                        <td class="text-right">
+                                            <td>{{ $novelty }}</td>
+                                            <td>{{ $novelty_date }}</td>
+                                            <td class="text-right">{{ $item->worked_days }}</td>
+                                            <td>N</td>
+                                            <td class="text-right">
+                                                @php
+                                                    // Calcular edad
+                                                    $now = \Carbon\Carbon::now();
+                                                    $birthday = new \Carbon\Carbon($item->contract->person->birthday);
+                                                    $age = $birthday->diffInYears($now);
+                                                    $total_amount = $item->partial_salary + $item->seniority_bonus_amount;
+                                                    
+                                                    $total = 0;
+                                                    // Si es menor a 65 años y aporta
+                                                    if($age < 65 && $item->contract->person->afp_status == 1){
+                                                        $total = $total_amount;
+                                                    }
+                                                @endphp
+                                                {{ number_format($total, 2, ',', '.') }}
+                                            </td>
+                                            <td class="text-right">
+                                                @php
+                                                    $total = 0;
+                                                    // Si es mayor o igual a 65 años y aporta
+                                                    if($age >= 65 && $item->contract->person->afp_status == 1){
+                                                        $total = $total_amount;
+                                                    }
+                                                @endphp
+                                                {{ number_format($total, 2, ',', '.') }}
+                                            </td>
+                                            <td class="text-right">
+                                                @php
+                                                    $total = 0;
+                                                    // Si es menor a 65 años y no aporta
+                                                    if($age < 65 && $item->contract->person->afp_status == 0){
+                                                        $total = $total_amount;
+                                                    }
+                                                @endphp
+                                                {{ number_format($total, 2, ',', '.') }}
+                                            </td>
+                                            <td class="text-right">
+                                                @php
+                                                    $total = 0;
+                                                    // Si es mayor a 65 años y aporta
+                                                    if($age >= 65 && $item->contract->person->afp_status == 0){
+                                                        $total = $total_amount;
+                                                    }
+                                                @endphp
+                                                {{ number_format($total, 2, ',', '.') }}
+                                            </td>
+                                            <td class="text-right">{{ number_format(0, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($total_amount, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($item->partial_salary, 2, ',', '') }}</td>
+                                            <td class="text-right">{{ number_format(0, 2, ',', '.') }}</td>
                                             @php
-                                                $total = 0;
-                                                // Si es mayor o igual a 65 años y aporta
-                                                if($age >= 65 && $item->contract->person->afp_status == 1){
-                                                    $total = $total_amount;
-                                                }
+                                                $cont++;
                                             @endphp
-                                            {{ number_format($total, 2, ',', '.') }}
-                                        </td>
-                                        <td class="text-right">
-                                            @php
-                                                $total = 0;
-                                                // Si es menor a 65 años y no aporta
-                                                if($age < 65 && $item->contract->person->afp_status == 0){
-                                                    $total = $total_amount;
-                                                }
-                                            @endphp
-                                            {{ number_format($total, 2, ',', '.') }}
-                                        </td>
-                                        <td class="text-right">
-                                            @php
-                                                $total = 0;
-                                                // Si es mayor a 65 años y aporta
-                                                if($age >= 65 && $item->contract->person->afp_status == 0){
-                                                    $total = $total_amount;
-                                                }
-                                            @endphp
-                                            {{ number_format($total, 2, ',', '.') }}
-                                        </td>
-                                        <td class="text-right">{{ number_format(0, 2, ',', '.') }}</td>
-                                        <td class="text-right">{{ number_format($total_amount, 2, ',', '.') }}</td>
-                                        <td class="text-right">{{ number_format($item->partial_salary, 2, ',', '') }}</td>
-                                        <td class="text-right">{{ number_format(0, 2, ',', '.') }}</td>
-                                        @php
-                                            $cont++;
-                                        @endphp
-                                    </tr> 
+                                        </tr> 
+                                    @endforeach
                                 @endforeach
                             </tbody>
                         </table>
@@ -245,64 +253,72 @@
                             <tbody>
                                 @php
                                     $cont = 1;
+                                    $data = $group_by ? $data->groupBy('contract.program.name') : ['' => $data];
                                 @endphp
-                                @foreach($data->groupBy('contract.person.ci') as $item)
-                                    <tr>
-                                        <td>{{ $cont }}</td>
-                                        <td>CI</td>
-                                        <td>{{ $item[0]->contract->person->ci }}</td>
-                                        <td>{{ count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '' }}</td>
-                                        <td>{{ $item[0]->contract->person->nua_cua }}</td>
-                                        <td>{{ explode(' ', $item[0]->contract->person->last_name)[0] }}</td>
-                                        <td>{{ count(explode(' ', $item[0]->contract->person->last_name)) > 1 ? explode(' ', $item[0]->contract->person->last_name)[1] : '' }}</td>
-                                        <td></td>
-                                        <td>{{ explode(' ', $item[0]->contract->person->first_name)[0] }}</td>
-                                        <td>{{ count(explode(' ', $item[0]->contract->person->first_name)) > 1 ? explode(' ', $item[0]->contract->person->first_name)[1] : '' }}</td>
-                                        @php
-                                            $novelty = '';
-                                            $novelty_date = '';
-                                            if(date('Ym', strtotime($item[0]->contract->start)) == $item[0]->paymentschedule->period->name){
-                                                $novelty = 'I';
-                                                $novelty_date = date('Ymd', strtotime($item[0]->contract->start));
-                                            }
-                                            if(date('Ym', strtotime($item[0]->contract->finish)) == $item[0]->paymentschedule->period->name){
-                                                $novelty = 'R';
-                                                $novelty_date = date('Ymd', strtotime($item[0]->contract->finish));
-                                            }
-                                        @endphp
-                                        <td>{{ $novelty }}</td>
-                                        <td>{{ $novelty_date }}</td>
-                                        @php
-                                            $worked_days = $item->sum('worked_days');
-                                            $total_amount = $item->sum('partial_salary') + $item->sum('seniority_bonus_amount');
-                                        @endphp
-                                        <td class="text-right">{{ $worked_days }}</td>
-                                        <td class="text-right">{{ number_format($total_amount, 2, ',', '.') }}</td>
-                                        @php
-                                            // Calcular edad
-                                            $now = \Carbon\Carbon::now();
-                                            $birthday = new \Carbon\Carbon($item[0]->contract->person->birthday);
-                                            $age = $birthday->diffInYears($now);
-                                            $type = '';
-                                            if($age < 65 && $item[0]->contract->person->afp_status == 1){
-                                                $type = '1';
-                                            }
-                                            if($age >= 65 && $item[0]->contract->person->afp_status == 1){
-                                                $type = '8';
-                                            }
-                                            if($age < 65 && $item[0]->contract->person->afp_status == 0){
-                                                $type = 'C';
-                                            }
-                                            if($age >= 65 && $item[0]->contract->person->afp_status == 0){
-                                                $type = 'D';
-                                            }
-                                        @endphp
-                                        <td class="text-right">{{ $type }}</td>
-                                        <td></td>
-                                        @php
-                                            $cont++;
-                                        @endphp
-                                    </tr> 
+                                @foreach ($data as $key => $value)
+                                    @if ($group_by)
+                                        <tr>
+                                            <td colspan="23"><b>{{ $key }}</b></td>
+                                        </tr>
+                                    @endif
+                                    @foreach($value->groupBy('contract.person.ci') as $item)
+                                        <tr>
+                                            <td>{{ $cont }}</td>
+                                            <td>CI</td>
+                                            <td>{{ $item[0]->contract->person->ci }}</td>
+                                            <td>{{ count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '' }}</td>
+                                            <td>{{ $item[0]->contract->person->nua_cua }}</td>
+                                            <td>{{ explode(' ', $item[0]->contract->person->last_name)[0] }}</td>
+                                            <td>{{ count(explode(' ', $item[0]->contract->person->last_name)) > 1 ? explode(' ', $item[0]->contract->person->last_name)[1] : '' }}</td>
+                                            <td></td>
+                                            <td>{{ explode(' ', $item[0]->contract->person->first_name)[0] }}</td>
+                                            <td>{{ count(explode(' ', $item[0]->contract->person->first_name)) > 1 ? explode(' ', $item[0]->contract->person->first_name)[1] : '' }}</td>
+                                            @php
+                                                $novelty = '';
+                                                $novelty_date = '';
+                                                if(date('Ym', strtotime($item[0]->contract->start)) == $item[0]->paymentschedule->period->name){
+                                                    $novelty = 'I';
+                                                    $novelty_date = date('Ymd', strtotime($item[0]->contract->start));
+                                                }
+                                                if(date('Ym', strtotime($item[0]->contract->finish)) == $item[0]->paymentschedule->period->name){
+                                                    $novelty = 'R';
+                                                    $novelty_date = date('Ymd', strtotime($item[0]->contract->finish));
+                                                }
+                                            @endphp
+                                            <td>{{ $novelty }}</td>
+                                            <td>{{ $novelty_date }}</td>
+                                            @php
+                                                $worked_days = $item->sum('worked_days');
+                                                $total_amount = $item->sum('partial_salary') + $item->sum('seniority_bonus_amount');
+                                            @endphp
+                                            <td class="text-right">{{ $worked_days }}</td>
+                                            <td class="text-right">{{ number_format($total_amount, 2, ',', '.') }}</td>
+                                            @php
+                                                // Calcular edad
+                                                $now = \Carbon\Carbon::now();
+                                                $birthday = new \Carbon\Carbon($item[0]->contract->person->birthday);
+                                                $age = $birthday->diffInYears($now);
+                                                $type = '';
+                                                if($age < 65 && $item[0]->contract->person->afp_status == 1){
+                                                    $type = '1';
+                                                }
+                                                if($age >= 65 && $item[0]->contract->person->afp_status == 1){
+                                                    $type = '8';
+                                                }
+                                                if($age < 65 && $item[0]->contract->person->afp_status == 0){
+                                                    $type = 'C';
+                                                }
+                                                if($age >= 65 && $item[0]->contract->person->afp_status == 0){
+                                                    $type = 'D';
+                                                }
+                                            @endphp
+                                            <td class="text-right">{{ $type }}</td>
+                                            <td></td>
+                                            @php
+                                                $cont++;
+                                            @endphp
+                                        </tr> 
+                                    @endforeach
                                 @endforeach
                             </tbody>
                         </table>

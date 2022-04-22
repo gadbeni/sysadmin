@@ -452,6 +452,19 @@ class PlanillasController extends Controller
                         // ->groupBy('p.Afp', 'p.idPlanillaprocesada')
                         ->select('p.*')
                         ->get();
-        return response()->json(['planilla' => $planilla]);
+
+        $period = Period::where('name', $request->periodo)->where('deleted_at', NULL)->first();
+        $period_id = $period ? $period->id : NULL;
+        
+        $paymentschedule_details = PaymentschedulesDetail::with(['paymentschedule.period', 'contract.person'])
+                                        ->whereHas('paymentschedule.procedure_type', function($q) use($request){
+                                            $q->where('planilla_id', $request->t_planilla);
+                                        })->whereHas('contract.person', function($q) use($request){
+                                            $q->where('afp', $request->afp);
+                                        })->whereHas('paymentschedule', function($q) use($period_id){
+                                            $q->where('period_id', $period_id)->where('centralize_code', '<>', NULL)->where('deleted_at', NULL);
+                                        })->where('deleted_at', NULL)->get();
+
+        return response()->json(['planilla' => $planilla, 'paymentschedule_details' => $paymentschedule_details]);
     }
 }

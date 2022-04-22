@@ -52,13 +52,27 @@ function getPlanillas(url){
             let total_riesgo_comun = 0;
             let people = 0;
             let periodo = '';
-            res.planilla.map(item => {
-                total_ganado += parseFloat(item.Total_Ganado);
-                total_aportes_afp += parseFloat(item.Total_Aportes_Afp);
-                total_riesgo_comun += parseFloat(item.Riesgo_Comun);
-                people++;
-                periodo = item.Periodo;
-            })
+            
+            if(res.planilla.length){
+                res.planilla.map(item => {
+                    total_ganado += parseFloat(item.Total_Ganado);
+                    total_aportes_afp += parseFloat(item.Total_Aportes_Afp);
+                    total_riesgo_comun += parseFloat(item.Riesgo_Comun);
+                    people++;
+                    periodo = item.Periodo;
+                });
+                $('#form input[name="afp_alt"]').val('');
+            }else{
+                res.paymentschedule_details.map(item => {
+                    total_ganado += parseFloat(item.partial_salary + item.seniority_bonus_amount);
+                    total_aportes_afp += parseFloat(item.labor_total);
+                    total_riesgo_comun += parseFloat(item.common_risk);
+                    people++;
+                    periodo = item.paymentschedule.period.name;
+                    $('#form input[name="afp_alt"]').val(item.contract.person.afp);
+                })
+            }
+            
             planillaSelect = {
                 total_ganado, total_aportes_afp, total_riesgo_comun
             }

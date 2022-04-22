@@ -16,6 +16,8 @@ use App\Models\ChecksBeneficiary;
 use App\Models\Spreadsheet;
 use App\Models\Planillahaber;
 use App\Models\ChecksPaymentsDerivations;
+use App\Models\Period;
+use App\Models\Paymentschedule;
 
 class SocialSecurityController extends Controller
 {
@@ -62,6 +64,8 @@ class SocialSecurityController extends Controller
     public function checks_store(Request $request){
         DB::beginTransaction();
         try {
+
+            // Planilla no centralizada
             if($request->planilla_haber_id || $request->spreadsheet_id){
                 ChecksPayment::create([
                     'user_id' => Auth::user()->id,
@@ -81,53 +85,106 @@ class SocialSecurityController extends Controller
                 ]);
             }else{
                 $beneficiary = ChecksBeneficiary::findOrFail($request->checks_beneficiary_id);
-                $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                                ->where('p.Estado', 1)
-                                ->where('p.Tplanilla', $request->t_planilla ?? 0)
-                                ->whereRaw('(p.idGda=1 or p.idGda=2)')
-                                ->where('p.Periodo', $request->periodo ?? 0)
-                                ->where('p.Centralizado', 'SI')
-                                ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
-                                ->groupBy('p.Afp', 'p.idPlanillaprocesada')
-                                ->selectRaw('p.ID, SUM(p.Total_Ganado) as total_ganado, SUM(p.Total_Aportes_Afp) as total_aportes_afp, SUM(p.Riesgo_Comun) as riesgo_comun')
-                                ->get();
-                
-                foreach ($planillas as $item) {
-                    $amount = 0;
-                    if($beneficiary->type->id == 4 || $beneficiary->type->id == 5 || $beneficiary->type->id == 6){
-                        $aporte_patronal = ($item->total_ganado * 0.05) + $item->riesgo_comun;
-                        $sip = $item->total_aportes_afp + $aporte_patronal - ($item->total_ganado * (5.5 / 100));
-                        $aporte_solidario = $item->total_ganado * 0.035;
-                        $aporte_vivienda = $item->total_ganado * 0.02;
 
-                        switch ($beneficiary->type->id) {
-                            case '4':
-                                $amount = $sip + $aporte_solidario;
-                                break;
-                            case '5':
-                                $amount = $sip;
-                                break;
-                            case '6':
-                                $amount = $sip + $aporte_solidario + $aporte_vivienda;
-                                break;
-                            default:
-                                $amount = 0;
-                                break;
-                        }
-                    }else{
-                        $amount = $item->total_ganado * ($beneficiary->type->percentage / 100);
-                    }
+                if($request->afp_alt){
+                    $period = Period::where('name', $request->periodo)->where('deleted_at', NULL)->first();
+                    $period_id = $period ? $period->id : NULL;
+                    $paymentschedules = Paymentschedule::with(['period', 'details.contract.person'])
+                                                    ->whereHas('procedure_type', function($q) use($request){
+                                                        $q->where('planilla_id', $request->t_planilla);
+                                                    })->whereHas('details.contract.person', function($q) use($request){
+                                                        $q->where('afp', $request->afp);
+                                                    })->where('period_id', $period_id)->where('centralize_code', '<>', NULL)
+                                                    ->where('deleted_at', NULL)->where('deleted_at', NULL)->get();
                     
-                    ChecksPayment::create([
-                        'user_id' => Auth::user()->id,
-                        'planilla_haber_id' => $item->ID,
-                        'number' => $request->number,
-                        'amount' => $amount,
-                        'checks_beneficiary_id' => $request->checks_beneficiary_id,
-                        'date_print' => $request->date_print,
-                        'observations' => $request->observations,
-                        'status' => $request->status
-                    ]);
+                    foreach ($paymentschedules as $item) {
+                        $amount_total = $item->details->where('contract.person.afp', $request->afp)->sum('partial_salary') + $item->details->where('contract.person.afp', $request->afp)->sum('seniority_bonus_amount');
+                        $amount = 0;
+                        if($beneficiary->type->id == 4 || $beneficiary->type->id == 5 || $beneficiary->type->id == 6){
+                            $aporte_patronal = ($amount_total * 0.05) + $item->common_risk;
+                            $sip = $item->labor_total + $aporte_patronal - ($amount_total * (5.5 / 100));
+                            $aporte_solidario = $amount_total * 0.035;
+                            $aporte_vivienda = $amount_total * 0.02;
+
+                            switch ($beneficiary->type->id) {
+                                case '4':
+                                    $amount = $sip + $aporte_solidario;
+                                    break;
+                                case '5':
+                                    $amount = $sip;
+                                    break;
+                                case '6':
+                                    $amount = $sip + $aporte_solidario + $aporte_vivienda;
+                                    break;
+                                default:
+                                    $amount = 0;
+                                    break;
+                            }
+                        }else{
+                            $amount = $amount_total * ($beneficiary->type->percentage / 100);
+                        }
+                        
+                        ChecksPayment::create([
+                            'user_id' => Auth::user()->id,
+                            'paymentschedule_id' => $item->id,
+                            'afp' => $request->afp_alt,
+                            'number' => $request->number,
+                            'amount' => $amount,
+                            'checks_beneficiary_id' => $request->checks_beneficiary_id,
+                            'date_print' => $request->date_print,
+                            'observations' => $request->observations,
+                            'status' => $request->status
+                        ]);
+                    }
+                }else{
+                    $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                                    ->where('p.Estado', 1)
+                                    ->where('p.Tplanilla', $request->t_planilla ?? 0)
+                                    ->whereRaw('(p.idGda=1 or p.idGda=2)')
+                                    ->where('p.Periodo', $request->periodo ?? 0)
+                                    ->where('p.Centralizado', 'SI')
+                                    ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
+                                    ->groupBy('p.Afp', 'p.idPlanillaprocesada')
+                                    ->selectRaw('p.ID, SUM(p.Total_Ganado) as total_ganado, SUM(p.Total_Aportes_Afp) as total_aportes_afp, SUM(p.Riesgo_Comun) as riesgo_comun')
+                                    ->get();
+                    
+                    foreach ($planillas as $item) {
+                        $amount = 0;
+                        if($beneficiary->type->id == 4 || $beneficiary->type->id == 5 || $beneficiary->type->id == 6){
+                            $aporte_patronal = ($item->total_ganado * 0.05) + $item->riesgo_comun;
+                            $sip = $item->total_aportes_afp + $aporte_patronal - ($item->total_ganado * (5.5 / 100));
+                            $aporte_solidario = $item->total_ganado * 0.035;
+                            $aporte_vivienda = $item->total_ganado * 0.02;
+
+                            switch ($beneficiary->type->id) {
+                                case '4':
+                                    $amount = $sip + $aporte_solidario;
+                                    break;
+                                case '5':
+                                    $amount = $sip;
+                                    break;
+                                case '6':
+                                    $amount = $sip + $aporte_solidario + $aporte_vivienda;
+                                    break;
+                                default:
+                                    $amount = 0;
+                                    break;
+                            }
+                        }else{
+                            $amount = $item->total_ganado * ($beneficiary->type->percentage / 100);
+                        }
+                        
+                        ChecksPayment::create([
+                            'user_id' => Auth::user()->id,
+                            'planilla_haber_id' => $item->ID,
+                            'number' => $request->number,
+                            'amount' => $amount,
+                            'checks_beneficiary_id' => $request->checks_beneficiary_id,
+                            'date_print' => $request->date_print,
+                            'observations' => $request->observations,
+                            'status' => $request->status
+                        ]);
+                    }
                 }
             }
 

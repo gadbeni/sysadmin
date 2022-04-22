@@ -702,7 +702,8 @@ class ReportsController extends Controller
         $type_report = $request->type_report;
         $type_export = $request->type_export;
         $afp = $request->afp;
-        $title = 'data';
+        $group_by = $request->group_by;
+        $title = '';
         if($type_report == '#form-ministerio'){
             $data = PaymentschedulesDetail::with('contract')
             ->whereHas('paymentschedule', function($q) use($procedure_type_id){
@@ -710,7 +711,7 @@ class ReportsController extends Controller
             })->where('deleted_at', NULL)->get();
             $title = 'ministerio de trabajo '.date('d-m-Y H:i:s');
         }elseif($type_report == '#form-afp'){
-            $data = PaymentschedulesDetail::with(['contract', 'paymentschedule.period'])
+            $data = PaymentschedulesDetail::with(['contract.program', 'paymentschedule.period'])
             ->whereHas('paymentschedule', function($q) use($paymentschedule_id){
                 $q->where('deleted_at', NULL)->whereRaw('(id = "'.intval($paymentschedule_id).'" or centralize_code like "'.intval(explode('-', $paymentschedule_id)[0]).'-c")');
             })
@@ -732,7 +733,7 @@ class ReportsController extends Controller
                 return Excel::download(new AfpExport($data, $afp), "$title .xlsx");
             }
         }
-        return view('reports.social_security.exports-list', compact('data', 'type_report', 'afp'));
+        return view('reports.social_security.exports-list', compact('data', 'type_report', 'afp', 'group_by'));
     }
 
     //  ===== Cashiers =====

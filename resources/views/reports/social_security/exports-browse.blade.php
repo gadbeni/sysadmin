@@ -56,13 +56,9 @@
                                         <option value="2">Previsión</option>
                                     </select>
                                 </div>
-                                {{-- <div class="form-group">
-                                    <select name="period_id" class="form-control select2" required>
-                                        @foreach (\App\Models\Period::all() as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div> --}}
+                                <div class="form-group text-right">
+                                    <label class="checkbox-inline"><input type="checkbox" name="group_by" value="1">Agrupar por programa/proyecto</label>
+                                </div>
                                 <div class="text-right">
                                     <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
                                 </div>
