@@ -2,6 +2,8 @@
 
 @section('page_title', 'Viendo Archivos')
 
+@if (auth()->user()->hasPermission('browse_paymentschedulesfilesindex'))
+
 @section('page_header')
     <div class="container-fluid">
         <div class="row">
@@ -18,9 +20,11 @@
                             </div> --}}
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
+                            @if (auth()->user()->hasPermission('add_paymentschedulesfiles'))
                             <a href="{{ route('paymentschedules.files.create') }}" class="btn btn-success">
                                 <i class="voyager-plus"></i> <span>Crear</span>
                             </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -96,3 +100,5 @@
         }
     </script>
 @stop
+
+@endif

@@ -22,7 +22,6 @@
                             <h3 style="margin: 0px">{{ $data->direccion_administrativa->NOMBRE }} {!! $program ? '<br>'.$program->name : '' !!}</h3>
                             <span>{{ Str::upper($data->procedure_type->name) }}</span>
                         @endif
-                        
                     </td>
                     <td style="text-align:center; width: 90px">
                         {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->NOMBRE).' | '.$data->procedure_type->name); !!} <br>
@@ -877,10 +876,10 @@
                 display: block;
             }
             .table-details th{
-                font-size: 6px !important
+                font-size: 5px !important
             }
             .table-details td{
-                font-size: 8px !important
+                font-size: 7px !important
             }
             .table-details tfoot td{
                 font-size: 10px !important

@@ -60,7 +60,7 @@
     @yield('css')
 </head>
 <body>
-    <div class="hide-print" style="text-align: right; padding: 10px 0px">
+    <div class="hide-print" style="text-align: right; padding: 10px 20px">
         <button class="btn-print" onclick="window.close()">Cancelar <i class="fa fa-close"></i></button>
         <button class="btn-print" onclick="window.print()"> Imprimir <i class="fa fa-print"></i></button>
     </div>

@@ -157,10 +157,17 @@ class PaymentschedulesController extends Controller
             // dd($paymentschedule);
 
             // En caso de ser centralizada asignarle el número correspondiente
-            if($request->centralize  && !$request->aditional){
-                $centralize_paymentschedule = Paymentschedule::where('period_id', $request->period_id)
+            if($request->centralize){
+                $centralize_paymentschedule = $request->aditional ? 
+                                                // Buscar una planilla adicional con los mismo datos
+                                                Paymentschedule::where('period_id', $request->period_id)
                                                     ->where('procedure_type_id', $request->procedure_type_id)
-                                                    ->where('centralize', 1)->where('id', '<>', $paymentschedule->id)->where('deleted_at', NULL)->first();
+                                                    ->where('centralize', 1)->where('centralize_code', '<>', NULL)->where('id', '<>', $paymentschedule->id)
+                                                    ->where('aditional', 1)->where('deleted_at', NULL)->first() :
+                                                Paymentschedule::where('period_id', $request->period_id)
+                                                    ->where('procedure_type_id', $request->procedure_type_id)
+                                                    ->where('centralize', 1)->where('centralize_code', '<>', NULL)->where('id', '<>', $paymentschedule->id)
+                                                    ->where('deleted_at', NULL)->first();
                 // Si ya existen planillas centralizadas para ese periodo y tipo de planilla
                 if($centralize_paymentschedule){
                     $paymentschedule->centralize_code = $centralize_paymentschedule->centralize_code;
@@ -577,15 +584,20 @@ class PaymentschedulesController extends Controller
     public function files_delete(Request $request){
         DB::beginTransaction();
         try {
-
             PaymentschedulesFile::where('id', $request->id)->delete();
             PaymentschedulesFilesDetails::where('paymentschedules_file_id', $request->id)->delete();
             DB::commit();
 
+            if ($request->redirect) {
+                return redirect()->route('paymentschedules.files.index')->with(['message' => 'Borrador anulado correctamente.', 'alert-type' => 'success']);
+            }
             return redirect()->route('paymentschedules.files.create')->with(['message' => 'Borrador anulado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
+            if ($request->redirect) {
+                return redirect()->route('paymentschedules.files.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            }
             return redirect()->route('paymentschedules.files.create')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }

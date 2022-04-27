@@ -49,9 +49,12 @@
                             <a href="{{ url('storage/'.$item->url) }}" target="_blank" title="Descargar" class="btn btn-sm btn-warning view">
                                 <i class="voyager-book-download"></i> <span class="hidden-xs hidden-sm">Descargar</span>
                             </a>
-                            {{-- <button type="button" onclick="deleteItem('{{ route('paymentschedules.destroy', ['paymentschedule' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
+
+                            @if (auth()->user()->hasPermission('delete_paymentschedulesfiles'))
+                            <button type="button" onclick="deleteFile({{ $item->id }})" data-toggle="modal" data-target="#modal-delete" title="Eliminar" class="btn btn-sm btn-danger edit">
                                 <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
-                            </button> --}}
+                            </button>
+                            @endif
                         </td>
                     </tr>
                 @empty
@@ -76,30 +79,30 @@
     </div>
 </div>
 
-{{-- Modal delete massive --}}
-<div class="modal modal-danger fade" tabindex="-1" id="delete_multiple" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title"><i class="voyager-trash"></i> ¿Estás seguro?</h4>
-            </div>
-            <div class="modal-body">
-                <h4>¿Estás seguro de que quieres eliminar los cheques seleccionados?</h4>
-            </div>
-            <div class="modal-footer">
-                {{ method_field('DELETE') }}
-                {{ csrf_field() }}
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <input type="submit" class="btn btn-danger delete-confirm" value="Anular">
+{{-- Modal delete --}}
+<form action="{{ route('paymentschedules.files.delete') }}" method="post">
+    <div class="modal modal-danger fade" tabindex="-1" id="modal-delete" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="voyager-trash"></i> ¿Estás seguro?</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>¿Estás seguro de que quieres eliminar el siguiente archivo?</h4>
+                </div>
+                <div class="modal-footer">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id">
+                    <input type="hidden" name="redirect" value="1">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" class="btn btn-danger delete-confirm" value="Anular">
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>
 
-<style>
-
-</style>
 
 <script>
     var page = "{{ request('page') }}";
@@ -113,4 +116,8 @@
             }
         });
     });
+
+    function deleteFile(id){
+        $('#modal-delete input[name="id"]').val(id);
+    }
 </script>
