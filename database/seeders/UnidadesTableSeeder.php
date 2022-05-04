@@ -2013,7 +2013,7 @@ class UnidadesTableSeeder extends Seeder
             181 => 
             array (
                 'id' => 193,
-                'nombre' => 'UNidAD DE RECEPCION DE DOCUMENTOS EXTERNOS',
+                'nombre' => 'UNIDAD DE RECEPCION DE DOCUMENTOS EXTERNOS',
                 'sigla' => 'RDE',
                 'direccion_id' => 16,
                 'estado' => 1,

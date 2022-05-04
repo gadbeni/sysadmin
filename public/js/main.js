@@ -64,7 +64,7 @@ function getPlanillas(url){
                 $('#form input[name="afp_alt"]').val('');
             }else{
                 res.paymentschedule_details.map(item => {
-                    total_ganado += parseFloat(item.partial_salary + item.seniority_bonus_amount);
+                    total_ganado += parseFloat(item.partial_salary) + parseFloat(item.seniority_bonus_amount);
                     total_aportes_afp += parseFloat(item.labor_total);
                     total_riesgo_comun += parseFloat(item.common_risk);
                     people++;

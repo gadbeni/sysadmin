@@ -43,6 +43,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     Route::get('people', [PeopleController::class, 'index'])->name('voyager.people.index');
     Route::get('people/ajax/list/{search?}', [PeopleController::class, 'list']);
+    Route::get('people/{id}', [PeopleController::class, 'read'])->name('voyager.people.show');
+    Route::post('people/{id}/rotation', [PeopleController::class, 'rotation_store'])->name('people.rotation.store');
+    Route::get('people/rotation/{id}', [PeopleController::class, 'rotation_print']);
 
     Route::post('cashiers/store', [CashiersController::class, 'store'])->name('cashiers.store');
     Route::delete('cashiers/destroy/{id}', [CashiersController::class, 'destroy'])->name('voyager.cashiers.destroy');

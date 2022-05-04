@@ -18,9 +18,11 @@
                             </div> --}}
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
+                            @if (auth()->user()->hasPermission('add_people'))
                             <a href="{{ route('voyager.people.create') }}" class="btn btn-success">
                                 <i class="voyager-plus"></i> <span>Crear</span>
                             </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -56,6 +58,53 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal rotation --}}
+    <form id="rotation-form" action="#" method="post">
+        @csrf
+        <div class="modal modal-primary fade" tabindex="-1" id="delete-rotation" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-forward"></i> Realizar rotación</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Fecha de rotación</label>
+                            <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}" required >
+                        </div>
+                        <div class="form-group">
+                            <label>Solicitante</label>
+                            <select name="destiny_id" class="form-control select2" required>
+                                <option selected disabled value="">--Seleccione al funcionario--</option>
+                                @foreach ($people as $item)
+                                    <option value="{{ $item->id }}">{{ $item->first_name }} {{ $item->last_name }} - CI:{{ $item->ci }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Responsable</label>
+                            <select name="responsible_id" class="form-control select2">
+                                <option selected disabled value="">--Seleccione al reponsable--</option>
+                                @foreach ($people as $item)
+                                    <option value="{{ $item->id }}">{{ $item->first_name }} {{ $item->last_name }} - CI:{{ $item->ci }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Observaciones</label>
+                            <textarea name="observations" class="form-control" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-primary" value="Guardar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 @stop
 
 @section('css')
@@ -94,5 +143,10 @@
                 }
             });
         }
+
+        @if(session('rotation_id'))
+            let rotation_id = "{{ session('rotation_id') }}";
+            window.open(`{{ url('admin/people/rotation') }}/${rotation_id}`, '_blank').focus();
+        @endif
     </script>
 @stop

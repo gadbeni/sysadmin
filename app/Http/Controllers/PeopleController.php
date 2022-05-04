@@ -8,11 +8,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 
 use App\Models\Person;
+use App\Models\PersonRotation;
+use App\Models\Contract;
 
 class PeopleController extends Controller
 {
     public function index(){
-        return view('management.people.browse');
+        $people =   Person::whereHas('contracts', function($query){
+                        $query->where('status', 'firmado')->where('deleted_at', NULL);
+                    })->where('deleted_at', NULL)->get();
+        return view('management.people.browse', compact('people'));
     }
 
     public function list($search = null){
@@ -32,5 +37,42 @@ class PeopleController extends Controller
                     })
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
         return view('management.people.list', compact('data'));
+    }
+
+    public function read($id){
+        $person = Person::with(['contracts.rotations'])->where('id', $id)->first();
+        return view('management.people.read', compact('person'));
+    }
+
+    public function rotation_store($id, Request $request){
+        try {
+            $person = Person::where('id', $id)->whereHas('contracts', function($query){
+                $query->where('status', 'firmado')->where('deleted_at', NULL);
+            })->where('deleted_at', NULL)->first();
+
+            $destiny = Contract::where('person_id', $request->destiny_id)->where('status', 'firmado')->where('deleted_at', NULL)->first();
+            $responsible = Contract::where('person_id', $request->responsible_id)->where('status', 'firmado')->where('deleted_at', NULL)->first();
+
+            $rotation = PersonRotation::create([
+                'destiny_id' => $destiny->person_id,
+                'destiny_job' => $destiny->cargo ? $destiny->cargo->Descripcion : $destiny->job->name,
+                'destiny_dependency' => $destiny->direccion_administrativa->NOMBRE,
+                'responsible_id' => $responsible->person_id,
+                'responsible_job' => $responsible->cargo ? $responsible->cargo->Descripcion : $responsible->job->name,
+                'contract_id' => $person->contracts->first()->id,
+                'date' => $request->date,
+                'observations' => $request->observations
+            ]);
+
+            return redirect()->route('voyager.people.index')->with(['message' => 'Rotación reggistrada correctamente', 'alert-type' => 'success', 'rotation_id' => $rotation->id]);
+        } catch (\Throwable $th) {
+            // dd($th);
+            return redirect()->route('voyager.people.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
+    }
+
+    public function rotation_print($id){
+        $rotation = PersonRotation::with(['destiny', 'responsible', 'contract.person'])->find($id);
+        return view('management.docs.permanente.rotation', compact('rotation'));
     }
 }

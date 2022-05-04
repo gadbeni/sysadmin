@@ -64,6 +64,10 @@
         <p><em>Son documentos integrantes del presente contrato:</em></p>
         <p><em>a) Misi&oacute;n espec&iacute;fica</em></p>
         <p><em>b) Curr&iacute;culum Vitae del&nbsp;</em><strong><em>CONTRATADO</em></strong></p>
+
+        <div class="saltopagina"></div>
+        <div class="pt"></div>
+
         <p><strong><em>CL&Aacute;USULA QUINTA</em></strong><strong><em>.-</em></strong><em>&nbsp;</em><strong><em>(OBJETO y CAUSA).-</em></strong></p>
         <p><em>El objeto y causa del presente contrato es la prestaci&oacute;n de servicios de un&nbsp; PERSONAL EVENTUAL por parte del (A) </em><strong><em>CONTRATADO (A), </em></strong><em>para desempe&ntilde;ar la funci&oacute;n de&nbsp;</em><strong><em>{{ Str::upper($contract->cargo->Descripcion) }}</em></strong><em>, solicitado por&hellip;&hellip;.., bajo dependencias del Servicio Departamental de Salud </em><strong><em>SEDES BENI, </em></strong>en el marco de las cl&aacute;usulas contenidas en el presente contrato y Manual de Funciones de la instituci&oacute;n; nombramiento que a mayor abundamiento.</p>
         <p>En cumplimiento de sus fines y objetivos de contratar Recursos Humanos para la oficina central, as&iacute; como para las 9 Redes de Salud, las cuales se hallan insertas en el POA para la gesti&oacute;n 2022 y dentro de la Categor&iacute;a Program&aacute;tica {{ $contract->program->programatic_category }}<em>, Programadas en la Partida Presupuestaria habilitada 12100 PERSONAL EVENTUAL, con fuente de financiamiento 20-220.</em></p>
@@ -144,7 +148,9 @@
         <p><em>El&nbsp;</em><strong><em>CONTRATADO (A), </em></strong>acepta de manera expresa someterse a los horarios de trabajo establecidos por la ENTIDAD, el cual se regir&aacute; a Reglamento Interno de Personal del SEDES BENI.</p>
         <ul>
         <li>
-        <p>Hora de Ingreso: <strong><em>7:30, </em></strong>con tolerancia de diez (10) minutos y horario de salida de<strong><em> 13:30</em></strong><em>&nbsp;</em><strong><em>de lunes a viernes</em></strong><em>, en el lugar que le sea asignado, mismo que ser&aacute; controlado por la Jefatura de RRHH del Sedes Beni; horario que ser&aacute; aplicado para el personal administrativo;&nbsp; sin embargo, de acuerdo a necesidades Institucionales se podr&aacute; cambiar el horario manteniendo las 6 Horas laborales, adem&aacute;s el CONTRATADO (a) deber&aacute; prestar servicios fuera de los horarios establecidos, conforme instrucci&oacute;n verbal o escrita que reciba de sus superiores, asimismo, las inasistencias, atrasos, permisos y DESCUENTOS estar&aacute;n en sujeci&oacute;n al Reglamento Interno de Personal del Sedes Beni.</em></p>
+            <p>Hora de Ingreso: <strong><em>7:30, </em></strong>con tolerancia de diez (10) minutos y horario de salida de<strong><em> 13:30</em></strong><em>&nbsp;</em><strong><em>de lunes a viernes</em></strong><em>, en el lugar que le sea asignado, mismo que ser&aacute; controlado por la Jefatura de RRHH del Sedes Beni; horario que ser&aacute; aplicado para el personal administrativo;&nbsp; sin embargo, de acuerdo a necesidades Institucionales se podr&aacute; cambiar el horario manteniendo las 6 Horas laborales, adem&aacute;s el CONTRATADO (a) deber&aacute; prestar servicios fuera de los horarios establecidos, conforme instrucci&oacute;n verbal o escrita que reciba de sus superiores, asimismo, las inasistencias, atrasos, permisos y DESCUENTOS estar&aacute;n en sujeci&oacute;n al Reglamento Interno de Personal del Sedes Beni.</em></p>
+            <div class="saltopagina"></div>
+            <div class="pt"></div>
         </li>
         <li>
         <p><em>Con referencia al personal Operativo asignado a los Establecimientos de Salud, el turno para el desempe&ntilde;o de funciones ser&aacute; establecido por el Coordinador de la Red de Salud a la que pertenezca el contratado (a), de acuerdo a la necesidad del servicio y roles de turnos designados de cada Red, es decir, TURNO MA&Ntilde;ANA&nbsp; de Hrs. 7:30 a 13:30 y el&nbsp; TURNO TARDE de Hrs. 13:00 hasta las 19:00; en caso de faltas injustificadas o atrasos se proceder&aacute; al descuento correspondiente de su haber mensual conforme al Reglamento de personal.</em></p>
@@ -191,7 +197,9 @@
         <p><em>Informar cuantas veces sea solicitado o necesario sobre sus actividades laborales y otros a fin de realizar los procesos de evaluaci&oacute;n correspondientes a sus funciones.</em></p>
         </li>
         <li>
-        <p><em>Desarrollar sus funciones, atribuciones y deberes administrativos con puntualidad, celeridad, econom&iacute;a, eficiencia y probidad.</em></p>
+            <p><em>Desarrollar sus funciones, atribuciones y deberes administrativos con puntualidad, celeridad, econom&iacute;a, eficiencia y probidad.</em></p>
+            <div class="saltopagina"></div>
+            <div class="pt"></div>
         </li>
         <li>
         <p><em>Cumplir con la jornada laboral</em></p>

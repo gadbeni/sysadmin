@@ -80,7 +80,7 @@
                         @endif
 
                         {{-- Si es planilla de funcionamiento se muestran los aportes patronales--}}
-                        @if ($data->procedure_type_id == 5 && $print_type == 2)
+                        @if ($print_type == 2)
                         <th style="text-align: center" colspan="5">APORTES PATRONALES</th>
                         @endif
                     </tr>
@@ -99,7 +99,7 @@
                         <th rowspan="2">DÍAS</th>
                         <th rowspan="2">MULTAS</th>
 
-                        @if ($data->procedure_type_id == 5 && $print_type == 2)
+                        @if ($print_type == 2)
                         <th>RIESGO PROFESIONAL</th>
                         <th>APORTE VIVIENDA</th>
                         <th>APORTE SOLIDARIO</th>
@@ -215,7 +215,7 @@
                                 <td colspan="@if ($data->procedure_type_id == 2) 27 @else 26  @endif"><b>{{ $item_group['programatic_category'] }} - {{ $item_group['name'] }} / {{ $item_group['direccion_administrativa'] }}</b></td>
                                 @endif
 
-                                @if ($data->procedure_type_id == 5 && $print_type == 2)
+                                @if ($print_type == 2)
                                     <td colspan="5"></td>
                                 @endif
                             </tr>
@@ -264,9 +264,7 @@
                                     $labor_liquid_payable += $item->liquid_payable;
 
                                     $employer_amount = $item->common_risk + $item->solidary_employer + $item->housing_employer + $item->health;
-                                    if ($data->procedure_type_id == 5) {
-                                        $employer_total += $employer_amount;
-                                    }
+                                    $employer_total += $employer_amount;
 
                                     if($group){
                                         $total_amount_group += $item->partial_salary + $item->seniority_bonus_amount;
@@ -357,7 +355,7 @@
                                     @endif
 
                                     {{-- Si es planilla de funcionamiento --}}
-                                    @if ($data->procedure_type_id == 5 && $print_type == 2)
+                                    @if ($print_type == 2)
                                     <td style="text-align: right">{{ number_format($item->common_risk, 2, ',', '.') }}</td>
                                     <td style="text-align: right">{{ number_format($item->housing_employer, 2, ',', '.') }}</td>
                                     <td style="text-align: right">{{ number_format($item->solidary_employer, 2, ',', '.') }}</td>
@@ -397,7 +395,7 @@
                                     <td colspan="2"></td>
                                     @endif
                                     
-                                    @if ($data->procedure_type_id == 5 && $print_type == 2)
+                                    @if ($print_type == 2)
                                     <td style="text-align: right"><b>{{ number_format($total_common_risk_group_program, 2, ',', '.') }}</b></td>
                                     <td style="text-align: right"><b>{{ number_format($total_housing_employer_group_program, 2, ',', '.') }}</b></td>
                                     <td style="text-align: right"><b>{{ number_format($total_solidary_employer_group_program, 2, ',', '.') }}</b></td>
@@ -434,7 +432,7 @@
                                 <td colspan="2"></td>
                                 @endif
                                 
-                                @if ($data->procedure_type_id == 5 && $print_type == 2)
+                                @if ($print_type == 2)
                                 <td style="text-align: right"><b>{{ number_format($total_common_risk_group, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_housing_employer_group, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_solidary_employer_group, 2, ',', '.') }}</b></td>
@@ -490,7 +488,7 @@
                         @endif
 
                         {{-- Si es planilla de funcionamiento --}}
-                        @if ($data->procedure_type_id == 5 && $print_type == 2)
+                        @if ($print_type == 2)
                         <td style="text-align: right"><b>{{ number_format($total_common_risk, 2, ',', '.') }}</b></td>
                         <td style="text-align: right"><b>{{ number_format($total_housing_employer, 2, ',', '.') }}</b></td>
                         <td style="text-align: right"><b>{{ number_format($total_solidary_employer, 2, ',', '.') }}</b></td>

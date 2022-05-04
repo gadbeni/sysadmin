@@ -67,6 +67,18 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('paymentschedules');
         Permission::generateFor('imports');
 
+        // people
+        $keys = [
+            'rotation_people'
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'people',
+            ]);
+        }
+
         // checkes
         $keys = [
             'downgrade_contracts',

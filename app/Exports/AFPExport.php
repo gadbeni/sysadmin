@@ -6,12 +6,13 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Support\Str;
 
 // Models
 use App\Models\Period;
 
-class AFPExport implements WithColumnFormatting, FromCollection
+class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings
 {
     function __construct($data, $type) {
         $this->data = $data;
@@ -83,6 +84,23 @@ class AFPExport implements WithColumnFormatting, FromCollection
                 $worked_days = $item->sum('worked_days');
                 $total_amount = $item->sum('partial_salary') + $item->sum('seniority_bonus_amount');
 
+                $now = \Carbon\Carbon::now();
+                $birthday = new \Carbon\Carbon($item[0]->contract->person->birthday);
+                $age = $birthday->diffInYears($now);
+                $type = '';
+                if($age < 65 && $item[0]->contract->person->afp_status == 1){
+                    $type = '1';
+                }
+                if($age >= 65 && $item[0]->contract->person->afp_status == 1){
+                    $type = '8';
+                }
+                if($age < 65 && $item[0]->contract->person->afp_status == 0){
+                    $type = 'C';
+                }
+                if($age >= 65 && $item[0]->contract->person->afp_status == 0){
+                    $type = 'D';
+                }
+
                 array_push($data, [
                     'A' => $cont,
                     'B' => 'CI',
@@ -98,7 +116,7 @@ class AFPExport implements WithColumnFormatting, FromCollection
                     'L' => $novelty_date ? $novelty_date : '',
                     'M' => $worked_days,
                     'N' => $total_amount,
-                    'O' => 1,
+                    'O' => $type,
                     'P' => '',
                 ]);
                 $cont++;
@@ -107,20 +125,46 @@ class AFPExport implements WithColumnFormatting, FromCollection
         return collect($data);
     }
 
+    public function headings(): array
+    {
+        if($this->type == 1){
+            return [];
+        }else{
+            return [
+                'No',
+                'Tipo Doc',
+                'Numero Documento',
+                'Alfa Numero',
+                'NUA/CUA',
+                'Ap. Paterno',
+                'Ap. Materno',
+                'Ap. Casada',
+                'Primer Nombre',
+                'Seg. Nombre',
+                'Novedad',
+                'Fecha Novedad',
+                'Dias',
+                'Total Ganado',
+                'Tipo Cotizante',
+                'Tipo Asegurado'
+            ];
+        }
+    }
+
     public function columnFormats(): array
     {
         if($this->type == 1){
             return [
                 'M' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-                'N' => NumberFormat::FORMAT_NUMBER,
-                'P' => NumberFormat::FORMAT_NUMBER,
-                'Q' => NumberFormat::FORMAT_NUMBER,
-                'R' => NumberFormat::FORMAT_NUMBER,
-                'S' => NumberFormat::FORMAT_NUMBER,
-                'T' => NumberFormat::FORMAT_NUMBER,
-                'U' => NumberFormat::FORMAT_NUMBER,
-                'V' => NumberFormat::FORMAT_NUMBER,
-                'W' => NumberFormat::FORMAT_NUMBER,
+                // 'N' => NumberFormat::FORMAT_NUMBER,
+                // 'P' => NumberFormat::FORMAT_NUMBER,
+                // 'Q' => NumberFormat::FORMAT_NUMBER,
+                // 'R' => NumberFormat::FORMAT_NUMBER,
+                // 'S' => NumberFormat::FORMAT_NUMBER,
+                // 'T' => NumberFormat::FORMAT_NUMBER,
+                // 'U' => NumberFormat::FORMAT_NUMBER,
+                // 'V' => NumberFormat::FORMAT_NUMBER,
+                // 'W' => NumberFormat::FORMAT_NUMBER,
             ];
         }
 

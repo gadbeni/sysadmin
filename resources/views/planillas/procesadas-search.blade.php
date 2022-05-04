@@ -78,8 +78,8 @@
 
 
         {{-- Formulario de pago de aguinaldo --}}
-        {{-- @if (count($aguinaldo) > 0) --}}
-        {{-- <form action="" method="post">
+        @if (count($aguinaldo) > 0)
+        <form action="" method="post">
             @csrf
             <div class="panel-body" style="margin-bottom: 50px">
                 <div class="table-responsive">
@@ -138,8 +138,8 @@
                     </table>
                 </div>
             </div>
-        </form> --}}
-        {{-- @endif --}}
+        </form>
+        @endif
 
         {{-- AdditionalSteddts --}}
         {{-- <form action="" method="post">

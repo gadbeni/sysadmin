@@ -7,9 +7,7 @@
     
     {{-- Si existe una planilla y ya está restringida --}}
     @if ($paymentschedule)
-        @if ($paymentschedule->status == 'aprobada' || $paymentschedule->status == 'habilitada' || $paymentschedule->status == 'pagada')
         <input type="hidden" name="aditional" value="1">
-        @endif
     @endif
     <div class="row">
         <div class="col-md-12">
@@ -18,10 +16,8 @@
 
                     {{-- Si existe una planilla y ya está restringida --}}
                     @if ($paymentschedule)
-                        @if ($paymentschedule->status == 'aprobada' || $paymentschedule->status == 'habilitada' || $paymentschedule->status == 'pagada')
-                            <h5 class="text-danger"><b style="font-weight: bold">Advertencia!</b> Existe al menos una planilla generada para el periodo, dirección administrativa y tipo de planilla seleccionados. Por lo tanto la planilla generada se guardará como una planilla adicional.</h5>
-                            <br>
-                        @endif
+                        <h5 class="text-danger"><b style="font-weight: bold">Advertencia!</b> Existe al menos una planilla generada para el periodo, dirección administrativa y tipo de planilla seleccionados. Por lo tanto la planilla generada se guardará como una planilla adicional.</h5>
+                        <br>
                     @endif
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">

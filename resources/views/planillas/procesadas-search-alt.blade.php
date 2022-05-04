@@ -106,7 +106,7 @@
                                     @if ($cashier && $item->status == 'habilitado')
                                         <button type="button" onclick='setValuePay(@json($item), @json($cashier), true)' data-toggle="modal" data-target="#pagar-modal" class="btn btn-success btn-pago"><i class="voyager-dollar"></i> Pagar</button>
                                     @endif
-                                    @if ($item->status == 'pagado')
+                                    @if ($item->status == 'pagado' && $item->payment)
                                         <button type="button" onclick="print_recipe({{ $item->payment->id }}, 'sueldo')" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
                                     @endif
                                 </td>

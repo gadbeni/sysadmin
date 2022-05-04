@@ -232,7 +232,7 @@ class PaymentschedulesController extends Controller
             return redirect()->route('paymentschedules.index')->with(['message' => 'Planilla generada correctamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
-            dd($th);
+            // dd($th);
             return redirect()->route('paymentschedules.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
