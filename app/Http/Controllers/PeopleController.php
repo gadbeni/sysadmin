@@ -56,7 +56,7 @@ class PeopleController extends Controller
             $rotation = PersonRotation::create([
                 'destiny_id' => $destiny->person_id,
                 'destiny_job' => $destiny->cargo ? $destiny->cargo->Descripcion : $destiny->job->name,
-                'destiny_dependency' => $destiny->direccion_administrativa->NOMBRE,
+                'destiny_dependency' => $request->destiny_dependency,
                 'responsible_id' => $responsible->person_id,
                 'responsible_job' => $responsible->cargo ? $responsible->cargo->Descripcion : $responsible->job->name,
                 'contract_id' => $person->contracts->first()->id,

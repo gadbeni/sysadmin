@@ -11,6 +11,47 @@
     <div class="panel panel-bordered">
         <div class="panel-body">
             <div class="table-responsive">
+                @if ($grouped)
+                <table id="dataTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>N&deg;</th>
+                            <th>Dirección administrativa</th>
+                            <th style="text-align: right">Nro personas</th>
+                            <th style="text-align: right">Total ganado</th>
+                            <th style="text-align: right">Riesgo común<br>(1.71%)</th>
+                            <th style="text-align: right">Vivienda<br>(2%)</th>
+                            <th style="text-align: right">Aporte patronal<br>(3%)</th>
+                            <th style="text-align: right">Salud<br>(10%)</th>
+                            <th style="text-align: right">Líquido pagable</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $cont = 1;
+                        @endphp
+                        @foreach ($payments->groupBy('paymentschedule.direccion_administrativa_id') as $item)
+                            @php
+                                $total_amount = $item->sum('partial_salary') + $item->sum('seniority_bonus_amount');
+                            @endphp
+                            <tr>
+                                <td>{{ $cont }}</td>
+                                <td>{{ count($item) > 0 ? $item[0]->paymentschedule->direccion_administrativa->NOMBRE : '' }}</td>
+                                <td style="text-align: right">{{ $item->count() }}</td>
+                                <td style="text-align: right">{{ number_format($total_amount, 2, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($item->sum('common_risk'), 2, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($item->sum('housing_employer'), 2, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($item->sum('solidary_employer'), 2, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($total_amount *0.1, 2, ',', '.') }}</td>
+                                <td style="text-align: right">{{ number_format($item->sum('liquid_payable'), 2, ',', '.') }}</td>
+                            </tr>
+                            @php
+                                $cont++;
+                            @endphp
+                        @endforeach
+                    </tbody>
+                </table>
+                @else
                 <table id="dataTable" class="table table-bordered">
                     <thead>
                         <tr>
@@ -110,6 +151,7 @@
                         </tr>
                     </tbody>
                 </table>
+                @endif
             </div>
         </div>
     </div>

@@ -43,14 +43,14 @@
                     <td>4.</td>
                     <td>Certificación POA:</td>
                     <td style="border: 1px solid black; padding: 5px">
-                        <b>{{ $contract->certification_poa }}</b>
+                        <b>{!! $contract->certification_poa ?? '&nbsp;' !!}</b>
                     </td>
                 </tr>
                 <tr>
                     <td>5.</td>
                     <td>Certificación PAC:</td>
                     <td style="border: 1px solid black; padding: 5px">
-                        <b>{{ $contract->certification_pac }}</b>
+                        <b>{!! $contract->certification_pac ?? '&nbsp;' !!}</b>
                     </td>
                 </tr>
                 <tr>
@@ -63,7 +63,7 @@
                 @php
                     $contract_duration = contract_duration_calculate($contract->start, $contract->finish);
                     $salary = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
-                    $total = ($salary *$contract_duration->months) + (($salary /30) *$contract_duration->days);
+                    $total = ($salary *$contract_duration->months) + (number_format($salary /30, 3) *$contract_duration->days);
                 @endphp
                 <tr>
                     <td>7.</td>

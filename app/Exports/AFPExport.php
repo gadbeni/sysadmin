@@ -7,12 +7,13 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Illuminate\Support\Str;
 
 // Models
 use App\Models\Period;
 
-class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings
+class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, WithTitle
 {
     function __construct($data, $type) {
         $this->data = $data;
@@ -102,7 +103,6 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings
                 }
 
                 array_push($data, [
-                    'A' => $cont,
                     'B' => 'CI',
                     'C' => $item[0]->contract->person->ci,
                     'D' => count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '',
@@ -128,10 +128,33 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings
     public function headings(): array
     {
         if($this->type == 1){
-            return [];
-        }else{
             return [
                 'No',
+                'Tipo',
+                'Numero',
+                'EXP.',
+                'NUA / CUA',
+                'Primer Papellido (Paterno)',
+                'Primer Papellido (Materno)',
+                'Apellido Casada',
+                'Primer Nombre',
+                'Segundo Nombre',
+                'Departamento',
+                'Novedad (I/R/L/S)',
+                'Fecha Novedad dd/mm/aaaa',
+                'Dias Cotizados',
+                'Tipo de Asegurado',
+                'Total Ganado dep. o aseg. < 65 Aporta',
+                'Total Ganado dep. o aseg. > 65 Aporta',
+                'Total Ganado aseg. con pens. < 65 no Aporta',
+                'Total Ganado aseg. con pens. > 65 no Aporta',
+                'Cotizacion Adicional',
+                'Total Ganado Bs. Vivienda',
+                'Total Ganado Bs. Fondo Social',
+                'Total Ganado Bs.(minero)'
+            ];
+        }else{
+            return [
                 'Tipo Doc',
                 'Numero Documento',
                 'Alfa Numero',
@@ -155,20 +178,16 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings
     {
         if($this->type == 1){
             return [
-                'M' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-                // 'N' => NumberFormat::FORMAT_NUMBER,
-                // 'P' => NumberFormat::FORMAT_NUMBER,
-                // 'Q' => NumberFormat::FORMAT_NUMBER,
-                // 'R' => NumberFormat::FORMAT_NUMBER,
-                // 'S' => NumberFormat::FORMAT_NUMBER,
-                // 'T' => NumberFormat::FORMAT_NUMBER,
-                // 'U' => NumberFormat::FORMAT_NUMBER,
-                // 'V' => NumberFormat::FORMAT_NUMBER,
-                // 'W' => NumberFormat::FORMAT_NUMBER,
+                'M' => NumberFormat::FORMAT_DATE_DDMMYYYY
             ];
         }
 
         return [];
+    }
+
+    public function title(): string
+    {
+        return 'hoja 1';
     }
     
     function format_string($cadena){

@@ -37,6 +37,7 @@
                 <li><em>Ley N&deg; 1413 de 17 de diciembre de 2021, Presupuesto General del Estado - Gesti&oacute;n 2022.</em></li>
                 <li><em>Decreto Supremo No 4646 de 29 de diciembre de 2021, art&iacute;culo 13.</em></li>
                 <li><em>Reglamento Interno de Personal del Gobierno Aut&oacute;nomo Departamental de Beni, en todo lo que sea aplicable y compatible con la naturaleza jur&iacute;dica de este contrato.</em></li>
+                <li><em>Decreto supremo Nro. 12/2009, artículo 5, parágrafo II.</em></li>
             </ul>
         </p>
         <p><em>En ese marco {!! $contract->person->gender == 'masculino' ? 'el <b>CONTRATADO</b>' : 'la <b>CONTRATADA</b>' !!} no estar&aacute; bajo el r&eacute;gimen de la Ley General del Trabajo ni el Decreto Reglamentario 224 de fecha 23 de agosto de 1943.</em></p>
@@ -75,10 +76,6 @@
         <p><em>El contrato se tendr&aacute; por resuelto por Cumplimiento del mismo, caso en el cual tanto la <b>ENTIDAD</b> como {!! $contract->person->gender == 'masculino' ? 'el <b>CONTRATADO</b>' : 'la <b>CONTRATADA</b>' !!}, dar&aacute;n por terminado el presente Contrato, una vez que ambas partes hayan dado cumplimiento a todas y cada una de las cl&aacute;usulas contenidas en el mismo sin necesidad de comunicaci&oacute;n expresa. No obstante el contrato podr&aacute; resolverse antes de la fecha de conclusi&oacute;n por las siguientes causales, en forma directa y sin necesidad requerimiento Judicial y/o administrativo alguno:</em></p>
         <p><em><strong>1. Por resoluci&oacute;n de Contrato:</strong></em></p>
         <p><em>1.1. A requerimiento de la <b>GOBERNACI&Oacute;N</b>, por causales atribuibles {!! $contract->person->gender == 'masculino' ? 'al <b>CONTRATADO</b>' : 'a la <b>CONTRATADA</b>' !!} en base a Informe:</em></p>
-        
-        <div class="saltopagina"></div>
-        <div class="pt"></div>
-
         <p><em><strong>a)</strong></em><em> </em><em>Cuando {!! $contract->person->gender == 'masculino' ? 'el <b>CONTRATADO</b>' : 'la <b>CONTRATADA</b>' !!} en el desempe&ntilde;o de sus funciones ocasione da&ntilde;os y perjuicios al </em><em><strong>CONTRATANTE</strong></em><em> o a terceros en raz&oacute;n de su cargo.</em></p>
         <p><em><strong>b)</strong></em><em> Cuando {!! $contract->person->gender == 'masculino' ? 'el <b>CONTRATADO</b>' : 'la <b>CONTRATADA</b>' !!}, incumpla total o parcialmente los t&eacute;rminos establecidos en el presente contrato, las obligaciones propias del cargo, &oacute;rdenes superiores o demuestre negligencia, falta de inter&eacute;s en el cumplimiento de sus funciones o desarrolle labores que no contribuyan al cumplimiento de los Objetivos del &aacute;rea funcional del cual depende, en este caso el inmediato superior realizar&aacute; la evaluaci&oacute;n correspondiente, mediante la emisi&oacute;n del informe pertinente a la funci&oacute;n que desempe&ntilde;a, en base a los cuales la <b>ENTIDAD</b> Se reserva de manera unilateral la facultad de resolver el presente contrato.</em></p>
         <p><em><strong>c)</strong></em><em> Inasistencia injustificada de m&aacute;s de tres (3) d&iacute;as h&aacute;biles consecutivos o seis (6) d&iacute;as h&aacute;biles discontinuos en un (1) mes. </em></p>
@@ -88,6 +85,10 @@
         <p><em><strong>g)</strong></em><em> Por infracci&oacute;n de las normas internas que rigen en la <b>ENTIDAD</b> (Reglamento Interno de Personal - RIP) y otras causales previstas en la normativa legal aplicable.</em></p>
         <p><em>En todos los casos ser&aacute; suficiente una comunicaci&oacute;n escrita con quince (15) d&iacute;as de anticipaci&oacute;n, mediante nota o memor&aacute;ndum </em><em>{!! $contract->person->gender == 'masculino' ? 'al <b>CONTRATADO</b>' : 'a la <b>CONTRATADA</b>' !!}</em><em> por parte del </em><em><strong>CONTRATANTE</strong></em><em> a trav&eacute;s de la Direcci&oacute;n de Recursos Humanos.</em></p>
         <p><em>También opera la resolución por voluntad {!! $contract->person->gender == 'masculino' ? 'del <b>CONTRATADO</b>' : 'de la <b>CONTRATADA</b>' !!} comunicada a la INSTITUCIÓN para aceptación de mutuo acuerdo.</em></p>
+        
+        <div class="saltopagina"></div>
+        <div class="pt"></div>
+        
         <p><em><strong>CLÁUSULA D&Eacute;CIMA: (DERECHOS Y OBLIGACIONES {{ $contract->person->gender == 'masculino' ? 'DEL CONTRATADO' : 'DE LA CONTRATADA' }})</strong></em></p>
         <ul>
             <li><em>Cumplir lo dispuesto en la Constituci&oacute;n Pol&iacute;tica del Estado, Leyes, Decretos y Resoluciones Nacionales y Departamentales.</em></li>

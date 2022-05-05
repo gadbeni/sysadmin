@@ -96,9 +96,10 @@ class ReportsController extends Controller
 
     public function paymentschedules_details_status_list(Request $request){
         $period = Period::where('id', $request->period_id)->first();
-        $payments = PaymentschedulesDetail::with(['paymentschedule', 'contract.person', 'contract.job', 'contract.cargo', 'contract.type', 'contract.program', 'contract.direccion_administrativa', 'contract.unidad_administrativa', 'payment'])
+        $grouped = $request->grouped;
+        $payments = PaymentschedulesDetail::with(['paymentschedule.direccion_administrativa', 'contract.person', 'contract.job', 'contract.cargo', 'contract.type', 'contract.program', 'contract.direccion_administrativa', 'contract.unidad_administrativa', 'payment'])
                         ->whereHas('paymentschedule', function($q) use ($request){
-                            $q->where('period_id', $request->period_id)->where('status', 'habilitada')->where('deleted_at', NULL);
+                            $q->where('period_id', $request->period_id)->where('deleted_at', NULL);
                         })
                         ->whereHas('paymentschedule', function($q) use ($request){
                             $q->whereRaw($request->direccion_administrativa_id ? 'direccion_administrativa_id = '.$request->direccion_administrativa_id : 1);
@@ -107,12 +108,10 @@ class ReportsController extends Controller
                             $q->whereRaw($request->procedure_type_id ? 'procedure_type_id = '.$request->procedure_type_id : 1);
                         })
                         ->where('status', '<>', 'anulado')->where('deleted_at', NULL)->get();
-        // dd($payments);
-
         if($request->print){
-            return view('reports.paymentschedules.paymentschedules_details_status-print', compact('payments', 'period'));
+            return view('reports.paymentschedules.paymentschedules_details_status-print', compact('payments', 'period', 'grouped'));
         }else{
-            return view('reports.paymentschedules.paymentschedules_details_status-list', compact('payments'));
+            return view('reports.paymentschedules.paymentschedules_details_status-list', compact('payments', 'grouped'));
         }
     }
 

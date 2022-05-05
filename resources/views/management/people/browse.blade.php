@@ -84,6 +84,15 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label>Destino</label>
+                            <select name="destiny_dependency" class="form-control select2" required>
+                                <option selected disabled value="">--Seleccione el destino--</option>
+                                @foreach (\App\Models\UnidadAdministrativa::where('Estado', 1)->get() as $item)
+                                    <option value="{{ $item->Nombre }}">{{ $item->Nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>Responsable</label>
                             <select name="responsible_id" class="form-control select2">
                                 <option selected disabled value="">--Seleccione al reponsable--</option>

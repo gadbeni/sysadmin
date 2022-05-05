@@ -74,7 +74,15 @@
             <p style="text-align: center"><u><b>ROTACIÓN</b></u></p>
             <br>
             <p>
-                En aplicación del art. 30 del D.S. 26115 y cláusula sexta (condiciones) del contrato administrativo de personal eventual suscrito con la GAD BENI, así como el  Art. 11 del Reglamento Interno de Personal: <b>ROTACIÓN Y MOVILIDAD DE PERSONAL</b>, se le comunica que a requerimiento del o la <b>{{ Str::upper($rotation->destiny_job) }}</b>, Usted a partir de la fecha está siendo rotado a la <b>{{ Str::upper($rotation->destiny_dependency) }}</b>, debiendo presentarse inmediatamente ante él o la DIRECTO (A) de dicha dependencia, a objeto de recibir las respectivas instrucciones. Dejando claramente establecido que la presente rotación, no afectara su remuneración y/o nivel salarial, ni las condiciones establecidas en el contrato suscrito.
+                En aplicación del art. 30 del D.S. 26115 
+                @if ($rotation->contract->procedure_type_id == 5)
+                y cláusula sexta (condiciones) del contrato administrativo de personal eventual suscrito con la GAD BENI,    
+                @endif
+                 así como el  Art. 11 del Reglamento Interno de Personal: <b>ROTACIÓN Y MOVILIDAD DE PERSONAL</b>, se le comunica que a requerimiento del o la <b>{{ Str::upper($rotation->destiny_job) }}</b>, Usted a partir de la fecha está siendo rotado a la <b>{{ Str::upper($rotation->destiny_dependency) }}</b>, debiendo presentarse inmediatamente ante él o la DIRECTO (A) de dicha dependencia, a objeto de recibir las respectivas instrucciones. Dejando claramente establecido que la presente rotación, no afectara su remuneración y/o nivel salarial
+                @if ($rotation->contract->procedure_type_id == 5)
+                 , ni las condiciones establecidas en el contrato suscrito
+                @endif
+                .
             </p>
             <br>
             <p>

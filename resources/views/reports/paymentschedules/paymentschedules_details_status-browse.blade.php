@@ -47,6 +47,9 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                    <div class="form-group text-right">
+                                        <label class="checkbox-inline"><input type="checkbox" name="grouped" value="1">Agrupar por dirección administrativas</label>
+                                    </div>
                                     <div class="text-right">
                                         <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
                                     </div>
