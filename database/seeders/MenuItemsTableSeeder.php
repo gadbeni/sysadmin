@@ -1075,6 +1075,22 @@ class MenuItemsTableSeeder extends Seeder
                 'route' => 'reports.paymentschedules.details.status.index',
                 'parameters' => NULL,
             ),
+            66 => 
+            array (
+                'id' => 69,
+                'menu_id' => 1,
+                'title' => 'Tipos de inamovilidad',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => 'voyager-lock',
+                'color' => NULL,
+                'parent_id' => 29,
+                'order' => 12,
+                'created_at' => '2022-05-10 10:29:11',
+                'updated_at' => '2022-05-10 10:29:29',
+                'route' => 'voyager.irremovability-types.index',
+                'parameters' => NULL,
+            ),
         ));
         
         

@@ -76,6 +76,11 @@ class RolesTableSeeder extends Seeder
             $role->fill(['display_name' => 'Técnico'])->save();
         }
 
+        $role = Role::firstOrNew(['name' => 'rrhh_tecnico_consultoria']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Técnico'])->save();
+        }
+
         // Administrativo
         $role = Role::firstOrNew(['name' => 'administrativo_director']);
         if (!$role->exists) {

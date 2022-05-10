@@ -46,6 +46,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('people/{id}', [PeopleController::class, 'read'])->name('voyager.people.show');
     Route::post('people/{id}/rotation', [PeopleController::class, 'rotation_store'])->name('people.rotation.store');
     Route::get('people/rotation/{id}', [PeopleController::class, 'rotation_print']);
+    Route::post('people/{id}/irremovability', [PeopleController::class, 'irremovability_store'])->name('people.irremovability.store');
 
     Route::post('cashiers/store', [CashiersController::class, 'store'])->name('cashiers.store');
     Route::delete('cashiers/destroy/{id}', [CashiersController::class, 'destroy'])->name('voyager.cashiers.destroy');
@@ -117,7 +118,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     // *Pagos
     Route::get('social-security/payments', [SocialSecurityController::class, 'payments_index'])->name('payments.index');
-    Route::get('social-security/payments/list', [SocialSecurityController::class, 'payments_list'])->name('payments.list');
+    Route::get('social-security/payments/list/{search?}', [SocialSecurityController::class, 'payments_list'])->name('payments.list');
     Route::get('social-security/payments/create', [SocialSecurityController::class, 'payments_create'])->name('payments.create');
     Route::post('social-security/payments/store', [SocialSecurityController::class, 'payments_store'])->name('payments.store');
     Route::get('social-security/payments/{payment}', [SocialSecurityController::class, 'payments_show'])->name('payments.show');

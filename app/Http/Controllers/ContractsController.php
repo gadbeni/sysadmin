@@ -69,6 +69,7 @@ class ContractsController extends Controller
                             ->OrWhereRaw($search ? "status like '%$search%'" : 1);
                         }
                     })
+                    ->whereRaw(Auth::user()->role_id == 25 ? 'procedure_type_id = 2' : 1)
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
         // dd($data);
         return view('management.contracts.list', compact('data', 'search'));
@@ -93,7 +94,9 @@ class ContractsController extends Controller
         if(($role_id >= 9 && $role_id <= 12) || ($role_id >= 16 && $role_id <= 18) || $direccion_administrativa_id) $ids .= "5,";
 
         $ids = substr($ids, 0, -1);
-        $procedure_type = ProcedureType::where('deleted_at', NULL)->whereRaw($ids ? "id in ($ids)" : 1)->get();
+        $procedure_type = ProcedureType::where('deleted_at', NULL)
+                            ->whereRaw(Auth::user()->role_id == 25 ? 'id = 2' : 1)
+                            ->whereRaw($ids ? "id in ($ids)" : 1)->get();
 
         $people = Person::where('deleted_at', NULL)
                     ->whereRaw("id not in (select person_id from contracts where status <> 'concluido' and deleted_at is null)")

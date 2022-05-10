@@ -163,11 +163,11 @@ class PaymentschedulesController extends Controller
                                                 Paymentschedule::where('period_id', $request->period_id)
                                                     ->where('procedure_type_id', $request->procedure_type_id)
                                                     ->where('centralize', 1)->where('centralize_code', '<>', NULL)->where('id', '<>', $paymentschedule->id)
-                                                    ->where('aditional', 1)->where('status', 'procesada')->where('deleted_at', NULL)->first() :
+                                                    ->where('aditional', 1)->where('status', 'procesada')->where('deleted_at', NULL)->orderBy('id', 'DESC')->first() :
                                                 Paymentschedule::where('period_id', $request->period_id)
                                                     ->where('procedure_type_id', $request->procedure_type_id)
                                                     ->where('centralize', 1)->where('centralize_code', '<>', NULL)->where('id', '<>', $paymentschedule->id)
-                                                    ->where('deleted_at', NULL)->first();
+                                                    ->where('deleted_at', NULL)->orderBy('id', 'DESC')->first();
                 // Si ya existen planillas centralizadas para ese periodo y tipo de planilla
                 if($centralize_paymentschedule){
                     $paymentschedule->centralize_code = $centralize_paymentschedule->centralize_code;

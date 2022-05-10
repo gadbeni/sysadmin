@@ -62,7 +62,7 @@
     {{-- Modal rotation --}}
     <form id="rotation-form" action="#" method="post">
         @csrf
-        <div class="modal modal-primary fade" tabindex="-1" id="delete-rotation" role="dialog">
+        <div class="modal modal-primary fade" tabindex="-1" id="modal-rotation" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -87,6 +87,9 @@
                             <label>Destino</label>
                             <select name="destiny_dependency" class="form-control select2" required>
                                 <option selected disabled value="">--Seleccione el destino--</option>
+                                @foreach (\App\Models\DireccionAdministrativa::where('Estado', 1)->get() as $item)
+                                    <option value="{{ $item->NOMBRE }}">{{ $item->NOMBRE }}</option>
+                                @endforeach
                                 @foreach (\App\Models\UnidadAdministrativa::where('Estado', 1)->get() as $item)
                                     <option value="{{ $item->Nombre }}">{{ $item->Nombre }}</option>
                                 @endforeach
@@ -108,7 +111,49 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" class="btn btn-primary" value="Guardar">
+                        <input type="submit" class="btn btn-dark" value="Guardar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {{-- Modal rotation --}}
+    <form id="irremovability-form" action="#" method="post">
+        @csrf
+        <div class="modal modal-primary fade" tabindex="-1" id="modal-irremovability" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-forward"></i> Registrar inamovilidad</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Destino</label>
+                            <select name="irremovability_type_id" class="form-control select2" required>
+                                <option selected disabled value="">--Seleccione el tipo de inamovilidad--</option>
+                                @foreach (\App\Models\IrremovabilityType::where('status', 'activo')->get() as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de rotación</label>
+                            <input type="date" name="start" class="form-control" value="{{ date('Y-m-d') }}" required >
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de rotación</label>
+                            <input type="date" name="finish" class="form-control" required >
+                        </div>
+                        <div class="form-group">
+                            <label>Observaciones</label>
+                            <textarea name="observations" class="form-control" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark" value="Guardar">
                     </div>
                 </div>
             </div>

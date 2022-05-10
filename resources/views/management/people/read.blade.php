@@ -74,7 +74,7 @@
                                 <h3 class="panel-title">Telefono</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $person->phone }}</p>
+                                <p>{{ $person->phone ?? 'No definido' }}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>
@@ -92,7 +92,7 @@
                                 <h3 class="panel-title">Email</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $person->email }}</p>
+                                <p>{{ $person->email ?? 'No definido' }}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>
@@ -137,6 +137,45 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Historial de inamovilidades</h3>
+                            </div>
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>N&deg;</th>
+                                        <th>Tipo</th>
+                                        <th>Inicio</th>
+                                        <th>Fin</th>
+                                        <th>Observaciones</th>
+                                        <th class="text-right">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $cont = 1;
+                                    @endphp
+                                    @foreach ($person->irremovabilities as $item)
+                                        <tr>
+                                            <td>{{ $cont }}</td>
+                                            <td>{{ $item->type->name }}</td>
+                                            <td>{{ date('d/m/Y', strtotime($item->start)) }}</td>
+                                            <td>{{ date('d/m/Y', strtotime($item->finish)) }}</td>
+                                            <td>{{ $item->observations }}</td>
+                                            <td class="text-right">
+                                                
+                                            </td>
+                                        </tr>
+                                        @php
+                                            $cont++;
+                                        @endphp
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel-heading" style="border-bottom:0;">
                                 <h3 class="panel-title">Historial de rotaciones</h3>
                             </div>
                             <table class="table table-bordered table-hover">
@@ -151,10 +190,13 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        $cont = 1;
+                                        $cont = 0;
                                     @endphp
                                     @foreach ($person->contracts as $contract)
                                         @foreach ($contract->rotations as $rotation)
+                                            @php
+                                                $cont++;
+                                            @endphp
                                             <tr>
                                                 <td>{{ $cont }}</td>
                                                 <td>{{ date('d/m/Y', strtotime($rotation->date)) }}</td>
@@ -164,11 +206,13 @@
                                                     <a href="{{ url('admin/people/rotation/'.$rotation->id) }}" class="btn btn-default btn-sm" target="_blank"><i class="glyphicon glyphicon-print"></i> Imprimir</a>
                                                 </td>
                                             </tr>
-                                            @php
-                                                $cont++;
-                                            @endphp
                                         @endforeach
                                     @endforeach
+                                    @if ($cont == 0)
+                                        <tr>
+                                            <td colspan="5">No hay datos disponible</td>
+                                        </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>

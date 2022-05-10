@@ -379,6 +379,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2022-02-17 14:59:11',
                 'updated_at' => '2022-03-09 05:16:52',
             ),
+            20 => 
+            array (
+                'id' => 22,
+                'name' => 'irremovability_types',
+                'slug' => 'irremovability-types',
+                'display_name_singular' => 'Tipo de inamovilidad',
+                'display_name_plural' => 'Tipos de inamovilidad',
+                'icon' => 'voyager-lock',
+                'model_name' => 'App\\Models\\IrremovabilityType',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2022-05-10 10:29:11',
+                'updated_at' => '2022-05-10 10:37:21',
+            ),
         ));
         
         

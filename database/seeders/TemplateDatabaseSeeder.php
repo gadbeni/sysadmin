@@ -36,5 +36,6 @@ class TemplateDatabaseSeeder extends Seeder
         $this->call(DireccionesTiposTableSeeder::class);
         $this->call(DireccionesTableSeeder::class);
         $this->call(UnidadesTableSeeder::class);
+        $this->call(IrremovabilityTypesTableSeeder::class);
     }
 }

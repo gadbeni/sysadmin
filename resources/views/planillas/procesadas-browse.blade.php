@@ -34,7 +34,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group text-right">
-                                        <label class="radio-inline"><input type="radio" name="type_system_alt" value="0" checked>Actual sistema</label>
+                                        <label class="radio-inline"><input type="radio" name="type_system_alt" value="0" checked>Antiguo sistema</label>
                                         <label class="radio-inline"><input type="radio" name="type_system_alt" value="1">Nuevo sistema</label>
                                     </div>
                                     <div class="text-right">
@@ -83,7 +83,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group text-right">
-                                        <label class="radio-inline"><input type="radio" name="type_system" value="0" checked>Actual sistema</label>
+                                        <label class="radio-inline"><input type="radio" name="type_system" value="0" checked>Antiguo sistema</label>
                                         <label class="radio-inline"><input type="radio" name="type_system" value="1">Nuevo sistema</label>
                                     </div>
                                     <div class="text-right">

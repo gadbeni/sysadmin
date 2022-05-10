@@ -78,7 +78,7 @@
                         </td>
                         <td>
                             {{ $item->user ? $item->user->name : '' }} <br>
-                            {{ date('d/m/Y', strtotime($item->created_at)) }} <br>
+                            {{ date('d/m/Y H:i', strtotime($item->created_at)) }} <br>
                             <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
                         </td>
                         <td class="no-sort no-click bread-actions text-right">

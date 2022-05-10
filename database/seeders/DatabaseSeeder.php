@@ -33,5 +33,11 @@ class DatabaseSeeder extends Seeder
         // $this->call(JobsTableSeeder::class);
         // $this->call(ProgramsTableSeeder::class);
         // $this->call(OfficesTableSeeder::class);
+        // $this->call(ChecksCategoriesTableSeeder::class);
+        // $this->call(SeniorityBonusTypesTableSeeder::class);
+        // $this->call(DireccionesTiposTableSeeder::class);
+        // $this->call(DireccionesTableSeeder::class);
+        // $this->call(UnidadesTableSeeder::class);
+        // $this->call(IrremovabilityTypesTableSeeder::class);
     }
 }

@@ -27,4 +27,8 @@ class Person extends Model
     public function city(){
         return $this->belongsTo(City::class);
     }
+
+    public function irremovabilities(){
+        return $this->hasMany(PersonIrremovability::class);
+    }
 }

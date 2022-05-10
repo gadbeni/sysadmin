@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use DataTables;
 use Carbon\Carbon;
 
 // Models
@@ -272,65 +271,25 @@ class SocialSecurityController extends Controller
     }
 
     public function payments_list(){
+        $paginate = request('paginate') ?? 10;
         $data = PayrollPayment::with(['planilla_haber', 'planilla_haber.tipo', 'planilla_haber.planilla_procesada', 'spreadsheet', 'paymentschedule.details', 'paymentschedule.procedure_type', 'paymentschedule.period'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
-                    ->where('deleted_at', NULL)->get();
-        // return $data;
+                    ->where('deleted_at', NULL)->orderBy('id', 'DESC')
+                    // ->where(function($query) use ($search){
+                    //     if($search){
+                    //         $query->OrwhereHas('beneficiary', function($query) use($search){
+                    //             $query->whereRaw($search ? 'full_name like "%'.$search.'%"' : 1);
+                    //         })
+                    //         ->OrWhereHas('user', function($query) use($search){
+                    //             $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                    //         })
+                    //         ->OrWhereRaw($search ? '(number like "'.$search.'%" or REPLACE(amount, ".", ",") like "'.$search.'%")' : 1);
+                    //     }
+                    // })
+                    ->paginate($paginate);
+        // dd($data);
 
-        return
-            Datatables::of($data)
-            ->addColumn('checkbox', function($row){
-                return '<div><input type="checkbox" name="id[]" onclick="checkId()" value="'.$row->id.'" '.($row->spreadsheet_id ? 'disabled' : '').' /></div>';
-            })
-            ->addColumn('planilla_id', function($row){                    
-                if($row->planilla_haber){
-                    return  '<b>'.($row->planilla_haber->tipo ? $row->planilla_haber->tipo->Nombre : 'No definido').' - '.$row->planilla_haber->Periodo.'</b> <br><small>Planilla: </small>'.$row->planilla_haber->idPlanillaprocesada.' - '.($row->planilla_haber->Afp == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($row->planilla_haber->planilla_procesada ? $row->planilla_haber->planilla_procesada->Monto : 0, 2, ',', '.');
-                }elseif($row->paymentschedule){
-                    return  '<b>'.$row->paymentschedule->procedure_type->name.' - '.$row->paymentschedule->period->name.'</b> <br><small>Planilla: </small>'.str_pad($row->paymentschedule->id, 6, "0", STR_PAD_LEFT).' - '.($row->afp == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($row->paymentschedule->details->sum('partial_salary') + $row->paymentschedule->details->sum('seniority_bonus_amount'), 2, ',', '.');
-                }elseif($row->spreadsheet){
-                    return '<label class="label label-danger">Planilla manual</label> <br> <b>'.($row->spreadsheet->tipo_planilla_id == 1 ? 'Funcionamiento' : 'Inversión').' - '.$row->spreadsheet->year.str_pad($row->spreadsheet->month, 2, "0", STR_PAD_LEFT).'</b> <br> '.$row->spreadsheet->codigo_planilla.' - '.($row->spreadsheet->afp_id == 1 ? 'Futuro' : 'Previsión').'<br><small>Total ganado: </small>'.number_format($row->spreadsheet->total, 2, ',', '.');
-                }
-                return '';
-            })
-            ->addColumn('fpc_number', function($row){
-                if($row->fpc_number){
-                    $date = $row->date_payment_afp ? date('d/m/Y', strtotime($row->date_payment_afp)) : 'Pendiente';
-                    return $row->fpc_number.'<br>'.$date;
-                }else{
-                    return null;
-                }
-            })
-            ->addColumn('deposit_number', function($row){
-                if($row->deposit_number){
-                    $date = $row->date_payment_cc ? date('d/m/Y', strtotime($row->date_payment_cc)) : 'Pendiente';
-                    return $row->deposit_number.'<br>'.$date;
-                }else{
-                    return null;
-                }
-            })
-            ->addColumn('user', function($row){
-                return $row->user->name;
-            })
-            ->addColumn('created_at', function($row){
-                return date('d/m/Y H:i', strtotime($row->created_at)).'<br><small>'.Carbon::parse($row->created_at)->diffForHumans().'</small>';
-            })
-            ->addColumn('actions', function($row){
-                $actions = '
-                    <div class="no-sort no-click bread-actions text-right">
-                        <a href="'.route('payments.show', ['payment' => $row->id]).'" title="Ver" class="btn btn-sm btn-warning view">
-                            <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
-                        </a>
-                        <a href="'.route('payments.edit', ['payment' => $row->id]).'" title="Editar" class="btn btn-sm btn-info edit">
-                            <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
-                        </a>
-                        <button type="button" onclick="deleteItem('."'".route('payments.delete', ['payment' => $row->id])."'".')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
-                            <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
-                        </button>
-                    </div>';
-                return $actions;
-            })
-            ->rawColumns(['checkbox', 'planilla_id', 'fpc_number', 'deposit_number', 'user', 'created_at', 'actions'])
-            ->make(true);
+        return view('social-security.payments-list', compact('data'));
     }
 
     public function payments_show($id){

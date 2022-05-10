@@ -31,6 +31,8 @@
                         <th>N&deg;</th>
                         <th>Dirección administrativa</th>
                         <th style="text-align: right">Nro personas</th>
+                        <th style="text-align: right">Total días trabajados</th>
+                        <th style="text-align: right">Total bono antigüedad</th>
                         <th style="text-align: right">Total ganado</th>
                         <th style="text-align: right">Riesgo común<br>(1.71%)</th>
                         <th style="text-align: right">Vivienda<br>(2%)</th>
@@ -51,6 +53,8 @@
                             <td>{{ $cont }}</td>
                             <td>{{ count($item) > 0 ? $item[0]->paymentschedule->direccion_administrativa->NOMBRE : '' }}</td>
                             <td style="text-align: right">{{ $item->count() }}</td>
+                            <td style="text-align: right">{{ number_format($item->sum('partial_salary'), 2, ',', '.') }}</td>
+                            <td style="text-align: right">{{ number_format($item->sum('seniority_bonus_amount'), 2, ',', '.') }}</td>
                             <td style="text-align: right">{{ number_format($total_amount, 2, ',', '.') }}</td>
                             <td style="text-align: right">{{ number_format($item->sum('common_risk'), 2, ',', '.') }}</td>
                             <td style="text-align: right">{{ number_format($item->sum('housing_employer'), 2, ',', '.') }}</td>

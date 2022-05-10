@@ -16,11 +16,33 @@
                 @forelse ($data as $item)
                 <tr>
                     <td>{{ $item->id }}</td>
-                    <td>{{ $item->first_name }} {{ $item->last_name }} <br> <small>{{ $item->profession }}</small> </td>
+                    <td>
+                        <table>
+                            @php
+                                $image = asset('images/default.jpg');
+                                if($item->image){
+                                    $image = asset('storage/'.str_replace('.', '-cropped.', $item->image));
+                                }
+                            @endphp
+                            <tr>
+                                <td><img src="{{ $image }}" alt="{{ $item->first_name }} {{ $item->last_name }}" style="width: 60px; height: 60px; border-radius: 30px; margin-right: 10px"></td>
+                                <td>
+                                    {{ $item->first_name }} {{ $item->last_name }}
+                                    @php
+                                        $irremovability = $item->irremovabilities->where('start', '<=', date('Y-m-d'))->where('finish', '>=', date('Y-m-d'))->first();
+                                    @endphp
+                                    @if ($irremovability)
+                                    <label class="label label-danger" title="{{ $irremovability->type->name }}">Inamovible</label>
+                                    @endif
+                                    <br> <small>{{ $item->profession }}</small>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
                     <td>{{ $item->ci }}</td>
                     <td>{{ $item->city ? $item->city->name : 'No definido' }}</td>
                     <td>{{ $item->phone }}</td>
-                    <td>{{ $item->afp == 1 ? 'Futuro' : 'Previsión' }} <br> <small class="@if(!$item->afp_status) text-warning @elseif(!is_numeric($item->nua_cua) || strlen($item->nua_cua) != 8 ) text-danger @endif" >{{ $item->nua_cua }}</small> </td>
+                    <td>{{ $item->afp == 1 ? 'Futuro' : 'Previsión' }} <br> <small class="@if(!$item->afp_status) text-warning @elseif(!is_numeric($item->nua_cua) || strlen($item->nua_cua) < 8 ) text-danger @endif" >{{ $item->nua_cua }}</small> </td>
                     <td class="no-sort no-click bread-actions text-right">
                         <div class="btn-group" style="margin-right: 3px">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -28,7 +50,10 @@
                             </button>
                             <ul class="dropdown-menu" role="menu" style="left: -90px !important">
                                 @if (auth()->user()->hasPermission('rotation_people'))
-                                <li><a href="#" class="btn-rotation" data-url="{{ route('people.rotation.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#delete-rotation" >Rotar</a></li>
+                                <li><a href="#" class="btn-rotation" data-url="{{ route('people.rotation.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-rotation" >Rotar</a></li>
+                                @endif
+                                @if (auth()->user()->hasPermission('irremovability_people'))
+                                <li><a href="#" class="btn-irremovability" data-url="{{ route('people.irremovability.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-irremovability" >Inamovilidad</a></li>
                                 @endif
                             </ul>
                         </div>
@@ -89,6 +114,12 @@
             e.preventDefault();
             let url = $(this).data('url');
             $('#rotation-form').attr('action', url);
+        });
+
+        $('.btn-irremovability').click(function(e){
+            e.preventDefault();
+            let url = $(this).data('url');
+            $('#irremovability-form').attr('action', url);
         });
 
     });

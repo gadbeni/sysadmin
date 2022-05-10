@@ -66,10 +66,12 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('seniority_bonus_people');
         Permission::generateFor('paymentschedules');
         Permission::generateFor('imports');
+        Permission::generateFor('irremovability_types');
 
         // people
         $keys = [
-            'rotation_people'
+            'rotation_people',
+            'irremovability_people'
         ];
 
         foreach ($keys as $key) {

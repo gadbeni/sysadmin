@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use App\Models\Person;
 use App\Models\PersonRotation;
 use App\Models\Contract;
+use App\Models\PersonIrremovability;
 
 class PeopleController extends Controller
 {
@@ -31,16 +32,19 @@ class PeopleController extends Controller
                             ->OrWhereRaw($search ? "id = '$search'" : 1)
                             ->OrWhereRaw($search ? "first_name like '%$search%'" : 1)
                             ->OrWhereRaw($search ? "last_name like '%$search%'" : 1)
+                            ->OrWhereRaw($search ? "CONCAT(first_name, ' ', last_name) like '%$search%'" : 1)
                             ->OrWhereRaw($search ? "ci like '%$search%'" : 1)
+                            ->OrWhereRaw($search ? "nua_cua like '%$search%'" : 1)
                             ->OrWhereRaw($search ? "phone like '%$search%'" : 1);
                         }
                     })
+                    ->whereRaw(Auth::user()->direccion_administrativa_id ? "user_id = ".Auth::user()->user_id : 1)
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
         return view('management.people.list', compact('data'));
     }
 
     public function read($id){
-        $person = Person::with(['contracts.rotations'])->where('id', $id)->first();
+        $person = Person::with(['contracts.rotations', 'irremovabilities.type'])->where('id', $id)->first();
         return view('management.people.read', compact('person'));
     }
 
@@ -64,7 +68,7 @@ class PeopleController extends Controller
                 'observations' => $request->observations
             ]);
 
-            return redirect()->route('voyager.people.index')->with(['message' => 'Rotación reggistrada correctamente', 'alert-type' => 'success', 'rotation_id' => $rotation->id]);
+            return redirect()->route('voyager.people.index')->with(['message' => 'Rotación registrada correctamente', 'alert-type' => 'success', 'rotation_id' => $rotation->id]);
         } catch (\Throwable $th) {
             // dd($th);
             return redirect()->route('voyager.people.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
@@ -74,5 +78,22 @@ class PeopleController extends Controller
     public function rotation_print($id){
         $rotation = PersonRotation::with(['destiny', 'responsible', 'contract.person'])->find($id);
         return view('management.docs.permanente.rotation', compact('rotation'));
+    }
+
+    public function irremovability_store($id, Request $request){
+        try {
+            PersonIrremovability::create([
+                'person_id' => $id,
+                'user_id' => Auth::user()->id,
+                'irremovability_type_id' => $request->irremovability_type_id,
+                'start' => $request->start,
+                'finish' => $request->finish,
+                'observations' => $request->observations,
+            ]);
+            return redirect()->route('voyager.people.index')->with(['message' => 'Inamovilidad reggistrada correctamente', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            // dd($th);
+            return redirect()->route('voyager.people.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
     }
 }
