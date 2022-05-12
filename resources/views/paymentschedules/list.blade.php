@@ -83,7 +83,7 @@
                         </td>
                         <td class="no-sort no-click bread-actions text-right">
 
-                            @if ($item->status == 'procesada' && (auth()->user()->hasPermission('edit_paymentschedules') || Auth::user()->direccion_administrativa_id))
+                            @if ($item->status == 'procesada' && (auth()->user()->hasPermission('approve_paymentschedules') || Auth::user()->direccion_administrativa_id))
                                 <button type="button" data-id="{{ $item->id }}" class="btn btn-default btn-send" data-toggle="modal" data-target="#send-modal"><i class="glyphicon glyphicon-share-alt"></i> Enviar</button>
                             @endif
 

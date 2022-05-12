@@ -64,6 +64,7 @@ class PaymentschedulesController extends Controller
                             ->OrWhereRaw($search ? "centralize_code like '%".intval(explode('-', $search)[0])."-c%'" : 1);
                         }
                     })
+                    ->whereRaw(Auth::user()->role_id == 25 ? 'procedure_type_id = 2' : 1)
                     ->where('status', '!=', 'borrador')
                     ->where('status', '!=', 'anulada')
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
@@ -86,7 +87,6 @@ class PaymentschedulesController extends Controller
                             $q->whereRaw($direccion_administrativa_id ? "ID = $direccion_administrativa_id" : 1);
                         })
                         ->where('Estado', 1)->get();
-        // dd($tipo_da);
         return view('paymentschedules.edit-add', compact('tipo_da'));
     }
 

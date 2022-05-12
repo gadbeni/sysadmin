@@ -40,7 +40,6 @@ class ContractsController extends Controller
             Contract::where('finish', '<', $date)->update(['status' => 'concluido']);
         }
         
-
         return view('management.contracts.browse');
     }
 
@@ -70,6 +69,8 @@ class ContractsController extends Controller
                         }
                     })
                     ->whereRaw(Auth::user()->role_id == 25 ? 'procedure_type_id = 2' : 1)
+                    // Si el usuario pertenece a jurídico solo puede ver los contratos con estado enviado
+                    ->whereRaw(Auth::user()->role_id >= 19 && Auth::user()->role_id <= 21 ? 'status = "enviado"' : 1)
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
         // dd($data);
         return view('management.contracts.list', compact('data', 'search'));
@@ -360,6 +361,7 @@ class ContractsController extends Controller
                             ->whereHas('contracts', function($q) use ($id){
                                 $q->where('direccion_administrativa_id', $id);
                             })
+                            ->whereRaw(Auth::user()->role_id == 25 ? 'procedure_type_id = 2' : 1)
                             ->where('deleted_at', NULL)->get();
         return response()->json($tipo_planilla);
     }

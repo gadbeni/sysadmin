@@ -14,7 +14,7 @@
         </div>
         <div class="page-body">
             <p>
-                En el marco del D.S. N° 0181, Normas Básicas del Sistema de Administración de Bienes y Servicios, La Resolución Administrativa de Gobernación N&deg; 04/20225 de fecha 01 del mes de febrero del 2022, que desigan al RESPONSABLE DEL PROCESO DE CONTRATACIÓN DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO – RPA, AUTORIZÓ el inicio del proceso de contratación, de acuerdo al siguiente detalle:
+                En el marco del D.S. N° 0181, Normas Básicas del Sistema de Administración de Bienes y Servicios, La Resolución Administrativa de Gobernación N&deg; 04/2022 de fecha 01 del mes de febrero del 2022, que desigan al RESPONSABLE DEL PROCESO DE CONTRATACIÓN DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO – RPA, AUTORIZÓ el inicio del proceso de contratación, de acuerdo al siguiente detalle:
             </p>
 
             <table width="100%" style="margin-top: 20px" cellspacing="5">
@@ -63,7 +63,7 @@
                 @php
                     $contract_duration = contract_duration_calculate($contract->start, $contract->finish);
                     $salary = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
-                    $total = ($salary *$contract_duration->months) + (number_format($salary /30, 3) *$contract_duration->days);
+                    $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
                 @endphp
                 <tr>
                     <td>7.</td>

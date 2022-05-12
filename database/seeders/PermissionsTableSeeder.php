@@ -110,6 +110,7 @@ class PermissionsTableSeeder extends Seeder
         // Planillas
         $keys = [
             'read_centralize_paymentschedules',
+            'send_paymentschedules',
             'approve_paymentschedules',
             'enable_paymentschedules',
             'close_paymentschedules',
