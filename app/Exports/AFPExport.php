@@ -187,7 +187,7 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
 
     public function title(): string
     {
-        return 'hoja 1';
+        return 'Hoja1';
     }
     
     function format_string($cadena){

@@ -2,7 +2,7 @@
 
 @section('page_title', isset($contract) ? 'Editar contrato' : 'Crear contrato')
 
-@if (auth()->user()->hasPermission('create_contracts') || auth()->user()->hasPermission('edit_contracts'))
+@if (auth()->user()->hasPermission('add_contracts') || auth()->user()->hasPermission('edit_contracts'))
 
     @section('page_header')
         <h1 class="page-title">

@@ -191,7 +191,9 @@
                                         @foreach ($paymentschedule->check_payments as $check_payment)
                                             {{-- Mostar solo los cheques a los seguros de salud --}}
                                             @if (strpos(strtolower($check_payment->beneficiary->type->name), 'salud') !== false)
-                                            {{ $check_payment->number }} <br>
+                                                @if($check_payment->afp == $key)   
+                                                {{ $check_payment->number }} <br>
+                                                @endif
                                             @endif
                                         @endforeach
                                     </td>

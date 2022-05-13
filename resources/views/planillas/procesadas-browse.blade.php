@@ -17,9 +17,9 @@
                             <form id="form-search" action="{{ route('planillas.pagos.search') }}" method="post">
                                 @csrf
                                 <div class="form-group text-right">
-                                    <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="1" checked>Centralizada</label>
+                                    <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="1">Centralizada</label>
                                     <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="0">No centralizada</label>
-                                    <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="2">Por CI</label>
+                                    <label class="radio-inline"><input type="radio" name="tipo_planilla" class="radio-tipo_planilla" value="2" checked>Por CI</label>
                                 </div>
                                 {{-- Opciones que se despliegan cuando se hace check en la opción "No centralizada" --}}
                                 <div class="input-no-centralizada" style="display: none">
@@ -33,36 +33,13 @@
                                             <option value="2">Previsión</option>
                                         </select>
                                     </div>
-                                    <div class="form-group text-right">
-                                        <label class="radio-inline"><input type="radio" name="type_system_alt" value="0" checked>Antiguo sistema</label>
-                                        <label class="radio-inline"><input type="radio" name="type_system_alt" value="1">Nuevo sistema</label>
-                                    </div>
                                     <div class="text-right">
                                         <button type="submit" class="btn btn-info" style="margin-top: 0px; padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
                                     </div>
                                 </div>
 
-                                <div class="input-ci" style="display: none;">
-                                    <div class="input-group">
-                                        <input type="text" step="1" name="ci" class="form-control" placeholder="Cédula de Identidad">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-info" type="submit" style="margin-top: -1px; height: 35px; padding: 5px 15px"><i class="voyager-search"></i></button>
-                                        </span>
-                                    </div>
-                                    <select name="pagada" class="form-control select2" style="margin-bottom: 10px">
-                                        <option value="">Todos</option>
-                                        <option value="1">Pagos pendientes</option>
-                                    </select>
-                                    <div class="form-group text-right">
-                                        <label class="radio-inline"><input type="radio" name="type_system_ci" value="0" checked>Actual sistema</label>
-                                        <label class="radio-inline"><input type="radio" name="type_system_ci" value="1">Nuevo sistema</label>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                    <br>
-                                </div>
-                                
                                 {{-- Opciones que se despliegan cuando se hace check en la opción "Centralizada" --}}
-                                <div class="input-centralizada">
+                                <div class="input-centralizada" style="display: none;">
                                     <div class="form-group">
                                         {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
                                         <select name="t_planilla" class="form-control select2">
@@ -73,7 +50,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <input type="number" min="0" name="periodo" class="form-control" placeholder="Periodo"  />
+                                        <input type="number" min="0" name="periodo" class="form-control" placeholder="Periodo" />
                                     </div>
                                     <div class="form-group">
                                         <select name="afp" class="form-control select2">
@@ -82,13 +59,27 @@
                                             <option value="2">Previsión</option>
                                         </select>
                                     </div>
-                                    <div class="form-group text-right">
-                                        <label class="radio-inline"><input type="radio" name="type_system" value="0" checked>Antiguo sistema</label>
-                                        <label class="radio-inline"><input type="radio" name="type_system" value="1">Nuevo sistema</label>
-                                    </div>
                                     <div class="text-right">
                                         <button type="submit" class="btn btn-info" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
                                     </div>
+                                </div>
+
+                                {{-- Busqueda individual --}}
+                                <div class="input-ci">
+                                    <div class="form-group">
+                                        <select name="people_id" class="form-control" id="select-people_id" ></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="pagada" class="form-control select2" style="margin-bottom: 10px">
+                                            <option value="">Todos</option>
+                                            <option value="1">Pagos pendientes</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group text-right">
+                                    <label class="radio-inline"><input type="radio" name="type_system" value="0">Antiguo sistema</label>
+                                    <label class="radio-inline"><input type="radio" name="type_system" value="1" checked>Nuevo sistema</label>
                                 </div>
                             </form>
                         </div>
@@ -404,11 +395,53 @@
                     $('.btn-increment-ticket').attr('disabled', false);
                 }, 5000);
             })
+
+            $('#select-people_id').select2({
+                ajax: {
+                    url: "{{ url('admin/planillas/pagos/people/search') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            type: $('input[name="type_system"]:checked').val()
+                        };
+                    },
+                    processResults: function (data) {
+                        return {results: data};
+                    },
+                    cache: true
+                },
+                placeholder: 'Buscar planilla',
+                language: {
+                    inputTooShort: function (data) {
+                        return `Ingrese al menos ${data.minimum - data.input.length} caracteres`;
+                    }
+                },
+                minimumInputLength: 4,
+                templateResult: formatResult,
+                templateSelection: data => {
+                    if(data.first_name){
+                        return data.first_name+' '+data.last_name;
+                    }
+                }
+            }).change(function(){
+                let people_id = $('#select-people_id option:selected').val();
+                console.log(people_id)
+                if(people_id){
+                    getData();
+                }
+            });
+
+            $('input[name="type_system"]').click(function(){
+                $('#select-people_id').val('').trigger('change');
+            });
         });
 
         function getData(){
             $('#div-results').empty();
             $('#div-results').loading({message: 'Cargando...'});
+            console.log($('#form-search').serialize())
             $.post($('#form-search').attr('action'), $('#form-search').serialize(), function(res){
                 $('#div-results').html(res);
             })
@@ -444,8 +477,6 @@
             })
             $('.modal').modal('hide');
         }
-
-        
 
         function setValuePay(data, cashier, newSystem = false){
             let months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -497,6 +528,38 @@
 
         function setValueClose(id){
             $('#form-cerrar-planilla input[name="id"]').val(id);
+        }
+
+        function formatResult(data) {
+            if (data.loading) {
+                return 'Buscando...';
+            }
+
+            let image = "{{ asset('images/default.jpg') }}";
+            if(data.image){
+                image = "{{ asset('storage') }}/"+data.image.replace('.', '-cropped.');
+            }
+            var $container = $(
+                
+                `<div class="option-select2-custom">
+                    <div style="display:flex; flex-direction: row">
+                        <div>
+                            <img src="${image}" style="width: 60px; height: 60px; border-radius: 30px; margin-right: 10px" />
+                        </div>
+                        <div>
+                            <h5>
+                                ${data.first_name} ${data.last_name} <br>
+                                <p style="font-size: 13px; margin-top: 5px">
+                                    ${data.ci} ${data.profession ? ' - '+data.profession : ''} <br>
+                                </p>
+                            </h5>
+                        </div>
+                    </div>
+                    
+                </div>`
+            );
+
+            return $container;
         }
     </script>
 @stop

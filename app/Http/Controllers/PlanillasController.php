@@ -20,6 +20,7 @@ use App\Models\Paymentschedule;
 use App\Models\PaymentschedulesDetail;
 use App\Models\Period;
 use App\Models\ProcedureType;
+use App\Models\Person;
 
 class PlanillasController extends Controller
 {
@@ -110,29 +111,27 @@ class PlanillasController extends Controller
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
                                 ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
                                 ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
-                                ->where('p.CedulaIdentidad', $request->ci)
+                                ->where('p.CedulaIdentidad', $request->people_id)
                                 ->whereRaw($request->pagada ? 'p.pagada = '.$request->pagada : 1)
                                 ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
                                 ->orderBy("p.Periodo", "DESC")
                                 ->get();
-                $aguinaldo = Aguinaldo::with('payment.cashier.user')->where('ci', 'like', '%'. $request->ci.'%')->where('deleted_at', NULL)->get();
-                $stipend = Stipend::with('payment.cashier.user')->where('ci', 'like', '%'. $request->ci.'%')->where('deleted_at', NULL)->get();
+                $aguinaldo = Aguinaldo::with('payment.cashier.user')->where('ci', 'like', '%'. $request->people_id.'%')->where('deleted_at', NULL)->get();
+                $stipend = Stipend::with('payment.cashier.user')->where('ci', 'like', '%'. $request->people_id.'%')->where('deleted_at', NULL)->get();
 
-                $ci = $request->ci;
+                $people_id = $request->people_id;
                 $paymentschedule = PaymentschedulesDetail::with(['contract', 'paymentschedule.period', 'payment'])
                                         ->whereHas('paymentschedule', function($q){
                                             $q->where('deleted_at', NULL);
                                         })
-                                        ->whereHas('contract.person', function($q) use($ci){
-                                            $q->where('ci', $ci);
+                                        ->whereHas('contract.person', function($q) use($people_id){
+                                            $q->where('id', $people_id);
                                         })
-                                        ->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
-                // dd($paymentschedule);
-                
+                                        ->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();                
                 $title = '';
                 break;
         }
-        if($request->type_system == 1 || $request->type_system_alt == 1 || $request->type_system_ci == 1){
+        if($request->type_system == 1){
             return view('planillas.procesadas-search-alt', compact('paymentschedule', 'title', 'tipo_planilla'));
         }else{
             return view('planillas.procesadas-search', compact('planilla', 'tipo_planilla', 'title', 'aguinaldo', 'stipend', 'paymentschedule'));
@@ -466,5 +465,22 @@ class PlanillasController extends Controller
                                         })->where('deleted_at', NULL)->get();
 
         return response()->json(['planilla' => $planilla, 'paymentschedule_details' => $paymentschedule_details]);
+    }
+
+    public function planillas_pagos_people_search(){
+        $search = \Request::query('q');
+        $type = \Request::query('type');
+        if($type == 0){
+            $people = DB::connection('mysqlgobe')->table('contribuyente as p')
+                        ->whereRaw($search ? '(PNombre like "%'.$search.'%" || SNombre like "%'.$search.'%" || APaterno like "%'.$search.'%" || AMaterno like "%'.$search.'%" || REPLACE(NombreCompleto, "  ", " ") like "%'.$search.'%" || N_Carnet like "%'.$search.'%")' : 1)
+                        ->selectRaw('p.N_Carnet as id, CONCAT(p.PNombre, " ", p.SNombre) as first_name, CONCAT(p.APaterno, " ", p.AMaterno) as last_name, p.N_Carnet as ci, p.Profesion as profession')
+                        ->groupBy('p.N_Carnet')
+                        ->get();
+            return response()->json($people);
+        }else{
+            $people = Person::whereRaw($search ? '(first_name like "%'.$search.'%" || last_name like "%'.$search.'%" || CONCAT(first_name, " ", last_name) like "%'.$search.'%" || ci like "%'.$search.'%")' : 1)
+                            ->where('deleted_at', NULL)->get();
+        }
+        return response()->json($people);
     }
 }

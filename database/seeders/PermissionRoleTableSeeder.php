@@ -88,7 +88,8 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = "read_centralize_paymentschedules" or
                                                 `key` = "browse_people" or
                                                 `key` = "read_people" or
-                                                `key` = "irremovability_people"')->get();
+                                                `key` = "irremovability_people" or
+                                                `key` = "browse_contracts"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'prevision_jefe_seccion')->firstOrFail();
@@ -107,7 +108,8 @@ class PermissionRoleTableSeeder extends Seeder
                                                 table_name = "reports_social_security" or
                                                 `key` = "browse_people" or
                                                 `key` = "read_people" or
-                                                `key` = "irremovability_people"')->get();
+                                                `key` = "irremovability_people" or
+                                                `key` = "browse_contracts"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'prevision_tecnico')->firstOrFail();
@@ -134,7 +136,8 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = "add_spreadsheets" or
                                                 `key` = "browse_people" or
                                                 `key` = "read_people" or
-                                                `key` = "irremovability_people"')->get();
+                                                `key` = "irremovability_people" or
+                                                `key` = "browse_contracts"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $similar_permissions = 'table_name = "admin" or

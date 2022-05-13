@@ -35,7 +35,7 @@ class ContractsController extends Controller
      */
     public function index()
     {
-        if(false){
+        if(true){
             $date = date('Y-m-d');
             Contract::where('finish', '<', $date)->update(['status' => 'concluido']);
         }

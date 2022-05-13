@@ -88,6 +88,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('planillas/pagos/delete/print/{id}', [PlanillasController::class, 'planillas_pagos_delete_print']);
 
     Route::post('planillas/pagos/centralizada/search', [PlanillasController::class, 'planillas_pagos_centralizada_search'])->name('planillas.pagos.centralizada.search');
+    Route::get('planillas/pagos/people/search', [PlanillasController::class, 'planillas_pagos_people_search']);
 
     // Planillas de pagos
     Route::resource('paymentschedules', PaymentschedulesController::class);
