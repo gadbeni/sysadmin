@@ -40,8 +40,8 @@
                         {{-- {{ dd($item) }} --}}
                         <tr>
                             <td>{{ $cont }}</td>
-                            <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->NOMBRE : 'No definida' }}</td>
-                            <td>{{ $item->unidad_administrativa ? $item->unidad_administrativa->Nombre : '' }}</td>
+                            <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->nombre : 'No definida' }}</td>
+                            <td>{{ $item->unidad_administrativa ? $item->unidad_administrativa->nombre : '' }}</td>
                             <td>{{ $item->code }}</td>
                             <td>{{ $item->type->name }}</td>
                             <td>{{ $item->person->first_name }} </td>
@@ -75,7 +75,7 @@
                                 @endif
                             </td>
                             <td>{{ date('d/m/Y', strtotime($item->start)) }}</td>
-                            <td>{{ date('d/m/Y', strtotime($item->finish)) }}</td>
+                            <td>{{ $item->finish ? date('d/m/Y', strtotime($item->finish)) : '' }}</td>
                             <td>{{ $item->program->name }}</td>
                             <td>{{ $item->program->programatic_category }}</td>
                             <td>{{ $item->status }}</td>

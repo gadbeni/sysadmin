@@ -22,7 +22,7 @@
                                 <label class="label label-danger" title="Centralizada">{{ str_pad($item->centralize_code, 6, "0", STR_PAD_LEFT) }}</label>
                             @endif
                         </td>
-                        <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
+                        <td>{{ $item->direccion_administrativa->nombre }}</td>
                         <td>{{ $item->procedure_type->name }} <br> <b>{{ $item->period->name }}</b></td>
                         <td>
                             {{ $item->details->count() }} Personas<br>

@@ -92,7 +92,7 @@
         </div>
         <table width="100%" border="1" cellpadding="5" style="font-size: 12px">
             <tr>
-                <td><b style="font-size: 15px">{{ $planilla ? $planilla->Direccion_Administrativa : $payment->paymentschedulesdetail->paymentschedule->direccion_administrativa->NOMBRE }}</b></td>
+                <td><b style="font-size: 15px">{{ $planilla ? $planilla->Direccion_Administrativa : $payment->paymentschedulesdetail->paymentschedule->direccion_administrativa->nombre }}</b></td>
                 <td style="width: 180px"><b>ITEM:</b> {{ $planilla ? $planilla->ITEM : $payment->paymentschedulesdetail->item }}</td>
             </tr>
             <tr>

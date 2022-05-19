@@ -31,7 +31,7 @@ class SocialSecurityController extends Controller
 
     public function checks_list($search = null){
         $paginate = request('paginate') ?? 10;
-        $data = ChecksPayment::with(['user', 'beneficiary.type', 'planilla_haber.tipo', 'spreadsheet', 'derivations.office', 'paymentschedule.procedure_type', 'paymentschedule.period'])
+        $data = ChecksPayment::with(['user', 'beneficiary.type', 'planilla_haber.tipo', 'spreadsheet', 'derivations.office', 'paymentschedule.procedure_type', 'paymentschedule.period', 'paymentschedule.direccion_administrativa'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')
                     ->where(function($query) use ($search){
@@ -42,11 +42,22 @@ class SocialSecurityController extends Controller
                             ->OrWhereHas('user', function($query) use($search){
                                 $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
                             })
+                            ->OrWhereHas('paymentschedule.procedure_type', function($query) use($search){
+                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                            })
+                            ->OrWhereHas('paymentschedule.period', function($query) use($search){
+                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                            })
+                            ->OrWhereHas('paymentschedule.direccion_administrativa', function($query) use($search){
+                                $query->whereRaw($search ? 'nombre like "%'.$search.'%"' : 1);
+                            })
+                            ->OrWhereHas('paymentschedule', function($query) use($search){
+                                $query->whereRaw($search ? 'id = "'.intval($search).'"' : 1);
+                            })
                             ->OrWhereRaw($search ? '(number like "'.$search.'%" or REPLACE(amount, ".", ",") like "'.$search.'%")' : 1);
                         }
                     })
                     ->paginate($paginate);
-        // dd($data);
         return view('social-security.checks-list', compact('data', 'search'));
     }
 
@@ -200,7 +211,7 @@ class SocialSecurityController extends Controller
 
     public function checks_edit($id){
         $type = 'edit';
-        $data = ChecksPayment::with('spreadsheet')->where('id', $id)->where('deleted_at', NULL)->first();
+        $data = ChecksPayment::with('spreadsheet', 'paymentschedule')->where('id', $id)->where('deleted_at', NULL)->first();
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $data->planilla_haber_id)->first();
         return view('social-security.checks-edit-add', compact('type', 'id', 'data', 'planilla'));
     }
@@ -272,10 +283,26 @@ class SocialSecurityController extends Controller
 
     public function payments_list($search = null){
         $paginate = request('paginate') ?? 10;
-        $data = PayrollPayment::with(['planilla_haber', 'planilla_haber.tipo', 'planilla_haber.planilla_procesada', 'spreadsheet', 'paymentschedule.details', 'paymentschedule.procedure_type', 'paymentschedule.period'])
+        $data = PayrollPayment::with(['planilla_haber', 'planilla_haber.tipo', 'planilla_haber.planilla_procesada', 'spreadsheet', 'paymentschedule.details', 'paymentschedule.procedure_type', 'paymentschedule.period', 'paymentschedule.direccion_administrativa'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')
-                    ->whereRaw($search ? '(fpc_number like "'.$search.'%" or gtc_number like "'.$search.'%" or recipe_number like "'.$search.'%" or deposit_number like "'.$search.'%")' : 1)
+                    ->where(function($query) use ($search){
+                        if($search){
+                            $query->OrWhereHas('user', function($query) use($search){
+                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                            })
+                            ->OrWhereHas('paymentschedule.period', function($query) use($search){
+                                $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                            })
+                            ->OrWhereHas('paymentschedule.direccion_administrativa', function($query) use($search){
+                                $query->whereRaw($search ? 'nombre like "%'.$search.'%"' : 1);
+                            })
+                            ->OrWhereHas('paymentschedule', function($query) use($search){
+                                $query->whereRaw($search ? 'id = "'.intval($search).'"' : 1);
+                            })
+                            ->OrWhereRaw($search ? '(fpc_number like "'.$search.'%" or gtc_number like "'.$search.'%" or recipe_number like "'.$search.'%" or deposit_number like "'.$search.'%")' : 1);
+                        }
+                    })
                     ->paginate($paginate);
         // dd($data);
 
@@ -336,48 +363,100 @@ class SocialSecurityController extends Controller
                 }
 
             }else{
-                $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                                    ->join('planillaprocesada as pp', 'pp.ID', 'p.idPlanillaprocesada')
-                                    ->where('p.Estado', 1)
-                                    ->where('p.Tplanilla', $request->t_planilla ?? 0)
-                                    ->whereRaw('(p.idGda=1 or p.idGda=2)')
-                                    ->where('p.Periodo', $request->periodo ?? 0)
-                                    ->where('p.Centralizado', 'SI')
-                                    ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
-                                    ->groupBy('p.Afp', 'p.idPlanillaprocesada')
-                                    ->selectRaw('p.ID, pp.Monto as monto')
-                                    ->get();
-                $total_pago = $planillas->sum('monto');
-                // dd($planillas, $total_pago);
-                foreach ($planillas as $item) {
-                    $porcentaje = ($item->monto * 100) / $total_pago;
-                    PayrollPayment::create([
-                        'user_id' => Auth::user()->id,
-                        'planilla_haber_id' => $item->ID,
-                        'date_payment_afp' => $request->date_payment_afp,
-                        'payment_id' => $request->payment_id,
-                        'penalty_payment' => $request->penalty_payment * ($porcentaje/100),
-                        'fpc_number' => $request->fpc_number,
-                        'date_payment_cc' => $request->date_payment_cc,
-                        'gtc_number' => $request->gtc_number,
-                        'recipe_number' => $request->recipe_number,
-                        'deposit_number' => $request->deposit_number,
-                        'check_id' => $request->check_id,
-                        'penalty_check' => $request->penalty_check * ($porcentaje/100)
-                    ]);
-
-                    // Actualizar estados de cheques de afp
-                    if($request->date_payment_afp){
-                        ChecksPayment::whereHas('beneficiary.type', function($q){
-                            $q->where('name', 'not like', '%salud%');
-                        })->where('planilla_haber_id', $item->ID)->where('deleted_at', NULL)->update(['status' => 2]);
+                if($request->afp_alt){
+                    $period = Period::where('name', $request->periodo)->where('deleted_at', NULL)->first();
+                    $period_id = $period ? $period->id : NULL;
+                    $paymentschedules = Paymentschedule::with(['period', 'details.contract.person'])
+                                                    ->whereHas('procedure_type', function($q) use($request){
+                                                        $q->where('planilla_id', $request->t_planilla);
+                                                    })->whereHas('details.contract.person', function($q) use($request){
+                                                        $q->where('afp', $request->afp);
+                                                    })->where('period_id', $period_id)->where('centralize_code', '<>', NULL)
+                                                    ->where('deleted_at', NULL)->where('deleted_at', NULL)->get();
+                    $amount_total = 0;
+                    foreach ($paymentschedules as $item) {
+                        $amount_total += $item->details->where('contract.person.afp', $request->afp)->sum('partial_salary') + $item->details->where('contract.person.afp', $request->afp)->sum('seniority_bonus_amount');
                     }
+                    
+                    foreach ($paymentschedules as $item) {
+                        $amount = $item->details->where('contract.person.afp', $request->afp)->sum('partial_salary') + $item->details->where('contract.person.afp', $request->afp)->sum('seniority_bonus_amount');
+                        
+                        $porcentaje = ($amount * 100) / $amount_total;
+                        PayrollPayment::create([
+                            'user_id' => Auth::user()->id,
+                            'paymentschedule_id' => $item->id,
+                            'afp' => $request->afp,
+                            'date_payment_afp' => $request->date_payment_afp,
+                            'payment_id' => $request->payment_id,
+                            'penalty_payment' => $request->penalty_payment * ($porcentaje/100),
+                            'fpc_number' => $request->fpc_number,
+                            'date_payment_cc' => $request->date_payment_cc,
+                            'gtc_number' => $request->gtc_number,
+                            'recipe_number' => $request->recipe_number,
+                            'deposit_number' => $request->deposit_number,
+                            'check_id' => $request->check_id,
+                            'penalty_check' => $request->penalty_check * ($porcentaje/100)
+                        ]);
 
-                    // Actualizar estados de cheques de caja de salud
-                    if($request->date_payment_cc){
-                        ChecksPayment::whereHas('beneficiary.type', function($q){
-                            $q->where('name', 'like', '%salud%');
-                        })->where('planilla_haber_id', $item->ID)->where('deleted_at', NULL)->update(['status' => 2]);
+                        // Actualizar estados de cheques de afp
+                        if($request->date_payment_afp){
+                            ChecksPayment::whereHas('beneficiary.type', function($q){
+                                $q->where('name', 'not like', '%salud%');
+                            })->where('paymentschedule_id', $item->id)->where('deleted_at', NULL)->update(['status' => 2]);
+                        }
+
+                        // Actualizar estados de cheques de caja de salud
+                        if($request->date_payment_cc){
+                            ChecksPayment::whereHas('beneficiary.type', function($q){
+                                $q->where('name', 'like', '%salud%');
+                            })->where('paymentschedule_id', $item->id)->where('deleted_at', NULL)->update(['status' => 2]);
+                        }
+
+                    }
+                }else{
+                    $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                                        ->join('planillaprocesada as pp', 'pp.ID', 'p.idPlanillaprocesada')
+                                        ->where('p.Estado', 1)
+                                        ->where('p.Tplanilla', $request->t_planilla ?? 0)
+                                        ->whereRaw('(p.idGda=1 or p.idGda=2)')
+                                        ->where('p.Periodo', $request->periodo ?? 0)
+                                        ->where('p.Centralizado', 'SI')
+                                        ->whereRaw($request->afp ? 'p.Afp = '.$request->afp : 1)
+                                        ->groupBy('p.Afp', 'p.idPlanillaprocesada')
+                                        ->selectRaw('p.ID, pp.Monto as monto')
+                                        ->get();
+                    $total_pago = $planillas->sum('monto');
+                    // dd($planillas, $total_pago);
+                    foreach ($planillas as $item) {
+                        $porcentaje = ($item->monto * 100) / $total_pago;
+                        PayrollPayment::create([
+                            'user_id' => Auth::user()->id,
+                            'planilla_haber_id' => $item->ID,
+                            'date_payment_afp' => $request->date_payment_afp,
+                            'payment_id' => $request->payment_id,
+                            'penalty_payment' => $request->penalty_payment * ($porcentaje/100),
+                            'fpc_number' => $request->fpc_number,
+                            'date_payment_cc' => $request->date_payment_cc,
+                            'gtc_number' => $request->gtc_number,
+                            'recipe_number' => $request->recipe_number,
+                            'deposit_number' => $request->deposit_number,
+                            'check_id' => $request->check_id,
+                            'penalty_check' => $request->penalty_check * ($porcentaje/100)
+                        ]);
+
+                        // Actualizar estados de cheques de afp
+                        if($request->date_payment_afp){
+                            ChecksPayment::whereHas('beneficiary.type', function($q){
+                                $q->where('name', 'not like', '%salud%');
+                            })->where('planilla_haber_id', $item->ID)->where('deleted_at', NULL)->update(['status' => 2]);
+                        }
+
+                        // Actualizar estados de cheques de caja de salud
+                        if($request->date_payment_cc){
+                            ChecksPayment::whereHas('beneficiary.type', function($q){
+                                $q->where('name', 'like', '%salud%');
+                            })->where('planilla_haber_id', $item->ID)->where('deleted_at', NULL)->update(['status' => 2]);
+                        }
                     }
                 }
             }
@@ -396,7 +475,7 @@ class SocialSecurityController extends Controller
 
     public function payments_edit($id){
         $type = 'edit';
-        $data = PayrollPayment::with('spreadsheet')->where('id', $id)->where('deleted_at', NULL)->first();
+        $data = PayrollPayment::with('spreadsheet', 'paymentschedule')->where('id', $id)->where('deleted_at', NULL)->first();
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $data->planilla_haber_id)->first();
         return view('social-security.payments-edit-add', compact('type', 'id', 'data', 'planilla'));
     }

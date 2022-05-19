@@ -147,7 +147,7 @@
                                     <td>{{ $cont }}</td>
                                     <td></td>
                                     <td>{{ $paymentschedule->period->name }}</td>
-                                    <td>{{ $paymentschedule->direccion_administrativa->NOMBRE }}</td>
+                                    <td>{{ $paymentschedule->direccion_administrativa->nombre }}</td>
                                     <td>{{ $paymentschedule->procedure_type->name }}</td>
                                     <td>{{ str_pad($paymentschedule->id, 6, "0", STR_PAD_LEFT).($paymentschedule->aditional ? '-A' : '') }}</td>
                                     <td style="text-align: right">{{ $afp->count() }}</td>

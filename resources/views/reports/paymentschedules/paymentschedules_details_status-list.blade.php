@@ -38,7 +38,7 @@
                             @endphp
                             <tr>
                                 <td>{{ $cont }}</td>
-                                <td>{{ count($item) > 0 ? $item[0]->paymentschedule->direccion_administrativa->NOMBRE : '' }}</td>
+                                <td>{{ count($item) > 0 ? $item[0]->paymentschedule->direccion_administrativa->nombre : '' }}</td>
                                 <td style="text-align: right">{{ $item->count() }}</td>
                                 <td style="text-align: right">{{ number_format($item->sum('partial_salary'), 2, ',', '.') }}</td>
                                 <td style="text-align: right">{{ number_format($item->sum('seniority_bonus_amount'), 2, ',', '.') }}</td>
@@ -88,8 +88,8 @@
                         <tr>
                             <td>{{ $cont }}</td>
                             <td>{{ str_pad($item->paymentschedule->id, 6, "0", STR_PAD_LEFT) }}</td>
-                            <td>{{ $item->contract->direccion_administrativa ? $item->contract->direccion_administrativa->NOMBRE : 'No definida' }}</td>
-                            <td>{{ $item->contract->unidad_administrativa ? $item->contract->unidad_administrativa->Nombre : '' }}</td>
+                            <td>{{ $item->contract->direccion_administrativa ? $item->contract->direccion_administrativa->nombre : 'No definida' }}</td>
+                            <td>{{ $item->contract->unidad_administrativa ? $item->contract->unidad_administrativa->nombre : '' }}</td>
                             <td>{{ $item->contract->code }}</td>
                             <td>{{ $item->contract->type->name }}</td>
                             <td>{{ $item->contract->person->last_name }} {{ $item->contract->person->first_name }}</td>

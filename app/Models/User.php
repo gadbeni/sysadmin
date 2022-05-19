@@ -47,6 +47,6 @@ class User extends \TCG\Voyager\Models\User
     ];
 
     public function direccion_administrativa(){
-        return $this->belongsTo(DireccionAdministrativa::class, 'direccion_administrativa_id', 'ID');
+        return $this->belongsTo(Direccion::class, 'direccion_administrativa_id');
     }
 }

@@ -49,6 +49,10 @@ class PaymentschedulesController extends Controller
                     }, 'details.contract.person'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->whereRaw(Auth::user()->role_id >= 6 && Auth::user()->role_id <= 8 ? '(status = "aprobada" or status = "habilitada" or status = "pagada")' : 1)
+                    ->whereRaw(Auth::user()->role_id == 25 ? 'procedure_type_id = 2' : 1)
+                    ->where('status', '!=', 'borrador')
+                    ->where('status', '!=', 'anulada')
+                    ->where('deleted_at', NULL)
                     ->where(function($query) use ($search){
                         if($search){
                             $query->OrwhereHas('period', function($query) use($search){
@@ -60,14 +64,15 @@ class PaymentschedulesController extends Controller
                             ->OrWhereHas('user', function($query) use($search){
                                 $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
                             })
+                            ->OrWhereHas('direccion_administrativa', function($query) use($search){
+                                $query->whereRaw($search ? 'nombre like "%'.$search.'%"' : 1);
+                            })
                             ->OrWhereRaw($search ? "id = '".intval($search)."'" : 1)
-                            ->OrWhereRaw($search ? "centralize_code like '%".intval(explode('-', $search)[0])."-c%'" : 1);
+                            ->OrWhereRaw($search ? 'centralize_code like "%'.$search.'%"' : 1)
+                            ->OrWhereRaw($search ? "status like '%".$search."%'" : 1);
                         }
                     })
-                    ->whereRaw(Auth::user()->role_id == 25 ? 'procedure_type_id = 2' : 1)
-                    ->where('status', '!=', 'borrador')
-                    ->where('status', '!=', 'anulada')
-                    ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
+                    ->orderBy('id', 'DESC')->paginate($paginate);
         // dd($data);
         return view('paymentschedules.list', compact('data', 'search'));
     }
@@ -506,6 +511,9 @@ class PaymentschedulesController extends Controller
                             })
                             ->OrWhereHas('user', function($query) use($search){
                                 $query->whereRaw($search ? 'name like "%'.$search.'%"' : 1);
+                            })
+                            ->OrWhereHas('direccion_administrativa', function($query) use($search){
+                                $query->whereRaw($search ? 'nombre like "%'.$search.'%"' : 1);
                             });
                         }
                     })

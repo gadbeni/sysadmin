@@ -6,6 +6,7 @@
                     <tr>
                         <th></th>
                         <th>ID</th>
+                        <th>Dirección administrativa</th>
                         <th>Detalles de cheque</th>
                         <th>Beneficiario</th>
                         <th>Impresión</th>
@@ -20,6 +21,7 @@
                         <tr>
                             <td><div><input type="checkbox" name="id[]" onclick="checkId()" value="{{ $row->id }}" /></div></td>
                             <td>{{ $row->id }}</td>
+                            <td>{{ $row->paymentschedule ? $row->paymentschedule->direccion_administrativa->nombre : 'No definida' }}</td>
                             <td>
                                 @php
                                     $status = '';

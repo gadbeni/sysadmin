@@ -26,4 +26,8 @@ class Spreadsheet extends Model
     public function checks(){
         return $this->hasMany(ChecksPayment::class);
     }
+
+    public function direccion_administrativa(){
+        return $this->belongsTo(Direccion::class, 'direccion_administrativa_id', 'id');
+    }
 }

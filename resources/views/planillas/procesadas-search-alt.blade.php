@@ -62,7 +62,7 @@
                             @forelse ($paymentschedule as $item)
                             <tr>
                                 <td>{{ $item->item }}</td>
-                                <td class="text-selected" title="{{ str_pad($item->paymentschedule->id, 6, "0", STR_PAD_LEFT).($item->paymentschedule->aditional ? '-A' : '') }}">{{ $item->contract->direccion_administrativa->NOMBRE }}</td>
+                                <td class="text-selected" title="{{ str_pad($item->paymentschedule->id, 6, "0", STR_PAD_LEFT).($item->paymentschedule->aditional ? '-A' : '') }}">{{ $item->contract->direccion_administrativa->nombre }}</td>
                                 <td>{{ $item->contract->type->name }}</td>
                                 <td>{{ $item->contract->person->afp == 1 ? 'Futuro' : 'Previsión' }}</td>
                                 @php

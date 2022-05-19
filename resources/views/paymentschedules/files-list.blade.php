@@ -17,7 +17,7 @@
                 @forelse ($data as $item)
                     <tr>
                         <td>{{ $item->id }}</td>
-                        <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
+                        <td>{{ $item->direccion_administrativa->nombre }}</td>
                         <td>{{ $item->period->name }}</td>
                         <td>{{ $item->procedure_type->name }}</td>
                         <td>{{ $item->type }}</td>

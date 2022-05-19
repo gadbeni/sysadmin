@@ -10,4 +10,8 @@ class unidad extends Model
     use HasFactory;
 
     protected $table = 'unidades';
+
+    public function direccion_administrativa(){
+        return $this->belongsTo(Direccion::class, 'direccion_id', 'id');
+    }
 }

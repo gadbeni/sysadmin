@@ -19,12 +19,12 @@
                         @if ($centralize)
                             <h3 style="margin: 0px">{{ Str::upper($data->procedure_type->name) }}</h3>
                         @else
-                            <h3 style="margin: 0px">{{ $data->direccion_administrativa->NOMBRE }} {!! $program ? '<br>'.$program->name : '' !!}</h3>
+                            <h3 style="margin: 0px">{{ $data->direccion_administrativa->nombre }} {!! $program ? '<br>'.$program->name : '' !!}</h3>
                             <span>{{ Str::upper($data->procedure_type->name) }}</span>
                         @endif
                     </td>
                     <td style="text-align:center; width: 90px">
-                        {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->NOMBRE).' | '.$data->procedure_type->name); !!} <br>
+                        {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->nombre).' | '.$data->procedure_type->name); !!} <br>
                     </td>
                 </tr>
                 <tr>
@@ -174,7 +174,7 @@
                                         'id' => $program->id,
                                         'programatic_category' => $program->programatic_category,
                                         'name' => $program->name,
-                                        'direccion_administrativa' =>$program->direccion_administrativa->NOMBRE,
+                                        'direccion_administrativa' =>$program->direccion_administrativa->nombre,
                                         'details' => $item
                                     ];
                                 });
@@ -517,12 +517,12 @@
                             @if ($centralize)
                                 <h3 style="margin: 0px">{{ Str::upper($data->procedure_type->name) }}</h3>
                             @else
-                                <h3 style="margin: 0px">{{ $data->direccion_administrativa->NOMBRE }} {!! $program ? '<br>'.$program->name : '' !!}</h3>
+                                <h3 style="margin: 0px">{{ $data->direccion_administrativa->nombre }} {!! $program ? '<br>'.$program->name : '' !!}</h3>
                                 <span>{{ Str::upper($data->procedure_type->name) }}</span>
                             @endif
                         </td>
                         <td style="text-align:center; width: 90px">
-                            {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->NOMBRE).' | '.$data->procedure_type->name); !!} <br>
+                            {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->nombre).' | '.$data->procedure_type->name); !!} <br>
                         </td>
                     </tr>
                     <tr>

@@ -52,8 +52,8 @@
                 {{-- {{ dd($item) }} --}}
                 <tr>
                     <td>{{ $cont }}</td>
-                    <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->NOMBRE : 'No definida' }}</td>
-                    <td>{{ $item->unidad_administrativa ? $item->unidad_administrativa->Nombre : '' }}</td>
+                    <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->nombre : 'No definida' }}</td>
+                    <td>{{ $item->unidad_administrativa ? $item->unidad_administrativa->nombre : '' }}</td>
                     <td>{{ $item->code }}</td>
                     <td>{{ $item->type->name }}</td>
                     <td>{{ $item->person->first_name }} </td>

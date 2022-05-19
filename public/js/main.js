@@ -79,9 +79,6 @@ function getPlanillas(url){
 
             $('#alert-details').fadeIn();
             $('#alert-details').html(`
-                Cantidad de personas: <b>${people}</b> - Monto total: <b>${total_ganado.toFixed(2)}</b>
-            `);
-            $('#alert-details').html(`
                 Cantidad de personas: <b>${people}</b> <br>
                 Periodo: <b>${periodo}</b> <br>
                 Monto total: <b>${new Intl.NumberFormat('es-ES').format(total_ganado.toFixed(2))} Bs.</b>

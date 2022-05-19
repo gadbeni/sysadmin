@@ -12,6 +12,7 @@ use DataTables;
 use App\Models\Spreadsheet;
 use App\Models\ChecksPayment;
 use App\Models\User;
+use App\Models\Direccion;
 
 class SpreadsheetsController extends Controller
 {
@@ -26,16 +27,15 @@ class SpreadsheetsController extends Controller
     }
 
     public function list(){
-        $data = Spreadsheet::with(['user'])->where('deleted_at', NULL)->get();
+        $data = Spreadsheet::with(['user', 'direccion_administrativa'])->where('deleted_at', NULL)->get();
         return
             DataTables::of($data)
             ->addColumn('checkbox', function($row){
                 return '<div><input type="checkbox" name="id[]" onclick="checkId()" value="'.$row->id.'" /></div>';
             })
             ->addColumn('details', function($row){
-                $direccion_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->where('ID', $row->direccion_administrativa_id ?? 0)->first();
                 $tipo_planilla = DB::connection('mysqlgobe')->table('tplanilla')->where('ID', $row->tipo_planilla_id ?? 0)->first();
-                return ($direccion_administrativa ? $direccion_administrativa->NOMBRE : 'Desconocida').' <br> <b>'.($tipo_planilla ? $tipo_planilla->Nombre : 'Desconocida').'</b>';
+                return ($row->direccion_administrativa ? $row->direccion_administrativa->nombre : 'Desconocida').' <br> <b>'.($tipo_planilla ? $tipo_planilla->Nombre : 'Desconocida').'</b>';
             })
             ->addColumn('afp', function($row){
                 return $row->afp_id == 1 ? 'Futuro' : 'Previsión';
@@ -80,9 +80,7 @@ class SpreadsheetsController extends Controller
     public function create()
     {
         $type = 'create';
-        $direccion_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')
-                                        ->where('Estado', 1)
-                                        ->get();
+        $direccion_administrativa = Direccion::where('estado', 1)->where('deleted_at', null)->get();
         $tipo_planilla = DB::connection('mysqlgobe')->table('tplanilla')
                             ->where('Estado', 1)
                             ->get();
@@ -139,9 +137,7 @@ class SpreadsheetsController extends Controller
     {
         $data = Spreadsheet::findOrFail($id);
         $type = 'edit';
-        $direccion_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')
-                                        ->where('Estado', 1)
-                                        ->get();
+        $direccion_administrativa = Direccion::where('estado', 1)->where('deleted_at', null)->get();
         $tipo_planilla = DB::connection('mysqlgobe')->table('tplanilla')
                             ->where('Estado', 1)
                             ->get();

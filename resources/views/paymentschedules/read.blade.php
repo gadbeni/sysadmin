@@ -46,7 +46,7 @@
                                 <h3 class="panel-title">Dirección administrativa</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $data->direccion_administrativa->NOMBRE }}</p>
+                                <p>{{ $data->direccion_administrativa->nombre }}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>
@@ -747,7 +747,7 @@
                                                         </td>
                                                         <td>{{$cont}}</td>
                                                         <td>{{ str_pad($item->id, 6, "0", STR_PAD_LEFT).($item->aditional ? '-A' : '') }}</td>
-                                                        <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
+                                                        <td>{{ $item->direccion_administrativa->nombre }}</td>
                                                         <td class="text-right">{{ $item->details->count() }}</td>
                                                         <td class="text-right">{{ number_format($item->details->sum('liquid_payable'), 2, ',', '.') }}</td>
                                                     </tr>

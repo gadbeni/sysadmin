@@ -28,7 +28,7 @@
                                     <select name="direccion_administrativa_id" class="form-control select2" required>
                                         <option value="" disabled selected>Seleccione una dirección administrativa</option>
                                         @foreach($direccion_administrativa as $item)
-                                            <option value="{{ $item->ID }}" @if($type == 'edit' && $item->ID == $data->direccion_administrativa_id) selected @endif>{{ $item->NOMBRE }}</option>
+                                            <option value="{{ $item->id }}" @if($type == 'edit' && $item->id == $data->direccion_administrativa_id) selected @endif>{{ $item->nombre }}</option>
                                         @endforeach
                                     </select>
                                 </div>

@@ -154,7 +154,7 @@
                                     @php
                                         $cont = 1;
                                     @endphp
-                                    @foreach ($person->irremovabilities as $item)
+                                    @forelse ($person->irremovabilities as $item)
                                         <tr>
                                             <td>{{ $cont }}</td>
                                             <td>{{ $item->type->name }}</td>
@@ -168,7 +168,11 @@
                                         @php
                                             $cont++;
                                         @endphp
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="6">No hay datos disponible</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>

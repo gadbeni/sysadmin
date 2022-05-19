@@ -5,6 +5,7 @@
                 <tr>
                     <th></th>
                     <th>ID</th>
+                    <th>Dirección administrativa</th>
                     <th>Planilla</th>
                     <th>Nro de FPC</th>
                     <th>Nro de GTC-11</th>
@@ -18,6 +19,7 @@
                     <tr>
                         <td><div><input type="checkbox" name="id[]" onclick="checkId()" value="{{ $row->id }}" {{ $row->spreadsheet_id ? 'disabled' : '' }} /></div></td>
                         <td>{{ $row->id }}</td>
+                        <td>{{ $row->paymentschedule ? $row->paymentschedule->direccion_administrativa->nombre : 'No definida' }}</td>
                         <td>
                             @if($row->planilla_haber)
                                 <b> {{ $row->planilla_haber->tipo ? $row->planilla_haber->tipo->Nombre : 'No definido' }} - {{ $row->planilla_haber->Periodo }}</b> <br>

@@ -23,7 +23,7 @@
                         <b>CI</b>: {{ $item->person->ci }}
                         {!! $item->person->phone ? '<br><b>Telf</b>: '.$item->person->phone : '' !!}
                     </td>
-                    <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->NOMBRE : 'No definida' }}</td>
+                    <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->nombre : 'No definida' }}</td>
                     <td>
                         <ul style="list-style: none; padding-left: 0px">
                             <li>

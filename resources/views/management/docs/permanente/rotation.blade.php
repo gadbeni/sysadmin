@@ -64,7 +64,7 @@
                             <td><b>A:</b> <br> <br></td>
                             <td>
                                 {{ Str::upper($rotation->contract->person->first_name.' '.$rotation->contract->person->last_name) }} <br>
-                                <b>{{ $rotation->contract->cargo ? $rotation->contract->cargo->Descripcion : $rotation->contract->job->name }} <br> {{ Str::upper($rotation->contract->direccion_administrativa->NOMBRE) }}</b>
+                                <b>{{ $rotation->contract->cargo ? $rotation->contract->cargo->Descripcion : $rotation->contract->job->name }} <br> {{ Str::upper($rotation->contract->direccion_administrativa->nombre) }}</b>
                             </td>
                         </tr>
                     </table>

@@ -34,7 +34,7 @@
                                 <td>{{ $item->item }}</td>
                                 <td>{{ $item->name }}</td>
                                 <td style="text-align: right">{{ number_format($item->salary, 2, ',', '.') }}</td>
-                                <td>{{ $item->direccion_administrativa->NOMBRE }}</td>
+                                <td>{{ $item->direccion_administrativa->nombre }}</td>
                                 <td>{!! $item->contract ? $item->contract->code : '<b style="color: red">Acéfalo</b>' !!}</td>
                                 <td>{{ $item->contract ? $item->contract->person->last_name.' '.$item->contract->person->first_name : '' }}</td>
                                 <td>{{ $item->contract ? date('d/m/Y', strtotime($item->contract->start)) : '' }}</td>

@@ -21,7 +21,7 @@
                     <input type="hidden" name="redirect">
 
                     {{-- Parámetro en caso de que la planilla sea de la base de datos nueva --}}
-                    <input type="hidden" name="afp_alt">
+                    <input type="hidden" name="afp_alt" value="{{ $type == 'edit' ? $data->afp : '' }}">
 
                     <div class="panel panel-bordered">
                         <div class="panel-body">
@@ -204,7 +204,11 @@
                     $("#select-planilla_haber_id").append(`<option value="${planilla.idPlanillaprocesada}">${planilla.idPlanillaprocesada} - ${planilla.Afp == 1 ? 'Futuro' : 'Previsión'}</option>`);
                     $('#input-afp_edit').val(planilla.Afp)
                 }else if(data){
-                    $("#select-planilla_haber_id").append(`<option value="${data.spreadsheet.id}">${data.spreadsheet.codigo_planilla} - ${data.spreadsheet.afp_id == 1 ? 'Futuro' : 'Previsión'}</option>`);
+                    if(data.spreadsheet){
+                        $("#select-planilla_haber_id").append(`<option value="${data.spreadsheet.id}">${data.spreadsheet.codigo_planilla} - ${data.spreadsheet.afp_id == 1 ? 'Futuro' : 'Previsión'}</option>`);
+                    }else{
+                        $("#select-planilla_haber_id").append(`<option value="${data.paymentschedule.id}">${String(data.paymentschedule.id).padStart(6, '0')} - ${data.afp == 1 ? 'Futuro' : 'Previsión'}</option>`);
+                    }
                 }
             @endif
 

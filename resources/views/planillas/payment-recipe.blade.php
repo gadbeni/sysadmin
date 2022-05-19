@@ -82,7 +82,7 @@
         <table width="100%" cellpadding="5" style="font-size: 12px">
             <tr>
                 <td><b>SECRETARÍA</b></td>
-                <td style="border: 1px solid #ddd">{{ $planilla ? $planilla->Direccion_Administrativa : $payment->paymentschedulesdetail->paymentschedule->direccion_administrativa->NOMBRE }}</td>
+                <td style="border: 1px solid #ddd">{{ $planilla ? $planilla->Direccion_Administrativa : $payment->paymentschedulesdetail->paymentschedule->direccion_administrativa->nombre }}</td>
                 <td><b>TIPO DE CONTRATO</b></td>
                 <td style="border: 1px solid #ddd">{{ $planilla ? $planilla->tipo_planilla : '' }}</td>
             </tr>

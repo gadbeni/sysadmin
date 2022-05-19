@@ -63,6 +63,9 @@ class ContractsController extends Controller
                             ->OrWhereHas('user', function($query) use($search){
                                 $query->whereRaw("name like '%$search%'");
                             })
+                            ->OrWhereHas('direccion_administrativa', function($query) use($search){
+                                $query->whereRaw($search ? 'nombre like "%'.$search.'%"' : 1);
+                            })
                             ->OrWhereRaw($search ? "id = '$search'" : 1)
                             ->OrWhereRaw($search ? "code like '%$search%'" : 1)
                             ->OrWhereRaw($search ? "status like '%$search%'" : 1);

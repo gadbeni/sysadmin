@@ -147,6 +147,7 @@ class PermissionRoleTableSeeder extends Seeder
                                 `key` = "read_people" or
                                 `key` = "edit_people" or
                                 `key` = "add_people" or
+                                `key` = "rotation_people" or
                                 `key` = "browse_contracts" or
                                 `key` = "read_contracts" or
                                 `key` = "edit_contracts" or
