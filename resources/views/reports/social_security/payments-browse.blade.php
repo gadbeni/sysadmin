@@ -35,12 +35,11 @@
                                         <select name="id_da" class="form-control select2">
                                             <option value="">Todas las direcciones administrativas</option>
                                             @foreach ($direcciones_administrativa as $item)
-                                            <option value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
+                                            <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
                                         <select name="t_planilla" class="form-control select2">
                                             <option value="" selected>Todos los tipos de planilla</option>
                                             <option value="1">Funcionamiento</option>
@@ -66,7 +65,6 @@
                                 {{-- Opciones que se despliegan cuando se hace check en la opción "centralizada" --}}
                                 <div class="input-centralizada" style="display: none">
                                     <div class="form-group col-md-12">
-                                        {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
                                         <select name="t_planilla_alt" class="form-control select2">
                                             <option value="" selected>Tipo de planilla</option>
                                             <option value="1">Funcionamiento</option>
@@ -90,12 +88,11 @@
                                     <div class="form-group col-md-12">
                                         <select name="id_da_detallada[]" class="form-control select2" multiple>
                                             @foreach ($direcciones_administrativa as $item)
-                                            <option value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
+                                            <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="form-group col-md-12">
-                                        {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
                                         <select name="t_planilla_detallada" class="form-control select2">
                                             <option value="">Todos los Tipos de planilla</option>
                                             <option value="1">Funcionamiento</option>

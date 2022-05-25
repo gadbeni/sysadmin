@@ -27,12 +27,11 @@
                                         <select name="id_da" class="form-control select2">
                                             <option value="">Todas las direcciones administrativas</option>
                                             @foreach ($direcciones_administrativa as $item)
-                                            <option value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
+                                            <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
                                         <select name="t_planilla" class="form-control select2">
                                             <option selected disabled>Todos los tipos de planilla</option>
                                             <option value="1">Funcionamiento</option>

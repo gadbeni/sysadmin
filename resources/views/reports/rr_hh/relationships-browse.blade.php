@@ -1,6 +1,6 @@
 @extends('voyager::master')
 
-@section('page_title', 'Reporte de cierres de bóveda')
+@section('page_title', 'Reporte de parentesco')
 
 @section('page_header')
     <div class="container-fluid">
@@ -10,7 +10,7 @@
                     <div class="panel-body" style="padding: 0px">
                         <div class="col-md-8" style="padding: 0px">
                             <h1 class="page-title">
-                                <i class="voyager-dollar"></i> Reporte de cierres de bóveda
+                                <i class="voyager-people"></i> Reporte de parentesco
                             </h1>
                             {{-- <div class="alert alert-info">
                                 <strong>Información:</strong>
@@ -18,23 +18,16 @@
                             </div> --}}
                         </div>
                         <div class="col-md-4" style="margin-top: 30px">
-                            <form name="form_search" id="form-search" action="{{ route('reports.cashier.vaults.list') }}" method="post">
+                            <form name="form_search" id="form-search" action="{{ route('reports.humans_resources.relationships.list') }}" method="post">
                                 @csrf
                                 <input type="hidden" name="print">
                                 <div class="form-group">
-                                    <input type="date" name="start" class="form-control" value="{{ date('Y-m-d') }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <input type="date" name="finish" class="form-control" value="{{ date('Y-m-d') }}" required>
-                                </div>
-                                {{-- <div class="form-group">
-                                    <select name="user_id" class="form-control select2">
-                                        <option value="">Todos los cajeros</option>
-                                        @foreach (\App\Models\User::where('role_id', 5)->get() as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
+                                    <select name="lastname" class="form-control select2" required>
+                                        {{-- <option selected disabled value="">Apellidos</option> --}}
+                                        {{-- <option value="1">1 apellido</option> --}}
+                                        <option value="2">Ambos apellidos</option>
                                     </select>
-                                </div> --}}
+                                </div>
                                 <div class="text-right">
                                     <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
                                 </div>

@@ -84,7 +84,7 @@
                             $payment_total = 0;
                         @endphp
                         @forelse ($payments as $item)
-                        {{-- {{ dd($item->contract->contract) }} --}}
+                        {{-- {{ dd($item) }} --}}
                         <tr>
                             <td>{{ $cont }}</td>
                             <td>{{ str_pad($item->paymentschedule->id, 6, "0", STR_PAD_LEFT) }}</td>
@@ -94,44 +94,14 @@
                             <td>{{ $item->contract->type->name }}</td>
                             <td>{{ $item->contract->person->last_name }} {{ $item->contract->person->first_name }}</td>
                             <td>{{ $item->contract->person->ci }}</td>
+                            <td>{{ $item->job }}</td>
+                            <td>{{ $item->job_level }}</td>
                             <td>
-                                @if ($item->contract->cargo)
-                                    {{ $item->contract->cargo->Descripcion }}
-                                @elseif ($item->contract->job)
-                                    {{ $item->contract->job->name }}
-                                @else
-                                    No definio
-                                @endif
+                                {{ number_format($item->salary, 2, ',', '.') }}
+                                @php
+                                    $salary_total += $item->salary;
+                                @endphp
                             </td>
-                            <td>
-                                @if ($item->contract->cargo)
-                                    {{ $item->contract->cargo->nivel->where('IdPlanilla', $item->contract->cargo->idPlanilla)->first()->NumNivel }}
-                                @elseif ($item->contract->job)
-                                    {{ $item->contract->job->level }}
-                                @else
-                                    No definido
-                                @endif
-                            </td>
-                            <td>
-                                @if ($item->contract->cargo)
-                                    {{ number_format($item->contract->cargo->nivel->where('IdPlanilla', $item->contract->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.') }}
-                                    @php
-                                        $salary_total += $item->contract->cargo->nivel->where('IdPlanilla', $item->contract->cargo->idPlanilla)->first()->Sueldo;
-                                    @endphp
-                                @elseif ($item->contract->job)
-                                    {{ number_format($item->contract->job->salary, 2, ',', '.') }}
-                                    @php
-                                        $salary_total += $item->contract->job->salary;
-                                    @endphp
-                                @else
-                                    0.00
-                                @endif
-                            </td>
-                            {{-- <td>{{ date('d/m/Y', strtotime($item->contract->start)) }}</td>
-                            <td>{{ date('d/m/Y', strtotime($item->contract->finish)) }}</td>
-                            <td>{{ $item->contract->program->name }}</td>
-                            <td>{{ $item->contract->program->programatic_category }}</td>
-                            <td>{{ $item->contract->status }}</td> --}}
                             <td>
                                 @if ($item->payment)
                                     <label class="label label-success">Pagada</label> <br> {{ date('d/m/Y', strtotime($item->payment->created_at)) }}

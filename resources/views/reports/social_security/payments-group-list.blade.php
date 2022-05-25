@@ -166,7 +166,7 @@
                                         @foreach ($paymentschedule->payroll_payments as $payroll_payment)
                                             {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
                                             @if($payroll_payment->afp == $key)
-                                            {{ $payroll_payment->date_payment_cc ? date('d/m/Y', strtotime($payroll_payment->date_payment_cc)) : '' }}<br>
+                                            {{ $payroll_payment->date_payment_afp ? date('d/m/Y', strtotime($payroll_payment->date_payment_afp)) : '' }}<br>
                                             @endif
                                         @endforeach
                                     </td>

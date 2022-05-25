@@ -52,7 +52,7 @@
                                 <td>{{ $cont }}</td>
                                 <td></td>
                                 <td>{{ $monts[intval($item->month)].'/'.$item->year }}</td>
-                                <td>{{ $direcciones_administrativa->where('ID', $item->direccion_administrativa_id)->first()->NOMBRE }}</td>
+                                <td>{{ $item->direccion_administrativa->nombre }}</td>
                                 <td>{{ $item->tipo_planilla_id == 1 ? 'Funcionamiento' : 'Inversión' }}</td>
                                 <td>{{ $item->codigo_planilla }}</td>
                                 <td style="text-align: right">{{ $item->people }}</td>

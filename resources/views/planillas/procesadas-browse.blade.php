@@ -41,7 +41,6 @@
                                 {{-- Opciones que se despliegan cuando se hace check en la opción "Centralizada" --}}
                                 <div class="input-centralizada" style="display: none;">
                                     <div class="form-group">
-                                        {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
                                         <select name="t_planilla" class="form-control select2">
                                             <option selected disabled>Tipo de planilla</option>
                                             @foreach (\App\Models\ProcedureType::where('deleted_at', NULL)->get() as $item)

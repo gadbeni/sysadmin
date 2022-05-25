@@ -29,7 +29,7 @@
                                     <select name="id_da" class="form-control select2">
                                         <option value="">Todas las direcciones administrativas</option>
                                         @foreach($direcciones_administrativa as $direccion)
-                                            <option value="{{ $direccion->ID }}">{{ $direccion->NOMBRE }}</option>
+                                            <option value="{{ $direccion->id }}">{{ $direccion->nombre }}</option>
                                         @endforeach
                                     </select>
                                 </div>

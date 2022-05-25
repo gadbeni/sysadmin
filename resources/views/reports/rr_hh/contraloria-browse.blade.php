@@ -23,7 +23,6 @@
                                 <input type="hidden" name="print">
                                 <div class="row">
                                     <div class="form-group col-md-12">
-                                        {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
                                         <select name="t_planilla" class="form-control select2">
                                             <option selected disabled>Tipo de planilla</option>
                                             <option value="1">Funcionamiento</option>

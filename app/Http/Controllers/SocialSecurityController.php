@@ -501,14 +501,14 @@ class SocialSecurityController extends Controller
             if($request->date_payment_afp){
                 ChecksPayment::whereHas('beneficiary.type', function($q){
                     $q->where('name', 'not like', '%salud%');
-                })->where('planilla_haber_id', $planilla->ID)->where('deleted_at', NULL)->update(['status' => 2]);
+                })->where($request->afp_alt ? 'paymentschedule_id' : 'planilla_haber_id', $request->afp_alt ? $id : $planilla->ID)->where('deleted_at', NULL)->update(['status' => 2]);
             }
 
             // Actualizar estados de cheques de caja de salud
             if($request->date_payment_cc){
                 ChecksPayment::whereHas('beneficiary.type', function($q){
                     $q->where('name', 'like', '%salud%');
-                })->where('planilla_haber_id', $planilla->ID)->where('deleted_at', NULL)->update(['status' => 2]);
+                })->where($request->afp_alt ? 'paymentschedule_id' : 'planilla_haber_id', $request->afp_alt ? $id : $planilla->ID)->where('deleted_at', NULL)->update(['status' => 2]);
             }
 
             return redirect()->route('payments.index')->with(['message' => 'Pago editado correctamente.', 'alert-type' => 'success']);

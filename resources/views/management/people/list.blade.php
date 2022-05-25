@@ -7,6 +7,7 @@
                     <th>Nombre completo</th>
                     <th>CI</th>
                     <th>Lugar nac.</th>
+                    <th>Fecha nac.</th>
                     <th>Telefono</th>
                     <th>AFP</th>
                     <th>Acciones</th>
@@ -23,6 +24,9 @@
                                 if($item->image){
                                     $image = asset('storage/'.str_replace('.', '-cropped.', $item->image));
                                 }
+                                $now = \Carbon\Carbon::now();
+                                $birthday = new \Carbon\Carbon($item->birthday);
+                                $age = $birthday->diffInYears($now);
                             @endphp
                             <tr>
                                 <td><img src="{{ $image }}" alt="{{ $item->first_name }} {{ $item->last_name }}" style="width: 60px; height: 60px; border-radius: 30px; margin-right: 10px"></td>
@@ -41,6 +45,7 @@
                     </td>
                     <td>{{ $item->ci }}</td>
                     <td>{{ $item->city ? $item->city->name : 'No definido' }}</td>
+                    <td>{{ date('d/m/Y', strtotime($item->birthday)) }} <br> <small>{{ $age }} años</small> </td>
                     <td>{{ $item->phone }}</td>
                     <td>{{ $item->afp == 1 ? 'Futuro' : 'Previsión' }} <br> <small class="@if(!$item->afp_status) text-warning @elseif(!is_numeric($item->nua_cua) || strlen($item->nua_cua) < 8 ) text-danger @endif" >{{ $item->nua_cua }}</small> </td>
                     <td class="no-sort no-click bread-actions text-right">

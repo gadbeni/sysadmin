@@ -58,7 +58,7 @@ class ContractsController extends Controller
                                 $query->whereRaw("name like '%$search%'");
                             })
                             ->OrwhereHas('person', function($query) use($search){
-                                $query->whereRaw("(first_name like '%$search%' or last_name like '%$search%' or ci like '%$search%' or phone like '%$search%')");
+                                $query->whereRaw("(first_name like '%$search%' or last_name like '%$search%' or ci like '%$search%' or phone like '%$search%' or CONCAT(first_name, ' ', last_name) like '%$search%')");
                             })
                             ->OrWhereHas('user', function($query) use($search){
                                 $query->whereRaw("name like '%$search%'");
@@ -376,7 +376,7 @@ class ContractsController extends Controller
             $q->where('Estado', 1);
         }, 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa'])->where('id', $id)->first();
         $contract->workers = $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
-        $signature = Signature::where('direccion_administrativa_id', $contract->user->direccion_administrativa_id)->where('status', 1)->where('deleted_at', NULL)->first();
+        $signature = Signature::where('direccion_administrativa_id', $contract->procedure_type_id == 1 ? $contract->direccion_administrativa_id : $contract->user->direccion_administrativa_id)->where('status', 1)->where('deleted_at', NULL)->first();
         return view('management.docs.'.$document, compact('contract', 'signature'));
     }
 

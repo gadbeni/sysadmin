@@ -39,7 +39,6 @@
                                     <select name="planilla_haber_id" id="select-planilla_haber_id" class="form-control"></select>
                                 </div>
                                 <div class="form-group col-md-6 div-centralizada">
-                                    {{-- Nota: En caso de obtener estos datos en más de una consulta se debe hacer un metodo para hacerlo --}}
                                     <label for="t_planilla">Tipo de planilla</label>
                                     <select name="t_planilla" id="select-t_planilla" class="form-control select2 select-request">
                                         <option value="1">Funcionamiento</option>

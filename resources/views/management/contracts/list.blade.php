@@ -33,7 +33,7 @@
                                 @elseif ($item->job)
                                     {{ $item->job->name }}
                                 @else
-                                    No definio
+                                    No definido
                                 @endif
                             </li>
                             <li>

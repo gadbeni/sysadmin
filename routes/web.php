@@ -181,6 +181,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('reports/humans-resources/aniversarios/list', [ReportsController::class, 'humans_resources_aniversarios_list'])->name('reports.humans_resources.aniversarios.list');
     Route::get('reports/humans-resources/jobs', [ReportsController::class, 'humans_resources_jobs_index'])->name('reports.humans_resources.jobs');
     Route::post('reports/humans-resources/jobs/list', [ReportsController::class, 'humans_resources_jobs_list'])->name('reports.humans_resources.jobs.list');
+    Route::get('reports/humans-resources/relationships', [ReportsController::class, 'humans_resources_relationships_index'])->name('reports.humans_resources.relationships');
+    Route::post('reports/humans-resources/relationships/list', [ReportsController::class, 'humans_resources_relationships_list'])->name('reports.humans_resources.relationships.list');
 
     // *Previsión social
     Route::get('reports/social-security/payments', [ReportsController::class, 'social_security_payments_index'])->name('reports.social_security.payments');

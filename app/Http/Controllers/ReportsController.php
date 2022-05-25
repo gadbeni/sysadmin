@@ -14,13 +14,14 @@ use App\Models\Cashier;
 use App\Models\CashiersPayment;
 use App\Models\VaultsClosure;
 use App\Models\Spreadsheet;
-use App\Models\DireccionAdministrativa;
+use App\Models\Direccion;
 use App\Models\Contract;
 use App\Models\Period;
 use App\Models\PaymentschedulesDetail;
 use App\Models\ProcedureType;
 use App\Models\Job;
 use App\Models\Cargo;
+use App\Models\Person;
 
 // Exports
 use App\Exports\MinisterioTrabajoExport;
@@ -170,8 +171,39 @@ class ReportsController extends Controller
         }
     }
 
+    public function humans_resources_relationships_index(){
+        return view('reports.rr_hh.relationships-browse');
+    }
+
+    public function humans_resources_relationships_list(Request $request){
+        // dd($request->all());
+        try {
+            $people = Person::with(['city', 'irremovabilities', 'contracts.direccion_administrativa', 'contracts.job', 'contracts.cargo', 'contracts.program', 'contracts.type'])
+                        ->whereHas('contracts', function($q) use($request){
+                            $q->where('status', 'firmado')
+                            // ->where('procedure_type_id', $request->procedure_type_id)
+                            ->where('deleted_at', NULL);
+                        })
+                        ->where('deleted_at', NULL)->orderBy('last_name')->get();
+            $relationships = collect([]);
+            foreach ($people->groupBy('last_name') as $person) {
+                if(count($person) > 1){
+                    $relationships->push($person); 
+                }
+            }
+            // dd($relationships);
+            if($request->print){
+                return view('reports.rr_hh.relationships-list-print', compact('relationships'));
+            }else{
+                return view('reports.rr_hh.relationships-list', compact('relationships'));
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
     public function social_security_payments_index(){
-        $direcciones_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
+        $direcciones_administrativa = Direccion::where('estado', 1)->where('deleted_at', null)->get();
         return view('reports.social_security.payments-browse', compact('direcciones_administrativa'));
     }
 
@@ -375,7 +407,7 @@ class ReportsController extends Controller
         }
     }
   
-  public function social_security_spreadsheets_index(){
+    public function social_security_spreadsheets_index(){
         return view('reports.social_security.spreadsheets-browse');
     }
 
@@ -392,7 +424,7 @@ class ReportsController extends Controller
         return view('reports.social_security.spreadsheets-list', compact('planillas'));
     }
     public function social_security_payments_group_index(){
-        $direcciones_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
+        $direcciones_administrativa = Direccion::where('estado', 1)->where('deleted_at', null)->get();
         return view('reports.social_security.payments-annual-browse', compact('direcciones_administrativa'));
     }
 
@@ -533,13 +565,12 @@ class ReportsController extends Controller
     }
 
     public function social_security_spreadsheets_payments_index(){
-        $direcciones_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
+        $direcciones_administrativa = Direccion::where('estado', 1)->where('deleted_at', null)->get();
         return view('reports.social_security.spreadsheets_payments-browse', compact('direcciones_administrativa'));
     }
 
     public function social_security_spreadsheets_payments_list(Request $request){
         // dd($request->all());
-        $direcciones_administrativa = DB::connection('mysqlgobe')->table('direccionadministrativa')->get();
         $periodo = $request->periodo;
         $query_range = 1;
         if(strpos($periodo, '-') != false){
@@ -552,7 +583,7 @@ class ReportsController extends Controller
             $month = substr($periodo, 4, 6);
             $query_range = 'year = "'.$year.'" and month = "'.$month.'"';
         }
-        $payments = Spreadsheet::with(['payments', 'checks.beneficiary.type'])
+        $payments = Spreadsheet::with(['payments', 'checks.beneficiary.type', 'direccion_administrativa'])
                         ->whereRaw($request->t_planilla ? 'tipo_planilla_id = '.$request->t_planilla : 1)
                         ->whereRaw($request->afp ? 'afp_id = '.$request->afp : 1)
                         ->whereRaw($request->id_da ? 'direccion_administrativa_id = '.$request->id_da : 1)
@@ -561,9 +592,9 @@ class ReportsController extends Controller
                         ->get();
 
         if($request->type == 'print'){
-            return view('reports.social_security.spreadsheets_payments-print', compact('payments', 'direcciones_administrativa'));
+            return view('reports.social_security.spreadsheets_payments-print', compact('payments'));
         }else{
-            return view('reports.social_security.spreadsheets_payments-list', compact('payments', 'direcciones_administrativa'));
+            return view('reports.social_security.spreadsheets_payments-list', compact('payments'));
         }
     }
 
@@ -649,7 +680,7 @@ class ReportsController extends Controller
     }
 
     public function social_security_personal_checks_index(){
-        $direcciones_administrativa = DireccionAdministrativa::all();
+        $direcciones_administrativa = Direccion::where('estado', 1)->where('deleted_at', null)->get();
         return view('reports.social_security.checks-browse', compact('direcciones_administrativa'));
     }
 

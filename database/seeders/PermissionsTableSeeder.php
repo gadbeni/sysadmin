@@ -155,7 +155,8 @@ class PermissionsTableSeeder extends Seeder
             'browse_reportshumans-resourcescontraloria',
             'browse_reportshumans-resourcesaniversarios',
             'browse_reportshumans-resourcesjobs',
-            'browse_reportspaymentschedulesdetails-status'
+            'browse_reportshumans-resourcesrelationships',
+            'browse_reportspaymentschedulesdetails-status',
         ];
 
         foreach ($keys as $key) {
