@@ -112,9 +112,7 @@ class PaymentschedulesController extends Controller
         $month = Str::substr($period->name, 4, 2);
         $contracts = Contract::with(['user', 'person.seniority_bonus.type', 'person.seniority_bonus' => function($q){
                             $q->where('deleted_at', NULL)->where('status', 1);
-                        }, 'program', 'cargo.nivel' => function($q){
-                            $q->where('Estado', 1);
-                        }, 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
+                        }, 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
                         ->where('direccion_administrativa_id', $direccion_administrativa_id)
                         ->where('procedure_type_id', $procedure_type_id)
                         ->whereRaw('CONCAT(YEAR(start), IF( LENGTH(MONTH(start)) > 1, MONTH(start), CONCAT("0", MONTH(start)) )) <= "'.$year.$month.'"')

@@ -47,8 +47,13 @@
                     <b>DE:</b> {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
                     <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b> <br> <br>
                     @forelse ($contract->workers as $item)
-                        <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
-                        <b>{{ $item->Cargo }}</b> <br> <br>
+                        @if (isset($item->person))
+                            <b>A:</b> {{ $item->person->first_name }} {{ $item->person->last_name }}<br>
+                            <b>{{ $item->cargo->Descripcion }}</b> <br> <br>
+                        @else
+                            <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
+                            <b>{{ $item->Cargo }}</b> <br> <br>
+                        @endif
                     @empty
                         <b style="color: red">Debes Seleccionar a la comisión evaluadora</b>
                         <br> <br>

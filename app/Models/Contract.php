@@ -18,6 +18,7 @@ class Contract extends Model
         'unidad_administrativa_id',
         'procedure_type_id',
         'user_id',
+        'signature_id',
         'code',
         'details_work',
         'preventive_number',
@@ -30,6 +31,7 @@ class Contract extends Model
         'date_statement',
         'date_memo',
         'workers_memo',
+        'workers_memo_alt',
         'date_memo_res',
         'date_note',
         'date_report',
@@ -83,5 +85,9 @@ class Contract extends Model
 
     public function rotations(){
         return $this->hasMany(PersonRotation::class);
+    }
+
+    public function signature(){
+        return $this->belongsTo(Contract::class, 'signature_id', 'id');
     }
 }

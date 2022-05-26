@@ -44,38 +44,19 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="direccion_administrativa_id">Dirección administrativa</label>
-                                        <select name="direccion_administrativa_id" id="select-direccion_administrativa_id" class="form-control select2">
-                                            {{-- <option value="">-- Selecciona la dirección administrativa --</option>
-                                            @foreach ($direccion_administrativas as $item)
-                                            <option @if(isset($contract) && $contract->direccion_administrativa_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
-                                            @endforeach --}}
-                                        </select>
+                                        <select name="direccion_administrativa_id" id="select-direccion_administrativa_id" class="form-control select2"></select>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="unidad_administrativa_id">Unidad administrativa</label>
-                                        <select name="unidad_administrativa_id" id="select-unidad_administrativa_id" class="form-control select2">
-                                            {{-- @foreach ($unidad_administrativas as $item)
-                                            <option @if(isset($contract) && $contract->unidad_administrativa_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ $item->Nombre }}</option>
-                                            @endforeach --}}
-                                        </select>
+                                        <select name="unidad_administrativa_id" id="select-unidad_administrativa_id" class="form-control select2"></select>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="program_id">Programa</label>
-                                        <select name="program_id" id="select-program_id" class="form-control select2">
-                                            {{-- <option value="">-- Selecciona el programa --</option>
-                                            @foreach ($programs as $item)
-                                            <option @if(isset($contract) && $contract->program_id == $item->id) selected @endif value="{{ $item->id }}">{{ $item->name }}</option>
-                                            @endforeach --}}
-                                        </select>
+                                        <select name="program_id" id="select-program_id" class="form-control select2"></select>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="cargo_id">Cargo</label>
-                                        <select name="cargo_id" id="select-cargo_id" class="form-control select2" required>
-                                            {{-- <option value="">-- Selecciona el cargo --</option>
-                                            @foreach ($cargos as $item)
-                                            <option @if(isset($contract) && $contract->cargo_id == $item->ID) selected @endif value="{{ $item->ID }}" data-salary="{{ $item->nivel->Sueldo }}">{{ $item->Descripcion }} | Nivel {{ $item->nivel->NumNivel }} | Bs. {{ $item->nivel->Sueldo }}</option>
-                                            @endforeach --}}
-                                        </select>
+                                        <select name="cargo_id" id="select-cargo_id" class="form-control select2" required></select>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="start">Inicio de contrato</label>
@@ -203,11 +184,23 @@
                                         <label for="date_memo_res">Fecha de respuesta de memorandum</label>
                                         <input type="date" name="date_memo_res" value="{{ isset($contract) ? $contract->date_memo_res : '' }}" class="form-control">
                                     </div>
-                                    <div class="form-group col-md-12">
+                                    <div class="form-group col-md-6">
                                         <label for="workers_memo">Comisión de contratación</label>
                                         <select name="workers_memo[]" id="select-workers_memo" class="form-control" multiple>
-                                            @foreach ($funcionarios as $item)
+                                            {{-- @foreach ($funcionarios as $item)
                                             <option @if(isset($contract) && $contract->cargo_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ str_replace('  ', ' ', $item->NombreCompleto) }} - {{ $item->Cargo }}</option>
+                                            @endforeach --}}
+                                            @foreach ($contracts->sortBy('person.last_name') as $item)
+                                            <option value="{{ $item->id }}">{{ $item->person->first_name }} {{ $item->person->last_name }} - {{ $item->cargo_id ? $item->cargo->Descripcion : $item->job->name }}</option>                                                
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="signature_id">Firma autorizada</label>
+                                        <select name="signature_id" id="select-signature_id" class="form-control select2">
+                                            <option value="">--Seleccione la firma autorizada--</option>
+                                            @foreach ($contracts->sortBy('person.last_name') as $item)
+                                            <option value="{{ $item->id }}">{{ $item->person->first_name }} {{ $item->person->last_name }} - {{ $item->cargo_id ? $item->cargo->Descripcion : $item->job->name }}</option>                                                
                                             @endforeach
                                         </select>
                                     </div>
@@ -392,12 +385,13 @@
                 tinymce.init(window.voyagerTinyMCE.getConfig(additionalConfig));
                 
                 @isset($contract)
-                    let workers_memo = '{!! $contract->workers_memo !!}' ? JSON.parse('{!! $contract->workers_memo !!}') : [];
+                    let workers_memo = '{!! $contract->workers_memo_alt !!}' ? JSON.parse('{!! $contract->workers_memo_alt !!}') : [];
                     $('#select-workers_memo').val(workers_memo);
                     $('.div-{{ $contract->procedure_type_id }}').fadeIn('fast');
                     setTimeout(() => {
                         $('#select-procedure_type_id').val("{{ $contract->procedure_type_id }}").trigger('change');
-                        $('#select-cargo_id').val("{{ $contract->job_id ?? $contract->cargo_id }}");
+                        $('#select-cargo_id').val("{{ $contract->job_id ?? $contract->cargo_id }}").trigger('change');
+                        $('#select-signature_id').val("{{ $contract->signature_id }}").trigger('change');
                     }, 0);
                 @endisset
                 $('#select-workers_memo').select2();

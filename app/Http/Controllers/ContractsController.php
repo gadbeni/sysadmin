@@ -45,9 +45,7 @@ class ContractsController extends Controller
 
     public function list($search = null){
         $paginate = request('paginate') ?? 10;
-        $data = Contract::with(['user', 'person', 'program', 'cargo.nivel' => function($q){
-                        $q->where('Estado', 1);
-                    }, 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
+        $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'type'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
                     ->where(function($query) use ($search){
                         if($search){
@@ -107,7 +105,8 @@ class ContractsController extends Controller
                     ->get();
         $direccion_administrativas = DireccionAdministrativa::whereRaw($direccion_administrativa_id ? "ID = $direccion_administrativa_id" : 1)->get();
         $unidad_administrativas = UnidadAdministrativa::get();
-        $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
+        // $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
+        $contracts = Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get();
         $programs = Program::where('deleted_at', NULL)->get();
         $cargos = Cargo::with(['nivel' => function($q){
             $q->where('Estado', 1);
@@ -117,7 +116,7 @@ class ContractsController extends Controller
                     ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->where('deleted_at', NULL)->get();
-        return view('management.contracts.edit-add', compact('procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos', 'jobs'));
+        return view('management.contracts.edit-add', compact('procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'contracts', 'programs', 'cargos', 'jobs'));
     }
 
     /**
@@ -156,6 +155,7 @@ class ContractsController extends Controller
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'procedure_type_id' => $request->procedure_type_id,
                 'user_id' => Auth::user()->id,
+                'signature_id' => $request->signature_id,
                 'code' => $code,
                 'details_work' => $request->details_work,
                 'start' => $request->start,
@@ -165,7 +165,7 @@ class ContractsController extends Controller
                 'date_response' => $request->date_response,
                 'date_statement' => $request->date_statement,
                 'date_memo' => $request->date_memo,
-                'workers_memo' => json_encode($request->workers_memo),
+                'workers_memo_alt' => $request->workers_memo ? json_encode($request->workers_memo) : NULL,
                 'date_memo_res' => $request->date_memo_res,
                 'date_note' => $request->date_note,
                 'date_report' => $request->date_report,
@@ -212,7 +212,8 @@ class ContractsController extends Controller
         $people = Person::where('id', $contract->person->id)->where('deleted_at', NULL)->get();
         $direccion_administrativas = DireccionAdministrativa::whereRaw(Auth::user()->direccion_administrativa_id ? "ID = ".Auth::user()->direccion_administrativa_id : 1)->get();
         $unidad_administrativas = UnidadAdministrativa::get();
-        $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
+        // $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
+        $contracts = Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get();
         $programs = Program::where('deleted_at', NULL)->get();
         $cargos = Cargo::with(['nivel' => function($q){
                         $q->where('Estado', 1);
@@ -222,7 +223,7 @@ class ContractsController extends Controller
                     ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null) or id = ".($contract->job_id ?? 0))
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->where('deleted_at', NULL)->get();
-        return view('management.contracts.edit-add', compact('contract', 'procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'funcionarios', 'programs', 'cargos', 'jobs'));
+        return view('management.contracts.edit-add', compact('contract', 'procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'contracts', 'programs', 'cargos', 'jobs'));
     }
 
     /**
@@ -260,6 +261,7 @@ class ContractsController extends Controller
                 // Si es un contrato permanente se el id_da se obtiene de la tabal jobs, sino se obtiene del request
                 'direccion_administrativa_id' => $request->procedure_type_id == 1 ? Job::find($request->cargo_id)->direccion_administrativa_id : $request->direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
+                'signature_id' => $request->signature_id,
                 'code' => $code,
                 'details_work' => $request->details_work,
                 'start' => $request->start,
@@ -269,7 +271,7 @@ class ContractsController extends Controller
                 'date_response' => $request->date_response,
                 'date_statement' => $request->date_statement,
                 'date_memo' => $request->date_memo,
-                'workers_memo' => json_encode($request->workers_memo),
+                'workers_memo_alt' => $request->workers_memo ? json_encode($request->workers_memo) : NULL,
                 'date_memo_res' => $request->date_memo_res,
                 'date_note' => $request->date_note,
                 'date_report' => $request->date_report,
@@ -372,10 +374,13 @@ class ContractsController extends Controller
     // ================================
     
     public function print($id, $document){
-        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel' => function($q){
-            $q->where('Estado', 1);
-        }, 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa'])->where('id', $id)->first();
-        $contract->workers = $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
+        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature.person', 'signature.job', 'signature.cargo'])->where('id', $id)->first();
+        // Si no tiene comisión evaluadora del sistema actual buscar en el antiguo sistema
+        if($contract->workers_memo_alt != null){
+            $contract->workers = Contract::with(['person', 'job', 'cargo'])->whereIn('id', json_decode($contract->workers_memo_alt))->get();
+        }else{
+            $contract->workers = $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
+        }
         $signature = Signature::where('direccion_administrativa_id', $contract->procedure_type_id == 1 ? $contract->direccion_administrativa_id : $contract->user->direccion_administrativa_id)->where('status', 1)->where('deleted_at', NULL)->first();
         return view('management.docs.'.$document, compact('contract', 'signature'));
     }

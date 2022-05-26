@@ -23,6 +23,7 @@ class CreateContractsTable extends Migration
             $table->foreignId('program_id')->nullable()->constrained('programs');
             $table->foreignId('procedure_type_id')->nullable()->constrained('procedure_types');
             $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->foreignId('signature_id')->nullable()->constrained('people');
             $table->string('code')->nullable();
             $table->text('details_work')->nullable();
             $table->string('preventive_number')->nullable();
@@ -36,6 +37,7 @@ class CreateContractsTable extends Migration
             $table->date('date_presentation')->nullable();
             $table->date('date_memo')->nullable();
             $table->string('workers_memo')->nullable();
+            $table->string('workers_memo_alt')->nullable();
             $table->date('date_memo_res')->nullable();
             $table->date('date_note')->nullable();
             $table->date('date_report')->nullable();

@@ -1,11 +1,12 @@
 
 
 Migraciones
-    - ejecutar todas las migraciones
+    - 
 Seeders
-    - UpdatePermissionsSeeder, UpdateBreadSeeder, DireccionesTiposTableSeeder, DireccionesTableSeeder, UnidadesTableSeeder
+    -
 Paquetes
 
 Comandos
 
 Otros
+    - crear campo workers_memo_alt varchar(191) en la tabla contracts

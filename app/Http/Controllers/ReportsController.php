@@ -77,9 +77,7 @@ class ReportsController extends Controller
     }
 
     public function contracts_contracts_list(Request $request){
-        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel' => function($q){
-                            $q->where('Estado', 1);
-                        }, 'job.direccion_administrativa', 'direccion_administrativa', 'unidad_administrativa', 'type'])
+        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'unidad_administrativa', 'type'])
                         ->whereRaw($request->procedure_type_id ? "procedure_type_id = ".$request->procedure_type_id : 1)
                         ->whereRaw($request->status ? "status = '".$request->status."'" : 1)
                         ->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id = ".$request->direccion_administrativa_id : 1)
