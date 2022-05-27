@@ -70,7 +70,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('vaults/{id}/open', [VaultsController::class, 'open'])->name('vaults.open');
     Route::get('vaults/{id}/close', [VaultsController::class, 'close'])->name('vaults.close');
     Route::post('vaults/{id}/close/store', [VaultsController::class, 'close_store'])->name('vaults.close.store');
-    Route::get('vaults/{vault}/print/income', [VaultsController::class, 'print_income'])->name('vaults.print.income');
+    Route::get('vaults/{id}/print/details', [VaultsController::class, 'print_vault_details'])->name('vaults.print.vault.details');
     Route::get('vaults/{vault}/print/closure', [VaultsController::class, 'print_closure'])->name('vaults.print.closure');
     Route::get('vaults/{vault}/print/status', [VaultsController::class, 'print_status'])->name('vaults.print.status');
 

@@ -193,7 +193,8 @@ class ContractsController extends Controller
      */
     public function show($id)
     {
-        //
+        $contract = Contract::find($id);
+        return view('management.contracts.read', compact('contract'));
     }
 
     /**

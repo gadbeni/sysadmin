@@ -16,7 +16,6 @@
     <div class="page-content read container-fluid">
         <div class="row">
             <div class="col-md-12">
-
                 <div class="panel panel-bordered" style="padding-bottom:5px;">
                     <div class="row">
                         <div class="col-md-6">
@@ -133,7 +132,22 @@
                             </div>
                             <hr style="margin:0;">
                         </div>
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">N&deg; de cuenta</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>{{ $person->number_account }}</p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-bordered" style="padding-bottom:5px;">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel-heading" style="border-bottom:0;">
@@ -177,6 +191,12 @@
                             </table>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-bordered" style="padding-bottom:5px;">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel-heading" style="border-bottom:0;">

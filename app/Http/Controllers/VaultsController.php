@@ -31,14 +31,10 @@ class VaultsController extends Controller
     public function index()
     {
         $vault = Vault::with(['details.cash' => function($q){
-            $q->where('deleted_at', NULL);
-        }, 'details' => function($q){
-            $q->where('deleted_at', NULL);
-        }])
-        // ->whereHas('details', function($q){
-        //     $q->where('deleted_at', NULL);
-        // })
-        ->where('deleted_at', NULL)->first();
+                    $q->where('deleted_at', NULL);
+                }, 'details' => function($q){
+                    $q->where('deleted_at', NULL);
+                }])->where('deleted_at', NULL)->first();
         return view('vaults.browse', compact('vault'));
     }
 
@@ -64,13 +60,13 @@ class VaultsController extends Controller
             ->addColumn('actions', function($row){
                 $btn_print = '';
                 if($row->type == 'ingreso'){
-                    $btn_print =    '<a href="'.route('vaults.print.income', ['vault' => $row->id]).'" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
+                    $btn_print =    '<a href="'.route('vaults.print.vault.details', ['id' => $row->id]).'" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
                                         <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
                                     </a>';
-                }elseif($row->type == 'egreso' && $row->cashier_id){
-                    // $btn_print =    '<a href="'.route('print.open', ['cashier' => $row->cashier_id]).'" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
-                    //                     <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
-                    //                 </a>';
+                }elseif($row->type == 'egreso' && !$row->cashier_id){
+                    $btn_print =    '<a href="'.route('vaults.print.vault.details', ['id' => $row->id]).'" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
+                                        <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
+                                    </a>';
                 }
                 
                 $actions = '
@@ -277,9 +273,9 @@ class VaultsController extends Controller
         return view('vaults.print.print-vaults', compact('vault'));
     }
 
-    public function print_income($id){
+    public function print_vault_details($id){
         $detail = VaultsDetail::with(['cash', 'user'])->where('id', $id)->where('deleted_at', NULL)->first();
-        return view('vaults.print.print-income', compact('detail'));
+        return view('vaults.print.print-vaults-details', compact('detail'));
     }
 
     public function print_closure($id){

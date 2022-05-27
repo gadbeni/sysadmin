@@ -145,7 +145,7 @@
                             </div>
                         @endif
 
-                        <a href="#" title="Ver" class="btn btn-sm btn-warning view">
+                        <a href="{{ route('contracts.show', ['contract' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
                             <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                         </a>
                         

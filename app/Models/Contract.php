@@ -90,4 +90,8 @@ class Contract extends Model
     public function signature(){
         return $this->belongsTo(Contract::class, 'signature_id', 'id');
     }
+
+    public function paymentschedules_details(){
+        return $this->hasMany(PaymentschedulesDetail::class);
+    }
 }

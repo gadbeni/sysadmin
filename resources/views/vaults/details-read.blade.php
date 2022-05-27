@@ -10,7 +10,7 @@
             Volver a la lista
         </a>
         @if($details->type == 'ingreso')
-            <a href="{{ route('vaults.print.income', ['vault' => $details->id]) }}" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
+            <a href="{{ route('vaults.print.vault.details', ['id' => $details->id]) }}" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
                 <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
             </a>
         @elseif($details->type == 'egreso' && $details->cashier_id)
