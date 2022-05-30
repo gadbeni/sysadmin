@@ -22,6 +22,7 @@ use App\Models\ProcedureType;
 use App\Models\Job;
 use App\Models\Cargo;
 use App\Models\Person;
+use App\Models\Program;
 
 // Exports
 use App\Exports\MinisterioTrabajoExport;
@@ -199,6 +200,30 @@ class ReportsController extends Controller
             //throw $th;
         }
     }
+
+    public function contracts_projects_details_index(){
+        return view('reports.rr_hh.projects_details-browse');
+    }
+
+    public function contracts_projects_details_list(Request $request){
+        $program = Program::with(['direccion_administrativa', 'procedure_type', 'contracts' => function($q){
+                            $q->where('deleted_at', NULL);
+                        }, 'contracts.paymentschedules_details' => function($q){
+                            $q->where('deleted_at', NULL);
+                        }, 'contracts.paymentschedules_details.paymentschedule'])
+                        ->whereRaw($request->direccion_administrativa_id ? 'direccion_administrativa_id = '.$request->direccion_administrativa_id : 1)
+                        ->whereRaw($request->procedure_type_id ? 'procedure_type_id = '.$request->procedure_type_id : 1)
+                        ->whereRaw('YEAR(start) = '.$request->year)
+                        ->where('deleted_at', NULL)
+                        ->get();
+        if($request->print){
+            return view('reports.rr_hh.projects_details-list-print', compact('program'));
+        }else{
+            return view('reports.rr_hh.projects_details-list', compact('program'));
+        }
+    }
+
+    
 
     public function social_security_payments_index(){
         $direcciones_administrativa = Direccion::where('estado', 1)->where('deleted_at', null)->get();

@@ -139,12 +139,12 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Fecha de rotación</label>
+                            <label>Inicio de inamovilidad</label>
                             <input type="date" name="start" class="form-control" value="{{ date('Y-m-d') }}" required >
                         </div>
                         <div class="form-group">
-                            <label>Fecha de rotación</label>
-                            <input type="date" name="finish" class="form-control" required >
+                            <label>Fin de inamovilidad</label>
+                            <input type="date" name="finish" class="form-control" >
                         </div>
                         <div class="form-group">
                             <label>Observaciones</label>

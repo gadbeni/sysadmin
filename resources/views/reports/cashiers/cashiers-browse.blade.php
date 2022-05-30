@@ -30,7 +30,7 @@
                                 <div class="form-group">
                                     <select name="user_id" class="form-control select2">
                                         <option value="">Todos los cajeros</option>
-                                        @foreach (\App\Models\User::where('role_id', 5)->get() as $item)
+                                        @foreach (\App\Models\User::whereRaw('role_id = 5 or role_id = 4')->get() as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach
                                     </select>

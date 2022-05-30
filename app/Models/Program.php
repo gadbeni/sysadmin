@@ -15,4 +15,12 @@ class Program extends Model
     public function direccion_administrativa(){
         return $this->belongsTo(Direccion::class, 'direccion_administrativa_id');
     }
+
+    public function procedure_type(){
+        return $this->belongsTo(ProcedureType::class, 'procedure_type_id');
+    }
+
+    public function contracts(){
+        return $this->hasMany(Contract::class, 'program_id');
+    }
 }

@@ -33,7 +33,8 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = 'close_paymentschedules' or
                                                 table_name = 'plugins' or
                                                 table_name = 'planillas_adicionales' or
-                                                table_name = 'reports_cachiers'")->get();
+                                                table_name = 'reports_cachiers' or
+                                                `key` = 'browse_reportspaymentschedulesdetails-status'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'caja_tecnico_boveda')->firstOrFail();

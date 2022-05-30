@@ -1107,6 +1107,22 @@ class MenuItemsTableSeeder extends Seeder
                 'route' => 'reports.humans_resources.relationships',
                 'parameters' => 'null',
             ),
+            68 => 
+            array (
+                'id' => 71,
+                'menu_id' => 1,
+                'title' => 'Poyectos',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => 'voyager-news',
+                'color' => '#000000',
+                'parent_id' => 18,
+                'order' => 19,
+                'created_at' => '2022-05-30 12:14:54',
+                'updated_at' => '2022-05-30 12:15:39',
+                'route' => 'reports.humans_resources.projects.details.index',
+                'parameters' => NULL,
+            ),
         ));
         
         
