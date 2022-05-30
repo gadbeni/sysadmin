@@ -2,7 +2,7 @@
 
 @section('page_title', 'Viendo Cheques')
 
-@if(auth()->user()->hasPermission('browse_checks')))
+@if(auth()->user()->hasPermission('browse_checks'))
 
     @section('page_header')
         <div class="container-fluid">
@@ -220,14 +220,7 @@
                             <br>
                             <p><b>Desea entregar el cheque....!</b></p>
                         </div>
-                        <div class="row">    
-                            <div class="col-md-12">
-                                <div class="input-group-prepend">
-                                <span class="input-group-text"><b>Fecha Salida:</b></span>
-                                </div>
-                                <input type="date" step="any" class="form-control" id="fentregar" name="fentregar" required>
-                            </div>                                                                         
-                        </div>
+
                         <div class="row">   
                             <div class="col-md-12">
                                 <div class="input-group-prepend">
@@ -312,7 +305,7 @@
                                 
                             </div>
 
-                            <div class="row">
+                            {{-- <div class="row">
                                 <div class="col-md-12">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><b>Cantidad de Cheque:</b></span>
@@ -325,6 +318,22 @@
                                         <option value="5">5</option>
                                         <option value="6">6</option>
                                     </select>
+                                </div>
+                            </div> --}}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><b>Cantidad de Cheque:</b></span>
+                                    </div>
+                                    <input type="number" id="numerocheque" onkeypress='return validaNumericos(event)' class="form-control" required>
+                                    {{-- <select id="numerocheque" class="form-control select2" required>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                    </select> --}}
                                 </div>
                             </div>
                             
@@ -734,7 +743,7 @@
             function function_cant()
             {
                 var x =  $(this).val(); 
-                // alert(4)
+                // alert(x)
                 var i=0;
                 var html_cant='';
                 for(i=1; i<=x; i++)
@@ -894,9 +903,12 @@
             }
 
 
-
-
-
+            function validaNumericos(event) {
+                if(event.charCode >= 48 && event.charCode <= 57){
+                    return true;
+                }
+                return false;        
+            }
 
 
             
