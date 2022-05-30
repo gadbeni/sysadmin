@@ -11,5 +11,7 @@ class Check extends Model
     use HasFactory, SoftDeletes;
     protected $dates = ['deleted_at'];
     
-    protected $fillable = ['contract_id','checkcategoria_id', 'user_id', 'observations', 'resumen', 'status'];
+    protected $fillable = ['contract_id','checkcategoria_id', 'user_id', 'observations', 'resumen', 'status',
+                            'fentregar'
+    ];
 }

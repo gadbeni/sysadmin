@@ -112,9 +112,9 @@ class CheckController extends Controller
     public function entregar_checks(Request $request)
     {
 
-        Check::where('id',$request->id)->update(['status' => 'entregado']);
+        Check::where('id',$request->id)->update(['status' => 'entregado', 'fentregar'=>$request->fentregar]);
 
-        ChecksHistory::create(['check_id' => $request->id, 'status' => 'entregado', 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
+        ChecksHistory::create(['check_id' => $request->id, 'status' => 'entregado','fentregar'=>$request->fentregar, 'observacion' => $request->observacion,'user_id' => Auth::user()->id]);
 
         return redirect()->route('checks.index')->with(['message' => 'Cheque Entregado Exitosamente.', 'alert-type' => 'success']);
     }
