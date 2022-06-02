@@ -852,7 +852,13 @@ class ReportsController extends Controller
         }
     }
 
-
+    public function contarcts_people_index(){
+        $contarcts = Person::with(['contracts' => function($q){
+                        $q->where('deleted_at', NULL);
+                    }, 'contracts.job', 'contracts.cargo', 'contracts.direccion_administrativa'])->where('deleted_at', NULL)
+                    ->orderBy('last_name')->get();
+        return view('templates.browse', compact('contarcts'));
+    }
 
     public function check_list(Request $request){
         $cat ='';
@@ -898,10 +904,6 @@ class ReportsController extends Controller
                 ->where('c.deleted_at',$tip, null)
                 ->get();
         }
-        
-
-        
-                // dd($detalle);
   
         $inicio = $request->start;
         $fin = $request->finish;

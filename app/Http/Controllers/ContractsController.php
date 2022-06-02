@@ -380,7 +380,8 @@ class ContractsController extends Controller
         if($contract->workers_memo_alt != null){
             $contract->workers = Contract::with(['person', 'job', 'cargo'])->whereIn('id', json_decode($contract->workers_memo_alt))->get();
         }else{
-            $contract->workers = $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
+            // dd($contract->workers_memo);
+            $contract->workers = $contract->workers_memo != null && $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
         }
         $signature = Signature::where('direccion_administrativa_id', $contract->procedure_type_id == 1 ? $contract->direccion_administrativa_id : $contract->user->direccion_administrativa_id)->where('status', 1)->where('deleted_at', NULL)->first();
         return view('management.docs.'.$document, compact('contract', 'signature'));

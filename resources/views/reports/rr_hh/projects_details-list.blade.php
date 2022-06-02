@@ -34,8 +34,8 @@
                                 $expense_partial = 0;
                                 foreach($item->contracts as $contract) {
                                     foreach($contract->paymentschedules_details as $paymentschedules_detail){
-
-                                        $expense_partial += $paymentschedules_detail->salary;
+        
+                                        $expense_partial += $paymentschedules_detail->partial_salary + $paymentschedules_detail->seniority_bonus_amount;
                                     }
                                 }
                                 $amount_total += $item->amount;

@@ -41,6 +41,8 @@ Route::post('search', [HomeController::class, 'search_payroll_by_ci'])->name('ho
 Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Voyager::routes();
 
+    Route::get('test', [ReportsController::class, 'contarcts_people_index'])->name('contarcts.people.index');
+
     Route::get('people', [PeopleController::class, 'index'])->name('voyager.people.index');
     Route::get('people/ajax/list/{search?}', [PeopleController::class, 'list']);
     Route::get('people/{id}', [PeopleController::class, 'read'])->name('voyager.people.show');
@@ -245,3 +247,8 @@ Route::get('/admin/clear-cache', function() {
     Artisan::call('optimize:clear');
     return redirect('/admin/profile')->with(['message' => 'Cache eliminada.', 'alert-type' => 'success']);
 })->name('clear.cache');
+
+// Redirect development mode
+Route::get('/admin/notice', function() {
+    return view('errors.notice');
+});

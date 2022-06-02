@@ -39,6 +39,7 @@
                     <th>Sueldo</th>
                     <th>Inicio</th>
                     <th>Fin</th>
+                    <th>Monto total</th>
                     <th>Programa</th>
                     <th>Cat. prog.</th>
                     <th>Estado</th>
@@ -49,7 +50,11 @@
                     $cont = 1;
                 @endphp
                 @forelse ($contracts as $item)
-                {{-- {{ dd($item) }} --}}
+                @php
+                    $contract_duration = contract_duration_calculate($item->start, $item->finish);
+                    $salary = $item->cargo ? $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo : $item->job->salary;
+                    $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
+                @endphp
                 <tr>
                     <td>{{ $cont }}</td>
                     <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->nombre : 'No definida' }}</td>
@@ -77,17 +82,10 @@
                             No definido
                         @endif
                     </td>
-                    <td>
-                        @if ($item->cargo)
-                            {{ number_format($item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.') }}
-                        @elseif ($item->job)
-                            {{ number_format($item->job->salary, 2, ',', '.') }}
-                        @else
-                            0.00
-                        @endif
-                    </td>
+                    <td>{{ number_format($salary, 2, ',', '.') }}</td>
                     <td>{{ date('d/m/Y', strtotime($item->start)) }}</td>
-                    <td>{{ date('d/m/Y', strtotime($item->finish)) }}</td>
+                    <td>{{ $item->finish ? date('d/m/Y', strtotime($item->finish)) : '' }}</td>
+                    <td>{{ number_format($total, 2, ',', '.') }}</td>
                     <td>{{ $item->program->name }}</td>
                     <td>{{ $item->program->programatic_category }}</td>
                     <td>{{ $item->status }}</td>
@@ -97,7 +95,7 @@
                 @endphp
                 @empty
                     <tr class="odd">
-                        <td valign="top" colspan="16" class="text-center">No hay datos disponibles en la tabla</td>
+                        <td valign="top" colspan="17" class="text-center">No hay datos disponibles en la tabla</td>
                     </tr>
                 @endforelse
             </tbody>

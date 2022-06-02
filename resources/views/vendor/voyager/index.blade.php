@@ -3,6 +3,7 @@
 @section('content')
     <div class="page-content browse container-fluid">
         @include('voyager::alerts')
+        {{-- Vista de cajero(a) --}}
         @if (Auth::user()->role_id == 4 || Auth::user()->role_id == 5)
             @php
                 $cashier = \App\Models\Cashier::with(['payments.aguinaldo', 'payments.stipend', 'movements' => function($q){
@@ -358,7 +359,7 @@
                                             <h4 class="modal-title"><i class="voyager-key"></i> Aceptar apertura de caja</h4>
                                         </div>
                                         <div class="modal-body">
-                                            <p>Esta a punto de aceptar que posee todos los cortes de billetes descritos en la lista, ¿Desea continuar?</p>
+                                            <p class="text-muted">Esta a punto de aceptar que posee todos los cortes de billetes descritos en la lista, ¿Desea continuar?</p>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -381,7 +382,7 @@
                                             <h4 class="modal-title"><i class="voyager-x"></i> Rechazar apertura de caja</h4>
                                         </div>
                                         <div class="modal-body">
-                                            <p>Esta a punto de rechazar la apertura de caja, ¿Desea continuar?</p>
+                                            <p class="text-muted">Esta a punto de rechazar la apertura de caja, ¿Desea continuar?</p>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -414,7 +415,7 @@
                                         <h4 class="modal-title"><i class="voyager-key"></i> Reabrir Caja</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <p>Si reabre la caja deberá realizar el arqueo nuevamente, ¿Desea continuar?</p>
+                                        <p class="text-muted">Si reabre la caja deberá realizar el arqueo nuevamente, ¿Desea continuar?</p>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -437,13 +438,156 @@
                 </div>
             @endif
         @endif
+
+        {{-- Vista de recursos humanos --}}
+        @if (Auth::user()->role_id == 1 || (Auth::user()->role_id >= 9 && Auth::user()->role_id <= 12) || Auth::user()->role_id == 23 || Auth::user()->role_id == 25)
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-bordered">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2>Hola, {{ Auth::user()->name }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-bordered" style="border-left: 5px solid #52BE80">
+                    <div class="panel-body" style="height: 100px;padding: 15px 20px">
+                        <div class="col-md-9">
+                            @php
+                                $contracts_active = App\Models\Contract::where('deleted_at', NULL)->where('status', 'firmado')->whereRaw('start <= "'.date('Y-m-d').'" and (finish >= "'.date('Y-m-d').'" or finish is null)')->count();
+                            @endphp
+                            <h5>Contratos activos</h5>
+                            <h2>{{ $contracts_active }}</h2>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <i class="icon voyager-news" style="color: #52BE80"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-bordered" style="border-left: 5px solid #E67E22">
+                    <div class="panel-body" style="height: 100px;padding: 15px 20px">
+                        <div class="col-md-9">
+                            <h5>Contratos en proceso</h5>
+                            <h2>{{ App\Models\Contract::where('deleted_at', NULL)->where('status', 'elaborado')->count() }}</h2>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <i class="icon voyager-calendar" style="color: #E67E22"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-bordered" style="border-left: 5px solid #3498DB">
+                    <div class="panel-body" style="height: 100px;padding: 15px 20px">
+                        <div class="col-md-9">
+                            <h5>Inamovilidades</h5>
+                            <h2>{{ App\Models\PersonIrremovability::where('deleted_at', NULL)->whereRaw('start <= "'.date('Y-m-d').'" and (finish >= "'.date('Y-m-d').'" or finish is null)')->count() }}</h2>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <i class="icon voyager-certificate" style="color: #3498DB"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-bordered" style="border-left: 5px solid #E74C3C">
+                    <div class="panel-body" style="height: 100px;padding: 15px 20px">
+                        <div class="col-md-9">
+                            @php
+                                $jobs = App\Models\Job::whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
+                                            ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
+                                            ->where('deleted_at', NULL)->count();
+                            @endphp
+                            <h5>Cargos acéfalos</h5>
+                            <h2>{{ $jobs }}</h2>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <i class="icon voyager-book" style="color: #E74C3C"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel">
+                    <div class="panel-body" style="height: 250px; overflow-y: auto">
+                        <h4>Cumpleaños</h4>
+                        @php
+                            $birthdays = App\Models\Person::whereHas('contracts', function($q){
+                                                $q->where('status', 'firmado');
+                                            })
+                                            ->where('birthday', 'like', '%'.date('m-d').'%')
+                                            ->where('deleted_at', NULL)->get()
+                        @endphp
+                        <div class="list-group">
+                            @forelse ($birthdays as $item)
+                                @php
+                                    $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+                                    $now = \Carbon\Carbon::now();
+                                    $birthday = new \Carbon\Carbon($item->birthday);
+                                    $age = $birthday->diffInYears($now);
+
+                                    $image = asset('images/default.jpg');
+                                    if($item->image){
+                                        $image = asset('storage/'.str_replace('.', '-cropped.', $item->image));
+                                    }
+                                @endphp
+                                <a href="{{ url('admin/people/'.$item->id) }}" class="list-group-item" style="cursor: pointer">
+                                    <div style="display: flex; flex-direction: row">
+                                        <div style="margin-right: 10px">
+                                            <img src="{{ $image }}" alt="{{ $item->first_name }} {{ $item->last_name }}" style="width: 50px; height: 50px; border-radius: 25px">
+                                        </div>
+                                        <div>
+                                            <p>
+                                                {{ $item->first_name }} {{ $item->last_name }}<br>
+                                                <b>{{ $age }} años</b>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            @empty
+                                <p class="text-muted text-center">Ninguno</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel">
+                    <div class="panel-body" style="height: 250px">
+                        <canvas id="bar-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel">
+                    <div class="panel-body" style="height: 250px">
+                        <canvas id="doughnut-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 @stop
 
+@section('css')
+    <style>
+        .icon{
+            font-size: 35px
+        }
+    </style>
+@endsection
+
 @section('javascript')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js"></script>
     @if ((Auth::user()->role_id == 4 || Auth::user()->role_id == 5) && $cashier)
         @if ($cashier->status == 'abierta')
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js"></script>
             <script>
                 $(document).ready(function(){
                     const data = {

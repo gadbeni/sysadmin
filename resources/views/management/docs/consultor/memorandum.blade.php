@@ -49,7 +49,7 @@
                     @forelse ($contract->workers as $item)
                         @if (isset($item->person))
                             <b>A:</b> {{ $item->person->first_name }} {{ $item->person->last_name }}<br>
-                            <b>{{ $item->cargo->Descripcion }}</b> <br> <br>
+                            <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b> <br> <br>
                         @else
                             <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
                             <b>{{ $item->Cargo }}</b> <br> <br>

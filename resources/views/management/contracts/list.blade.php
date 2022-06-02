@@ -9,6 +9,7 @@
                     <th>Persona</th>
                     <th>Dirección administrativa</th>
                     <th>Detalles</th>
+                    <th>Registrado por</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -80,6 +81,11 @@
                                 <b>Estado</b>: <label class="label label-{{ $label }}">{{ ucfirst($item->status) }}</label>
                             </li>
                         </ul>
+                    </td>
+                    <td>
+                        {{ $item->user ? $item->user->name : '' }} <br>
+                        {{ date('d/m/Y H:i', strtotime($item->created_at)) }} <br>
+                        <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
                     </td>
                     <td class="no-sort no-click bread-actions text-right">
 

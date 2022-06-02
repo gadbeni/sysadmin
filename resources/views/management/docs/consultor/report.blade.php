@@ -33,8 +33,8 @@
                         <td style="width: 100px">:</td>
                         <td>
                             @forelse ($contract->workers as $item)
-                                {{ str_replace('  ', ' ', Str::upper($item->NombreCompleto)) }} <br>
-                                <b>{{ Str::upper($item->Cargo) }}</b> <br> <br>
+                                {{ Str::upper($item->person->first_name.' '.$item->person->last_name) }} <br>
+                                <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b> <br> <br>
                             @empty
                                 <br> <br>
                                 <b style="color: red">Debes Seleccionar a la comisión evaluadora</b>
@@ -149,8 +149,8 @@
                         @forelse ($contract->workers as $item)
                             <td style="width: 50%">
                                 ....................................................... <br>
-                                {{ str_replace('  ', ' ', Str::upper($item->NombreCompleto)) }} <br>
-                                <b>{{ Str::upper($item->Cargo) }}</b>
+                                {{ Str::upper($item->person->first_name.' '.$item->person->last_name) }} <br>
+                                <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b>
                             </td>
                         @empty
                             <td style="width: 50%">
