@@ -23,6 +23,7 @@ use App\Models\Job;
 use App\Models\Cargo;
 use App\Models\Person;
 use App\Models\Program;
+use App\Models\Paymentschedule;
 
 // Exports
 use App\Exports\MinisterioTrabajoExport;
@@ -680,6 +681,16 @@ class ReportsController extends Controller
                         ->selectRaw('p.Direccion_Administrativa as direccion_administrativa, p.Afp  as afp, SUM(p.Total_Ganado) as total_ganado, COUNT(*) as n_personas, p.Periodo as periodo, tp.Nombre as tipo_planilla')
                         ->groupBy('p.Afp')->get();
 
+                    
+        $paymentschedule = Paymentschedule::with(['details.contract.person' => function($query) use ($afp){
+                                $query->whereRaw($afp ? "afp = ".$afp : 1);
+                            }, 'check_payments', 'payroll_payments', 'procedure_type'])->whereHas('details.contract.person', function($query) use ($afp){
+                                $query->whereRaw($afp ? "afp = ".$afp : 1);
+                            })
+                            ->where('id', $planilla_id)
+                            ->where('deleted_at', NULL)->first();
+        // dd($paymentschedule->details);
+
         // Obtener detalle de pago
         $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $planilla_id)->whereRaw($afp ? 'Afp = '.$afp : 1)->get();
         
@@ -696,9 +707,9 @@ class ReportsController extends Controller
         })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
 
         if($request->type == 'print'){
-            return view('reports.social_security.caratula-list-print', compact('planilla_id', 'planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes'));
+            return view('reports.social_security.caratula-list-print', compact('planilla_id', 'planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes', 'paymentschedule', 'afp'));
         }else{
-            return view('reports.social_security.caratula-list', compact('planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes'));
+            return view('reports.social_security.caratula-list', compact('planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes', 'paymentschedule', 'afp'));
         }
     }
 
@@ -787,6 +798,26 @@ class ReportsController extends Controller
             }
         }
         return view('reports.social_security.exports-list', compact('data', 'type_report', 'afp', 'group_by'));
+    }
+
+    public function social_security_payrollpayments_index(){
+        return view('reports.social_security.payroll_payments-browse');
+    }
+
+    public function social_security_payrollpayments_list(Request $request){
+        $payroll_payment = PayrollPayment::whereHas('paymentschedule', function($q) use($request){
+                                $q->whereRaw($request->direccion_administrativa_id ? 'direccion_administrativa_id = '.$request->direccion_administrativa_id : 1);
+                            })
+                            ->whereRaw($request->user ? 'user_id = '.Auth::user()->id : 1)
+                            ->whereDate('created_at', '>=', $request->start)
+                            ->whereDate('created_at', '<=', $request->finish)
+                            ->where('deleted_at', NULL)->get();
+
+        if($request->type == 'print'){
+            return view('reports.social_security.payroll_payments-print', compact('payroll_payment'));
+        }else{
+            return view('reports.social_security.payroll_payments-list', compact('payroll_payment'));
+        }
     }
 
     //  ===== Cashiers =====

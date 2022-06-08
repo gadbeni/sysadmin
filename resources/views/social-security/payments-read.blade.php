@@ -23,7 +23,7 @@
                                 <h3 class="panel-title">Planilla</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $payment->planilla_haber_id }}</p>
+                                <p>{{ $payment->planilla_haber_id ?? str_pad($payment->paymentschedule_id, 6, "0", STR_PAD_LEFT).' - '.$payment->paymentschedule->period->name }}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>
@@ -59,7 +59,7 @@
                                 <h3 class="panel-title">Fecha de pago a AFP</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $payment->date_payment_cc ? date('d/m/Y', strtotime($payment->date_payment_afp)) : 'No definida' }}</p>
+                                <p>{{ $payment->date_payment_afp ? date('d/m/Y', strtotime($payment->date_payment_afp)) : 'No definida' }}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>

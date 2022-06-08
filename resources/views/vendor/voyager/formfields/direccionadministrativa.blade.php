@@ -4,7 +4,7 @@
     data-name="{{ $row->display_name }}"
     @if($row->required == 1) required @endif
 >
-    @foreach(\App\Models\DireccionAdministrativa::all() as $direccion)
-    <option @if($dataTypeContent->{$row->field} == $direccion->ID) selected @endif value="{{ $direccion->ID }}">{{ $direccion->NOMBRE }}</option>
+    @foreach(\App\Models\Direccion::all() as $direccion)
+    <option @if($dataTypeContent->{$row->field} == $direccion->id) selected @endif value="{{ $direccion->id }}">{{ $direccion->nombre }}</option>
     @endforeach
 </select>

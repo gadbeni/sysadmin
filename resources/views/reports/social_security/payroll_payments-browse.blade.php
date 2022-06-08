@@ -1,8 +1,8 @@
 @extends('voyager::master')
 
-@section('page_title', 'Reporte de cheques')
+@section('page_title', 'Pagos de cheques')
 
-@if (auth()->user()->hasPermission('browse_reportssocial-securitychecks'))
+@if (auth()->user()->hasPermission('browse_reportssocial-securitypayrollpayments'))
 
     @section('page_header')
         <div class="container-fluid">
@@ -12,49 +12,31 @@
                         <div class="panel-body" style="padding: 0px">
                             <div class="col-md-8" style="padding: 0px">
                                 <h1 class="page-title">
-                                    <i class="voyager-tag"></i> Reporte de cheques
+                                    <i class="voyager-tag"></i> Pagos de cheques
                                 </h1>
                             </div>
                             <div class="col-md-4" style="margin-top: 30px">
-                                <form name="form_search" id="form-search" action="{{ route('reports.social_security.personal.checks.list') }}" method="post">
+                                <form name="form_search" id="form-search" action="{{ route('reports.social_security.payrollpayments.list') }}" method="post">
                                     @csrf
                                     <input type="hidden" name="type">
-                                    <div class="form-group col-md-6" style="padding: 0px 5px">
-                                        <label>Desde</label>
-                                        <input type="date" name="start" class="form-control">
-                                    </div>
-                                    <div class="form-group col-md-6" style="padding: 0px 5px">
-                                        <label>hasta</label>
-                                        <input type="date" name="finish" class="form-control">
-                                    </div>
-                                    <div class="form-group col-md-12" style="padding: 0px 5px">
-                                        {{-- <label>Dirección administrativa</label> --}}
-                                        <select name="d_a" class="form-control select2">
-                                            <option value="">--Seleccione la dirección administrativa--</option>
-                                            @foreach ($direcciones_administrativa as $item)
+                                    <div class="form-group col-md-12">
+                                        <select name="direccion_administrativa_id" class="form-control select2">
+                                            <option selected value="">--Todas las direcciones adminstrativas--</option>
+                                            @foreach (\App\Models\Direccion::where('estado', 1)->get() as $item)
                                                 <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group col-md-6" style="padding: 0px 5px">
-                                        {{-- <label>hasta</label> --}}
-                                        <input type="text" name="periodo" class="form-control" placeholder="Periodo">
+                                    <div class="form-group col-md-6">
+                                        <input type="date" name="start" value="{{ date('Y-m') }}-01" class="form-control" required>
                                     </div>
-                                    <div class="form-group col-md-6" style="padding: 0px 5px">
-                                        {{-- <label>hasta</label> --}}
-                                        <select name="status" id="select-status" class="form-control">
-                                            <option value="">Todos</option>
-                                            <option value="0">Anulado</option>
-                                            <option value="1">Pendiente</option>
-                                            <option value="2">Pagado</option>
-                                            <option value="3">Vencido</option>
-                                        </select>
+                                    <div class="form-group col-md-6">
+                                        <input type="date" name="finish" value="{{ date('Y-m-d') }}" class="form-control" required>
                                     </div>
-                                    <div class="form-group col-md-12" style="padding: 0px 5px">
-                                        {{-- <label>hasta</label> --}}
-                                        <input type="text" name="planilla_id" class="form-control" placeholder="N&deg; de planilla">
+                                    <div class="form-group col-md-12 text-right">
+                                        <label class="checkbox-inline"><input type="checkbox" name="user" value="1">Solo mi usuario</label>
                                     </div>
-                                    <div class="form-group col-md-12 text-right" style="padding: 8px 5px">
+                                    <div class="form-group text-right">
                                         <button type="submit" class="btn btn-primary">Generar <i class="voyager-settings"></i></button>
                                     </div>
                                 </form>
@@ -107,8 +89,4 @@
         </script>
     @stop
 
-@else
-    @section('content')
-        @include('errors.403')
-    @stop
 @endif

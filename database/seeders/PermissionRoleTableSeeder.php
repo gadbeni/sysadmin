@@ -29,6 +29,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = 'browse_planillaspagos' or
                                                 `key` = 'browse_paymentschedules' or
                                                 `key` = 'read_paymentschedules' or
+                                                `key` = 'read_centralize_paymentschedules' or
                                                 `key` = 'enable_paymentschedules' or
                                                 `key` = 'close_paymentschedules' or
                                                 table_name = 'plugins' or
@@ -87,6 +88,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = "browse_paymentschedules" or
                                                 `key` = "read_paymentschedules" or
                                                 `key` = "read_centralize_paymentschedules" or
+                                                `key` = "browse_reportssocial-securitypayrollpayments" or
                                                 `key` = "browse_people" or
                                                 `key` = "read_people" or
                                                 `key` = "irremovability_people" or
@@ -107,6 +109,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 table_name = "social-securitychecks" or
                                                 table_name = "spreadsheets" or
                                                 table_name = "reports_social_security" or
+                                                `key` = "browse_reportssocial-securitypayrollpayments" or
                                                 `key` = "browse_people" or
                                                 `key` = "read_people" or
                                                 `key` = "irremovability_people" or
@@ -138,6 +141,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = "browse_people" or
                                                 `key` = "read_people" or
                                                 `key` = "irremovability_people" or
+                                                `key` = "browse_reportssocial-securitypayrollpayments" or
                                                 `key` = "browse_contracts"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
@@ -174,6 +178,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'print_paymentschedules' or
                                             `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
+                                            `key` = 'browse_planillaspagos' or
                                             table_name = 'reports_rrhh' or 
                                             `key` = 'browse_reportscontractscontracts'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
@@ -195,6 +200,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'print_paymentschedules' or
                                             `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
+                                            `key` = 'browse_planillaspagos' or
                                             table_name = 'reports_rrhh'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
@@ -215,6 +221,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'print_paymentschedules' or
                                             `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
+                                            `key` = 'browse_planillaspagos' or
                                             table_name = 'reports_rrhh' or
                                             table_name = 'seniority_bonus_people'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
@@ -234,6 +241,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'print_paymentschedules' or
                                             `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
+                                            `key` = 'browse_planillaspagos' or
                                             table_name = 'seniority_bonus_people'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
@@ -252,6 +260,24 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'print_paymentschedules' or
                                             `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
+                                            table_name = 'seniority_bonus_people'")->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        $role = Role::where('name', 'rrhh_tecnico_planillas')->firstOrFail();
+        $permissions = Permission::whereRaw("$similar_permissions or
+                                            `key` = 'browse_contracts' or
+                                            `key` = 'read_contracts' or
+                                            `key` = 'browse_paymentschedules' or
+                                            `key` = 'read_paymentschedules' or
+                                            `key` = 'read_centralize_paymentschedules' or
+                                            `key` = 'browse_planillaspagos' or
+                                            `key` = 'add_paymentschedules' or
+                                            `key` = 'delete_paymentschedules' or
+                                            `key` = 'approve_paymentschedules' or
+                                            `key` = 'print_paymentschedules' or
+                                            `key` = 'browse_paymentschedulesfilesindex' or
+                                            `key` = 'add_paymentschedulesfiles' or
+                                            `key` = 'browse_reportssocial-securityexports' or
                                             table_name = 'seniority_bonus_people'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 

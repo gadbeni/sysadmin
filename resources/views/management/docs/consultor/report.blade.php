@@ -33,8 +33,14 @@
                         <td style="width: 100px">:</td>
                         <td>
                             @forelse ($contract->workers as $item)
-                                {{ Str::upper($item->person->first_name.' '.$item->person->last_name) }} <br>
-                                <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b> <br> <br>
+                                @if (isset($item->person))
+                                    <b>A:</b> {{ $item->person->first_name }} {{ $item->person->last_name }}<br>
+                                    <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b> <br> <br>
+                                @else
+                                    <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
+                                    <b>{{ $item->Cargo }}</b> <br> <br>
+                                @endif
+                                <br> <br>
                             @empty
                                 <br> <br>
                                 <b style="color: red">Debes Seleccionar a la comisión evaluadora</b>
@@ -149,8 +155,13 @@
                         @forelse ($contract->workers as $item)
                             <td style="width: 50%">
                                 ....................................................... <br>
-                                {{ Str::upper($item->person->first_name.' '.$item->person->last_name) }} <br>
-                                <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b>
+                                @if (isset($item->person))
+                                    <b>A:</b> {{ $item->person->first_name }} {{ $item->person->last_name }}<br>
+                                    <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b> <br> <br>
+                                @else
+                                    <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
+                                    <b>{{ $item->Cargo }}</b> <br> <br>
+                                @endif
                             </td>
                         @empty
                             <td style="width: 50%">

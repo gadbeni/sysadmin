@@ -2,7 +2,7 @@
 
 @section('page_title', 'Reporte de Ejecución de Programas/proyectos')
 
-@if(auth()->user()->hasPermission('browse_reportspaymentschedulesdetails-status'))
+@if(auth()->user()->hasPermission('browse_reportshumans-resourcesprojectsdetails'))
 
     @section('page_header')
         <div class="container-fluid">
@@ -104,6 +104,6 @@
     
 @else
     @section('content')
-        <h1>No tienes permiso</h1>
+        @include('errors.403')
     @stop
 @endif

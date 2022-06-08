@@ -41,7 +41,7 @@
                                     <td>{{ $person->ci }}</td>
                                     <td>
                                         @php
-                                            $irremovability = $person->irremovabilities->where('start', '<=', date('Y-m-d'))->whereRaw('(finish >= "'.date('Y-m-d').'" or finish is null')->first();
+                                            $irremovability = $person->irremovabilities->where('start', '<=', date('Y-m-d'))->where('finish', '>=', date('Y-m-d'))->first();
                                         @endphp
                                         {{ $irremovability ? 'Sí' : 'No' }}
                                     </td>

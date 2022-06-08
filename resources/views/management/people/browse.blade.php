@@ -87,11 +87,11 @@
                             <label>Destino</label>
                             <select name="destiny_dependency" class="form-control select2" required>
                                 <option selected disabled value="">--Seleccione el destino--</option>
-                                @foreach (\App\Models\DireccionAdministrativa::where('Estado', 1)->get() as $item)
-                                    <option value="{{ $item->NOMBRE }}">{{ $item->NOMBRE }}</option>
+                                @foreach (\App\Models\Direccion::where('Estado', 1)->get() as $item)
+                                    <option value="{{ $item->nombre }}">{{ $item->nombre }}</option>
                                 @endforeach
-                                @foreach (\App\Models\UnidadAdministrativa::where('Estado', 1)->get() as $item)
-                                    <option value="{{ $item->Nombre }}">{{ $item->Nombre }}</option>
+                                @foreach (\App\Models\Unidad::where('Estado', 1)->get() as $item)
+                                    <option value="{{ $item->nombre }}">{{ $item->nombre }}</option>
                                 @endforeach
                             </select>
                         </div>

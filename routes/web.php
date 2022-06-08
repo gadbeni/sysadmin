@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 // Controllers
 use App\Http\Controllers\HomeController;
@@ -207,6 +208,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('reports/social-security/checks/list', [ReportsController::class, 'social_security_personal_checks_list'])->name('reports.social_security.personal.checks.list');
     Route::get('reports/social-security/exports', [ReportsController::class, 'social_security_exports_index'])->name('reports.social_security.exports.index');
     Route::post('reports/social-security/exports/list', [ReportsController::class, 'social_security_exports_list'])->name('reports.social_security.exports.list');
+    Route::get('reports/social-security/payrollpayments', [ReportsController::class, 'social_security_payrollpayments_index'])->name('reports.social_security.payrollpayments.index');
+    Route::post('reports/social-security/payrollpayments/list', [ReportsController::class, 'social_security_payrollpayments_list'])->name('reports.social_security.payrollpayments.list');
 
     // Cashier
     Route::get('reports/cashier/cashiers', [ReportsController::class, 'cashier_cashiers_index'])->name('reports.cashier.cashiers.index');
@@ -230,9 +233,14 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('plugins/cashiers/tickets/generate', [PluginsController::class, 'cashiers_tickets_generate'])->name('cashiers.tickets.generate');
     Route::post('plugins/cashiers/tickets/print', [PluginsController::class, 'cashiers_tickets_print'])->name('cashiers.tickets.print');
 
-    Route::post('plugins/cashiers/tickets/set', function(){
-        set_setting('auxiliares.numero_ticket', setting('auxiliares.numero_ticket') +1);
-        return response()->json(['ticket' => setting('auxiliares.numero_ticket') +1]);
+    Route::post('plugins/cashiers/tickets/set', function(Request $request){
+        if($request->reset){
+            set_setting('auxiliares.numero_ticket', $request->value);
+            return redirect('admin/planillas/pagos')->with(['message' => 'Número de ticket actualizado', 'alert-type' => 'info']);
+        }else{
+            set_setting('auxiliares.numero_ticket', setting('auxiliares.numero_ticket') +1);
+            return response()->json(['ticket' => setting('auxiliares.numero_ticket') +1]);
+        }
     });
     Route::get('plugins/cashiers/tickets/get', function(){
         return response()->json(['ticket' => setting('auxiliares.numero_ticket')]);

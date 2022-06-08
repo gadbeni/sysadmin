@@ -51,9 +51,18 @@
                 @endphp
                 @forelse ($contracts as $item)
                 @php
-                    $contract_duration = contract_duration_calculate($item->start, $item->finish);
-                    $salary = $item->cargo ? $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo : $item->job->salary;
-                    $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
+                    $salary = 0;
+                    $total = 0;
+                    if($item->start && $item->finish){
+                        $contract_duration = contract_duration_calculate($item->start, $item->finish);
+                        if ($item->cargo) {
+                            $salary = $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo;
+                        }
+                        if($item->job){
+                            $salary = $item->job->salary;
+                        }
+                        $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
+                    }
                 @endphp
                 <tr>
                     <td>{{ $cont }}</td>

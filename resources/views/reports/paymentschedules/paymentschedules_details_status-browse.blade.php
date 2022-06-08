@@ -112,6 +112,6 @@
     
 @else
     @section('content')
-        <h1>No tienes permiso</h1>
+        @include('errors.403')
     @stop
 @endif

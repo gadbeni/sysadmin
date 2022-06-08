@@ -87,7 +87,10 @@
             </div>
         </div>
         <div style="position: fixed; bottom: 40px; right: 20px; z-index: 10;padding: 10px 20px; background-color: white; box-shadow: 0px 0px 15px 10px white; border-radius: 5px">
-            <button class="btn btn-warning btn-lg btn-increment-ticket" ><h4>{{ setting('auxiliares.numero_ticket') == 0  ? 'Iniciar' : 'Siguiente' }} <span class="voyager-double-right"></span></h4></button>
+            <div class="btn-group btn-group-lg">
+                <button type="button" class="btn btn-warning btn-lg btn-increment-ticket" ><h4>{{ setting('auxiliares.numero_ticket') == 0  ? 'Iniciar' : 'Siguiente' }} <span class="voyager-double-right"></span></h4></button>
+                <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#reset-tickets-modal"><h4><span class="voyager-settings"></span></h4></button>
+            </div>
         </div>
     </div>
 @stop
@@ -339,6 +342,33 @@
             </div>
         </div>
     </form>
+
+    <form id="form-update-planilla" action="{{ url('admin/plugins/cashiers/tickets/set') }}" method="post">
+        @csrf
+        <input type="hidden" name="reset" value="1">
+        <div class="modal modal-warning fade" tabindex="-1" id="reset-tickets-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-refresh"></i> Actualizar tickets</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">N&deg; de tickets</label>
+                            <input type="number" name="value" class="form-control">
+                            <span>Si desea restablecer el número de ticket dejar vació.</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning">Sí, actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
 @stop
 
 @section('css')
