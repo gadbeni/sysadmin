@@ -14,8 +14,8 @@ class UpdatePayrollPaymentsTable extends Migration
     public function up()
     {
         Schema::table('payroll_payments', function(Blueprint $table){
-            $table->foreignId('paymentschedule_id')->nullable()->constrained('paymentschedules');
-            $table->smallInteger('afp')->nullable();
+            $table->string('recipe_number_afp')->nullable();
+            $table->string('check_number_afp')->nullable();
 		});
     }
 
@@ -27,7 +27,7 @@ class UpdatePayrollPaymentsTable extends Migration
     public function down()
     {
         Schema::table('payroll_payments', function (Blueprint $table) {
-            $table->dropColumn(['paymentschedule_id', 'afp']);
+            $table->dropColumn(['recipe_number_afp', 'check_number_afp']);
         });
     }
 }

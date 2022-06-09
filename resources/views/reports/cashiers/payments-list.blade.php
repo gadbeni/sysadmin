@@ -12,13 +12,16 @@
                     <thead>
                         <tr>
                             <th>N&deg;</th>
+                            <th>DIRECCIÓN ADMINISTRATIVA</th>
                             <th>DETALLE</th>
                             <th>CI</th>
+                            <th>TIPO</th>
                             <th>PERIODO</th>
-                            <th>FECHA</th>
+                            <th>AFP</th>
+                            <th>FECHA PAGO</th>
                             <th>CAJERO(A)</th>
                             <th>OBSERVACIONES </th>
-                            <th class="text-right">MONTO (Bs.)</th>
+                            <th class="text-right">MONTO</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,6 +38,13 @@
                             @endphp
                             <tr>
                                 <td>{{ $cont }}</td>
+                                <td>
+                                    @if ($item->planilla)
+
+                                    @elseif($item->paymentschedulesdetail)
+                                        {{ $item->paymentschedulesdetail->paymentschedule->direccion_administrativa->nombre }}
+                                    @endif
+                                </td>
                                 <td @if($item->deleted_at) class="item-delete" @endif>{{ $item->description }}</td>
                                 <td>
                                     @if ($item->planilla)
@@ -47,7 +57,27 @@
                                         {{ $item->paymentschedulesdetail->contract->person->ci }}
                                     @endif
                                 </td>
-                                <td>{{ $item->planilla ? $item->planilla->Periodo : '' }}</td>
+                                <td>
+                                    @if ($item->planilla)
+
+                                    @elseif($item->paymentschedulesdetail)
+                                        {{ $item->paymentschedulesdetail->contract->type->name }}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($item->planilla)
+                                        {{ $item->planilla->Periodo }}
+                                    @elseif($item->paymentschedulesdetail)
+                                        {{ $item->paymentschedulesdetail->paymentschedule->period->name }}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($item->planilla)
+
+                                    @elseif($item->paymentschedulesdetail)
+                                        {{ $item->paymentschedulesdetail->contract->person->afp == 1 ? 'FUTURO' : 'PREVISIÓN' }}
+                                    @endif
+                                </td>
                                 <td>{{ date('d', strtotime($item->created_at)).'/'.$months[intval(date('m', strtotime($item->created_at)))].'/'.date('Y', strtotime($item->created_at)) }} <br> <small>{{ date('H:i', strtotime($item->created_at)) }}</small> </td>
                                 <td>{{ $item->cashier->user->name }} </td>
                                 <td style="max-width: 150px">

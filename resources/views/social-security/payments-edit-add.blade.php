@@ -73,9 +73,13 @@
                                     <br>
                                     <h4>AFP's  <hr> </h4>
                                 </div>
-                                <div class="form-group col-md-6">
+                                {{-- <div class="form-group col-md-6">
                                     <label for="payment_id">ID de pago</label>
                                     <input type="text" name="payment_id" class="form-control" value="{{ $type == 'edit' ? $data->payment_id : '' }}">
+                                </div> --}}
+                                <div class="form-group col-md-6">
+                                    <label for="recipe_number_afp">N&deg; de recibo AFP</label>
+                                    <input type="text" name="recipe_number_afp" class="form-control" value="{{ $type == 'edit' ? $data->recipe_number_afp : '' }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="fpc_number">N&deg; de FPC</label>
@@ -84,6 +88,10 @@
                                 <div class="form-group col-md-6">
                                     <label for="date_payment_afp">Fecha de pago a AFP</label>
                                     <input type="date" class="form-control" name="date_payment_afp" max="{{ date('Y-m-d') }}" value="{{ $type == 'edit' ? $data->date_payment_afp : '' }}" >
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="check_number_afp">N&deg; de cheque(s) AFP</label>
+                                    <input type="text" name="check_number_afp" class="form-control" value="{{ $type == 'edit' ? $data->check_number_afp : '' }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="penalty_payment">Multa</label>
@@ -109,10 +117,10 @@
                                     <label for="recipe_number">N&deg; de recibo</label>
                                     <input type="number" class="form-control" name="recipe_number" value="{{ $type == 'edit' ? $data->recipe_number : '' }}">
                                 </div>
-                                <div class="form-group col-md-6">
+                                {{-- <div class="form-group col-md-6">
                                     <label for="check_id">ID de pago</label>
                                     <input type="text" name="check_id" class="form-control" value="{{ $type == 'edit' ? $data->check_id : '' }}">
-                                </div>
+                                </div> --}}
                                 <div class="form-group col-md-6">
                                     <label for="penalty_check">Multa</label>
                                     <input type="number" step="0.01" min="0" name="penalty_check" class="form-control" value="{{ $type == 'edit' ? $data->penalty_check : '' }}">

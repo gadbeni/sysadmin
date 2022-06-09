@@ -334,9 +334,10 @@ class SocialSecurityController extends Controller
                     'planilla_haber_id' => $request->afp_alt ? NULL : $request->planilla_haber_id,
                     'paymentschedule_id' => $request->afp_alt ? $request->planilla_haber_id : NULL,
                     'afp' => $request->afp_alt,
-
                     'spreadsheet_id' => $request->spreadsheet_id,
                     'date_payment_afp' => $request->date_payment_afp,
+                    'recipe_number_afp' => $request->recipe_number_afp,
+                    'check_number_afp' => $request->check_number_afp,
                     'payment_id' => $request->payment_id,
                     'penalty_payment' => $request->penalty_payment,
                     'fpc_number' => $request->fpc_number,
@@ -387,6 +388,8 @@ class SocialSecurityController extends Controller
                             'paymentschedule_id' => $item->id,
                             'afp' => $request->afp,
                             'date_payment_afp' => $request->date_payment_afp,
+                            'recipe_number_afp' => $request->recipe_number_afp,
+                            'check_number_afp' => $request->check_number_afp,
                             'payment_id' => $request->payment_id,
                             'penalty_payment' => $request->penalty_payment * ($porcentaje/100),
                             'fpc_number' => $request->fpc_number,
@@ -433,6 +436,8 @@ class SocialSecurityController extends Controller
                             'user_id' => Auth::user()->id,
                             'planilla_haber_id' => $item->ID,
                             'date_payment_afp' => $request->date_payment_afp,
+                            'recipe_number_afp' => $request->recipe_number_afp,
+                            'check_number_afp' => $request->check_number_afp,
                             'payment_id' => $request->payment_id,
                             'penalty_payment' => $request->penalty_payment * ($porcentaje/100),
                             'fpc_number' => $request->fpc_number,
@@ -485,6 +490,8 @@ class SocialSecurityController extends Controller
         try {
             PayrollPayment::where('id', $id)->update([
                 'date_payment_afp' => $request->date_payment_afp,
+                'recipe_number_afp' => $request->recipe_number_afp,
+                'check_number_afp' => $request->check_number_afp,
                 'fpc_number' => $request->fpc_number,
                 'payment_id' => $request->payment_id,
                 'penalty_payment' => $request->penalty_payment,

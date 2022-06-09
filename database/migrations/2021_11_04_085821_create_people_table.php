@@ -31,6 +31,8 @@ class CreatePeopleTable extends Migration
             $table->date('birthday')->nullable();
             $table->string('civil_status')->nullable();
             $table->string('nua_cua')->nullable();
+            $table->string('image')->nullable();
+            $table->string('number_account')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

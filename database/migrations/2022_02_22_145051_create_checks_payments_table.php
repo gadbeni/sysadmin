@@ -19,11 +19,12 @@ class CreateChecksPaymentsTable extends Migration
             $table->foreignId('checks_beneficiary_id')->nullable()->constrained('checks_beneficiaries');
             $table->integer('planilla_haber_id')->nullable();
             $table->foreignId('spreadsheet_id')->nullable()->constrained('spreadsheets');
+            $table->foreignId('paymentschedule_id')->nullable()->constrained('paymentschedules');
+            $table->smallInteger('afp')->nullable();
             $table->text('number')->nullable();
             $table->decimal('amount', 10, 2)->nullable();
             $table->date('date_print')->nullable();
             $table->text('observations')->nullable();
-            // ==cambiar
             $table->smallInteger('status')->nullable()->default(1);
             $table->timestamps();
             $table->softDeletes();

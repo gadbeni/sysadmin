@@ -1,6 +1,6 @@
 
 <div class="col-md-12 text-right">
-    @if (count($planillas))
+    @if (count($planillas) || count($planillas_alt))
         {{-- <button type="button" onclick="report_export('excel')" class="btn btn-success"><i class="glyphicon glyphicon-cloud-download"></i> Excel</button> --}}
         <button type="button" onclick="report_export('print')" class="btn btn-danger"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
     @endif
@@ -13,7 +13,7 @@
                     <thead>
                         <tr>
                             <th style="text-align: center" colspan="9">DATOS GENERALES</th>
-                            <th style="text-align: center; background-color: #2980B9 !important; color: #fff" colspan="5">ADMINISTRADORES DE FONDOS DE PENSIONES</th>
+                            <th style="text-align: center; background-color: #2980B9 !important; color: #fff" colspan="6">ADMINISTRADORES DE FONDOS DE PENSIONES</th>
                             <th style="text-align: center; background-color: #16A085!important; color: #fff" colspan="8">CAJA DE SALUD CORDES</th>
                         </tr>
                         <tr>
@@ -29,7 +29,8 @@
                             <th style="text-align: right">APORTE AFP</th>
                             <th>N&deg; FCP</th>
                             <th>FECHA DE PAGO AFP</th>
-                            <th>ID PAGO</th>
+                            <th>N&deg; RECIBO</th>
+                            <th>N&deg; CHEQUE(S)</th>
                             <th>MULTA AFP</th>
                             <th style="text-align: right">APORTE CC</th>
                             <th>N&deg; DE CHEQUE</th>
@@ -80,7 +81,12 @@
                                 </td>
                                 <td>
                                     @foreach ($item->detalle_pago as $pago)
-                                        {{ $pago->payment_id }}<br>
+                                        {{ $pago->recipe_number_afp }}<br>
+                                    @endforeach
+                                </td>
+                                <td>
+                                    @foreach ($item->detalle_pago as $pago)
+                                        {{ $pago->check_number_afp }}<br>
                                     @endforeach
                                 </td>
                                 <td>
@@ -119,7 +125,7 @@
                                         {{ $pago->recipe_number }}<br>
                                     @endforeach
                                 </td>
-                                <td>
+                                <td style="text-align: right">
                                     @foreach ($item->detalle_pago as $pago)
                                         {{ number_format($pago->penalty_check, 2, ',', '.') }}<br>
                                     @endforeach
@@ -174,11 +180,19 @@
                                         @foreach ($paymentschedule->payroll_payments as $payroll_payment)
                                             {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
                                             @if($payroll_payment->afp == $key)
-                                            {{ $payroll_payment->payment_id }} <br>
+                                            {{ $payroll_payment->recipe_number_afp }} <br>
                                             @endif
                                         @endforeach
                                     </td>
                                     <td>
+                                        @foreach ($paymentschedule->payroll_payments as $payroll_payment)
+                                            {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
+                                            @if($payroll_payment->afp == $key)
+                                            {{ $payroll_payment->check_number_afp }} <br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td style="text-align: right">
                                         @foreach ($paymentschedule->payroll_payments as $payroll_payment)
                                             {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
                                             @if($payroll_payment->afp == $key)
@@ -237,7 +251,7 @@
                                             @endif
                                         @endforeach
                                     </td>
-                                    <td>
+                                    <td style="text-align: right">
                                         @foreach ($paymentschedule->payroll_payments as $payroll_payment)
                                             {{-- Mostar solo los pagos que pertenezcan a la AFP --}}
                                             @if($payroll_payment->afp == $key)
@@ -264,7 +278,7 @@
                             <td></td>
                             <td style="text-align: right"><b>{{ number_format($total_ganado, 2, ',', '.') }}</b></td>
                             <td style="text-align: right"><b>{{ number_format($total_afp, 2, ',', '.') }}</b></td>
-                            <td colspan="3"></td>
+                            <td colspan="4"></td>
                             <td style="text-align: right"><b>{{ number_format($total_multa_afp, 2, ',', '.') }}</b></td>
                             <td style="text-align: right"><b>{{ number_format($total_cc, 2, ',', '.') }}</b></td>
                             <td colspan="6"></td>
@@ -279,7 +293,7 @@
 
 <style>
     th{
-        font-size: 9px;
+        font-size: 8px;
     }
     td{
         font-size: 11px;

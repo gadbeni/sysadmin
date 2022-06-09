@@ -845,7 +845,6 @@ class ReportsController extends Controller
 
     public function cashier_payments_list(Request $request){
         $user_id = $request->user_id;
-        // dd($user_id);
         if($user_id){
             $payments = CashiersPayment::with(['deletes', 'cashier.user', 'planilla', 'aguinaldo', 'stipend', 'paymentschedulesdetail'])
                             ->whereHas('cashier.user', function($query) use ($user_id){
@@ -858,7 +857,6 @@ class ReportsController extends Controller
                             ->whereDate('created_at', '>=', date('Y-m-d', strtotime($request->start)))
                             ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->finish)))->get();
         }
-        // dd($payments);
         if($request->print){
             return view('reports.cashiers.payments-print', compact('payments'));
         }else{

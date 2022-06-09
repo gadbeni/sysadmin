@@ -19,6 +19,7 @@ class CreateChecksHistoriesTable extends Migration
             $table->foreignId('office_id')->nullable()->constrained('offices');
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->text('observacion')->nullable();
+            $table->string('fentregar')->nullable();
             $table->string('status')->nullable()->default('registrado');
             $table->timestamps();
             $table->softDeletes();

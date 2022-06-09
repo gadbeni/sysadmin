@@ -9,4 +9,10 @@ Paquetes
 Comandos
 
 Otros
-    - crear campo workers_memo_alt varchar(191) en la tabla contracts
+    - cambiar de nombre a las migraciones
+        2021_11_04_085940_create_signatures_table
+        2022_02_22_115303_create_payroll_payments_table
+        2022_02_22_145051_create_checks_payments_table
+        2022_02_22_153306_create_checks_payments_derivations_table
+    - Eliminar migraciones
+        update_payroll_payments_table

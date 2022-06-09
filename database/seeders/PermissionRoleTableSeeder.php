@@ -23,9 +23,9 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de caja
-        $similar_permissions = 'table_name = "admin" or table_name = "cashiers" or table_name = "vaults"';
+        $similar_permissions_cashier = 'table_name = "admin" or table_name = "cashiers" or table_name = "vaults"';
         $role = Role::where('name', 'caja_jefe_seccion')->firstOrFail();
-        $permissions = Permission::whereRaw("   $similar_permissions or
+        $permissions = Permission::whereRaw("   $similar_permissions_cashier or
                                                 `key` = 'browse_planillaspagos' or
                                                 `key` = 'browse_paymentschedules' or
                                                 `key` = 'read_paymentschedules' or
@@ -39,7 +39,7 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'caja_tecnico_boveda')->firstOrFail();
-        $permissions = Permission::whereRaw("   $similar_permissions or
+        $permissions = Permission::whereRaw("   $similar_permissions_cashier or
                                                 `key` = 'browse_planillaspagos' or
                                                 `key` = 'browse_paymentschedules' or
                                                 `key` = 'read_paymentschedules' or
@@ -145,7 +145,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = "browse_contracts"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
-        $similar_permissions = 'table_name = "admin" or
+        $similar_permissions_rrhh = 'table_name = "admin" or
                                 `key` = "browse_programs" or
                                 `key` = "read_programs" or
                                 `key` = "browse_people" or
@@ -162,11 +162,7 @@ class PermissionRoleTableSeeder extends Seeder
                                 `key` = "add_cities"';
         // Roles de recursos humanos
         $role = Role::where('name', 'rrhh_director')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
-                                            `key` = 'browse_contracts' or
-                                            `key` = 'read_contracts' or
-                                            `key` = 'edit_contracts' or
-                                            `key` = 'add_contracts' or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'downgrade_contracts' or
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
@@ -184,11 +180,7 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_jefe_unidad')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
-                                            `key` = 'browse_contracts' or
-                                            `key` = 'read_contracts' or
-                                            `key` = 'edit_contracts' or
-                                            `key` = 'add_contracts' or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'downgrade_contracts' or
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
@@ -205,11 +197,7 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_jefe_seccion')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
-                                            `key` = 'browse_contracts' or
-                                            `key` = 'read_contracts' or
-                                            `key` = 'edit_contracts' or
-                                            `key` = 'add_contracts' or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'downgrade_contracts' or
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
@@ -227,11 +215,7 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_tecnico')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
-                                            `key` = 'browse_contracts' or
-                                            `key` = 'read_contracts' or
-                                            `key` = 'edit_contracts' or
-                                            `key` = 'add_contracts' or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
                                             `key` = 'read_centralize_paymentschedules' or
@@ -246,11 +230,7 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_tecnico_consultoria')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
-                                            `key` = 'browse_contracts' or
-                                            `key` = 'read_contracts' or
-                                            `key` = 'edit_contracts' or
-                                            `key` = 'add_contracts' or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
                                             `key` = 'read_centralize_paymentschedules' or
@@ -264,9 +244,19 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_tecnico_planillas')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
+        $permissions = Permission::whereRaw("table_name = 'admin or
+                                            `key` = 'browse_programs' or
+                                            `key` = 'read_programs' or
+                                            `key` = 'browse_people' or
+                                            `key` = 'read_people' or
+                                            `key` = 'edit_people' or
+                                            `key` = 'add_people' or
+                                            `key` = 'rotation_people' or
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
+                                            `key` = 'browse_cities' or
+                                            `key` = 'edit_cities' or
+                                            `key` = 'add_cities' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
                                             `key` = 'read_centralize_paymentschedules' or
@@ -278,12 +268,14 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'browse_paymentschedulesfilesindex' or
                                             `key` = 'add_paymentschedulesfiles' or
                                             `key` = 'browse_reportssocial-securityexports' or
-                                            table_name = 'seniority_bonus_people'")->get();
+                                            table_name = 'seniority_bonus_people' or
+                                            `key` = 'browse_reportspaymentschedulesdetails-status' or
+                                            `key` = 'browse_reportscontractscontracts'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de administrativo
         $role = Role::where('name', 'administrativo_director')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
                                             `key` = 'edit_contracts' or
@@ -303,7 +295,7 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'administrativo_jefe_seccion')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
                                             `key` = 'edit_contracts' or
@@ -323,7 +315,7 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'administrativo_tecnico')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
                                             `key` = 'edit_contracts' or
@@ -347,7 +339,7 @@ class PermissionRoleTableSeeder extends Seeder
 
         // Roles de contrataciones
         $role = Role::where('name', 'contrataciones_director')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
                                             `key` = 'edit_contracts' or
@@ -367,7 +359,7 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'contrataciones_jefe_seccion')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
                                             `key` = 'edit_contracts' or
@@ -387,7 +379,7 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'contrataciones_tecnico')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
                                             `key` = 'edit_contracts' or
@@ -405,7 +397,7 @@ class PermissionRoleTableSeeder extends Seeder
 
         // Roles de jurídico
         $role = Role::where('name', 'juridico_director')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
                                             `key` = 'edit_contracts' or
@@ -416,7 +408,7 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'juridico_jefe_seccion')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
                                             `key` = 'edit_contracts' or
@@ -427,7 +419,7 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'juridico_tecnico')->firstOrFail();
-        $permissions = Permission::whereRaw("$similar_permissions or
+        $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
                                             `key` = 'edit_contracts' or
