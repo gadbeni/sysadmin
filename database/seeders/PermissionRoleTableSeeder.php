@@ -64,12 +64,6 @@ class PermissionRoleTableSeeder extends Seeder
                                             table_name = "plugins"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
-        $role = Role::where('name', 'despacho_gobernador')->firstOrFail();
-        $permissions = Permission::whereRaw('   table_name = "admin" or
-                                                `key` = "browse_checks" or
-                                                `key` = "success_checks"')->get();
-        $role->permissions()->sync($permissions->pluck('id')->all());
-
         $role = Role::where('name', 'caja_cajero')->firstOrFail();
         $permissions = Permission::whereRaw('   table_name = "admin" or
                                                 `key` = "browse_planillaspagos" or
@@ -79,6 +73,28 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = "close_paymentschedules" or
                                                 table_name = "planillas_adicionales" or
                                                 table_name = "plugins"')->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        // Despacho
+        $role = Role::where('name', 'despacho_gobernador')->firstOrFail();
+        $permissions = Permission::whereRaw('   table_name = "admin" or
+                                                `key` = "browse_checks" or
+                                                `key` = "success_checks" or
+                                                `key` = "browse_people" or
+                                                `key` = "read_people" or
+                                                `key` = "add_people" or
+                                                `key` = "edit_people" or
+                                                `key` = "browse_contracts" or
+                                                `key` = "browse_paymentschedules" or
+                                                `key` = "read_paymentschedules" or
+                                                `key` = "add_paymentschedules" or
+                                                `key` = "read_centralize_paymentschedules" or
+                                                `key` = "enable_paymentschedules" or
+                                                `key` = "print_paymentschedules" or
+                                                `key` = "browse_paymentschedulesfilesindex" or
+                                                table_name = "reports_rrhh" or
+                                                table_name = "reports_contracts" or
+                                                `key` = "browse_reportscashiercashiers"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de previsión social
@@ -244,7 +260,7 @@ class PermissionRoleTableSeeder extends Seeder
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_tecnico_planillas')->firstOrFail();
-        $permissions = Permission::whereRaw("table_name = 'admin or
+        $permissions = Permission::whereRaw("table_name = 'admin' or
                                             `key` = 'browse_programs' or
                                             `key` = 'read_programs' or
                                             `key` = 'browse_people' or

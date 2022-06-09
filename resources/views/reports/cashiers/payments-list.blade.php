@@ -39,8 +39,11 @@
                             <tr>
                                 <td>{{ $cont }}</td>
                                 <td>
+                                    {{-- {{ dd($item->planilla) }} --}}
                                     @if ($item->planilla)
-
+                                        {{ $item->planilla->Direccion_Administrativa }}
+                                    @elseif($item->aguinaldo)
+                                        
                                     @elseif($item->paymentschedulesdetail)
                                         {{ $item->paymentschedulesdetail->paymentschedule->direccion_administrativa->nombre }}
                                     @endif
@@ -59,7 +62,17 @@
                                 </td>
                                 <td>
                                     @if ($item->planilla)
-
+                                        @if ($item->planilla->Tplanilla == 1)
+                                            Permanente
+                                        @endif
+                                        @if ($item->planilla->Tplanilla == 2)
+                                            Eventual
+                                        @endif
+                                        @if ($item->planilla->Tplanilla == 3)
+                                            Consultoría de línea
+                                        @endif
+                                    @elseif($item->aguinaldo)
+                                
                                     @elseif($item->paymentschedulesdetail)
                                         {{ $item->paymentschedulesdetail->contract->type->name }}
                                     @endif
@@ -67,13 +80,15 @@
                                 <td>
                                     @if ($item->planilla)
                                         {{ $item->planilla->Periodo }}
+                                    @elseif($item->aguinaldo)
+                                        AGUINALDO
                                     @elseif($item->paymentschedulesdetail)
                                         {{ $item->paymentschedulesdetail->paymentschedule->period->name }}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($item->planilla)
-
+                                        {{ $item->planilla->Afp ? 'FUTURO' : 'PREVISIÓN' }}
                                     @elseif($item->paymentschedulesdetail)
                                         {{ $item->paymentschedulesdetail->contract->person->afp == 1 ? 'FUTURO' : 'PREVISIÓN' }}
                                     @endif
