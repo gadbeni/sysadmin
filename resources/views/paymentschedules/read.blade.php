@@ -800,6 +800,7 @@
                             <select name="print_type" class="form-control select2">
                                 <option value="1">Normal</option>
                                 <option value="2">Contabilidad</option>
+                                <option value="3">Recursos Humanos</option>
                             </select>
                         </div>
 

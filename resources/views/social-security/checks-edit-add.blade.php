@@ -95,6 +95,7 @@
                                         <option value="1">Pendiente</option>
                                         <option value="2">Pagado</option>
                                         <option value="3">Vencido</option>
+                                        <option value="4">Devuelto</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-12">

@@ -14,10 +14,6 @@
                                 <h1 class="page-title">
                                     <i class="voyager-dollar"></i> Reporte de pagos realizados
                                 </h1>
-                                {{-- <div class="alert alert-info">
-                                    <strong>Información:</strong>
-                                    <p>Puede obtener el valor de cada parámetro en cualquier lugar de su sitio llamando <code>setting('group.key')</code></p>
-                                </div> --}}
                             </div>
                             <div class="col-md-4" style="margin-top: 30px">
                                 <form name="form_search" id="form-search" action="{{ route('reports.cashier.payments.list') }}" method="post">

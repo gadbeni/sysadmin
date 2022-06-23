@@ -23,7 +23,25 @@
                                 <h3 class="panel-title">Planilla</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $check->planilla_haber_id }}</p>
+                                <p>{{ $check->planilla_haber_id ?? str_pad($check->paymentschedule_id, 6, "0", STR_PAD_LEFT).' - '.$check->paymentschedule->period->name.' | '.($check->afp ? 'Futuro' : 'Previsión') }}</p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Registrado por</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>{{ $check->user->name }}</p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Dirección administrativa</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>{{ $check->planilla_haber_id ? '' : $check->paymentschedule->direccion_administrativa->nombre }}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>
@@ -54,12 +72,44 @@
                             </div>
                             <hr style="margin:0;">
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Estoado</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                @php
+                                    $status = '';
+                                    switch ($check->status) {
+                                        case '0':
+                                            $status = '<label class="label label-danger">Anulado</label>';
+                                            break;
+                                        case '1':
+                                            $status = '<label class="label label-info">Pendiente</label>';
+                                            break;
+                                        case '2':
+                                            $status = '<label class="label label-success">Pagado</label>';
+                                            break;
+                                        case '3':
+                                            $status = '<label class="label label-warning">Vencido</label>';
+                                            break;
+                                        case '4':
+                                            $status = '<label class="label label-primary">Devuelto</label>';
+                                            break;
+                                        default:
+                                            # code...
+                                            break;
+                                    }
+                                @endphp
+                                <p>{!! $status !!}</p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-6">
                             <div class="panel-heading" style="border-bottom:0;">
                                 <h3 class="panel-title">Observaciones</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $observations ?? 'Ninguna' }}</p>
+                                <p>{{ $check->observations ?? 'Ninguna' }}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>

@@ -34,6 +34,7 @@
                     <th>Nombre(s)</th>
                     <th>Apellidos</th>
                     <th>CI</th>
+                    <th>NUA/CUA</th>
                     <th>Cargo</th>
                     <th>Nivel</th>
                     <th>Sueldo</th>
@@ -43,6 +44,7 @@
                     <th>Programa</th>
                     <th>Cat. prog.</th>
                     <th>Estado</th>
+                    <th>Registrado</th>
                 </tr>
             </thead>
             <tbody>
@@ -73,6 +75,7 @@
                     <td>{{ $item->person->first_name }} </td>
                     <td>{{ $item->person->last_name }}</td>
                     <td>{{ $item->person->ci }}</td>
+                    <td>{{ $item->person->nua_cua }}</td>
                     <td>
                         @if ($item->cargo)
                             {{ $item->cargo->Descripcion }}
@@ -98,13 +101,17 @@
                     <td>{{ $item->program->name }}</td>
                     <td>{{ $item->program->programatic_category }}</td>
                     <td>{{ $item->status }}</td>
+                    <td>
+                        {{ $item->user->name }} <br>
+                        <small>{{ date('d/m/Y H:i', strtotime($item->created_at)) }}</small>
+                    </td>
                 </tr>
                 @php
                     $cont++;
                 @endphp
                 @empty
                     <tr class="odd">
-                        <td valign="top" colspan="17" class="text-center">No hay datos disponibles en la tabla</td>
+                        <td valign="top" colspan="19" class="text-center">No hay datos disponibles en la tabla</td>
                     </tr>
                 @endforelse
             </tbody>

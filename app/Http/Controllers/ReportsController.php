@@ -273,7 +273,7 @@ class ReportsController extends Controller
                     $direccion_administrativa_id = $request->id_da;
                     $id_planilla = $request->id_planilla;
 
-                    $planillas_alt = PaymentschedulesDetail::with(['paymentschedule.period', 'paymentschedule.direccion_administrativa', 'paymentschedule.procedure_type', 'contract.person', 'paymentschedule.check_payments' => function($q){
+                    $planillas_alt = PaymentschedulesDetail::with(['paymentschedule.period', 'paymentschedule.details.contract.program', 'paymentschedule.direccion_administrativa', 'paymentschedule.procedure_type', 'contract.person', 'paymentschedule.check_payments' => function($q){
                                             $q->where('deleted_at', NULL);
                                         }, 'paymentschedule.payroll_payments' => function($q){
                                             $q->where('deleted_at', NULL);
@@ -845,18 +845,15 @@ class ReportsController extends Controller
 
     public function cashier_payments_list(Request $request){
         $user_id = $request->user_id;
-        if($user_id){
-            $payments = CashiersPayment::with(['deletes', 'cashier.user', 'planilla', 'aguinaldo', 'stipend', 'paymentschedulesdetail'])
-                            ->whereHas('cashier.user', function($query) use ($user_id){
-                                $query->where('id', $user_id);
-                            })
-                            ->whereDate('created_at', '>=', date('Y-m-d', strtotime($request->start)))
-                            ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->finish)))->get();
-        }else{
-            $payments = CashiersPayment::with(['deletes', 'cashier.user', 'planilla', 'aguinaldo', 'stipend', 'paymentschedulesdetail'])
-                            ->whereDate('created_at', '>=', date('Y-m-d', strtotime($request->start)))
-                            ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->finish)))->get();
-        }
+        $procedure_type = ProcedureType::find($request->procedure_type_id);
+
+        $payments = CashiersPayment::with(['deletes', 'cashier.user', 'planilla', 'aguinaldo', 'stipend', 'paymentschedulesdetail'])
+                        ->whereHas('cashier.user', function($query) use ($user_id){
+                            $query->whereRaw($user_id ? 'id = '.$user_id : 1);
+                        })
+                        ->whereDate('created_at', '>=', date('Y-m-d', strtotime($request->start)))
+                        ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->finish)))->get();
+        
         if($request->print){
             return view('reports.cashiers.payments-print', compact('payments'));
         }else{

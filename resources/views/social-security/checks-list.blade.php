@@ -38,6 +38,9 @@
                                         case '3':
                                             $status = '<label class="label label-warning">Vencido</label>';
                                             break;
+                                        case '4':
+                                            $status = '<label class="label label-primary">Devuelto</label>';
+                                            break;
                                         default:
                                             # code...
                                             break;

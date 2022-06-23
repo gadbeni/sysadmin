@@ -161,6 +161,7 @@
                 @foreach ($item->groupBy('contract.person.afp') as $key => $afp)
                     @php
                         $paymentschedule = $afp[0]->paymentschedule;
+                        $programs = $paymentschedule->details->groupBy('contract.program_id');
                     @endphp
                     <tr>
                         <td>{{ $cont }}</td>
@@ -168,7 +169,10 @@
                         <td>{{ $paymentschedule->period->name }}</td>
                         <td>{{ $paymentschedule->direccion_administrativa->nombre }}</td>
                         <td>{{ $paymentschedule->procedure_type->name }}</td>
-                        <td>{{ str_pad($paymentschedule->id, 6, "0", STR_PAD_LEFT).($paymentschedule->aditional ? '-A' : '') }}</td>
+                        <td>
+                            {{ str_pad($paymentschedule->id, 6, "0", STR_PAD_LEFT).($paymentschedule->aditional ? '-A' : '') }} 
+                            <small>({{ $programs->count() }})</small>
+                        </td>
                         <td style="text-align: right">{{ $afp->count() }}</td>
                         <td>{{ $key == 1 ? 'Futuro' : 'Previsión' }}</td>
                         <td style="text-align: right">{{ number_format($afp->sum('partial_salary') + $afp->sum('seniority_bonus_amount'), 2, ',', '.') }}</td>

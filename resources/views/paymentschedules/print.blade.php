@@ -83,6 +83,11 @@
                         @if ($print_type == 2)
                         <th style="text-align: center" colspan="5">APORTES PATRONALES</th>
                         @endif
+
+                        {{-- Si se imprime para RRHH --}}
+                        @if ($print_type == 3)
+                        <th rowspan="3">N&deg; DE CUENTA</th>
+                        @endif
                     </tr>
                     <tr>
                         <th>APORTE SOLIDARIO</th>
@@ -362,6 +367,10 @@
                                     <td style="text-align: right">{{ number_format($item->health, 2, ',', '.') }}</td>
                                     <td style="text-align: right">{{ number_format($employer_amount, 2, ',', '.') }}</td>
                                     @endif
+
+                                    @if ($print_type == 3)
+                                    <td>{{ $item->contract->person->number_account }}</td>
+                                    @endif
                                 </tr>
                             @empty
                                 <tr>
@@ -494,6 +503,10 @@
                         <td style="text-align: right"><b>{{ number_format($total_solidary_employer, 2, ',', '.') }}</b></td>
                         <td style="text-align: right"><b>{{ number_format($total_health, 2, ',', '.') }}</b></td>
                         <td style="text-align: right"><b>{{ number_format($employer_total, 2, ',', '.') }}</b></td>
+                        @endif
+
+                        @if ($print_type == 3)
+                        <td></td>
                         @endif
                     </tr>
                 </tbody>

@@ -109,11 +109,11 @@
                             @endphp
                         @empty
                             <tr>
-                                <td colspan="8"><h4 class="text-center">No hay resultados</h4></td>
+                                <td colspan="11"><h4 class="text-center">No hay resultados</h4></td>
                             </tr>
                         @endforelse
                         <tr>
-                            <td colspan="7" class="text-right"><b>TOTAL</b></td>
+                            <td colspan="10" class="text-right"><b>TOTAL</b></td>
                             <td class="text-right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
                         </tr>
                     </tbody>

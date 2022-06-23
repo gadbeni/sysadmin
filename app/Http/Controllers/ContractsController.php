@@ -39,7 +39,6 @@ class ContractsController extends Controller
             $date = date('Y-m-d');
             Contract::where('finish', '<', $date)->update(['status' => 'concluido']);
         }
-        
         return view('management.contracts.browse');
     }
 
@@ -128,11 +127,14 @@ class ContractsController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
+        if($request->start == $request->finish){
+            return redirect()->route('contracts.create')->with(['message' => 'La fecha de inicio debe ser diferente a la fecha de finalización', 'alert-type' => 'error']);
+        }
         try {
 
             $contract_person = Contract::where('person_id', $request->person_id)->where('status', '<>', 'concluido')->where('deleted_at', NULL)->first();
             if($contract_person){
-                return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso.', 'alert-type' => 'warning']);
+                return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso', 'alert-type' => 'warning']);
             }
 
             $older_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
@@ -178,10 +180,10 @@ class ContractsController extends Controller
                 'status' => 'elaborado',
             ]);
 
-            return redirect()->route('contracts.index')->with(['message' => 'Contrato guardado exitosamente.', 'alert-type' => 'success']);
+            return redirect()->route('contracts.index')->with(['message' => 'Contrato guardado exitosamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             //throw $th;
-            return redirect()->route('contracts.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('contracts.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -284,10 +286,10 @@ class ContractsController extends Controller
                 'date_presentation' => $request->date_presentation,
             ]);
 
-            return redirect()->route('contracts.index')->with(['message' => 'Contrato editado exitosamente.', 'alert-type' => 'success']);
+            return redirect()->route('contracts.index')->with(['message' => 'Contrato editado exitosamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             //throw $th;
-            return redirect()->route('contracts.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('contracts.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 

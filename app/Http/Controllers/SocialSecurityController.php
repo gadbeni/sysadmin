@@ -222,7 +222,7 @@ class SocialSecurityController extends Controller
             ChecksPayment::where('id', $id)->update([
                 'number' => $request->number,
                 'amount' => $request->amount,
-                'beneficiary' => $request->beneficiary,
+                'checks_beneficiary_id' => $request->checks_beneficiary_id,
                 'date_print' => $request->date_print,
                 'observations' => $request->observations,
                 'status' => $request->status

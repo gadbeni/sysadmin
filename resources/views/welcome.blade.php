@@ -5,8 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>GADBENI - Bienvenido</title>
-  <title>{{setting('admin.title')}}</title>
+  <title>{{ setting('admin.title') }} | Bienvenido</title>
   <meta property="og:url"           content="{{url('')}}" />
   {{-- <meta property="og:type"          content="" /> --}}
   <meta property="og:title"         content="{{setting('site.title')}}" />
