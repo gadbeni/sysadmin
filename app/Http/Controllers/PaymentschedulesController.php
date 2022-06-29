@@ -85,13 +85,13 @@ class PaymentschedulesController extends Controller
     public function create()
     {
         $direccion_administrativa_id = Auth::user()->direccion_administrativa_id;
-        $tipo_da = TipoDireccionAdministrativa::with(['direcciones_administrativas' => function($q) use($direccion_administrativa_id){
-                            $q->whereRaw($direccion_administrativa_id ? "ID = $direccion_administrativa_id" : 1);
+        $tipo_da = DireccionesTipo::with(['direcciones_administrativas' => function($q) use($direccion_administrativa_id){
+                            $q->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1);
                         }])
                         ->whereHas('direcciones_administrativas', function($q) use($direccion_administrativa_id){
-                            $q->whereRaw($direccion_administrativa_id ? "ID = $direccion_administrativa_id" : 1);
+                            $q->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1);
                         })
-                        ->where('Estado', 1)->get();
+                        ->where('estado', 1)->get();
         return view('paymentschedules.edit-add', compact('tipo_da'));
     }
 
@@ -522,7 +522,7 @@ class PaymentschedulesController extends Controller
     }
 
     public function files_create(){
-        $tipo_da = TipoDireccionAdministrativa::with(['direcciones_administrativas'])->where('Estado', 1)->get();
+        $tipo_da = DireccionesTipo::with(['direcciones_administrativas'])->where('estado', 1)->get();
         return view('paymentschedules.files-edit-add', compact('tipo_da'));
     }
 

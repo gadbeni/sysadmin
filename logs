@@ -3,16 +3,9 @@
 Migraciones
     - ejecutar todas las migraciones
 Seeders
-    -
+    - MemosTypesGroupsTableSeeder, MemosTypesTableSeeder, MemosTableSeeder
 Paquetes
 
 Comandos
 
 Otros
-    - cambiar de nombre a las migraciones
-        2021_11_04_085940_create_signatures_table
-        2022_02_22_115303_create_payroll_payments_table
-        2022_02_22_145051_create_checks_payments_table
-        2022_02_22_153306_create_checks_payments_derivations_table
-    - Eliminar migraciones
-        update_payroll_payments_table

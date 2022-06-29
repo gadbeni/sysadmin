@@ -67,6 +67,9 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('paymentschedules');
         Permission::generateFor('imports');
         Permission::generateFor('irremovability_types');
+        Permission::generateFor('memos_types_groups');
+        Permission::generateFor('memos_types');
+        Permission::generateFor('memos');
 
         // people
         $keys = [

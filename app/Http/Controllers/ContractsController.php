@@ -102,8 +102,8 @@ class ContractsController extends Controller
         $people = Person::where('deleted_at', NULL)
                     ->whereRaw("id not in (select person_id from contracts where status <> 'concluido' and deleted_at is null)")
                     ->get();
-        $direccion_administrativas = DireccionAdministrativa::whereRaw($direccion_administrativa_id ? "ID = $direccion_administrativa_id" : 1)->get();
-        $unidad_administrativas = UnidadAdministrativa::get();
+        $direccion_administrativas = Direccion::whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1)->get();
+        $unidad_administrativas = unidad::get();
         // $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $contracts = Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get();
         $programs = Program::where('deleted_at', NULL)->get();
@@ -142,7 +142,7 @@ class ContractsController extends Controller
                         ->whereHas('user', function($q){
                             $q->where('direccion_administrativa_id', Auth::user()->direccion_administrativa_id);
                         })->count();
-            $d_a = DireccionAdministrativa::find(Auth::user()->direccion_administrativa_id);
+            $d_a = Direccion::find(Auth::user()->direccion_administrativa_id);
             $code = ($d_a ? $d_a->Sigla.'-' : '').str_pad($older_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
 
             $contract = Contract::create([
@@ -213,8 +213,8 @@ class ContractsController extends Controller
         $procedure_type = ProcedureType::where('deleted_at', NULL)->where('id', $contract->procedure_type_id)->get();
 
         $people = Person::where('id', $contract->person->id)->where('deleted_at', NULL)->get();
-        $direccion_administrativas = DireccionAdministrativa::whereRaw(Auth::user()->direccion_administrativa_id ? "ID = ".Auth::user()->direccion_administrativa_id : 1)->get();
-        $unidad_administrativas = UnidadAdministrativa::get();
+        $direccion_administrativas = Direccion::whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1)->get();
+        $unidad_administrativas = unidad::get();
         // $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $contracts = Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get();
         $programs = Program::where('deleted_at', NULL)->get();
@@ -248,7 +248,7 @@ class ContractsController extends Controller
                             ->whereHas('user', function($q){
                                 $q->where('direccion_administrativa_id', Auth::user()->direccion_administrativa_id);
                             })->count();
-                $d_a = DireccionAdministrativa::find(Auth::user()->direccion_administrativa_id);
+                $d_a = Direccion::find(Auth::user()->direccion_administrativa_id);
                 $code = ($d_a ? $d_a->Sigla.'-' : '').str_pad($older_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
             }else{
                 $code = $contract->code;

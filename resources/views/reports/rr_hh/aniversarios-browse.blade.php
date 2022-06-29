@@ -24,14 +24,15 @@
                                     @csrf
                                     <input type="hidden" name="print">
                                     <div class="form-group">
-                                        <select name="t_planilla" class="form-control select2">
-                                            <option selected disabled>Tipo de planilla</option>
-                                            <option value="1">Funcionamiento</option>
-                                            <option value="2">Inversión</option>
+                                        <select name="procedure_type_id" class="form-control select2" required>
+                                            <option selected disabled value="">Tipo de planilla</option>
+                                            <option value="1">Permanente</option>
+                                            <option value="5">Inversión</option>
+                                            <option value="2">Consultores de línea</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <select name="mes" class="form-control select2" required>
+                                        <select name="month" class="form-control select2" required>
                                             <option value="">--Seleccione el mes--</option>
                                             <option value="1">Enero</option>
                                             <option value="2">Febrero</option>

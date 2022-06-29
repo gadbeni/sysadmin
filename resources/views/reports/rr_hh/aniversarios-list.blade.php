@@ -1,6 +1,6 @@
 
 <div class="col-md-12 text-right">
-    @if (count($funcionarios))
+    @if (count($people))
         <button type="button" onclick="report_print()" class="btn btn-danger"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
     @endif
 </div>
@@ -12,13 +12,13 @@
                     <thead>
                         <tr>
                             <th>ITEM</th>
-                            <th>NIVEL</th>
-                            <th>APELLIDOS Y NOMBRES / CARGO</th>
+                            <th>APELLIDOS Y NOMBRES</th>
+                            <th>CARGO</th>
                             <th>CÉDULA DE IDENTIDAD</th>
-                            <th>EXP</th>
                             <th>AFP</th>
-                            <th>FECHA INGRESO</th>
                             <th>FECHA NACIMIENTO</th>
+                            <th>INICIO DE CONTRATO</th>
+                            <th>FIN DE CONTRATO</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -26,16 +26,33 @@
                             $cont = 1;
                             $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                         @endphp
-                        @forelse ($funcionarios as $item)
+                        @forelse ($people as $item)
+                            @php
+                                $contract = $item->contracts->last();
+                            @endphp
                             <tr>
                                 <td>{{ $cont }}</td>
-                                <td>{{ $item->Nivel }}</td>
-                                <td>{{ $item->Apaterno }} {{ $item->Amaterno }} {{ $item->Pnombre }} <br> <small>{{ $item->Cargo }}</small></td>
-                                <td>{{ $item->CedulaIdentidad }}</td>
-                                <td>{{ $item->Expedido }}</td>
-                                <td>{{ $item->Afp == 1 ? 'Futuro' : 'Previsión' }}</td>
-                                <td>{{ date('d', strtotime($item->Fecha_Ingreso)).'/'.$months[intval(date('m', strtotime($item->Fecha_Ingreso)))].'/'.date('Y', strtotime($item->Fecha_Ingreso)) }}</td>
-                                <td>{{ date('d', strtotime($item->fechanacimiento)).'/'.$months[intval(date('m', strtotime($item->fechanacimiento)))].'/'.date('Y', strtotime($item->fechanacimiento)) }}</td>
+                                <td>{{ $item->last_name }} {{ $item->first_name }}</td>
+                                <td>
+                                    @if ($contract)
+                                        @if ($contract->cargo)
+                                            {{ $contract->cargo->Descripcion }}
+                                        @elseif ($contract->job)
+                                            {{ $contract->job->name }}
+                                        @else
+                                            No definido
+                                        @endif
+                                    @endif
+                                </td>
+                                <td>{{ $item->ci }}</td>
+                                <td>{{ $item->afp == 1 ? 'Futuro' : 'Previsión' }}</td>
+                                <td>{{ date('d', strtotime($item->birthday)).'/'.$months[intval(date('m', strtotime($item->birthday)))].'/'.date('Y', strtotime($item->birthday)) }}</td>
+                                <td>{{ $contract ? date('d', strtotime($contract->start)).'/'.$months[intval(date('m', strtotime($contract->start)))].'/'.date('Y', strtotime($contract->start)) : '' }}</td>
+                                <td>
+                                    @if ($contract)
+                                        {{ $contract->finish ? date('d', strtotime($contract->finish)).'/'.$months[intval(date('m', strtotime($contract->finish)))].'/'.date('Y', strtotime($contract->finish)) : 'NO DEFINIDO' }}
+                                    @endif
+                                </td>
                             </tr>
                             @php
                                 $cont++;

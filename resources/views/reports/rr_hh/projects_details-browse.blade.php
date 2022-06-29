@@ -26,8 +26,8 @@
                                     <div class="form-group">
                                         <select name="direccion_administrativa_id" class="form-control select2">
                                             <option value="">Todas las direcciones administrativas</option>
-                                            @foreach (App\Models\DireccionAdministrativa::where('Estado', 1)->get() as $item)
-                                            <option value="{{ $item->ID }}">{{ $item->NOMBRE }}</option>
+                                            @foreach (App\Models\Direccion::where('estado', 1)->get() as $item)
+                                            <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                                             @endforeach
                                         </select>
                                     </div>

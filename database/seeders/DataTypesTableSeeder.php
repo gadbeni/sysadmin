@@ -397,6 +397,42 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2022-05-10 10:29:11',
                 'updated_at' => '2022-05-10 10:37:21',
             ),
+            21 => 
+            array (
+                'id' => 23,
+                'name' => 'memos_types_groups',
+                'slug' => 'memos-types-groups',
+                'display_name_singular' => 'Grupo de memo',
+                'display_name_plural' => 'Grupos de memo',
+                'icon' => 'voyager-list',
+                'model_name' => 'App\\Models\\MemosTypesGroup',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":"id","order_display_column":"id","order_direction":"asc","default_search_key":null}',
+                'created_at' => '2022-06-29 13:43:18',
+                'updated_at' => '2022-06-29 13:43:18',
+            ),
+            22 => 
+            array (
+                'id' => 24,
+                'name' => 'memos_types',
+                'slug' => 'memos-types',
+                'display_name_singular' => 'Tipo de memo',
+                'display_name_plural' => 'Tipos de memo',
+                'icon' => 'voyager-list',
+                'model_name' => 'App\\Models\\MemosType',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":"id","order_display_column":"id","order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2022-06-29 14:05:05',
+                'updated_at' => '2022-06-29 14:06:27',
+            ),
         ));
         
         

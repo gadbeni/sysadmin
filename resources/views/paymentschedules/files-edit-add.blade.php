@@ -27,7 +27,7 @@
                                     <select name="tipo_da" id="select-tipo_da" class="form-control select2" required>
                                         <option value="">--Seleccione tipo de dirección administrativa--</option>
                                         @foreach ($tipo_da as $item)
-                                            <option value="{{ $item->ID }}" data-da='@json($item->direcciones_administrativas)'>{{ $item->Nombre }}</option>
+                                            <option value="{{ $item->id }}" data-da='@json($item->direcciones_administrativas)'>{{ $item->nombre }}</option>
                                         @endforeach
                                     </select>
                                 </div>

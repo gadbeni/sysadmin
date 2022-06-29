@@ -163,10 +163,10 @@
 
                             if($group == 1){
                                 $data_group = $data_group->map(function($item, $key){
-                                    $da = \App\Models\DireccionAdministrativa::where('ID', $key)->first();
+                                    $da = \App\Models\Direccion::where('id', $key)->first();
                                     return [
-                                        'id' => $da->ID,
-                                        'name' => $da->NOMBRE,
+                                        'id' => $da->id,
+                                        'name' => $da->nombre,
                                         'order' => $da->orden,
                                         'details' => $item
                                     ];

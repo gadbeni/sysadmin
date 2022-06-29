@@ -84,8 +84,14 @@
                     </tr>
                 </tbody>
             </table>
+            
+            @if ($contract->direccion_administrativa->direcciones_tipo_id <= 2 )
+                <p>
+                La recepción de documentos se realizará en oficinas de la Unidad de Contrataciones de Bienes y Servicios dependiente de la Secretaría Departamental de Administración y Finanzas.    
+                </p>
+            @endif
+
             <p>
-                La recepción de documentos se realizará en oficinas de la Dirección Administrativa dependiente de la Secretaría Departamental de Administración y Finanzas. <br> <br>
                 Como Responsable de Evaluación, deberá cumplir las funciones establecidas en el artículo 38 del D.S. 0181, con dedicación exclusiva y no podrá delegar sus funciones ni excusarse, salvo en los casos de conflictos de intereses, impedimento físico o por las causales de excusa establecidas en el artículo 41 del mencionado decreto. <br> <br>
                 Atentamente,
             </p>

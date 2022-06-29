@@ -173,10 +173,10 @@
                                                     @endif
                                                 @elseif(($row->type == 'direccionadministrativa'))
                                                    @php
-                                                        $d_a = \App\Models\DireccionAdministrativa::find($data->{$row->field});
+                                                        $d_a = \App\Models\Direccion::find($data->{$row->field});
                                                    @endphp
 
-                                                {{ $d_a ? $d_a->NOMBRE : '' }}
+                                                {{ $d_a ? $d_a->nombre : '' }}
 
                                                 @elseif(($row->type == 'user_id'))
                                                    @php

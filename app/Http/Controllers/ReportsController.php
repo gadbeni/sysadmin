@@ -121,24 +121,18 @@ class ReportsController extends Controller
     }
 
     public function humans_resources_aniversarios_list(Request $request){
-        $mes = $request->mes;
-        $funcionarios = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                            ->join('planillaprocesada as pp', 'pp.id', 'p.idPlanillaprocesada')
-                            ->join('contratos as c', 'c.idContribuyente', 'p.CedulaIdentidad')
-                            ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
-                            ->where('p.Estado', 1)->where('c.Estado', 1)
-                            ->where('p.Tplanilla', $request->t_planilla ?? 0)
-                            ->whereRaw('(p.idGda=1 or p.idGda=2)')
-                            ->whereMonth('p.fechanacimiento', $mes)
-                            ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'pp.Estado as estado_planilla_procesada')
-                            ->orderBy('p.Apaterno')
-                            ->groupBy('p.CedulaIdentidad')
-                            ->get();
-        // dd($funcionarios);
+        $month = $request->month;
+        $people = Person::whereMonth('birthday', $month)
+                    ->whereHas('contracts', function($q) use($request){
+                        $q->where('procedure_type_id', $request->procedure_type_id);
+                    })
+                    ->where('deleted_at', NULL)->orderByRaw('DAY(birthday)', 'ASC')
+                    ->get();
+        // dd($people);
         if($request->print){
-            return view('reports.rr_hh.aniversarios-print', compact('funcionarios', 'mes'));
+            return view('reports.rr_hh.aniversarios-print', compact('people', 'month'));
         }else{
-            return view('reports.rr_hh.aniversarios-list', compact('funcionarios'));
+            return view('reports.rr_hh.aniversarios-list', compact('people'));
         }
     }
 
