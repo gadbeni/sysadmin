@@ -184,25 +184,26 @@
                                         <label for="date_memo_res">Fecha de respuesta de memorandum</label>
                                         <input type="date" name="date_memo_res" value="{{ isset($contract) ? $contract->date_memo_res : '' }}" class="form-control">
                                     </div>
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-4">
                                         <label for="workers_memo">Comisión de contratación</label>
                                         <select name="workers_memo[]" id="select-workers_memo" class="form-control" multiple>
-                                            {{-- @foreach ($funcionarios as $item)
-                                            <option @if(isset($contract) && $contract->cargo_id == $item->ID) selected @endif value="{{ $item->ID }}">{{ str_replace('  ', ' ', $item->NombreCompleto) }} - {{ $item->Cargo }}</option>
-                                            @endforeach --}}
                                             @foreach ($contracts->sortBy('person.last_name') as $item)
                                             <option value="{{ $item->id }}">{{ $item->person->first_name }} {{ $item->person->last_name }} - {{ $item->cargo_id ? $item->cargo->Descripcion : $item->job->name }}</option>                                                
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="signature_id">Firma autorizada</label>
+                                    <div class="form-group col-md-4">
+                                        <label for="signature_id">Firma autorizada <i class="voyager-question" data-toggle="tooltip" title="En caso de que alguien más deba firmar el contrato"></i></label>
                                         <select name="signature_id" id="select-signature_id" class="form-control select2">
                                             <option value="">--Seleccione la firma autorizada--</option>
                                             @foreach ($contracts->sortBy('person.last_name') as $item)
                                             <option value="{{ $item->id }}">{{ $item->person->first_name }} {{ $item->person->last_name }} - {{ $item->cargo_id ? $item->cargo->Descripcion : $item->job->name }}</option>                                                
                                             @endforeach
                                         </select>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="signature_code">Resolución administrativa <i class="voyager-question" data-toggle="tooltip" title="Si agrega una forma autorizada debe ingresar el código de resolución administrativa"></i></label>
+                                        <input type="text" name="signature_code" value="{{ isset($contract) ? $contract->signature_code : '' }}" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -374,6 +375,7 @@
             var cargos = @json($cargos);
             var jobs = @json($jobs);
             $(document).ready(function(){
+                $('[data-toggle="tooltip"]').tooltip();
                 $('.div-hidden').fadeOut('fast');
                 var additionalConfig = {
                     selector: '.richTextBox',
@@ -399,8 +401,8 @@
                 $('#select-direccion_administrativa_id').change(function(){
                     $('#select-unidad_administrativa_id').html(`<option value="">Seleccione una unidad administrativa</option>`);
                     unidad_administrativas.map(item => {
-                        if($('#select-direccion_administrativa_id option:selected').val() == item.idDa){
-                            $('#select-unidad_administrativa_id').append(`<option value="${item.ID}">${item.Nombre}</option>`);
+                        if($('#select-direccion_administrativa_id option:selected').val() == item.direccion_id){
+                            $('#select-unidad_administrativa_id').append(`<option value="${item.id}">${item.nombre}</option>`);
                         }
                     });
                     $('#select-program_id').html(`<option value="">Seleccione un programa</option>`);
@@ -449,7 +451,7 @@
                         $('#input-finish').attr('required', true);
                         $('#select-direccion_administrativa_id').html(`<option value="">Selecciona la dirección administrativa</option>`);
                         direccion_administrativas.map(item => {
-                            $('#select-direccion_administrativa_id').append(`<option value="${item.ID}">${item.NOMBRE}</option>`);
+                            $('#select-direccion_administrativa_id').append(`<option value="${item.id}">${item.nombre}</option>`);
                         });
 
                         setTimeout(() => {

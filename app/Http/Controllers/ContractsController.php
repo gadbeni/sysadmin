@@ -11,8 +11,8 @@ use Carbon\Carbon;
 use App\Models\Person;
 use App\Models\Program;
 use App\Models\Contract;
-use App\Models\DireccionAdministrativa;
-use App\Models\UnidadAdministrativa;
+use App\Models\Direccion;
+use App\Models\Unidad;
 use App\Models\ProcedureType;
 use App\Models\Cargo;
 use App\Models\Job;
@@ -158,6 +158,7 @@ class ContractsController extends Controller
                 'procedure_type_id' => $request->procedure_type_id,
                 'user_id' => Auth::user()->id,
                 'signature_id' => $request->signature_id,
+                'signature_code' => $request->signature_code,
                 'code' => $code,
                 'details_work' => $request->details_work,
                 'start' => $request->start,
@@ -265,6 +266,7 @@ class ContractsController extends Controller
                 'direccion_administrativa_id' => $request->procedure_type_id == 1 ? Job::find($request->cargo_id)->direccion_administrativa_id : $request->direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'signature_id' => $request->signature_id,
+                'signature_code' => $request->signature_code,
                 'code' => $code,
                 'details_work' => $request->details_work,
                 'start' => $request->start,

@@ -73,7 +73,7 @@
                     // Obtener DA
                     $('#select-da_id').html('<option value="">--Seleccione una dirección administrativa--</option>');
                     da.map(item => {
-                        $('#select-da_id').append(`<option value="${item.ID}">${item.NOMBRE}</option>`);
+                        $('#select-da_id').append(`<option value="${item.id}">${item.nombre}</option>`);
                     });
                     $('#select-procedure_type_id').html('<option value="">--Seleccione el tipo de planilla--</option>');
 

@@ -3,6 +3,7 @@
 @section('page_title', 'Memoramdum')
 
 @php
+    $signature = \App\Models\Signature::where('direccion_administrativa_id', $contract->direccion_administrativa_id)->where('deleted_at', NULL)->where('status', 1)->first();
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
     $code = $contract->code;
 @endphp
@@ -51,8 +52,15 @@
                     </p>
                 </div>
                 <div class="border-left">
-                    <b>DE:</b> {{ Str::upper(setting('firma-autorizada.name')) }} <br>
-                    <b>{{ Str::upper(setting('firma-autorizada.job')) }}</b> <br> <br> <br>
+                    <b>DE:</b>
+                    @if ($signature)
+                        {{ Str::upper($signature->name) }} <br>
+                        <b>{{ Str::upper($signature->job) }}</b>
+                    @else
+                        {{ Str::upper(setting('firma-autorizada.name')) }} <br>
+                        <b>{{ Str::upper(setting('firma-autorizada.job')) }}</b>
+                    @endif
+                    <br> <br> <br>
                     <b>A:</b> {{ Str::upper($contract->person->first_name.' '.$contract->person->last_name) }} <br>
                     <b>CI: {{ $contract->person->ci }}</b> <br> <br>
                 </div>

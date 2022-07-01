@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\SeniorityBonusPerson;
 use App\Models\Person;
 use App\Models\Contract;
-use App\Models\DireccionAdministrativa;
+use App\Models\Direccion;
 
 class AuxiliarImport implements ToModel
 {

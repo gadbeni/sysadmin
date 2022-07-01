@@ -14,7 +14,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\PaymentschedulesFilesImport;
 
 // Models
-use App\Models\TipoDireccionAdministrativa;
+use App\Models\DireccionesTipo;
 use App\Models\Contract;
 use App\Models\PaymentschedulesFile;
 use App\Models\PaymentschedulesFilesDetails;

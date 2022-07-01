@@ -19,6 +19,7 @@ class Contract extends Model
         'procedure_type_id',
         'user_id',
         'signature_id',
+        'signature_code',
         'code',
         'details_work',
         'preventive_number',

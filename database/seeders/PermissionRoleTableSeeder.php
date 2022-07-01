@@ -84,6 +84,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = "read_people" or
                                                 `key` = "add_people" or
                                                 `key` = "edit_people" or
+                                                `key` = "irremovability_people",
                                                 `key` = "browse_contracts" or
                                                 `key` = "browse_paymentschedules" or
                                                 `key` = "read_paymentschedules" or
@@ -179,6 +180,7 @@ class PermissionRoleTableSeeder extends Seeder
         // Roles de recursos humanos
         $role = Role::where('name', 'rrhh_director')->firstOrFail();
         $permissions = Permission::whereRaw("$similar_permissions_rrhh or
+                                            `key` = 'irremovability_people',
                                             `key` = 'downgrade_contracts' or
                                             `key` = 'finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
@@ -268,6 +270,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'edit_people' or
                                             `key` = 'add_people' or
                                             `key` = 'rotation_people' or
+                                            `key` = 'irremovability_people',
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
                                             `key` = 'browse_cities' or
@@ -286,7 +289,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'browse_reportssocial-securityexports' or
                                             table_name = 'seniority_bonus_people' or
                                             `key` = 'browse_reportspaymentschedulesdetails-status' or
-                                            `key` = 'browse_reportscontractscontracts'")->get();
+                                            `key` = 'browse_reportscontractscontracts' or
+                                            `key` = 'browse_reportshumans-resourcesaniversarios'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de administrativo
