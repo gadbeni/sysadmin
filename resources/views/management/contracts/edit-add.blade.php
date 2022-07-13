@@ -202,7 +202,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label for="signature_code">Resolución administrativa <i class="voyager-question" data-toggle="tooltip" title="Si agrega una forma autorizada debe ingresar el código de resolución administrativa"></i></label>
+                                        <label for="signature_code">Resolución administrativa <i class="voyager-question" data-toggle="tooltip" title="Si agrega una firma autorizada debe ingresar el código de resolución administrativa"></i></label>
                                         <input type="text" name="signature_code" value="{{ isset($contract) ? $contract->signature_code : '' }}" class="form-control">
                                     </div>
                                 </div>

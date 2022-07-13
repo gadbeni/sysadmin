@@ -70,6 +70,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('vaults/ajax/list/{id}', [VaultsController::class, 'list']);
     Route::get('vaults/details/{id}', [VaultsController::class, 'view_details'])->name('view.details.show');
     Route::post('vaults/{id}/details/store', [VaultsController::class, 'details_store'])->name('vaults.details.store');
+    Route::post('vaults/details/delete', [VaultsController::class, 'details_destroy'])->name('vaults.details.delete');
     Route::post('vaults/{id}/open', [VaultsController::class, 'open'])->name('vaults.open');
     Route::get('vaults/{id}/close', [VaultsController::class, 'close'])->name('vaults.close');
     Route::post('vaults/{id}/close/store', [VaultsController::class, 'close_store'])->name('vaults.close.store');

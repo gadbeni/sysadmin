@@ -39,13 +39,19 @@ class VaultsController extends Controller
     }
 
     public function list($id){
-        $data = VaultsDetail::with(['cash', 'user'])->where('vault_id', $id)->where('deleted_at', NULL)->get();
+        $data = VaultsDetail::withTrashed()->with(['cash', 'user'])->where('vault_id', $id)->get();
 
         return
             Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('user', function($row){
                 return $row->user->name;
+            })
+            ->addColumn('type', function($row){
+                return $row->type.($row->deleted_at ? '<br><label class="label label-danger">Eliminado<label>' : '');
+            })
+            ->addColumn('description', function($row){
+                return $row->description;
             })
             ->addColumn('amount', function($row){
                 $total = 0;
@@ -60,26 +66,29 @@ class VaultsController extends Controller
             ->addColumn('actions', function($row){
                 $btn_print = '';
                 if($row->type == 'ingreso'){
-                    $btn_print =    '<a href="'.route('vaults.print.vault.details', ['id' => $row->id]).'" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
+                    $btn_print =    '<a href="'.route('vaults.print.vault.details', ['id' => $row->id]).'" target="_blank" title="Imprimir" class="btn btn-sm btn-default view">
                                         <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
                                     </a>';
                 }elseif($row->type == 'egreso' && !$row->cashier_id){
-                    $btn_print =    '<a href="'.route('vaults.print.vault.details', ['id' => $row->id]).'" target="_blank" title="Imprimir" class="btn btn-sm btn-danger view">
+                    $btn_print =    '<a href="'.route('vaults.print.vault.details', ['id' => $row->id]).'" target="_blank" title="Imprimir" class="btn btn-sm btn-default view">
                                         <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
                                     </a>';
                 }
                 
                 $actions = '
                     <div class="no-sort no-click bread-actions text-right">
+                        '.$btn_print.'
                         <a href="'.route('view.details.show', ['id' => $row->id]).'" title="Ver" class="btn btn-sm btn-warning view">
                             <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                         </a>
-                        '.$btn_print.'
+                        <a href="#" data-toggle="modal" data-target="#modal-delete" onclick="deleteItem('.$row->id.')" title="Eliminar" class="btn btn-sm btn-danger view">
+                            <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Eliminar</span>
+                        </a>
                     </div>
                 ';
                 return $actions;
             })
-            ->rawColumns(['date', 'actions'])
+            ->rawColumns(['type', 'description', 'date', 'actions'])
             ->make(true);
     }
 
@@ -191,6 +200,25 @@ class VaultsController extends Controller
             }
             DB::commit();
             return redirect()->route('vaults.index')->with(['message' => 'Detalle de bóveda guardado exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            // dd($th);
+            return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function details_destroy(Request $request){
+        // dd($request->all());
+        DB::beginTransaction();
+        try {
+            $detail = VaultsDetail::find($request->id);
+            $detail->description = $detail->description.'<br><br><small><b>Motivo de eliminación:</b></small><br>'.$request->description;
+            $detail->status = 'anulado';
+            $detail->deleted_at = Carbon::now();
+            $detail->update();
+
+            DB::commit();
+            return redirect()->route('vaults.index')->with(['message' => 'Detalle de bóveda anulado exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);

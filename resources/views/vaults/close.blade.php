@@ -10,7 +10,7 @@
                     <div class="panel-body" style="padding: 0px">
                         <div class="col-md-8" style="padding: 0px">
                             <h1 class="page-title">
-                                <i class="voyager-lock"></i> Cierre de Bóvena
+                                <i class="voyager-lock"></i> Cierre de Bóveda
                             </h1>
                             {{-- <div class="alert alert-info">
                                 <strong>Información:</strong>

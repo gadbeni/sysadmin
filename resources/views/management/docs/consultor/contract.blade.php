@@ -92,7 +92,7 @@
             </li>
         </ul>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA SEXTA. -</strong></span><strong> (VIGENCIA Y </strong><strong>TIEMPO DE PRESTACI&Oacute;N DEL SERVICIO</strong><strong>) </strong></p>
-        <p>El contrato, entrar&aacute; en vigencia desde el d&iacute;a siguiente h&aacute;bil de su suscripci&oacute;n, por ambas partes, hasta que las mismas hayan dado cumplimento a todas las cl&aacute;usulas contenidas en el presente contrato y el tiempo de la prestaci&oacute;n del servicio, se extender&aacute; desde el <strong>{{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} al {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->start)) }}.</strong></p>
+        <p>El contrato, entrar&aacute; en vigencia desde la suscripci&oacute;n, por ambas partes, hasta que las mismas hayan dado cumplimento a todas las cl&aacute;usulas contenidas en el presente contrato y el tiempo de la prestaci&oacute;n del servicio, se extender&aacute; desde el <strong>{{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} al {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->start)) }}.</strong></p>
         
         <div class="saltopagina"></div>
         <div class="pt"></div>

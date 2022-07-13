@@ -191,7 +191,7 @@
     </form>
 
     {{-- vault add register modal --}}
-    <form action="{{ route('vaults.details.store', ['id' => $vault ? $vault->id : 0]) }}" method="post">
+    <form id="form-store" action="{{ route('vaults.details.store', ['id' => $vault ? $vault->id : 0]) }}" method="post">
         @csrf
         {{-- <input type="hidden" name="vault_id" value="{{  }}"> --}}
         <div class="modal fade" tabindex="-1" id="vaults-details-modal" role="dialog">
@@ -233,7 +233,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Detalles</label>
-                                    <textarea name="description" class="form-control" rows="4"></textarea>
+                                    <textarea name="description" class="form-control" rows="4" required></textarea>
                                 </div>
                                 <div class="form-group text-right">
                                     <label class="checkbox-inline"><input type="checkbox" value="1" required>Aceptar y guardar registro de caja</label>
@@ -249,7 +249,33 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-success">Registrar ingreso</button>
+                        <button type="submit" class="btn btn-success" id="btn-save">Registrar ingreso</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {{-- Single delete modal --}}
+    <form action="{{ route('vaults.details.delete') }}" id="form-delete" method="POST">
+        @csrf
+        <input type="hidden" name="id">
+        <div class="modal modal-danger fade" tabindex="-1" id="modal-delete" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-trash"></i> Desea eliminar el siguiente registro?</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="description">Motivo de anulación</label>
+                            <textarea name="description" class="form-control" rows="5" placeholder="Motivo de eliminación" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-danger pull-right delete-confirm" value="Sí, eliminar">
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancelar</button>
                     </div>
                 </div>
             </div>
@@ -301,6 +327,11 @@
                 let cantidad = $(this).val() ? $(this).val() : 0;
                 calcular_subtottal(corte, cantidad);
             });
+
+            $('#form-store').submit(function(e){
+                $('#btn-save').attr('disabled', 'disabled');
+            });
+
         });
 
         function calcular_subtottal(corte, cantidad){
@@ -317,6 +348,10 @@
             });
             console.log(total)
             $('#label-total').html('<b>'+(total).toFixed(2)+' Bs.</b>');
+        }
+
+        function deleteItem(id){
+            $('#form-delete input[name="id"]').val(id);
         }
     </script>
 @stop

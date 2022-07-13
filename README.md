@@ -8,7 +8,7 @@
 ```
 composer install
 cp .env.example .env
-php artisan template:install
+php artisan sysadmin:install
 ```
 
 ## Colaboradores
