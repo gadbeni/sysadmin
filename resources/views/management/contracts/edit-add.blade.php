@@ -66,6 +66,10 @@
                                         <label for="finish">Fin de contrato</label>
                                         <input type="date" name="finish" id="input-finish" value="{{ isset($contract) ? $contract->finish : '' }}" class="form-control">
                                     </div>
+                                    <div class="form-group col-md-12">
+                                        <label for="requested_by">Persona o unidad solicitante (Opcional)</label>
+                                        <input type="text" name="requested_by" value="{{ isset($contract) ? $contract->requested_by : '' }}" class="form-control">
+                                    </div>
                                 </div>
                             </div>
                         </div>

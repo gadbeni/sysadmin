@@ -24,6 +24,7 @@ class Contract extends Model
         'details_work',
         'preventive_number',
         'organizational_source',
+        'requested_by',
         'start',
         'finish',
         'date_invitation',

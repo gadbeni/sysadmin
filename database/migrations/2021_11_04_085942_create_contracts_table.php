@@ -29,6 +29,7 @@ class CreateContractsTable extends Migration
             $table->text('details_work')->nullable();
             $table->string('preventive_number')->nullable();
             $table->string('organizational_source')->nullable();
+            $table->string('requested_by')->nullable();
             $table->date('start')->nullable();
             $table->date('finish')->nullable();
             $table->date('date_invitation')->nullable();
