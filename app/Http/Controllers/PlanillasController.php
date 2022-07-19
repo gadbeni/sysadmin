@@ -168,7 +168,7 @@ class PlanillasController extends Controller
                                             $q->where('deleted_at', NULL);
                                         })
                                         ->whereRaw($search ? "id = '".intval($search)."'" : 1)
-                                        ->where('deleted_at', NULL)->get();
+                                        ->where('centralize', 0)->where('deleted_at', NULL)->get();
 
             foreach ($paymentschedule as $item) {
                 foreach ($item->details->groupBy('contract.person.afp') as $key => $value) {
@@ -454,17 +454,20 @@ class PlanillasController extends Controller
 
         $period = Period::where('name', $request->periodo)->where('deleted_at', NULL)->first();
         $period_id = $period ? $period->id : NULL;
+        $centralize_code = $request->centralize_code;
         
         $paymentschedule_details = PaymentschedulesDetail::with(['paymentschedule.period', 'contract.person'])
                                         ->whereHas('paymentschedule.procedure_type', function($q) use($request){
                                             $q->where('planilla_id', $request->t_planilla);
                                         })->whereHas('contract.person', function($q) use($request){
                                             $q->where('afp', $request->afp);
-                                        })->whereHas('paymentschedule', function($q) use($period_id){
-                                            $q->where('period_id', $period_id)->where('centralize_code', '<>', NULL)->where('deleted_at', NULL);
+                                        })->whereHas('paymentschedule', function($q) use($period_id, $centralize_code){
+                                            $q->where('period_id', $period_id)->where('centralize_code', '<>', NULL)
+                                            ->whereRaw($centralize_code != '' ? ' centralize_code = "'.$centralize_code.'"' : 1)
+                                            ->where('deleted_at', NULL);
                                         })->where('deleted_at', NULL)->get();
 
-        return response()->json(['planilla' => $planilla, 'paymentschedule_details' => $paymentschedule_details]);
+        return response()->json(['planilla' => $planilla, 'paymentschedule_details' => $paymentschedule_details, 'paymentschedule_details_group' => $paymentschedule_details->groupBy('paymentschedule.centralize_code'), 'centralize_code' => $centralize_code]);
     }
 
     public function planillas_pagos_people_search(){

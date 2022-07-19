@@ -45,8 +45,9 @@ function getPlanillas(url){
     $('#select-checks_beneficiary_id').val('').trigger('change');
     $.post(
         url,
-        {t_planilla: $('#select-t_planilla').val(), periodo: $('#input-periodo').val(), afp: $('#select-afp').val()},
+        {t_planilla: $('#select-t_planilla').val(), periodo: $('#input-periodo').val(), afp: $('#select-afp').val(), centralize_code: $('#select-centralize_code').val()},
         function(res){
+            // console.log(res)
             let total_ganado = 0;
             let total_aportes_afp = 0;
             let total_riesgo_comun = 0;
@@ -70,7 +71,12 @@ function getPlanillas(url){
                     people++;
                     periodo = item.paymentschedule.period.name;
                     $('#form input[name="afp_alt"]').val(item.contract.person.afp);
-                })
+                });
+
+                $('#select-centralize_code').html('<option value="">Todos</option>');
+                Object.keys(res.paymentschedule_details_group).map(item => {
+                    $('#select-centralize_code').append(`<option ${res.centralize_code == [item] ? 'selected' : ''} value="${[item]}">${[item]}</option>`);
+                });
             }
             
             planillaSelect = {

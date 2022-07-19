@@ -143,7 +143,7 @@ class ContractsController extends Controller
                             $q->where('direccion_administrativa_id', Auth::user()->direccion_administrativa_id);
                         })->count();
             $d_a = Direccion::find(Auth::user()->direccion_administrativa_id);
-            $code = ($d_a ? $d_a->Sigla.'-' : '').str_pad($older_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
+            $code = ($d_a ? $d_a->sigla.'-' : '').str_pad($older_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
 
             $contract = Contract::create([
                 'person_id' => $request->person_id,
@@ -251,7 +251,7 @@ class ContractsController extends Controller
                                 $q->where('direccion_administrativa_id', Auth::user()->direccion_administrativa_id);
                             })->count();
                 $d_a = Direccion::find(Auth::user()->direccion_administrativa_id);
-                $code = ($d_a ? $d_a->Sigla.'-' : '').str_pad($older_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
+                $code = ($d_a ? $d_a->sigla.'-' : '').str_pad($older_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
             }else{
                 $code = $contract->code;
             }

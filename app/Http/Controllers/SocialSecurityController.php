@@ -324,6 +324,7 @@ class SocialSecurityController extends Controller
     }
 
     public function payments_store(Request $request){
+        // dd($request->all());
         DB::beginTransaction();
         try {
             if($request->planilla_haber_id || $request->spreadsheet_id){
@@ -367,13 +368,16 @@ class SocialSecurityController extends Controller
                 if($request->afp_alt){
                     $period = Period::where('name', $request->periodo)->where('deleted_at', NULL)->first();
                     $period_id = $period ? $period->id : NULL;
+                    $centralize_code = $request->centralize_code;
                     $paymentschedules = Paymentschedule::with(['period', 'details.contract.person'])
                                                     ->whereHas('procedure_type', function($q) use($request){
                                                         $q->where('planilla_id', $request->t_planilla);
                                                     })->whereHas('details.contract.person', function($q) use($request){
-                                                        $q->where('afp', $request->afp);
+                                                        $q->where('afp', $request->afp_alt);
                                                     })->where('period_id', $period_id)->where('centralize_code', '<>', NULL)
+                                                    ->whereRaw($centralize_code != '' ? ' centralize_code = "'.$centralize_code.'"' : 1)
                                                     ->where('deleted_at', NULL)->where('deleted_at', NULL)->get();
+                    // dd($paymentschedules);
                     $amount_total = 0;
                     foreach ($paymentschedules as $item) {
                         $amount_total += $item->details->where('contract.person.afp', $request->afp)->sum('partial_salary') + $item->details->where('contract.person.afp', $request->afp)->sum('seniority_bonus_amount');

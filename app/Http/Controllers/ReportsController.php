@@ -276,7 +276,7 @@ class ReportsController extends Controller
                                             $q->whereRaw($period_id ? "period_id = '$period_id'" : 1)
                                                 ->whereRaw($procedure_type_id ? "procedure_type_id = $procedure_type_id" : "(procedure_type_id = 1 or procedure_type_id = 5)")
                                                 ->whereRaw($id_planilla ? 'id = "'.intval($id_planilla).'"' : 1)
-                                                ->where('deleted_at', NULL);
+                                                ->where('centralize', 0)->where('deleted_at', NULL);
                                         })
                                         ->whereHas('contract.person', function($q) use($afp){
                                             $q->whereRaw($afp ? "afp = $afp" : 1);
@@ -299,6 +299,9 @@ class ReportsController extends Controller
                                         ->orderBy('ph.idPlanillaprocesada')
                                         ->selectRaw('ph.*')
                                         ->get();
+                    
+                    // **** Falta la parte no agrupada
+                    // $planillas_alt = [];
                 }
                 break;
  
@@ -317,6 +320,34 @@ class ReportsController extends Controller
                                         ->orderBy('ph.idPlanillaprocesada')
                                         ->selectRaw('ph.idPlanillaprocesada, ph.Periodo, tp.Nombre as tipo_planilla, ROUND(SUM(ph.Total_Aportes_Afp), 2) as Total_Aportes_Afp, ROUND(SUM(ph.Riesgo_Comun), 2) as riesgo_comun, count(ph.Total_Aportes_Afp) as cantidad_personas, sum(ph.Total_Ganado) as total_ganado, ph.Direccion_Administrativa, ph.Afp')
                                         ->get();
+                                        
+                    $afp = $request->afp_alt ?? NULL;
+                    $period = Period::where('name', $request->periodo_alt)->where('deleted_at', NULL)->first();
+                    if($request->periodo_alt){
+                        $period_id = $period ? $period->id : 'none';
+                    }else{
+                        $period_id = NULL;
+                    }
+                    $procedure_type = ProcedureType::where('planilla_id', $request->t_planilla_alt ?? 0)->where('deleted_at', NULL)->first();
+                    $procedure_type_id = $procedure_type ? $procedure_type->id : NULL;
+
+                    $planillas_alt = PaymentschedulesDetail::with(['paymentschedule.period', 'paymentschedule.details.contract.program', 'paymentschedule.direccion_administrativa', 'paymentschedule.procedure_type', 'contract.person', 'paymentschedule.check_payments' => function($q){
+                                            $q->where('deleted_at', NULL);
+                                        }, 'paymentschedule.payroll_payments' => function($q){
+                                            $q->where('deleted_at', NULL);
+                                        }])
+                                        ->whereHas('paymentschedule', function($q) use($period_id, $procedure_type_id){
+                                            $q->whereRaw($period_id ? "period_id = '$period_id'" : 1)
+                                                ->whereRaw($procedure_type_id ? "procedure_type_id = $procedure_type_id" : "(procedure_type_id = 1 or procedure_type_id = 5)")
+                                                ->where('centralize', 1)->where('deleted_at', NULL);
+                                        })
+                                        ->whereHas('contract.person', function($q) use($afp){
+                                            $q->whereRaw($afp ? "afp = $afp" : 1);
+                                        })
+                                        ->where('deleted_at', NULL)
+                                        ->get();
+                    // dd($planillas_alt->all());
+                    
                 }else{
                     $planillas = DB::connection('mysqlgobe')->table('planillahaberes as ph')
                                         ->join('planillaprocesada as pp', 'pp.ID', 'ph.idPlanillaprocesada')
