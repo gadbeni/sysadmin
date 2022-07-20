@@ -184,7 +184,7 @@ class ContractsController extends Controller
 
             return redirect()->route('contracts.index')->with(['message' => 'Contrato guardado exitosamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
             return redirect()->route('contracts.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }

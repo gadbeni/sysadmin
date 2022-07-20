@@ -69,13 +69,18 @@
                                 <h3 class="panel-title">Descripción</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $details->description ?? 'No hay descripción' }}</p>
+                                <p>{!! $details->description ?? 'No hay descripción' !!}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>
                         <div class="col-md-12">
                             <div class="panel-heading" style="border-bottom:0;">
-                                <h3 class="panel-title">Detalles</h3>
+                                <h3 class="panel-title">
+                                    Detalles
+                                    @if ($details->deleted_at)
+                                        <label class="label label-danger">Eliminado</label>
+                                    @endif
+                                </h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
                                 <table class="table table-bordered">

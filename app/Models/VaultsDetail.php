@@ -16,7 +16,7 @@ class VaultsDetail extends Model
     ];
 
     public function cash(){
-        return $this->hasMany(VaultsDetailsCash::class);
+        return $this->hasMany(VaultsDetailsCash::class)->withTrashed();
     }
 
     public function user(){
@@ -24,6 +24,6 @@ class VaultsDetail extends Model
     }
 
     public function cashier(){
-        return $this->belongsTo(Cashier::class);
+        return $this->belongsTo(Cashier::class)->withTrashed();
     }
 }

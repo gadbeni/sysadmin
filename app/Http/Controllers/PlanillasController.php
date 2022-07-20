@@ -168,7 +168,8 @@ class PlanillasController extends Controller
                                             $q->where('deleted_at', NULL);
                                         })
                                         ->whereRaw($search ? "id = '".intval($search)."'" : 1)
-                                        ->where('centralize', 0)->where('deleted_at', NULL)->get();
+                                        // ->where('centralize', 0)
+                                        ->where('deleted_at', NULL)->get();
 
             foreach ($paymentschedule as $item) {
                 foreach ($item->details->groupBy('contract.person.afp') as $key => $value) {
@@ -179,7 +180,8 @@ class PlanillasController extends Controller
                         'cantidad_personas' => count($value),
                         'total_ganado' => $value->sum('partial_salary') + $value->sum('seniority_bonus_amount'),
                         'Afp' => $key,
-                        'total_riesgo_comun' => $value->sum('common_risk')
+                        'total_riesgo_comun' => $value->sum('common_risk'),
+                        'aditional' => $item->aditional
                     ]);
                 }
             }

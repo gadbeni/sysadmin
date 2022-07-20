@@ -64,14 +64,19 @@
             </tr>
         </table>
         <div id="watermark">
-            <img src="{{ asset('images/icon.png') }}" height="100%" width="100%" /> 
+            <img src="{{ asset('images/icon.png') }}" style="margin-top: 150px;" height="100%" width="100%" />
         </div>
+        @if ($detail->deleted_at)
+            <div style="text-align: center">
+                <h1 style="color: red">ELIMINADO</h1>
+            </div>
+        @endif
 
         <hr style="margin: 0px">
         <table width="100%" cellpadding="10" style="font-size: 12px">
             <tr>
                 <td colspan="2">
-                    <table width="100%">
+                    <table width="100%" cellpadding="10">
                         <tr>
                             <td><b>Registrado por: </b></td>
                             <td>{{ $detail->user->name }}</td>
@@ -82,7 +87,7 @@
                         </tr>
                         <tr>
                             <td><b>Descripción: </b></td>
-                            <td colspan="5">{{ $detail->description ?? 'No hay descripción' }}</td>
+                            <td colspan="5">{!! $detail->description ?? 'No hay descripción' !!}</td>
                         </tr>
                     </table>
                 </td>

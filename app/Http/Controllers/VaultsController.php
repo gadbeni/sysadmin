@@ -93,7 +93,7 @@ class VaultsController extends Controller
     }
 
     public function view_details($id){
-        $details = VaultsDetail::with(['cash', 'user'])->where('id', $id)->where('deleted_at', NULL)->first();
+        $details = VaultsDetail::with(['cash', 'user'])->where('id', $id)->withTrashed()->first();
         // dd($details);
         return view('vaults.details-read', compact('details'));
     }
@@ -302,7 +302,7 @@ class VaultsController extends Controller
     }
 
     public function print_vault_details($id){
-        $detail = VaultsDetail::with(['cash', 'user'])->where('id', $id)->where('deleted_at', NULL)->first();
+        $detail = VaultsDetail::with(['cash', 'user'])->where('id', $id)->withTrashed()->first();
         return view('vaults.print.print-vaults-details', compact('detail'));
     }
 

@@ -307,7 +307,7 @@
             var $container = $(
                 `<div class="option-select2-custom">
                     <h4>
-                        ${data.idPlanillaprocesada ? data.idPlanillaprocesada : String(data.id).padStart(6, 0)} <br>
+                        ${data.idPlanillaprocesada ? data.idPlanillaprocesada : String(data.id).padStart(6, 0)}${data.aditional ? '-A' : ''} <br>
                         <p style="font-size: 13px; margin-top: 5px">
                             ${data.Afp == 1 ? 'AFP Futuro' : 'AFP Previsión'} - ${data.Periodo} <br>
                             ${new Intl.NumberFormat('es-ES').format(data.total_ganado.toFixed(2))} Bs. - ${data.cantidad_personas} Persona(s)
