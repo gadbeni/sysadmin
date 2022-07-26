@@ -8,6 +8,9 @@
             @php
                 $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
                 $code = $contract->code;
+                if($contract->direccion_administrativa_id != 55 && $contract->direccion_administrativa_id != 13 && $contract->direccion_administrativa->direcciones_tipo_id != 3 && $contract->direccion_administrativa->direcciones_tipo_id != 4){
+                    $signature = null;   
+                }
             @endphp
             <p>
                 <select id="location-id">
@@ -143,7 +146,7 @@
             <div style="margin-top: 80px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
                     {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
-                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b>
+                    <b>{{ setting('firma-autorizada.job-alt') }}</b>
                 </p>
             </div>
         </div>

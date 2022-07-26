@@ -8,13 +8,16 @@
             $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
             $days = array('', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
             $code = $contract->code;
+            if($contract->direccion_administrativa_id != 55 && $contract->direccion_administrativa_id != 13 && $contract->direccion_administrativa->direcciones_tipo_id != 3 && $contract->direccion_administrativa->direcciones_tipo_id != 4){
+                $signature = null;   
+            }
         @endphp
         <div class="page-title">
             <h2>AUTORIZACIÓN DE INICIO DE PROCESO DE CONTRATACIÓN</h2>
         </div>
         <div class="page-body">
             <p>
-                En el marco del D.S. N° 0181, Normas Básicas del Sistema de Administración de Bienes y Servicios, La Resolución Administrativa de Gobernación N&deg; 04/2022 de fecha 01 del mes de febrero del 2022, que desigan al RESPONSABLE DEL PROCESO DE CONTRATACIÓN DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO – RPA, AUTORIZÓ el inicio del proceso de contratación, de acuerdo al siguiente detalle:
+                En el marco del D.S. N° 0181, Normas Básicas del Sistema de Administración de Bienes y Servicios, La Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}, de fecha 12 del mes de julio del 2022, que desigan al RESPONSABLE DEL PROCESO DE CONTRATACIÓN DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO – RPA, AUTORIZÓ el inicio del proceso de contratación, de acuerdo al siguiente detalle:
             </p>
 
             <table width="100%" style="margin-top: 20px" cellspacing="5">
@@ -82,7 +85,7 @@
             <div style="margin-top: 100px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
                     {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
-                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b>
+                    <b>{{ setting('firma-autorizada.job-alt') }}</b>
                 </p>
             </div>
 

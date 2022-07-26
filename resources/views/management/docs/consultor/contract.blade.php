@@ -5,8 +5,6 @@
 @php
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
     $code = $contract->code;
-
-    $signature = \App\Models\Signature::with(['direccion_administrativa'])->where('direccion_administrativa_id', $contract->direccion_administrativa_id)->first();
 @endphp
 
 @section('qr_code')

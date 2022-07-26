@@ -8,6 +8,9 @@
             @php
                 $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
                 $code = $contract->code;
+                if($contract->direccion_administrativa_id != 55 && $contract->direccion_administrativa_id != 13 && $contract->direccion_administrativa->direcciones_tipo_id != 3 && $contract->direccion_administrativa->direcciones_tipo_id != 4){
+                    $signature = null;   
+                }
             @endphp
             <h4 style="text-align: center">
                 INFORME <br>
@@ -25,7 +28,7 @@
                         <td style="width: 100px">:</td>
                         <td>
                             {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
-                            <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b>
+                            <b>{{ setting('firma-autorizada.job-alt') }}</b>
                         </td>
                     </tr>
                     <tr>
@@ -91,7 +94,7 @@
                     De mi mayor consideración: <br> <br>
                     El objeto del presente informe, es la evaluación y recomendación de adjudicación o declaratoria desierta del Proceso de Contratación, en la modalidad contratación menor consultoría, <b>GAD-BENI/MC N° {{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}”</b>. <br> <br>
                     <b>1. ANTECEDENTES</b> <br>
-                    El Gobierno Autónomo Departamental del Beni, a través de la Secretaría de Administración y Finanzas, cuenta con diferentes programas y para la ejecución de los mismos, mediante Resolución Administrativa de Gobernación N° 04/2022, de fecha 01 de febrero del 2022, el Gobernador del Departamento del Beni en el marco de sus funciones, designa como Responsable del Proceso de Contratación al {{ $signature ? $signature->name : setting('firma-autorizada.name') }}, {{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}, en el marco del Decreto Supremo N° 0181 de fecha 28 de junio de 2009. <br> <br>
+                    El Gobierno Autónomo Departamental del Beni, a través de la Secretaría de Administración y Finanzas, cuenta con diferentes programas y para la ejecución de los mismos, mediante Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}, de fecha 12 del mes de julio del 2022, el Gobernador del Departamento del Beni en el marco de sus funciones, designa como Responsable del Proceso de Contratación al {{ $signature ? $signature->name : setting('firma-autorizada.name') }}, {{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}, en el marco del Decreto Supremo N° 0181 de fecha 28 de junio de 2009. <br> <br>
                     La {{ Str::upper($contract->unidad_administrativa->NOMBRE) }}, mediante solicitud de fecha {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }}, requiere la contratación de un Consultor Individual de Línea, para el cargo de {{ Str::upper($contract->cargo->Descripcion) }}, con cargo al Programa: “{{ Str::upper($contract->program->name) }}”, para tal efecto adjunta al requerimiento los Términos de Referencia, Certificación Presupuestaria. <br> <br>
                     <b>2. EVALUACIÓN</b> <br>
                     La evaluación de la documentación presentada por {{ $contract->person->gender == 'masculino' ? 'el' : 'la' }} postulante <b>{{ $contract->person->first_name }} {{ $contract->person->last_name }}</b>, para el Proceso de Contratación <b>“GAD-BENI/MC N° {{ $code }}”</b> para la prestación de servicios de un <b>CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}</b>, se detalla en el siguiente cuadro: <br> <br>
@@ -172,40 +175,16 @@
                     </tr>
                 </table>
                 <hr>
-                <p style="text-align: right">
-                    <select id="location-id">
-                        <option value="Santísima Trinidad">Santísima Trinidad</option>
-                        <option value="Guayaramerín">Guayaramerín</option>
-                        <option value="Riberalta">Riberalta</option>
-                        <option value="Santa Rosa">Santa Rosa</option>
-                        <option value="Reyes">Reyes</option>
-                        <option value="Rurrenabaque">Rurrenabaque</option>
-                        <option value="Yucumo">Yucumo</option>
-                        <option value="San Borja">San Borja</option>
-                        <option value="San Ignacio">San Ignacio</option>
-                        <option value="San Ramón">San Ramón</option>
-                        <option value="San Joaquín">San Joaquín</option>
-                        <option value="Puerto Siles">Puerto Siles</option>
-                        <option value="Santa Ana">Santa Ana</option>
-                        <option value="Magdalena">Magdalena</option>
-                        <option value="Baures">Baures</option>
-                        <option value="Huacaraje">Huacaraje</option>
-                        <option value="Exaltación">Exaltación</option>
-                        <option value="San Javier">San Javier</option>
-                        <option value="Loreto">Loreto</option>
-                        <option value="San Andrés">San Andrés</option>
-                    </select>
-                    <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->date_report)) }} de {{ $months[intval(date('m', strtotime($contract->date_report)))] }} de {{ date('Y', strtotime($contract->date_report)) }}
-                </p>
+                <br>
                 <p style="text-align: justify">
-                    En cumplimiento a lo establecido en el artículo 34 del D.S. 0181 Normas Básicas del Sistema de Administración de Bienes y Servicios y Resolución Administrativa de Gobernación N° 04/2022, de fecha 01 de febrero del 2022, en mi calidad de RPA, apruebo el presente informe Evaluación y sus recomendaciones emitido por los Responsables de Evaluación, para el proceso GAD-BENI/MC N° {{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}.
+                    En cumplimiento a lo establecido en el artículo 34 del D.S. 0181 Normas Básicas del Sistema de Administración de Bienes y Servicios y Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}, de fecha 12 del mes de julio del 2022, en mi calidad de RPA, apruebo el presente informe Evaluación y sus recomendaciones emitido por los Responsables de Evaluación, para el proceso GAD-BENI/MC N° {{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}.
                 </p>
             </div>
 
             <div style="margin-top: 120px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
                     {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
-                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b>
+                    <b>{{ setting('firma-autorizada.job-alt') }}</b>
                 </p>
             </div>
         </div>

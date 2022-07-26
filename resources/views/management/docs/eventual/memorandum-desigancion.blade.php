@@ -3,7 +3,6 @@
 @section('page_title', 'Memoramdum')
 
 @php
-    $signature = \App\Models\Signature::where('direccion_administrativa_id', $contract->direccion_administrativa_id)->where('deleted_at', NULL)->where('status', 1)->first();
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
     $code = $contract->code;
 @endphp

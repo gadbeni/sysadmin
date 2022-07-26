@@ -8,6 +8,9 @@
             @php
                 $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
                 $code = $contract->code;
+                if($contract->direccion_administrativa_id != 55 && $contract->direccion_administrativa_id != 13 && $contract->direccion_administrativa->direcciones_tipo_id != 3 && $contract->direccion_administrativa->direcciones_tipo_id != 4){
+                    $signature = null;   
+                }
             @endphp
             <h2 style="text-align: center">DECLARACIÓN JURADA DE NO INCOMPATIBILIDAD LEGAL</h2>
             <br>
@@ -40,7 +43,7 @@
             <p style="text-align: left">
                 Señor: <br>
                 {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
-                <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b> <br>
+                <b>{{ setting('firma-autorizada.job-alt') }}</b> <br>
                 Presente.–
             </p>
         </div>

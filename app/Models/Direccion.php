@@ -15,7 +15,7 @@ class Direccion extends Model
         return $this->hasMany(unidad::class, 'direccion_id');
     }
 
-    public function type(){
+    public function tipo(){
         return $this->belongsTo(DireccionesTipo::class, 'direcciones_tipo_id');
     }
 }

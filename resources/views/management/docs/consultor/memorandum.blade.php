@@ -7,6 +7,9 @@
         @php
             $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
             $code = $contract->code;
+            if($contract->direccion_administrativa_id != 55 && $contract->direccion_administrativa_id != 13 && $contract->direccion_administrativa->direcciones_tipo_id != 3 && $contract->direccion_administrativa->direcciones_tipo_id != 4){
+                $signature = null;   
+            }
         @endphp
         <div class="page-title">
             <h2>
@@ -45,7 +48,7 @@
                 </div>
                 <div class="border-left">
                     <b>DE:</b> {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
-                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b> <br> <br>
+                    <b>{{ setting('firma-autorizada.job-alt') }}</b> <br> <br>
                     @forelse ($contract->workers as $item)
                         @if (isset($item->person))
                             <b>A:</b> {{ $item->person->first_name }} {{ $item->person->last_name }}<br>
@@ -64,7 +67,7 @@
             <br>
             <p>
                 De mi consideración: <br> <br>
-                En uso de las atribuciones que me confiere el Decreto Supremo 0181 y la Resolución Administrativa de Gobernación N° 04/2022, de fecha 01 de febrero del 2022, bajo la Modalidad de Contratación Menor, transfiero a ustedes como <b>RESPONSABLE DE EVALUACIÓN</b>, el siguiente proceso de contratación: <br>
+                En uso de las atribuciones que me confiere el Decreto Supremo 0181 y la Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}, de fecha 12 del mes de julio del 2022, bajo la Modalidad de Contratación Menor, transfiero a ustedes como <b>RESPONSABLE DE EVALUACIÓN</b>, el siguiente proceso de contratación: <br>
             </p>
             <table border="1" cellspacing="0" cellpadding="10">
                 <thead>
@@ -99,7 +102,7 @@
             <div style="margin-top: 80px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
                     {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
-                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b> <br>
+                    <b>{{ setting('firma-autorizada.job-alt') }}</b> <br>
                 </p>
             </div>
 
