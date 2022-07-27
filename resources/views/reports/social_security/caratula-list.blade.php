@@ -15,22 +15,22 @@
                 </tr>
                 <tr>
                     <td rowspan="2">
-                        @if ($paymentschedule)
-                            {{ $paymentschedule->direccion_administrativa->nombre }}
+                        @if (count($paymentschedules) > 0)
+                            {{ $paymentschedules[0]->direccion_administrativa->nombre }}
                         @else
                             {{ count($planilla) > 0 ? $planilla[0]->direccion_administrativa : '' }}
                         @endif
                     </td>
                     <td rowspan="2">
-                        @if ($paymentschedule)
-                            {{ $paymentschedule->period->name }}
+                        @if (count($paymentschedules) > 0)
+                            {{ $paymentschedules[0]->period->name }}
                         @else
                             {{ count($planilla) > 0 ? $planilla[0]->periodo : '' }}
                         @endif
                     </td>
                     <td rowspan="2">
-                        @if ($paymentschedule)
-                            {{ $paymentschedule->procedure_type->name }}
+                        @if (count($paymentschedules) > 0)
+                            {{ $paymentschedules[0]->procedure_type->name }}
                         @else
                             {{ count($planilla) > 0 ? $planilla[0]->tipo_planilla : '' }}
                         @endif
@@ -44,50 +44,114 @@
                     <td><b>Previsión</b></td>
                 </tr>
                     <td>
-                        @if ($paymentschedule)
-                            {{ number_format($paymentschedule->details->where('contract.person.afp', 1)->sum('partial_salary') + $paymentschedule->details->where('contract.person.afp', 1)->sum('seniority_bonus_amount'), 2, ',', '.') }}
+                        @if (count($paymentschedules) > 0)
+                            @php
+                                $total_ganado_futuro = 0;
+                                $total_ganado_prevision = 0;
+                                $total_aporte_futuro = 0;
+                                $total_aporte_prevision = 0;
+                                $total_aporte_cc = 0;
+                                $total_personas_futuro = 0;
+                                $total_personas_prevision = 0;
+
+                                $check_payment_afp = collect();
+                                $check_payment_cc = collect();
+                                $payroll_payments_afp = collect();
+                                $payroll_payments_cc = collect();
+
+                                foreach($paymentschedules as $paymentschedule){
+                                    $total_ganado_futuro += $paymentschedule->details->where('contract.person.afp', 1)->sum('partial_salary') + $paymentschedule->details->where('contract.person.afp', 1)->sum('seniority_bonus_amount');
+                                    $total_ganado_prevision += $paymentschedule->details->where('contract.person.afp', 2)->sum('partial_salary') + $paymentschedule->details->where('contract.person.afp', 2)->sum('seniority_bonus_amount');
+                                    $total_aporte_futuro += $paymentschedule->details->where('contract.person.afp', 1)->sum('common_risk') + $paymentschedule->details->where('contract.person.afp', 1)->sum('solidary_employer') + $paymentschedule->details->where('contract.person.afp', 1)->sum('housing_employer') + $paymentschedule->details->where('contract.person.afp', 1)->sum('labor_total');
+                                    $total_aporte_prevision += $paymentschedule->details->where('contract.person.afp', 2)->sum('common_risk') + $paymentschedule->details->where('contract.person.afp', 2)->sum('solidary_employer') + $paymentschedule->details->where('contract.person.afp', 2)->sum('housing_employer') + $paymentschedule->details->where('contract.person.afp', 2)->sum('labor_total');
+                                    $total_aporte_cc += ($paymentschedule->details->sum('partial_salary') + $paymentschedule->details->sum('seniority_bonus_amount')) *0.1;
+                                    $total_personas_futuro += $paymentschedule->details->where('contract.person.afp', 1)->count();
+                                    $total_personas_prevision += $paymentschedule->details->where('contract.person.afp', 2)->count();
+
+                                    // Pagos de cheques afp
+                                    foreach ($paymentschedule->check_payments as $check_payment){
+                                        if(strpos(strtolower($check_payment->beneficiary->type->name), 'salud') === false && ($check_payment->afp == $afp || !$afp)){
+                                            $check_payment_afp->push([
+                                                'number' => $check_payment->number,
+                                                'amount' => $check_payment->amount,
+                                                'beneficiary' => $check_payment->beneficiary->full_name
+                                            ]);
+                                        }
+
+                                        if(strpos(strtolower($check_payment->beneficiary->type->name), 'salud') !== false){
+                                            $check_payment_cc->push([
+                                                'number' => $check_payment->number,
+                                                'amount' => $check_payment->amount,
+                                                'beneficiary' => $check_payment->beneficiary->full_name
+                                            ]);
+                                        }
+                                    }
+
+                                    // Formularios FPC
+                                    foreach($paymentschedule->payroll_payments as $item){
+                                        if(($item->afp == $afp || !$afp) && $item->fpc_number){
+                                            $payroll_payments_afp->push([
+                                                'fpc_number' => $item->fpc_number,
+                                                'date_payment_afp' => date('d/m/Y', strtotime($item->date_payment_afp)),
+                                                'afp' => $item->afp == 1 ? 'AFP Futuro' : 'AFP Previsión'
+                                            ]);
+                                        }
+
+                                        if ($item->afp == $afp || !$afp){
+                                            $payroll_payments_cc->push([
+                                                'deposit_number' => $item->deposit_number,
+                                                'date_payment_cc' => $item->date_payment_cc ? date('d/m/Y', strtotime($item->date_payment_cc)) : '',
+                                                'gtc_number' => $item->gtc_number,
+                                                'recipe_number' => $item->recipe_number,
+                                                'afp' => $item->afp == 1 ? 'AFP Futuro' : 'AFP Previsión'
+                                            ]);
+                                        }
+                                    }
+                                }
+                            @endphp
+                            {{ number_format($total_ganado_futuro, 2, ',', '.') }}
                         @else
                             {{ $planilla->where('afp', 1)->first() ? number_format($planilla->where('afp', 1)->first()->total_ganado, 2, ',', '.') : '0.00' }}
                         @endif
                     </td>
                     <td>
-                        @if ($paymentschedule)
-                            {{ number_format($paymentschedule->details->where('contract.person.afp', 2)->sum('partial_salary') + $paymentschedule->details->where('contract.person.afp', 2)->sum('seniority_bonus_amount'), 2, ',', '.') }}
+                        @if (count($paymentschedules) > 0)
+                            {{ number_format($total_ganado_prevision, 2, ',', '.') }}
                         @else
                             {{ $planilla->where('afp', 2)->first() ? number_format($planilla->where('afp', 2)->first()->total_ganado, 2, ',', '.') : '0.00' }}
                         @endif
                     </td>
                     <td>
-                        @if ($paymentschedule)
-                            {{ number_format($paymentschedule->details->where('contract.person.afp', 1)->sum('common_risk') + $paymentschedule->details->where('contract.person.afp', 1)->sum('solidary_employer') + $paymentschedule->details->where('contract.person.afp', 1)->sum('housing_employer') + $paymentschedule->details->where('contract.person.afp', 1)->sum('labor_total'), 2, ',', '.') }}
+                        @if (count($paymentschedules) > 0)
+                            {{ number_format($total_aporte_futuro, 2, ',', '.') }}
                         @else
-                            {{-- {{ $planilla->where('afp', 1)->first() ? number_format($planilla->where('afp', 1)->first()->total_ganado, 2, ',', '.') : '0.00' }} --}}
+                            {{ $planilla->where('afp', 1)->first() ? number_format($planilla->where('afp', 1)->first()->total_ganado, 2, ',', '.') : '0.00' }}
                         @endif
                     </td>
                     <td>
-                        @if ($paymentschedule)
-                        {{ number_format($paymentschedule->details->where('contract.person.afp', 2)->sum('common_risk') + $paymentschedule->details->where('contract.person.afp', 2)->sum('solidary_employer') + $paymentschedule->details->where('contract.person.afp', 2)->sum('housing_employer') + $paymentschedule->details->where('contract.person.afp', 2)->sum('labor_total'), 2, ',', '.') }}
+                        @if (count($paymentschedules) > 0)
+                            {{ number_format($total_aporte_prevision, 2, ',', '.') }}
                         @else
-                            {{-- {{ $planilla->where('afp', 2)->first() ? number_format($planilla->where('afp', 2)->first()->total_ganado, 2, ',', '.') : '0.00' }} --}}
+                            {{ $planilla->where('afp', 2)->first() ? number_format($planilla->where('afp', 2)->first()->total_ganado, 2, ',', '.') : '0.00' }}
                         @endif
                     </td>
                     <td>
-                        @if ($paymentschedule)
-                            {{ number_format(($paymentschedule->details->sum('partial_salary') + $paymentschedule->details->sum('seniority_bonus_amount')) *0.1, 2, ',', '.') }}
+                        @if (count($paymentschedules) > 0)
+                            {{ number_format($total_aporte_cc, 2, ',', '.') }}
                         @else
-                            {{-- {{ $planilla->where('afp', 1)->first() ? number_format($planilla->where('afp', 1)->first()->total_ganado, 2, ',', '.') : '0.00' }} --}}
+                            {{ $planilla->where('afp', 1)->first() ? number_format($planilla->where('afp', 1)->first()->total_ganado, 2, ',', '.') : '0.00' }}
                         @endif
                     </td>
                     <td>
-                        @if ($paymentschedule)
-                            {{ $paymentschedule->details->where('contract.person.afp', 1)->count() }}
+                        @if (count($paymentschedules) > 0)
+                            {{ $total_personas_futuro }}
                         @else
                             {{ $planilla->where('afp', 1)->first() ? $planilla->where('afp', 1)->first()->n_personas : 0 }}
                         @endif
                     </td>
                     <td>
-                        @if ($paymentschedule)
-                            {{ $paymentschedule->details->where('contract.person.afp', 2)->count() }}
+                        @if (count($paymentschedules) > 0)
+                            {{ $total_personas_prevision }}
                         @else
                             {{ $planilla->where('afp', 2)->first() ? $planilla->where('afp', 2)->first()->n_personas : 0 }}
                         @endif
@@ -109,19 +173,17 @@
                 @php
                     $cont = 0;
                 @endphp
-                @if ($paymentschedule)
-                    @forelse ($paymentschedule->check_payments as $check_payment)
-                        @if (strpos(strtolower($check_payment->beneficiary->type->name), 'salud') === false && ($check_payment->afp == $afp || !$afp))
-                            @php
-                                $cont++;
-                            @endphp
-                            <tr>
-                                <td>{{ $cont }}</td>
-                                <td>{{ $check_payment->number }}</td>
-                                <td>{{ number_format($check_payment->amount, 2, ',', '.') }}</td>
-                                <td>{{ $check_payment->beneficiary->full_name }}</td>
-                            </tr>
-                        @endif
+                @if (count($paymentschedules) > 0)
+                    @forelse ($check_payment_afp->unique() as $item)
+                        @php
+                            $cont++;
+                        @endphp
+                        <tr>
+                            <td>{{ $cont }}</td>
+                            <td>{{ $item['number'] }}</td>
+                            <td>{{ number_format($item['amount'], 2, ',', '.') }}</td>
+                            <td>{{ $item['beneficiary'] }}</td>
+                        </tr>
                     @empty
                         <tr>
                             <td colspan="4">No hay resultados</td>
@@ -165,19 +227,17 @@
                 @php
                     $cont = 0;
                 @endphp
-                @if ($paymentschedule)
-                    @forelse ($paymentschedule->payroll_payments as $item)
-                        @if ($item->afp == $afp || !$afp)
-                            @php
-                                $cont++;
-                            @endphp
-                                <tr>
-                                    <td>{{ $cont }}</td>
-                                    <td>{{ $item->fpc_number }}</td>
-                                    <td>{{ date('d/m/Y', strtotime($item->date_payment_afp)) }}</td>
-                                    <td>{{ $item->afp == 1 ? 'AFP Futuro' : 'AFP Previsión' }}</td>
-                                </tr>
-                        @endif
+                @if (count($paymentschedules) > 0)
+                    @forelse ($payroll_payments_afp->unique() as $item)
+                        @php
+                            $cont++;
+                        @endphp
+                        <tr>
+                            <td>{{ $cont }}</td>
+                            <td>{{ $item['fpc_number'] }}</td>
+                            <td>{{ $item['date_payment_afp'] }}</td>
+                            <td>{{ $item['afp'] }}</td>
+                        </tr>
                     @empty
                         <tr>
                             <td colspan="4">No hay resultados</td>
@@ -221,19 +281,17 @@
                 @php
                     $cont = 0;
                 @endphp
-                @if ($paymentschedule)
-                    @forelse ($paymentschedule->check_payments as $check_payment)
-                        @if (strpos(strtolower($check_payment->beneficiary->type->name), 'salud') !== false)
-                            @php
-                                $cont++;
-                            @endphp
-                            <tr>
-                                <td>{{ $cont }}</td>
-                                <td>{{ $check_payment->number }}</td>
-                                <td>{{ number_format($check_payment->amount, 2, ',', '.') }}</td>
-                                <td>{{ $check_payment->beneficiary->full_name }}</td>
-                            </tr>
-                        @endif
+                @if (count($paymentschedules) > 0)
+                    @forelse ($check_payment_cc->unique() as $item)
+                        @php
+                            $cont++;
+                        @endphp
+                        <tr>
+                            <td>{{ $cont }}</td>
+                            <td>{{ $item['number'] }}</td>
+                            <td>{{ number_format($item['amount'], 2, ',', '.') }}</td>
+                            <td>{{ $item['beneficiary'] }}</td>
+                        </tr>
                     @empty
                         <tr>
                             <td colspan="4">No hay resultados</td>
@@ -279,21 +337,19 @@
                 @php
                     $cont = 0;
                 @endphp
-                @if ($paymentschedule)
-                    @forelse ($paymentschedule->payroll_payments as $item)
-                        @if ($item->afp == $afp || !$afp)
-                            @php
-                                $cont++;
-                            @endphp
-                            <tr>
-                                <td>{{ $cont }}</td>
-                                <td>{{ $item->deposit_number }}</td>
-                                <td>{{ $item->date_payment_cc ? date('d/m/Y', strtotime($item->date_payment_cc)) : '' }}</td>
-                                <td>{{ $item->gtc_number }}</td>
-                                <td>{{ $item->recipe_number }}</td>
-                                <td>{{ $item->afp == 1 ? 'AFP Futuro' : 'AFP Previsión' }}</td>
-                            </tr>
-                        @endif
+                @if (count($paymentschedules) > 0)
+                    @forelse ($payroll_payments_cc->unique() as $item)
+                        @php
+                            $cont++;
+                        @endphp
+                        <tr>
+                            <td>{{ $cont }}</td>
+                            <td>{{ $item['deposit_number'] }}</td>
+                            <td>{{ $item['date_payment_cc'] }}</td>
+                            <td>{{ $item['gtc_number'] }}</td>
+                            <td>{{ $item['recipe_number'] }}</td>
+                            <td>{{ $item['afp'] }}</td>
+                        </tr>
                     @empty
                         <tr>
                             <td colspan="6">No hay resultados</td>

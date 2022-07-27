@@ -708,15 +708,14 @@ class ReportsController extends Controller
                         ->groupBy('p.Afp')->get();
 
                     
-        $paymentschedule = Paymentschedule::with(['details.contract.person' => function($query) use ($afp){
+        $paymentschedules = Paymentschedule::with(['details.contract.person' => function($query) use ($afp){
                                 $query->whereRaw($afp ? "afp = ".$afp : 1);
                             }, 'check_payments', 'payroll_payments', 'procedure_type'])->whereHas('details.contract.person', function($query) use ($afp){
                                 $query->whereRaw($afp ? "afp = ".$afp : 1);
                             })
-                            ->where('id', intval($planilla_id))
-                            ->whereRaw($centralize ? 'centralize_code = "'.str_replace('-a', '', strtolower($planilla_id)).'"' : 1)
-                            ->where('deleted_at', NULL)->first();
-        // dd($paymentschedule->details);
+                            ->whereRaw($centralize ? 'centralize_code = "'.str_replace('-a', '', strtolower($planilla_id)).'"' : 'id = '.intval($planilla_id))
+                            ->where('deleted_at', NULL)->get();
+        // dd($paymentschedules);
 
         // Obtener detalle de pago
         $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('idPlanillaprocesada', $planilla_id)->whereRaw($afp ? 'Afp = '.$afp : 1)->get();
@@ -734,9 +733,9 @@ class ReportsController extends Controller
         })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
 
         if($request->type == 'print'){
-            return view('reports.social_security.caratula-list-print', compact('planilla_id', 'planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes', 'paymentschedule', 'afp'));
+            return view('reports.social_security.caratula-list-print', compact('planilla_id', 'planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes', 'paymentschedules', 'afp'));
         }else{
-            return view('reports.social_security.caratula-list', compact('planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes', 'paymentschedule', 'afp'));
+            return view('reports.social_security.caratula-list', compact('planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes', 'paymentschedules', 'afp'));
         }
     }
 
