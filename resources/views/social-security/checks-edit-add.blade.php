@@ -67,7 +67,13 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="amount">N&deg; de cheque</label>
+                                    <label for="program_id">Programa/Proyecto</label>
+                                    <select name="program_id" id="select-program_id" class="form-control">
+                                        <option value="">Todos</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="number">N&deg; de cheque</label>
                                     <input type="text" class="form-control" name="number" value="{{ $type == 'edit' ? $data->number : '' }}" required />
                                 </div>
                                 <div class="form-group col-md-6">
@@ -178,6 +184,46 @@
                             Cantidad de personas: <b>${planillaSelect.cantidad_personas}</b> <br>
                             Periodo: <b>${planillaSelect.Periodo}</b> <br>
                             Monto total: <b>${new Intl.NumberFormat('es-ES').format(planillaSelect.total_ganado.toFixed(2))} Bs.</b>
+                        `);
+
+                        // console.log(planillaSelect.programs)
+                        if(planillaSelect.programs){
+                            $('#select-program_id').html(`<option value="">Todos</option>`);
+
+                            // Eliminar duplicados
+                            let hash = {};
+                            programs = planillaSelect.programs.filter(o => hash[o.id] ? false : hash[o.id] = true);
+
+                            programs.map(program => {
+                                $('#select-program_id').append(`
+                                    <option value="${program.id}">${program.name}</option>
+                                `);
+                            });
+                        }
+                    }
+                });
+
+                // Filtrar por programas
+                $('#select-program_id').change(function(){
+                    var id = $(this).val();
+                    if(planillaSelect){
+                        var cantidad_personas = 0;
+                        var total_ganado = 0;
+                        planillaSelect.details.map(item => {
+                            if(id){
+                                if(id == item.contract.program_id){
+                                    cantidad_personas++;
+                                    total_ganado += parseFloat(item.partial_salary) + parseFloat(item.seniority_bonus_amount);
+                                }
+                            }else{
+                                cantidad_personas++;
+                                total_ganado += parseFloat(item.partial_salary) + parseFloat(item.seniority_bonus_amount);
+                            }
+                        });
+                        $('#alert-details').html(`
+                            Cantidad de personas: <b>${cantidad_personas}</b> <br>
+                            Periodo: <b>${planillaSelect.Periodo}</b> <br>
+                            Monto total: <b>${new Intl.NumberFormat('es-ES').format(total_ganado.toFixed(2))} Bs.</b>
                         `);
                     }
                 });
@@ -339,7 +385,7 @@
             var $container = $(
                 `<div class="option-select2-custom">
                     <h4>
-                        ${data.idPlanillaprocesada ? data.idPlanillaprocesada : String(data.id).padStart(6, 0)} <br>
+                        ${data.idPlanillaprocesada ? data.idPlanillaprocesada : String(data.id).padStart(6, 0)}${data.aditional ? '-A' : ''} <br>
                         <p style="font-size: 13px; margin-top: 5px">
                             ${data.Afp == 1 ? 'AFP Futuro' : 'AFP Previsión'} - ${data.Periodo} <br>
                             ${new Intl.NumberFormat('es-ES').format(data.total_ganado.toFixed(2))} Bs. - ${data.cantidad_personas} Persona(s)

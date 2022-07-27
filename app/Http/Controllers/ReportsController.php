@@ -699,6 +699,7 @@ class ReportsController extends Controller
         // dd($request->all());
         $planilla_id = $request->planilla;
         $afp = $request->afp;
+        $centralize = str_contains(strtolower($planilla_id), '-c') ? true : false;
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')
                         ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
                         ->where('p.idPlanillaprocesada', $planilla_id)
@@ -712,7 +713,8 @@ class ReportsController extends Controller
                             }, 'check_payments', 'payroll_payments', 'procedure_type'])->whereHas('details.contract.person', function($query) use ($afp){
                                 $query->whereRaw($afp ? "afp = ".$afp : 1);
                             })
-                            ->where('id', $planilla_id)
+                            ->where('id', intval($planilla_id))
+                            ->whereRaw($centralize ? 'centralize_code = "'.str_replace('-a', '', strtolower($planilla_id)).'"' : 1)
                             ->where('deleted_at', NULL)->first();
         // dd($paymentschedule->details);
 

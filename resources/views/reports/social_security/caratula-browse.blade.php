@@ -18,7 +18,7 @@
                                 @csrf
                                 <input type="hidden" name="type">
                                 <div class="form-group col-md-12">
-                                    <input type="number" name="planilla" class="form-control" required>
+                                    <input type="text" name="planilla" class="form-control" required>
                                 </div>
                                 <div class="form-group col-md-12">
                                     <select name="afp" class="form-control">

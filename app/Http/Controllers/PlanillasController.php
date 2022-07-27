@@ -163,7 +163,7 @@ class PlanillasController extends Controller
                             SUM(ph.Riesgo_Comun) as total_riesgo_comun')
                         ->get();
 
-            $paymentschedule = Paymentschedule::with(['details.contract.person', 'period'])
+            $paymentschedule = Paymentschedule::with(['details.contract.person', 'details.contract.program', 'period'])
                                         ->whereHas('details', function($q){
                                             $q->where('deleted_at', NULL);
                                         })
@@ -173,6 +173,13 @@ class PlanillasController extends Controller
 
             foreach ($paymentschedule as $item) {
                 foreach ($item->details->groupBy('contract.person.afp') as $key => $value) {
+                    
+                    // Obtener proyectos de los contratos
+                    $programs = collect();
+                    foreach ($value as $detail) {
+                        $programs->push(["id" => $detail->contract->program->id, "name" => $detail->contract->program->name]);
+                    }
+
                     $data->push([
                         'id' => $item->id,
                         'Periodo' => $item->period->name,
@@ -181,7 +188,9 @@ class PlanillasController extends Controller
                         'total_ganado' => $value->sum('partial_salary') + $value->sum('seniority_bonus_amount'),
                         'Afp' => $key,
                         'total_riesgo_comun' => $value->sum('common_risk'),
-                        'aditional' => $item->aditional
+                        'aditional' => $item->aditional,
+                        'details' => $value,
+                        'programs' => $programs
                     ]);
                 }
             }

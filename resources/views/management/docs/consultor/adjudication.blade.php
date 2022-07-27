@@ -137,12 +137,10 @@
                     </td>
                 </tr>
             </table>
-
             <p>
                 Sin otro particular, lo saludo a usted con toda atención. <br> <br>
                 Atentamente,
             </p>
-
             <div style="margin-top: 80px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
                     {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
