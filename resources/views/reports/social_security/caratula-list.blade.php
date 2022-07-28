@@ -60,15 +60,16 @@
                                 $payroll_payments_cc = collect();
 
                                 foreach($paymentschedules as $paymentschedule){
-                                    $total_ganado_futuro += $paymentschedule->details->where('contract.person.afp', 1)->sum('partial_salary') + $paymentschedule->details->where('contract.person.afp', 1)->sum('seniority_bonus_amount');
-                                    $total_ganado_prevision += $paymentschedule->details->where('contract.person.afp', 2)->sum('partial_salary') + $paymentschedule->details->where('contract.person.afp', 2)->sum('seniority_bonus_amount');
-                                    $total_aporte_futuro += $paymentschedule->details->where('contract.person.afp', 1)->sum('common_risk') + $paymentschedule->details->where('contract.person.afp', 1)->sum('solidary_employer') + $paymentschedule->details->where('contract.person.afp', 1)->sum('housing_employer') + $paymentschedule->details->where('contract.person.afp', 1)->sum('labor_total');
-                                    $total_aporte_prevision += $paymentschedule->details->where('contract.person.afp', 2)->sum('common_risk') + $paymentschedule->details->where('contract.person.afp', 2)->sum('solidary_employer') + $paymentschedule->details->where('contract.person.afp', 2)->sum('housing_employer') + $paymentschedule->details->where('contract.person.afp', 2)->sum('labor_total');
+                                    $total_ganado_futuro += $paymentschedule->details->where('afp', 1)->sum('partial_salary') + $paymentschedule->details->where('afp', 1)->sum('seniority_bonus_amount');
+                                    $total_ganado_prevision += $paymentschedule->details->where('afp', 2)->sum('partial_salary') + $paymentschedule->details->where('afp', 2)->sum('seniority_bonus_amount');
+                                    $total_aporte_futuro += $paymentschedule->details->where('afp', 1)->sum('common_risk') + $paymentschedule->details->where('afp', 1)->sum('solidary_employer') + $paymentschedule->details->where('afp', 1)->sum('housing_employer') + $paymentschedule->details->where('afp', 1)->sum('labor_total');
+                                    $total_aporte_prevision += $paymentschedule->details->where('afp', 2)->sum('common_risk') + $paymentschedule->details->where('afp', 2)->sum('solidary_employer') + $paymentschedule->details->where('afp', 2)->sum('housing_employer') + $paymentschedule->details->where('afp', 2)->sum('labor_total');
                                     $total_aporte_cc += ($paymentschedule->details->sum('partial_salary') + $paymentschedule->details->sum('seniority_bonus_amount')) *0.1;
-                                    $total_personas_futuro += $paymentschedule->details->where('contract.person.afp', 1)->count();
-                                    $total_personas_prevision += $paymentschedule->details->where('contract.person.afp', 2)->count();
+                                    $total_personas_futuro += $paymentschedule->details->where('afp', 1)->count();
+                                    $total_personas_prevision += $paymentschedule->details->where('afp', 2)->count();
 
                                     // Pagos de cheques afp
+                                    // dd($paymentschedule->check_payments);
                                     foreach ($paymentschedule->check_payments as $check_payment){
                                         if(strpos(strtolower($check_payment->beneficiary->type->name), 'salud') === false && ($check_payment->afp == $afp || !$afp)){
                                             $check_payment_afp->push([

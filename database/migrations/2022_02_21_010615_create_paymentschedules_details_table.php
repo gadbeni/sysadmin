@@ -18,6 +18,7 @@ class CreatePaymentschedulesDetailsTable extends Migration
             $table->foreignId('paymentschedule_id')->nullable()->constrained('paymentschedules');
             $table->foreignId('contract_id')->nullable()->constrained('contracts');
             $table->smallInteger('item')->nullable();
+            $table->smallInteger('afp')->nullable();
             $table->smallInteger('worked_days')->nullable();
             $table->decimal('salary', 10, 5)->nullable();
             $table->decimal('partial_salary', 10, 5)->nullable();

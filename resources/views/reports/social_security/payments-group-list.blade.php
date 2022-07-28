@@ -145,7 +145,7 @@
                         @endforelse
 
                         @foreach ($planillas_alt->groupBy('paymentschedule_id') as $item)
-                            @foreach ($item->groupBy('contract.person.afp') as $key => $afp)
+                            @foreach ($item->groupBy('afp') as $key => $afp)
                                 @php
                                     $paymentschedule = $afp[0]->paymentschedule;
                                     $programs = $paymentschedule->details->groupBy('contract.program_id');

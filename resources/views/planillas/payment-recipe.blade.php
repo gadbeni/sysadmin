@@ -88,7 +88,7 @@
             </tr>
             <tr>
                 <td><b>AFP</b></td>
-                <td style="border: 1px solid #ddd">{{ ($planilla ? $planilla->Afp : $payment->paymentschedulesdetail->contract->person->afp == 1) ? 'Futuro' : 'Previsión' }}</td>
+                <td style="border: 1px solid #ddd">{{ ($planilla ? $planilla->Afp : $payment->paymentschedulesdetail->afp == 1) ? 'Futuro' : 'Previsión' }}</td>
                 <td><b>ITEM</b></td>
                 <td style="border: 1px solid #ddd">{{ $planilla ? $planilla->ITEM : $payment->paymentschedulesdetail->item }}</td>
             </tr>

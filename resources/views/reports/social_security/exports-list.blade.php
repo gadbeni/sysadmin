@@ -1,6 +1,6 @@
 
 <div class="col-md-12 text-right">
-    @if (count($data))
+    @if ($data)
         {{-- <button type="button" onclick="report_export('excel')" class="btn btn-success"><i class="glyphicon glyphicon-cloud-download"></i> Excel</button> --}}
         <button type="button" onclick="report_export('excel', '{{ $type_report }}')" class="btn btn-success"><i class="glyphicon glyphicon-cloud-download"></i> Excel</button>
     @endif
@@ -51,7 +51,7 @@
                             @php
                                 $cont = 1;
                             @endphp
-                            @foreach($data as $item)
+                            @foreach($data->details as $item)
                                 @php
                                 // dd($item);
                                     $period = \App\Models\Period::findOrFail($item->paymentschedule->period_id);
@@ -133,15 +133,43 @@
                             <tbody>
                                 @php
                                     $cont = 1;
-                                    $data = $group_by ? $data->groupBy('contract.program.name') : ['' => $data];
+                                    if($group_by == 1){
+                                        $data = $data->details->groupBy('contract.program_id');
+                                        $data = $data->map(function($item, $key){
+                                            $program = \App\Models\Program::find($key);
+                                            return [
+                                                'id' => $program->id,
+                                                'programatic_category' => $program->programatic_category,
+                                                'name' => $program->name,
+                                                'direccion_administrativa' =>$program->direccion_administrativa->nombre,
+                                                'details' => $item
+                                            ];
+                                        });
+                                        $data = $data->sortBy('order');
+                                    }elseif($group_by == 2){
+                                        $data = $data->details->groupBy('paymentschedule.direccion_administrativa_id');
+                                        $data = $data->map(function($item, $key){
+                                            $da = \App\Models\Direccion::where('id', $key)->first();
+                                            return [
+                                                'id' => $da->id,
+                                                'name' => $da->nombre,
+                                                'order' => $da->orden,
+                                                'details' => $item
+                                            ];
+                                        });
+                                        $data = $data->sortBy('order');
+                                    }else{
+                                        $data = ['' => $data->details];
+                                    }
+                                    // dd($data);
                                 @endphp
-                                @foreach ($data as $key => $value)
+                                @foreach ($data as $value)
                                     @if ($group_by)
                                         <tr>
-                                            <td colspan="23"><b>{{ $key }}</b></td>
+                                            <td colspan="23"><b>{{ $value['name'] }}</b></td>
                                         </tr>
                                     @endif
-                                    @foreach($value as $item)
+                                    @foreach($value['details'] as $item)
                                         <tr>
                                             <td>{{ $cont }}</td>
                                             <td>CI</td>
@@ -253,15 +281,43 @@
                             <tbody>
                                 @php
                                     $cont = 1;
-                                    $data = $group_by ? $data->groupBy('contract.program.name') : ['' => $data];
+                                    if($group_by == 1){
+                                        $data = $data->details->groupBy('contract.program_id');
+                                        $data = $data->map(function($item, $key){
+                                            $program = \App\Models\Program::find($key);
+                                            return [
+                                                'id' => $program->id,
+                                                'programatic_category' => $program->programatic_category,
+                                                'name' => $program->name,
+                                                'direccion_administrativa' =>$program->direccion_administrativa->nombre,
+                                                'details' => $item
+                                            ];
+                                        });
+                                        $data = $data->sortBy('order');
+                                    }elseif($group_by == 2){
+                                        $data = $data->details->groupBy('paymentschedule.direccion_administrativa_id');
+                                        $data = $data->map(function($item, $key){
+                                            $da = \App\Models\Direccion::where('id', $key)->first();
+                                            return [
+                                                'id' => $da->id,
+                                                'name' => $da->nombre,
+                                                'order' => $da->orden,
+                                                'details' => $item
+                                            ];
+                                        });
+                                        $data = $data->sortBy('order');
+                                    }else{
+                                        $data = ['' => $data->details];
+                                    }
+                                    // dd($data);
                                 @endphp
-                                @foreach ($data as $key => $value)
+                                @foreach ($data as $value)
                                     @if ($group_by)
                                         <tr>
-                                            <td colspan="23"><b>{{ $key }}</b></td>
+                                            <td colspan="23"><b>{{ $value['name'] }}</b></td>
                                         </tr>
                                     @endif
-                                    @foreach($value->groupBy('contract.person.ci') as $item)
+                                    @foreach($value['details']->groupBy('contract.person.ci') as $item)
                                         <tr>
                                             <td>{{ $cont }}</td>
                                             <td>CI</td>

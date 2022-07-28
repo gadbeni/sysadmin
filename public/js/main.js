@@ -70,7 +70,7 @@ function getPlanillas(url){
                     total_riesgo_comun += parseFloat(item.common_risk);
                     people++;
                     periodo = item.paymentschedule.period.name;
-                    $('#form input[name="afp_alt"]').val(item.contract.person.afp);
+                    $('#form input[name="afp_alt"]').val(item.afp);
                 });
 
                 $('#select-centralize_code').html('<option value="">Todos</option>');

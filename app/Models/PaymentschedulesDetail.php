@@ -14,6 +14,7 @@ class PaymentschedulesDetail extends Model
     protected $fillable = [
         'paymentschedule_id',
         'contract_id',
+        'afp',
         'item',
         'worked_days',
         'salary',

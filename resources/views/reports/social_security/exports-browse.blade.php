@@ -56,8 +56,12 @@
                                         <option value="2">Previsión</option>
                                     </select>
                                 </div>
-                                <div class="form-group text-right">
-                                    <label class="checkbox-inline"><input type="checkbox" name="group_by" value="1">Agrupar por programa/proyecto</label>
+                                <div class="form-group">
+                                    <select name="group_by" class="form-control select2">
+                                        {{-- <option value="">Sin agrupar</option> --}}
+                                        <option value="2">Agrupar por Dirección Administrativa</option>
+                                        <option value="1">Agrupar por programa/proyecto</option>
+                                    </select>
                                 </div>
                                 <div class="text-right">
                                     <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>

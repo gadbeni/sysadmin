@@ -61,7 +61,7 @@
                                         $label = 'default';
                                         break;
                                 }
-                                $details = $item->details->groupBy('contract.person.afp');
+                                $details = $item->details->groupBy('afp');
                                 $afp_total = 0;
                             @endphp
                             @foreach ($details as $key => $detail)

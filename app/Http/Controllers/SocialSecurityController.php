@@ -108,7 +108,7 @@ class SocialSecurityController extends Controller
                                                     ->where('deleted_at', NULL)->where('deleted_at', NULL)->get();
                     
                     foreach ($paymentschedules as $item) {
-                        $amount_total = $item->details->where('contract.person.afp', $request->afp)->sum('partial_salary') + $item->details->where('contract.person.afp', $request->afp)->sum('seniority_bonus_amount');
+                        $amount_total = $item->details->where('afp', $request->afp)->sum('partial_salary') + $item->details->where('afp', $request->afp)->sum('seniority_bonus_amount');
                         $amount = 0;
                         if($beneficiary->type->id == 4 || $beneficiary->type->id == 5 || $beneficiary->type->id == 6){
                             $aporte_patronal = ($amount_total * 0.05) + $item->common_risk;
@@ -380,11 +380,11 @@ class SocialSecurityController extends Controller
                     // dd($paymentschedules);
                     $amount_total = 0;
                     foreach ($paymentschedules as $item) {
-                        $amount_total += $item->details->where('contract.person.afp', $request->afp)->sum('partial_salary') + $item->details->where('contract.person.afp', $request->afp)->sum('seniority_bonus_amount');
+                        $amount_total += $item->details->where('afp', $request->afp)->sum('partial_salary') + $item->details->where('afp', $request->afp)->sum('seniority_bonus_amount');
                     }
                     
                     foreach ($paymentschedules as $item) {
-                        $amount = $item->details->where('contract.person.afp', $request->afp)->sum('partial_salary') + $item->details->where('contract.person.afp', $request->afp)->sum('seniority_bonus_amount');
+                        $amount = $item->details->where('afp', $request->afp)->sum('partial_salary') + $item->details->where('afp', $request->afp)->sum('seniority_bonus_amount');
                         
                         $porcentaje = ($amount * 100) / $amount_total;
                         PayrollPayment::create([

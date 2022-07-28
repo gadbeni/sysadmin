@@ -59,7 +59,7 @@
                                         <b><small>N&deg;:</small></b> {{ $row->number }} <br>
                                         <b>{{ $row->paymentschedule->procedure_type->name.' - '.$row->paymentschedule->period->name }}</b><br>
                                         <b><small>Planilla:</small></b> {{ str_pad($row->paymentschedule->id, 6, "0", STR_PAD_LEFT).' - '.($row->afp == 1 ? 'Futuro' : 'Previsión') }} <br>
-                                        <b><small>Monto:</small></b> {{ number_format($row->amount, 2, ',', '.') }} <br>
+                                        <b><small>Monto:</small></b> <span class="{{ $row->amount <= 0 ? 'text-danger' : '' }}">{{ number_format($row->amount, 2, ',', '.') }}</span> <br>
                                         {!! $status !!}
                                     </p>
                                 @elseif($row->spreadsheet)
@@ -91,9 +91,9 @@
                             </td>
                             <td>
                                 <div class="no-sort no-click bread-actions text-right">
-                                    <a href="#" title="Ver" class="btn btn-sm btn-dark btn-derivation" data-id="{{ $row->id }}" data-toggle="modal" data-target="#modal-derivation">
+                                    {{-- <a href="#" title="Ver" class="btn btn-sm btn-dark btn-derivation" data-id="{{ $row->id }}" data-toggle="modal" data-target="#modal-derivation">
                                         <i class="voyager-move"></i> <span class="hidden-xs hidden-sm">Derivación</span>
-                                    </a>
+                                    </a> --}}
                                     <a href="{{ route('social-security.checks.show', ['check' => $row->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
                                         <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                                     </a>

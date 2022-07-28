@@ -2,6 +2,7 @@
 
 Migraciones
     - ejecutar todas las migraciones
+    - crear campo afp SMALLINT(1) en tabla paymentschedules_details
 Seeders
     - MemosTypesGroupsTableSeeder, MemosTypesTableSeeder, MemosTableSeeder
 Paquetes

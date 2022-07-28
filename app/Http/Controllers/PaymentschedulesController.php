@@ -207,6 +207,7 @@ class PaymentschedulesController extends Controller
                 PaymentschedulesDetail::create([
                     'paymentschedule_id' => $paymentschedule->id,
                     'contract_id' => $contract_id[$i],
+                    'afp' => Contract::find($contract_id[$i])->person->afp,
                     'worked_days' => $worked_days[$i],
                     'salary' => $salary[$i],
                     'partial_salary' => $partial_salary[$i],
@@ -278,7 +279,7 @@ class PaymentschedulesController extends Controller
         if($afp){
             $details = collect();
             foreach($data->details as $detail){
-                if($detail->contract->person->afp == $afp){
+                if($detail->afp == $afp){
                     $details->push($detail);
                 }
             }
@@ -365,7 +366,7 @@ class PaymentschedulesController extends Controller
                     // dd($paymentschedules_joined);
                     
                     // Recorrer los items agrupados por afp
-                    $details = $paymentschedule->procedure_type_id == 1 ? $paymentschedules_joined->groupBy('contract.person.afp')->sortBy('contract.job_id') : $paymentschedules_joined->groupBy('contract.person.afp');
+                    $details = $paymentschedule->procedure_type_id == 1 ? $paymentschedules_joined->groupBy('afp')->sortBy('contract.job_id') : $paymentschedules_joined->groupBy('afp');
                     foreach ($details as $afp) {
                         $cont = 1;
                         foreach ($afp as $item) {
@@ -390,7 +391,7 @@ class PaymentschedulesController extends Controller
                     }
                     
                     // Recorrer los items agrupados por afp
-                    foreach ($paymentschedules_joined->groupBy('contract.person.afp') as $afp) {
+                    foreach ($paymentschedules_joined->groupBy('afp') as $afp) {
                         $cont = 1;
                         foreach ($afp as $item) {
                             PaymentschedulesDetail::where('id', $item->id)->update(['item' => $cont]);
@@ -402,7 +403,7 @@ class PaymentschedulesController extends Controller
                 if($request->status == 'habilitada'){
                     foreach ($paymentschedule->details->where('status', 'procesado') as $item) {
                         $detail = PaymentschedulesDetail::where('id', $item->id)->where('deleted_at', NULL)->first();
-                        if(!$request->afp || $request->afp == $detail->contract->person->afp){
+                        if(!$request->afp || $request->afp == $detail->afp){
                             $detail->update(['status' => 'habilitado']);
                         }
                     }

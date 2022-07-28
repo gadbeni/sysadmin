@@ -28,8 +28,8 @@
                             @elseif($row->paymentschedule)
                                 <b> {{ $row->paymentschedule->procedure_type->name }} - {{ $row->paymentschedule->period->name }}</b> <br>
                                 <small>Planilla: </small>{{ str_pad($row->paymentschedule->id, 6, "0", STR_PAD_LEFT) }} - {{ $row->afp == 1 ? 'Futuro' : 'Previsión' }} <br>
-                                <small>N&deg; de personas: </small> {{ $row->paymentschedule->details->where('contract.person.afp', $row->afp)->count() }} <br>
-                                <small>Total ganado: </small> {{ number_format($row->paymentschedule->details->where('contract.person.afp', $row->afp)->sum('partial_salary') + $row->paymentschedule->details->where('contract.person.afp', $row->afp)->sum('seniority_bonus_amount'), 2, ',', '.') }}
+                                <small>N&deg; de personas: </small> {{ $row->paymentschedule->details->where('afp', $row->afp)->count() }} <br>
+                                <small>Total ganado: </small> {{ number_format($row->paymentschedule->details->where('afp', $row->afp)->sum('partial_salary') + $row->paymentschedule->details->where('afp', $row->afp)->sum('seniority_bonus_amount'), 2, ',', '.') }}
                             @elseif($row->spreadsheet)
                                 <label class="label label-danger">Planilla manual</label> <br> <b> {{ $row->spreadsheet->tipo_planilla_id == 1 ? 'Funcionamiento' : 'Inversión' }} - {{ $row->spreadsheet->year.str_pad($row->spreadsheet->month, 2, "0", STR_PAD_LEFT) }} </b> <br>
                                 {{ $row->spreadsheet->codigo_planilla }} - {{ $row->spreadsheet->afp_id == 1 ? 'Futuro' : 'Previsión' }} <br>

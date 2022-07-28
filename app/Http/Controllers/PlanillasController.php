@@ -172,7 +172,7 @@ class PlanillasController extends Controller
                                         ->where('deleted_at', NULL)->get();
 
             foreach ($paymentschedule as $item) {
-                foreach ($item->details->groupBy('contract.person.afp') as $key => $value) {
+                foreach ($item->details->groupBy('afp') as $key => $value) {
                     
                     // Obtener proyectos de los contratos
                     $programs = collect();

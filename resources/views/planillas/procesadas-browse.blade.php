@@ -514,7 +514,7 @@
             
             $('#label-item').html(`N&deg; ${data.item}`);
             $('#label-name').text(full_name);
-            $('#label-afp').html((newSystem ? data.contract.person.afp : data.Afp) == 1 ? '<label class="label label-danger">Futuro</label>' : '<label class="label label-primary">Previsión</label>');
+            $('#label-afp').html((newSystem ? data.afp : data.Afp) == 1 ? '<label class="label label-danger">Futuro</label>' : '<label class="label label-primary">Previsión</label>');
             $('#label-salary').html(`${newSystem ? parseFloat(data.salary).toFixed(2) : data.Sueldo_Mensual.toFixed(2)} <small>Bs.</small>`);
             $('#label-month').text(months[parseInt(newSystem ? parseInt(data.paymentschedule.period.name.substr(5, 2)) : data.Mes)]);
             $('#label-days').html(`${newSystem ? data.worked_days : data.Dias_Trabajado} <small>Días</small>`);

@@ -47,8 +47,8 @@
                     <td>{{ $item->paymentschedule->direccion_administrativa->nombre }}</td>
                     <td>{{ $item->paymentschedule->procedure_type->name }}</td>
                     <td>{{ $item->paymentschedule->period->name }}</td>
-                    <td>{{ $item->paymentschedule->details->where('contract.person.afp', $item->afp)->count() }}</td>
-                    <td style="text-align: right">{{ number_format($item->paymentschedule->details->where('contract.person.afp', $item->afp)->sum('partial_salary') +$item->paymentschedule->details->where('contract.person.afp', $item->afp)->sum('seniority_bonus_amount'), 2, ',', '.') }}</td>
+                    <td>{{ $item->paymentschedule->details->where('afp', $item->afp)->count() }}</td>
+                    <td style="text-align: right">{{ number_format($item->paymentschedule->details->where('afp', $item->afp)->sum('partial_salary') +$item->paymentschedule->details->where('afp', $item->afp)->sum('seniority_bonus_amount'), 2, ',', '.') }}</td>
                     <td>
                         @if($item->fpc_number)
                             @php

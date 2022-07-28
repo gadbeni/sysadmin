@@ -710,7 +710,11 @@ class ReportsController extends Controller
                     
         $paymentschedules = Paymentschedule::with(['details.contract.person' => function($query) use ($afp){
                                 $query->whereRaw($afp ? "afp = ".$afp : 1);
-                            }, 'check_payments', 'payroll_payments', 'procedure_type'])->whereHas('details.contract.person', function($query) use ($afp){
+                            }, 'check_payments' => function($q){
+                                $q->where('deleted_at', NULL);
+                            }, 'payroll_payments' => function($q){
+                                $q->where('deleted_at', NULL);
+                            }, 'procedure_type'])->whereHas('details.contract.person', function($query) use ($afp){
                                 $query->whereRaw($afp ? "afp = ".$afp : 1);
                             })
                             ->whereRaw($centralize ? 'centralize_code = "'.str_replace('-a', '', strtolower($planilla_id)).'"' : 'id = '.intval($planilla_id))
@@ -801,16 +805,43 @@ class ReportsController extends Controller
             })->where('deleted_at', NULL)->get();
             $title = 'ministerio de trabajo '.date('d-m-Y H:i:s');
         }elseif($type_report == '#form-afp'){
-            $data = PaymentschedulesDetail::with(['contract.program', 'paymentschedule.period'])
-            ->whereHas('paymentschedule', function($q) use($paymentschedule_id){
-                $q->where('deleted_at', NULL)->whereRaw('(id = "'.intval($paymentschedule_id).'" or centralize_code like "'.intval(explode('-', $paymentschedule_id)[0]).'-c")');
-            })
-            ->whereHas('contract', function($q){
-                $q->whereRaw('(procedure_type_id = 1 or procedure_type_id = 5)')->where('deleted_at', NULL);
-            })
-            ->whereHas('contract.person', function($q) use($afp){
-                $q->where('afp', $afp)->where('deleted_at', NULL);
-            })->where('deleted_at', NULL)->get();
+            // $data = PaymentschedulesDetail::with(['contract.program', 'paymentschedule.period'])
+            // ->whereHas('paymentschedule', function($q) use($paymentschedule_id){
+            //     $q->where('deleted_at', NULL)->whereRaw('(id = "'.intval($paymentschedule_id).'" or centralize_code like "'.intval(explode('-', $paymentschedule_id)[0]).'-c")');
+            // })
+            // ->whereHas('contract', function($q){
+            //     $q->whereRaw('(procedure_type_id = 1 or procedure_type_id = 5)')->where('deleted_at', NULL);
+            // })
+            // ->whereHas('contract.person', function($q) use($afp){
+            //     $q->where('afp', $afp)->where('deleted_at', NULL);
+            // })->where('deleted_at', NULL)->get();
+
+            $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract' => function($q){
+                        $q->where('deleted_at', NULL)->orderBy('id', 'DESC');
+                    }, 'details' => function($q){
+                        $q->where('deleted_at', NULL);
+                    }])
+                    ->whereRaw('(id = "'.intval($paymentschedule_id).'" or centralize_code like "'.intval(explode('-', $paymentschedule_id)[0]).'-c")')
+                    ->where('deleted_at', NULL)->first();
+            if(str_contains(strtolower($paymentschedule_id), '-c')){
+                $centralize_code = $data->centralize_code;
+                $data->details = PaymentschedulesDetail::with(['contract.program', 'contract.type'])
+                                    ->whereHas('paymentschedule', function($q) use($centralize_code){
+                                        $q->where('centralize_code', $centralize_code)->where('deleted_at', NULL);
+                                    })
+                                    ->where('deleted_at', NULL)->get();
+            }
+
+            // Si se elije una AFP, se filtran los contratos que correspondan a esa AFP
+            if($afp){
+                $details = collect();
+                foreach($data->details as $detail){
+                    if($detail->afp == $afp){
+                        $details->push($detail);
+                    }
+                }
+                $data->details = $details;
+            }
         }
         
         if($type_export == 'excel'){
