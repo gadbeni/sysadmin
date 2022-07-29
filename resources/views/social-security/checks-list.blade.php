@@ -21,7 +21,13 @@
                         <tr>
                             <td><div><input type="checkbox" name="id[]" onclick="checkId()" value="{{ $row->id }}" /></div></td>
                             <td>{{ $row->id }}</td>
-                            <td>{{ $row->paymentschedule ? $row->paymentschedule->direccion_administrativa->nombre : 'No definida' }}</td>
+                            <td>
+                                @if ($row->planilla_haber)
+                                {{ $row->planilla_haber->Direccion_Administrativa }}
+                                @elseif ($row->paymentschedule)
+                                {{ $row->paymentschedule->direccion_administrativa->nombre }}
+                                @endif
+                            </td>
                             <td>
                                 @php
                                     $status = '';

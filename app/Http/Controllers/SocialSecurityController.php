@@ -54,7 +54,7 @@ class SocialSecurityController extends Controller
                             ->OrWhereHas('paymentschedule', function($query) use($search){
                                 $query->whereRaw($search ? 'id = "'.intval($search).'"' : 1);
                             })
-                            ->OrWhereRaw($search ? '(number like "'.$search.'%" or REPLACE(amount, ".", ",") like "'.$search.'%")' : 1);
+                            ->OrWhereRaw($search ? '(id = "'.$search.'" or number like "'.$search.'%" or REPLACE(amount, ".", ",") like "'.$search.'%")' : 1);
                         }
                     })
                     ->paginate($paginate);

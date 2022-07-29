@@ -15,114 +15,227 @@ use App\Models\Period;
 
 class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, WithTitle
 {
-    function __construct($data, $type) {
+    function __construct($data, $type, $group_by) {
         $this->data = $data;
         $this->type = $type;
+        $this->group_by = $group_by;
     }
 
     public function collection()
     {
-        $data = [];
+        $datos = [];
         $cont = 1;
         if($this->type == 1){
-            foreach($this->data as $item){
-                $novelty = '';
-                $novelty_date = '';
-                if(date('Ym', strtotime($item->contract->start)) == $item->paymentschedule->period->name){
-                    $novelty = 'I';
-                    $novelty_date = date('d-m-Y', strtotime($item->contract->start));
-                }
-                if(date('Ym', strtotime($item->contract->finish)) == $item->paymentschedule->period->name){
-                    $novelty = 'R';
-                    $novelty_date = date('d-m-Y', strtotime($item->contract->finish));
-                }
 
-                // Calcular edad
-                $now = \Carbon\Carbon::now();
-                $birthday = new \Carbon\Carbon($item->contract->person->birthday);
-                $age = $birthday->diffInYears($now);
-                $total_amount = $item->partial_salary + $item->seniority_bonus_amount;
-
-                array_push($data, [
-                    'A' => $cont,
-                    'B' => 'CI',
-                    'C' => $item->contract->person->ci,
-                    'D' => '',
-                    'E' => $item->contract->person->nua_cua,
-                    'F' => explode(' ', $item->contract->person->last_name)[0],
-                    'G' => count(explode(' ', $item->contract->person->last_name)) > 1 ? explode(' ', $item->contract->person->last_name)[1] : '',
-                    'H' => '',
-                    'I' => explode(' ', $item->contract->person->first_name)[0],
-                    'J' => count(explode(' ', $item->contract->person->first_name)) > 1 ? explode(' ', $item->contract->person->first_name)[1] : '',
-                    'K' => 'BENI',
-                    'L' => $novelty,
-                    'M' => $novelty_date ? Date::stringToExcel($novelty_date) : '',
-                    'N' => $item->worked_days,
-                    'O' => 'N',
-                    'P' => $age < 65 && $item->contract->person->afp_status == 1 ? number_format($total_amount, 2, '.', '') : 0.0,
-                    'Q' => $age >= 65 && $item->contract->person->afp_status == 1 ? number_format($total_amount, 2, '.', '') : 0.0,
-                    'R' => $age < 65 && $item->contract->person->afp_status == 0 ? number_format($total_amount, 2, '.', '') : 0.0,
-                    'S' => $age >= 65 && $item->contract->person->afp_status == 0 ? number_format($total_amount, 2, '.', '') : 0.0,
-                    'T' => 0.0,
-                    'U' => number_format($total_amount, 2, '.', ''),
-                    'V' => number_format($total_amount, 2, '.', ''),
-                    'W' => 0.0,
-                ]);
-                $cont++;
+            if($this->group_by == 1){
+                $data = $this->data->details->groupBy('contract.program_id');
+                $data = $data->map(function($item, $key){
+                    $program = \App\Models\Program::find($key);
+                    return [
+                        'id' => $program->id,
+                        'programatic_category' => $program->programatic_category,
+                        'name' => $program->name,
+                        'direccion_administrativa' =>$program->direccion_administrativa->nombre,
+                        'details' => $item
+                    ];
+                });
+                $data = $data->sortBy('order');
+            }elseif($this->group_by == 2){
+                $data = $this->data->details->groupBy('paymentschedule.direccion_administrativa_id');
+                $data = $data->map(function($item, $key){
+                    $da = \App\Models\Direccion::where('id', $key)->first();
+                    return [
+                        'id' => $da->id,
+                        'name' => $da->nombre,
+                        'order' => $da->orden,
+                        'details' => $item
+                    ];
+                });
+                $data = $data->sortBy('order');
+            }else{
+                $data = ['' => $this->data->details];
             }
+
+            foreach ($data as $value){
+                foreach($value['details'] as $item){
+                    $novelty = '';
+                    $novelty_date = '';
+                    if(date('Ym', strtotime($item->contract->start)) == $item->paymentschedule->period->name){
+                        $novelty = 'I';
+                        $novelty_date = date('d-m-Y', strtotime($item->contract->start));
+                    }
+                    if(date('Ym', strtotime($item->contract->finish)) == $item->paymentschedule->period->name){
+                        $novelty = 'R';
+                        $novelty_date = date('d-m-Y', strtotime($item->contract->finish));
+                    }
+    
+                    // Calcular edad
+                    $now = \Carbon\Carbon::now();
+                    $birthday = new \Carbon\Carbon($item->contract->person->birthday);
+                    $age = $birthday->diffInYears($now);
+                    $total_amount = $item->partial_salary + $item->seniority_bonus_amount;
+    
+                    array_push($datos, [
+                        'A' => $cont,
+                        'B' => 'CI',
+                        'C' => $item->contract->person->ci,
+                        'D' => '',
+                        'E' => $item->contract->person->nua_cua,
+                        'F' => explode(' ', $item->contract->person->last_name)[0],
+                        'G' => count(explode(' ', $item->contract->person->last_name)) > 1 ? explode(' ', $item->contract->person->last_name)[1] : '',
+                        'H' => '',
+                        'I' => explode(' ', $item->contract->person->first_name)[0],
+                        'J' => count(explode(' ', $item->contract->person->first_name)) > 1 ? explode(' ', $item->contract->person->first_name)[1] : '',
+                        'K' => 'BENI',
+                        'L' => $novelty,
+                        'M' => $novelty_date ? Date::stringToExcel($novelty_date) : '',
+                        'N' => $item->worked_days,
+                        'O' => 'N',
+                        'P' => $age < 65 && $item->contract->person->afp_status == 1 ? number_format($total_amount, 2, '.', '') : 0.0,
+                        'Q' => $age >= 65 && $item->contract->person->afp_status == 1 ? number_format($total_amount, 2, '.', '') : 0.0,
+                        'R' => $age < 65 && $item->contract->person->afp_status == 0 ? number_format($total_amount, 2, '.', '') : 0.0,
+                        'S' => $age >= 65 && $item->contract->person->afp_status == 0 ? number_format($total_amount, 2, '.', '') : 0.0,
+                        'T' => 0.0,
+                        'U' => number_format($total_amount, 2, '.', ''),
+                        'V' => number_format($total_amount, 2, '.', ''),
+                        'W' => 0.0,
+                    ]);
+                    $cont++;
+                }
+            }
+
+            // foreach($this->data as $item){
+            //     $novelty = '';
+            //     $novelty_date = '';
+            //     if(date('Ym', strtotime($item->contract->start)) == $item->paymentschedule->period->name){
+            //         $novelty = 'I';
+            //         $novelty_date = date('d-m-Y', strtotime($item->contract->start));
+            //     }
+            //     if(date('Ym', strtotime($item->contract->finish)) == $item->paymentschedule->period->name){
+            //         $novelty = 'R';
+            //         $novelty_date = date('d-m-Y', strtotime($item->contract->finish));
+            //     }
+
+            //     // Calcular edad
+            //     $now = \Carbon\Carbon::now();
+            //     $birthday = new \Carbon\Carbon($item->contract->person->birthday);
+            //     $age = $birthday->diffInYears($now);
+            //     $total_amount = $item->partial_salary + $item->seniority_bonus_amount;
+
+            //     array_push($data, [
+            //         'A' => $cont,
+            //         'B' => 'CI',
+            //         'C' => $item->contract->person->ci,
+            //         'D' => '',
+            //         'E' => $item->contract->person->nua_cua,
+            //         'F' => explode(' ', $item->contract->person->last_name)[0],
+            //         'G' => count(explode(' ', $item->contract->person->last_name)) > 1 ? explode(' ', $item->contract->person->last_name)[1] : '',
+            //         'H' => '',
+            //         'I' => explode(' ', $item->contract->person->first_name)[0],
+            //         'J' => count(explode(' ', $item->contract->person->first_name)) > 1 ? explode(' ', $item->contract->person->first_name)[1] : '',
+            //         'K' => 'BENI',
+            //         'L' => $novelty,
+            //         'M' => $novelty_date ? Date::stringToExcel($novelty_date) : '',
+            //         'N' => $item->worked_days,
+            //         'O' => 'N',
+            //         'P' => $age < 65 && $item->contract->person->afp_status == 1 ? number_format($total_amount, 2, '.', '') : 0.0,
+            //         'Q' => $age >= 65 && $item->contract->person->afp_status == 1 ? number_format($total_amount, 2, '.', '') : 0.0,
+            //         'R' => $age < 65 && $item->contract->person->afp_status == 0 ? number_format($total_amount, 2, '.', '') : 0.0,
+            //         'S' => $age >= 65 && $item->contract->person->afp_status == 0 ? number_format($total_amount, 2, '.', '') : 0.0,
+            //         'T' => 0.0,
+            //         'U' => number_format($total_amount, 2, '.', ''),
+            //         'V' => number_format($total_amount, 2, '.', ''),
+            //         'W' => 0.0,
+            //     ]);
+            //     $cont++;
+            // }
         }else{
-            foreach($this->data->groupBy('contract.person.ci') as $item){
-                $novelty = '';
-                $novelty_date = '';
-                if(date('Ym', strtotime($item[0]->contract->start)) == $item[0]->paymentschedule->period->name){
-                    $novelty = 'I';
-                    $novelty_date = date('Ymd', strtotime($item[0]->contract->start));
-                }
-                if(date('Ym', strtotime($item[0]->contract->finish)) == $item[0]->paymentschedule->period->name){
-                    $novelty = 'R';
-                    $novelty_date = date('Ymd', strtotime($item[0]->contract->finish));
-                }
-                $worked_days = $item->sum('worked_days');
-                $total_amount = $item->sum('partial_salary') + $item->sum('seniority_bonus_amount');
 
-                $now = \Carbon\Carbon::now();
-                $birthday = new \Carbon\Carbon($item[0]->contract->person->birthday);
-                $age = $birthday->diffInYears($now);
-                $type = '';
-                if($age < 65 && $item[0]->contract->person->afp_status == 1){
-                    $type = '1';
-                }
-                if($age >= 65 && $item[0]->contract->person->afp_status == 1){
-                    $type = '8';
-                }
-                if($age < 65 && $item[0]->contract->person->afp_status == 0){
-                    $type = 'C';
-                }
-                if($age >= 65 && $item[0]->contract->person->afp_status == 0){
-                    $type = 'D';
-                }
+            if($this->group_by == 1){
+                $data = $this->data->details->groupBy('contract.program_id');
+                $data = $data->map(function($item, $key){
+                    $program = \App\Models\Program::find($key);
+                    return [
+                        'id' => $program->id,
+                        'programatic_category' => $program->programatic_category,
+                        'name' => $program->name,
+                        'direccion_administrativa' =>$program->direccion_administrativa->nombre,
+                        'details' => $item
+                    ];
+                });
+                $data = $data->sortBy('order');
+            }elseif($this->group_by == 2){
+                $data = $this->data->details->groupBy('paymentschedule.direccion_administrativa_id');
+                $data = $data->map(function($item, $key){
+                    $da = \App\Models\Direccion::where('id', $key)->first();
+                    return [
+                        'id' => $da->id,
+                        'name' => $da->nombre,
+                        'order' => $da->orden,
+                        'details' => $item
+                    ];
+                });
+                $data = $data->sortBy('order');
+            }else{
+                $data = ['' => $this->data->details];
+            }
 
-                array_push($data, [
-                    'B' => 'CI',
-                    'C' => $item[0]->contract->person->ci,
-                    'D' => count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '',
-                    'E' => $item[0]->contract->person->nua_cua,
-                    'F' => explode(' ', $item[0]->contract->person->last_name)[0],
-                    'G' => count(explode(' ', $item[0]->contract->person->last_name)) > 1 ? explode(' ', $item[0]->contract->person->last_name)[1] : '',
-                    'H' => '',
-                    'I' => explode(' ', $item[0]->contract->person->first_name)[0],
-                    'J' => count(explode(' ', $item[0]->contract->person->first_name)) > 1 ? explode(' ', $item[0]->contract->person->first_name)[1] : '',
-                    'K' => $novelty,
-                    'L' => $novelty_date ? $novelty_date : '',
-                    'M' => $worked_days,
-                    'N' => $total_amount,
-                    'O' => $type,
-                    'P' => '',
-                ]);
-                $cont++;
+            foreach ($data as $value){
+                foreach($value['details']->groupBy('contract.person.ci') as $item){
+
+                // foreach($this->data->groupBy('contract.person.ci') as $item){
+                    $novelty = '';
+                    $novelty_date = '';
+                    if(date('Ym', strtotime($item[0]->contract->start)) == $item[0]->paymentschedule->period->name){
+                        $novelty = 'I';
+                        $novelty_date = date('Ymd', strtotime($item[0]->contract->start));
+                    }
+                    if(date('Ym', strtotime($item[0]->contract->finish)) == $item[0]->paymentschedule->period->name){
+                        $novelty = 'R';
+                        $novelty_date = date('Ymd', strtotime($item[0]->contract->finish));
+                    }
+                    $worked_days = $item->sum('worked_days');
+                    $total_amount = $item->sum('partial_salary') + $item->sum('seniority_bonus_amount');
+
+                    $now = \Carbon\Carbon::now();
+                    $birthday = new \Carbon\Carbon($item[0]->contract->person->birthday);
+                    $age = $birthday->diffInYears($now);
+                    $type = '';
+                    if($age < 65 && $item[0]->contract->person->afp_status == 1){
+                        $type = '1';
+                    }
+                    if($age >= 65 && $item[0]->contract->person->afp_status == 1){
+                        $type = '8';
+                    }
+                    if($age < 65 && $item[0]->contract->person->afp_status == 0){
+                        $type = 'C';
+                    }
+                    if($age >= 65 && $item[0]->contract->person->afp_status == 0){
+                        $type = 'D';
+                    }
+
+                    array_push($datos, [
+                        'B' => 'CI',
+                        'C' => $item[0]->contract->person->ci,
+                        'D' => count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '',
+                        'E' => $item[0]->contract->person->nua_cua,
+                        'F' => explode(' ', $item[0]->contract->person->last_name)[0],
+                        'G' => count(explode(' ', $item[0]->contract->person->last_name)) > 1 ? explode(' ', $item[0]->contract->person->last_name)[1] : '',
+                        'H' => '',
+                        'I' => explode(' ', $item[0]->contract->person->first_name)[0],
+                        'J' => count(explode(' ', $item[0]->contract->person->first_name)) > 1 ? explode(' ', $item[0]->contract->person->first_name)[1] : '',
+                        'K' => $novelty,
+                        'L' => $novelty_date ? $novelty_date : '',
+                        'M' => $worked_days,
+                        'N' => $total_amount,
+                        'O' => $type,
+                        'P' => '',
+                    ]);
+                    $cont++;
+                }
             }
         }
-        return collect($data);
+        return collect($datos);
     }
 
     public function headings(): array

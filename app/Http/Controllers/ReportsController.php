@@ -846,12 +846,10 @@ class ReportsController extends Controller
         
         if($type_export == 'excel'){
             if($type_report == '#form-ministerio'){
-                // dd($data);
                 return Excel::download(new MinisterioTrabajoExport($data), 'Ministerios de trabajo '.date('d-m-Y H:i:s').".xlsx");
             }elseif($type_report == '#form-afp'){
                 $title = ($afp == 1 ? 'AFP Futuro' : 'AFP Previsión').date('d-m-Y H:i:s');
-                // dd($data, $afp);
-                return Excel::download(new AfpExport($data, $afp), "$title .xlsx");
+                return Excel::download(new AfpExport($data, $afp, $group_by), "$title .xlsx");
             }
         }
         return view('reports.social_security.exports-list', compact('data', 'type_report', 'afp', 'group_by'));
