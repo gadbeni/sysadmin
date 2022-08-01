@@ -20,6 +20,7 @@ use App\Models\Signature;
 use App\Models\ContractsHistory;
 use App\Models\PaymentschedulesDetail;
 use App\Models\ContractsFinished;
+use App\Models\Addendum;
 
 class ContractsController extends Controller
 {
@@ -340,6 +341,47 @@ class ContractsController extends Controller
         }
     }
 
+    public function contracts_addendum(Request $request){
+        // dd($request->all());
+        DB::beginTransaction();
+        try {
+
+            Addendum::create([
+                'contract_id' => $request->id,
+                'start' => $request->start,
+                'finish' => $request->finish,
+                'details_payments' => $request->details_payments
+            ]);
+
+            DB::commit();
+            return response()->json(['message' => 'Adenda registrada exitosamente.']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json(['error' => 'Ocurrió un error.']);
+        }
+    }
+
+    public function contracts_addendum_status(Request $request){
+        DB::beginTransaction();
+        try {
+
+            $addendum = Addendum::find($request->id);
+            $addendum->status = 'firmado';
+            $addendum->update();
+
+            $contract = Contract::findOrFail($addendum->contract_id);
+            $contract->finish = $addendum->finish;
+            $contract->status = 'firmado';
+            $contract->update();
+
+            DB::commit();
+            return response()->json(['message' => 'Adenda firmada exitosamente.']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json(['error' => 'Ocurrió un error.']);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -381,7 +423,7 @@ class ContractsController extends Controller
     // ================================
     
     public function print($id, $document){
-        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature.person', 'signature.job', 'signature.cargo'])->where('id', $id)->first();
+        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature.person', 'signature.job', 'signature.cargo', 'addendums'])->where('id', $id)->first();
         // Si no tiene comisión evaluadora del sistema actual buscar en el antiguo sistema
         if($contract->workers_memo_alt != null){
             $contract->workers = Contract::with(['person', 'job', 'cargo'])->whereIn('id', json_decode($contract->workers_memo_alt))->get();

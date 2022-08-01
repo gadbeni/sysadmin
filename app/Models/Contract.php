@@ -96,4 +96,8 @@ class Contract extends Model
     public function paymentschedules_details(){
         return $this->hasMany(PaymentschedulesDetail::class);
     }
+
+    public function addendums(){
+        return $this->hasMany(Addendum::class);
+    }
 }

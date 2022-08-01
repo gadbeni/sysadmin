@@ -15,178 +15,193 @@
             </thead>
             <tbody>
                 @forelse ($data as $item)
-                <tr>
-                    <td>{{ $item->id }}</td>
-                    <td>{{ $item->code }}</td>
-                    <td>{{ $item->type->name }}</td>
-                    <td>
-                        {{ $item->person->last_name }} {{ $item->person->first_name }}<br>
-                        <b>CI</b>: {{ $item->person->ci }}
-                        {!! $item->person->phone ? '<br><b>Telf</b>: '.$item->person->phone : '' !!}
-                    </td>
-                    <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->nombre : 'No definida' }}</td>
-                    <td>
-                        <ul style="list-style: none; padding-left: 0px">
-                            <li>
-                                <b>Cargo: </b>
-                                @if ($item->cargo)
-                                    {{ $item->cargo->Descripcion }}
-                                @elseif ($item->job)
-                                    {{ $item->job->name }}
-                                @else
-                                    No definido
+                    @php
+                        $addendum = $item->addendums->where('deleted_at', NULL)->first();
+                    @endphp
+                    <tr>
+                        <td>{{ $item->id }}</td>
+                        <td>{{ $item->code }}</td>
+                        <td>{{ $item->type->name }}</td>
+                        <td>
+                            {{ $item->person->last_name }} {{ $item->person->first_name }}<br>
+                            <b>CI</b>: {{ $item->person->ci }}
+                            {!! $item->person->phone ? '<br><b>Telf</b>: '.$item->person->phone : '' !!}
+                        </td>
+                        <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->nombre : 'No definida' }}</td>
+                        <td>
+                            <ul style="list-style: none; padding-left: 0px">
+                                <li>
+                                    <b>Cargo: </b>
+                                    @if ($item->cargo)
+                                        {{ $item->cargo->Descripcion }}
+                                    @elseif ($item->job)
+                                        {{ $item->job->name }}
+                                    @else
+                                        No definido
+                                    @endif
+                                </li>
+                                <li>
+                                    <b>Sueldo: </b> <small>Bs.</small> 
+                                    @if ($item->cargo)
+                                        {{ number_format($item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.') }}
+                                    @elseif ($item->job)
+                                        {{ number_format($item->job->salary, 2, ',', '.') }}
+                                    @else
+                                        0.00
+                                    @endif
+                                </li>
+                                <li><b>Desde </b>{{ date('d/m/Y', strtotime($item->start)) }}
+                                @if ($item->finish)
+                                <b> hasta </b>{{ date('d/m/Y', strtotime($item->finish)) }}
                                 @endif
-                            </li>
-                            <li>
-                                <b>Sueldo: </b> <small>Bs.</small> 
-                                @if ($item->cargo)
-                                    {{ number_format($item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.') }}
-                                @elseif ($item->job)
-                                    {{ number_format($item->job->salary, 2, ',', '.') }}
-                                @else
-                                    0.00
-                                @endif
-                            </li>
-                            <li><b>Desde </b>{{ date('d/m/Y', strtotime($item->start)) }}
-                            @if ($item->finish)
-                            <b> hasta </b>{{ date('d/m/Y', strtotime($item->finish)) }}
-                            @endif
-                            <li>
-                                @php
-                                    switch ($item->status) {
-                                        case 'anulado':
-                                            $label = 'danger';
-                                            break;
-                                        case 'elaborado':
-                                            $label = 'default';
-                                            // Si el creador del contrato es de una DA desconcentrada el siguiente estado es firmado, sino es enviado
-                                            $netx_status = Auth::user()->direccion_administrativa_id ? 'firmado' : 'enviado';
-                                            break;
-                                        case 'enviado':
-                                            $label = 'info';
-                                            $netx_status = 'firmado';
-                                            break;
-                                        case 'firmado':
-                                            $label = 'success';
-                                            break;
-                                        case 'concluido':
-                                            $label = 'warning';
-                                            break;
-                                        default:
-                                            $label = 'default';
-                                            $netx_status = '';
-                                            break;
-                                    }
-                                @endphp
-                                <b>Estado</b>: <label class="label label-{{ $label }}">{{ ucfirst($item->status) }}</label>
-                            </li>
-                        </ul>
-                    </td>
-                    <td>
-                        {{ $item->user ? $item->user->name : '' }} <br>
-                        {{ date('d/m/Y H:i', strtotime($item->created_at)) }} <br>
-                        <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
-                    </td>
-                    <td class="no-sort no-click bread-actions text-right">
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
-                                Más <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu" style="left: -90px !important">
-                                {{-- Definir siguiente estado --}}
-                                @if ($item->status != 'concluido' && $item->status != 'firmado' && ($item->cargo_id || $item->job_id))
-                                <li><a href="#" title="Promover a {{ $netx_status }}" data-toggle="modal" data-target="#status-modal" onclick="changeStatus({{ $item->id }}, '{{ $netx_status }}')">Promover</a></li>
-                                @endif
-                                {{-- Si está firmado --}}
-                                @if ($item->status == 'firmado' && auth()->user()->role_id == 1)
-                                <li><a href="#" title="Finalizar" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}')">Finalizar</a></li>
-                                @endif
-                                {{-- si está concluido y es permanente --}}
-                                @if ($item->status == 'concluido' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('finish_contracts'))
-                                <li><a title="Imprimir memorándum de agradecimiento" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-finished']) }}" target="_blank">Imprimir memorándum</a></li>
-                                @endif
-                                
+                                <li>
+                                    @php
+                                        switch ($item->status) {
+                                            case 'anulado':
+                                                $label = 'danger';
+                                                break;
+                                            case 'elaborado':
+                                                $label = 'default';
+                                                // Si el creador del contrato es de una DA desconcentrada el siguiente estado es firmado, sino es enviado
+                                                $netx_status = Auth::user()->direccion_administrativa_id ? 'firmado' : 'enviado';
+                                                break;
+                                            case 'enviado':
+                                                $label = 'info';
+                                                $netx_status = 'firmado';
+                                                break;
+                                            case 'firmado':
+                                                $label = 'success';
+                                                break;
+                                            case 'concluido':
+                                                $label = 'warning';
+                                                break;
+                                            default:
+                                                $label = 'default';
+                                                $netx_status = '';
+                                                break;
+                                        }
+                                    @endphp
+                                    <b>Estado</b>: <label class="label label-{{ $label }}">{{ ucfirst($item->status) }}</label>
+                                    @if ($addendum)
+                                    <label class="label label-{{ $addendum->status == "firmado" ? 'success' : 'dark' }}" title="Adenda {{ $addendum->status == "firmado" ? 'firmada' : 'elaborada' }}"><i class="voyager-calendar"></i></label>
+                                    @endif
+                                </li>
                             </ul>
-                        </div>
+                        </td>
+                        <td>
+                            {{ $item->user ? $item->user->name : '' }} <br>
+                            {{ date('d/m/Y H:i', strtotime($item->created_at)) }} <br>
+                            <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
+                        </td>
+                        <td class="no-sort no-click bread-actions text-right">
 
-                        {{-- Botón de impresión --}}
-                        @if ($item->cargo_id || $item->job_id)
                             <div class="btn-group">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                Imprimir <span class="caret"></span>
+                                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                                    Más <span class="caret"></span>
                                 </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    @switch($item->procedure_type_id)
-                                        @case(1)
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum']) }}" target="_blank">Memoramdum de desiganación</a></li>
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-reasigancion']) }}" target="_blank">Memoramdum de reasignación</a></li>
-                                            @break
-                                        @case(2)
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.autorization']) }}" target="_blank">Autorización</a></li>
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.invitation']) }}" target="_blank">Invitación</a></li>
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.declaration']) }}" target="_blank">Declaración</a></li>
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.memorandum']) }}" target="_blank">Memorandum</a></li>
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.report']) }}" target="_blank">Informe</a></li>
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.contract']) }}" target="_blank">Contrato</a></li>
-                                            @break
-                                        @case(5)
-                                            @if ($item->direccion_administrativa->tipo->id == 3 || $item->direccion_administrativa->tipo->id == 4)
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-alt']) }}" target="_blank">Contrato</a></li>
-                                            @elseif ($item->direccion_administrativa_id == 32 || $item->direccion_administrativa_id == 36 || $item->direccion_administrativa_id == 57)
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-health']) }}" target="_blank">Contrato</a></li>
-                                            @else
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract']) }}" target="_blank">Contrato</a></li>
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-inamovible']) }}" target="_blank">Contrato inamovible</a></li>
-                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-desigancion']) }}" target="_blank">Memorandum</a></li>
-                                            @endif
+                                <ul class="dropdown-menu" role="menu" style="left: -90px !important">
+                                    {{-- Definir siguiente estado --}}
+                                    @if ($item->status != 'concluido' && $item->status != 'firmado' && ($item->cargo_id || $item->job_id))
+                                    <li><a href="#" title="Promover a {{ $netx_status }}" data-toggle="modal" data-target="#status-modal" onclick="changeStatus({{ $item->id }}, '{{ $netx_status }}')">Promover</a></li>
+                                    @endif
+                                    {{-- Si está firmado --}}
+                                    @if ($item->status == 'firmado' && auth()->user()->role_id == 1)
+                                    <li><a href="#" title="Finalizar" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}')">Finalizar</a></li>
+                                    @endif
+                                    {{-- si está concluido y es permanente --}}
+                                    @if ($item->status == 'concluido' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('finish_contracts'))
+                                    <li><a title="Imprimir memorándum de agradecimiento" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-finished']) }}" target="_blank">Imprimir memorándum</a></li>
+                                    @endif
 
-                                            @break
-                                        @default
-                                            
-                                    @endswitch
+                                    @if ($item->status == 'concluido' && $item->addendums->where('deleted_at', NULL)->count() == 0 && $item->procedure_type_id == 2)
+                                    <li><a class="btn-addendum" title="Crear adenda" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' href="#">Crear adenda</a></li>
+                                    @endif
+
+                                    @if ($item->status == 'concluido' && $item->addendums->where('status', 'elaborado')->count() == 1 && $item->procedure_type_id == 2)
+                                    <li><a class="btn-addendum-status" title="Firmar adenda" data-toggle="modal" data-target="#addendum-status-modal" data-id="{{ $addendum->id }}" href="#">Firmar adenda</a></li>
+                                    @endif
+                                    
                                 </ul>
                             </div>
-                        @endif
 
-                        <a href="{{ route('contracts.show', ['contract' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
-                            <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
-                        </a>
-                        
-                        @if ($item->status != 'concluido')
-                            {{-- Se puede editar el contrato si no está firmado --}}
-                            @if (($item->status != 'firmado' && auth()->user()->hasPermission('edit_contracts') || Auth::user()->role_id == 1))
-                                <a href="{{ route('contracts.edit', ['contract' => $item->id]) }}" title="Editar" class="btn btn-sm btn-primary edit">
-                                    <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
-                                </a>
-                            @endif
-
-                            {{-- Si está firmado y tiene permiso de cambiar el estado --}}
-                            @if ($item->status == 'firmado' && auth()->user()->hasPermission('downgrade_contracts'))
+                            {{-- Botón de impresión --}}
+                            @if ($item->cargo_id || $item->job_id)
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                                        Anular <span class="caret"></span>
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    Imprimir <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu" style="left: -90px !important">
-                                        <li><a href="#" onclick="downgradeContract({{ $item->id }}, 'elaborado')" data-toggle="modal" data-target="#downgrade-modal">Quitar firma</a></li>
-                                        <li>
-                                            <a href="#" onclick="deleteItem('{{ route('contracts.destroy', ['contract' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal-alt" title="Anular">
-                                                Anular
-                                            </a>
-                                        </li>
+                                    <ul class="dropdown-menu" role="menu">
+                                        @switch($item->procedure_type_id)
+                                            @case(1)
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum']) }}" target="_blank">Memoramdum de desiganación</a></li>
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-reasigancion']) }}" target="_blank">Memoramdum de reasignación</a></li>
+                                                @break
+                                            @case(2)
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.autorization']) }}" target="_blank">Autorización</a></li>
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.invitation']) }}" target="_blank">Invitación</a></li>
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.declaration']) }}" target="_blank">Declaración</a></li>
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.memorandum']) }}" target="_blank">Memorandum</a></li>
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.report']) }}" target="_blank">Informe</a></li>
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
+                                                <li class="divider"></li>
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.contract']) }}" target="_blank">Contrato</a></li>
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum_first']) }}" target="_blank">Adenda</a></li>
+                                                @break
+                                            @case(5)
+                                                @if ($item->direccion_administrativa->tipo->id == 3 || $item->direccion_administrativa->tipo->id == 4)
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-alt']) }}" target="_blank">Contrato</a></li>
+                                                @elseif ($item->direccion_administrativa_id == 32 || $item->direccion_administrativa_id == 36 || $item->direccion_administrativa_id == 57)
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-health']) }}" target="_blank">Contrato</a></li>
+                                                @else
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract']) }}" target="_blank">Contrato</a></li>
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-inamovible']) }}" target="_blank">Contrato inamovible</a></li>
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-desigancion']) }}" target="_blank">Memorandum</a></li>
+                                                @endif
+
+                                                @break
+                                            @default
+                                                
+                                        @endswitch
                                     </ul>
                                 </div>
-                            @elseif($item->status != 'firmado' && auth()->user()->hasPermission('delete_contracts'))
-                                <a href="#" onclick="deleteItem('{{ route('contracts.destroy', ['contract' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal-alt" title="Anular" class="btn btn-sm btn-danger delete">
-                                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Anular</span>
-                                </a>
                             @endif
-                        @endif
-                        
-                    </td>
-                </tr>
+
+                            <a href="{{ route('contracts.show', ['contract' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
+                                <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
+                            </a>
+                            
+                            @if ($item->status != 'concluido')
+                                {{-- Se puede editar el contrato si no está firmado --}}
+                                @if (($item->status != 'firmado' && auth()->user()->hasPermission('edit_contracts') || Auth::user()->role_id == 1))
+                                    <a href="{{ route('contracts.edit', ['contract' => $item->id]) }}" title="Editar" class="btn btn-sm btn-primary edit">
+                                        <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
+                                    </a>
+                                @endif
+
+                                {{-- Si está firmado y tiene permiso de cambiar el estado --}}
+                                @if ($item->status == 'firmado' && auth()->user()->hasPermission('downgrade_contracts'))
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                                            Anular <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu" style="left: -90px !important">
+                                            <li><a href="#" onclick="downgradeContract({{ $item->id }}, 'elaborado')" data-toggle="modal" data-target="#downgrade-modal">Quitar firma</a></li>
+                                            <li>
+                                                <a href="#" onclick="deleteItem('{{ route('contracts.destroy', ['contract' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal-alt" title="Anular">
+                                                    Anular
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                @elseif($item->status != 'firmado' && auth()->user()->hasPermission('delete_contracts'))
+                                    <a href="#" onclick="deleteItem('{{ route('contracts.destroy', ['contract' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal-alt" title="Anular" class="btn btn-sm btn-danger delete">
+                                        <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Anular</span>
+                                    </a>
+                                @endif
+                            @endif
+                            
+                        </td>
+                    </tr>
                 @empty
                     <tr class="odd">
                         <td valign="top" colspan="7" class="dataTables_empty">No hay datos disponibles en la tabla</td>
@@ -211,7 +226,7 @@
 </div>
 
 {{-- change status modal --}}
-<form action="{{ route('contracts.status') }}" id="form-status" method="POST">
+<form action="{{ route('contracts.status') }}" id="form-status" class="form-submit" method="POST">
     {{ csrf_field() }}
     <div class="modal modal-primary fade" tabindex="-1" id="status-modal" role="dialog">
         <div class="modal-dialog">
@@ -268,6 +283,69 @@
     </div>
 </form>
 
+{{-- Addendum modal --}}
+<form action="{{ route('contracts.addendum') }}" id="form-addendum" class="form-submit" method="POST">
+    @csrf
+    <input type="hidden" name="id">
+    <div class="modal modal-primary fade" tabindex="-1" id="addendum-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="voyager-certificate"></i> Crear adenda</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="start">Inicio</label>
+                            <input type="date" name="start" class="form-control" readonly required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="finish">Fin</label>
+                            <input type="date" name="finish" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <textarea class="form-control richTextBox" name="details_payments">
+                                <p><strong><em>MONTO. - </em></strong><em>El monto total del presente contrato modificatorio ser&aacute; por la suma de </em><strong><em>Bs.- </em></strong><strong><em>13.500,00</em></strong><strong><em>.-</em></strong><em> (</em><em>Trece Mil Quinientos 00</em><em>/100 Bolivianos), el pago de esta consultor&iacute;a ser&aacute; de la siguiente manera: En </em><em>cuatro</em><em> (</em><em>04</em><em>) cuotas mensuales, la primera cuota correspondiente a </em><em>12 d&iacute;as</em><em> del mes de </em><em>julio</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>1.800,00.</em></strong><strong><em>- </em></strong><em>(</em><em>Un Mil Ochocientos 00</em><em>/100 Bolivianos), la segunda </em><em>y tercer</em><em> cuota correspondiente a </em><em>los meses de agosto y septiembre</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>4.500,00</em></strong><em>.-(Cuatro Mil Quinientos 00</em><em>/100 Bolivianos), la </em><em>cuarta</em><em> y &uacute;ltima cuota correspondiente a </em><em>18 d&iacute;as</em><em> del mes de </em><em>octubre</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>2.700,00</em></strong><em>.- (Dos Mil Setecientos 00</em><em>/100 Bolivianos). La cancelaci&oacute;n del servicio prestado se realizar&aacute; previa presentaci&oacute;n y aprobaci&oacute;n de informe de actividades de acuerdo a T&eacute;rminos de Referencia, aprobado por el Secretario Departamental de </em><em>Desarrollo Productivo y Econom&iacute;a Plural</em><em> del GAD-BENI.</em></p>
+                            </textarea>
+                        </div>
+                        <div class="form-group col-md-12 text-right">
+                            <div class="checkbox">
+                                <label><input type="checkbox" required> Aceptar y guardar</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" class="btn btn-dark" value="Aceptar">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{{-- Addendum status modal --}}
+<div class="modal fade" tabindex="-1" id="addendum-status-modal" role="dialog">
+    <div class="modal-dialog modal-success">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="voyager-certificate"></i> Desea firmar la adenda?</h4>
+            </div>
+            <div class="modal-footer text-right">
+                <form action="{{ route('contracts.addendum.status') }}" id="addendum-status-form" class="form-submit" method="POST">
+                    @csrf
+                    <input type="hidden" name="id">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" class="btn btn-success" value="Sí, firmar">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Delete signature modal --}}
 <div class="modal modal-danger fade" tabindex="-1" id="downgrade-modal" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -288,6 +366,7 @@
     </div>
 </div>
 
+{{-- Delete modal --}}
 <div class="modal modal-danger fade" tabindex="-1" id="delete-modal-alt" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -307,9 +386,21 @@
     </div>
 </div>
 
+<style>
+    .mce-edit-area{
+        max-height: 300px !important;
+        overflow-y: auto;
+    }
+</style>
+
+<script src="{{ asset('vendor/momentjs/moment.min.js') }}"></script>
 <script>
     var page = "{{ request('page') }}";
     $(document).ready(function(){
+
+        $.extend({selector: '.richTextBox'}, {})
+        tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
+
         $('.page-link').click(function(e){
             e.preventDefault();
             let link = $(this).attr('href');
@@ -319,8 +410,10 @@
             }
         });
 
-        $('#form-status').submit(function(e){
+        $('.form-submit').submit(function(e){
             $('#status-modal').modal('hide');
+            $('#addendum-modal').modal('hide');
+            $('#addendum-status-modal').modal('hide');
             e.preventDefault();
             $('#div-results').loading({message: 'Cargando...'});
             $.post($(this).attr('action'), $(this).serialize(), function(res){
@@ -332,6 +425,19 @@
                     $('#div-results').loading('toggle');
                 }
             });
+        });
+
+        $('.btn-addendum').click(function(){
+            let item = $(this).data('item');
+            let date = moment(item.finish, "YYYY-MM-DD").add(1, 'days');
+            $('#form-addendum input[name="id"]').val(item.id);
+            $('#form-addendum input[name="start"]').val(date.format("YYYY-MM-DD"));
+            $('#form-addendum input[name="finish"]').attr('min', date.format("YYYY-MM-DD"));
+        });
+
+        $('.btn-addendum-status').click(function(){
+            let id = $(this).data('id');
+            $('#addendum-status-form input[name="id"]').val(id);
         });
 
         $('#form-finish').submit(function(e){
