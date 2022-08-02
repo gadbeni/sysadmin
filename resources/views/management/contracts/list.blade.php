@@ -16,7 +16,8 @@
             <tbody>
                 @forelse ($data as $item)
                     @php
-                        $addendum = $item->addendums->where('deleted_at', NULL)->first();
+                        $addendum = $item->addendums->where('deleted_at', NULL)->sortByDesc('id')->first();
+                        // dd($addendum);
                     @endphp
                     <tr>
                         <td>{{ $item->id }}</td>
@@ -83,7 +84,22 @@
                                     @endphp
                                     <b>Estado</b>: <label class="label label-{{ $label }}">{{ ucfirst($item->status) }}</label>
                                     @if ($addendum)
-                                    <label class="label label-{{ $addendum->status == "firmado" ? 'success' : 'dark' }}" title="Adenda {{ $addendum->status == "firmado" ? 'firmada' : 'elaborada' }}"><i class="voyager-calendar"></i></label>
+                                    @php
+                                        if($addendum->status == "firmado"){
+                                            $class = 'success';
+                                            $label = 'firmada';
+                                        }elseif($addendum->status == "elaborado"){
+                                            $class = 'dark';
+                                            $label = 'elaborada';
+                                        }elseif($addendum->status == "concluido"){
+                                            $class = 'warning';
+                                            $label = 'concluida';
+                                        }else{
+                                            $class = 'default';
+                                            $label = 'desconocida';
+                                        }
+                                    @endphp
+                                    <label class="label label-{{ $class }}" title="Adenda {{ $label }}"><i class="voyager-calendar"></i></label>
                                     @endif
                                 </li>
                             </ul>
@@ -113,14 +129,18 @@
                                     <li><a title="Imprimir memorándum de agradecimiento" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-finished']) }}" target="_blank">Imprimir memorándum</a></li>
                                     @endif
 
-                                    @if ($item->status == 'concluido' && $item->addendums->where('deleted_at', NULL)->count() == 0 && $item->procedure_type_id == 2)
+                                    @if ($item->status == 'concluido' && 
+                                        (
+                                            ($item->addendums->where('status', 'elaborado')->count() == 0 && $item->addendums->where('status', 'firmado')->count() == 0) ||
+                                            $item->addendums->where('status', 'concluido')->count() < 2
+                                        ) &&
+                                        $item->procedure_type_id == 2)
                                     <li><a class="btn-addendum" title="Crear adenda" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' href="#">Crear adenda</a></li>
                                     @endif
 
                                     @if ($item->status == 'concluido' && $item->addendums->where('status', 'elaborado')->count() == 1 && $item->procedure_type_id == 2)
                                     <li><a class="btn-addendum-status" title="Firmar adenda" data-toggle="modal" data-target="#addendum-status-modal" data-id="{{ $addendum->id }}" href="#">Firmar adenda</a></li>
                                     @endif
-                                    
                                 </ul>
                             </div>
 
@@ -145,7 +165,17 @@
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
                                                 <li class="divider"></li>
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.contract']) }}" target="_blank">Contrato</a></li>
+                                                
+                                                {{-- Si hay una adenda firmada y ninguna otra adenda anterior --}}
+                                                @if ($item->addendums->where('status', 'firmado')->count() == 1 && $item->addendums->where('status', 'concluido')->count() == 0)
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum_first']) }}" target="_blank">Adenda</a></li>
+                                                @endif
+
+                                                {{-- Si hay una adenda firmada y una adenda anterior --}}
+                                                {{-- @if ($item->addendums->where('status', 'firmado')->count() == 1 && $item->addendums->where('status', 'concluido')->count() == 1)
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum_second']) }}" target="_blank">Adenda</a></li>
+                                                @endif --}}
+
                                                 @break
                                             @case(5)
                                                 @if ($item->direccion_administrativa->tipo->id == 3 || $item->direccion_administrativa->tipo->id == 4)
@@ -309,7 +339,7 @@
                                 <p><strong><em>MONTO. - </em></strong><em>El monto total del presente contrato modificatorio ser&aacute; por la suma de </em><strong><em>Bs.- </em></strong><strong><em>13.500,00</em></strong><strong><em>.-</em></strong><em> (</em><em>Trece Mil Quinientos 00</em><em>/100 Bolivianos), el pago de esta consultor&iacute;a ser&aacute; de la siguiente manera: En </em><em>cuatro</em><em> (</em><em>04</em><em>) cuotas mensuales, la primera cuota correspondiente a </em><em>12 d&iacute;as</em><em> del mes de </em><em>julio</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>1.800,00.</em></strong><strong><em>- </em></strong><em>(</em><em>Un Mil Ochocientos 00</em><em>/100 Bolivianos), la segunda </em><em>y tercer</em><em> cuota correspondiente a </em><em>los meses de agosto y septiembre</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>4.500,00</em></strong><em>.-(Cuatro Mil Quinientos 00</em><em>/100 Bolivianos), la </em><em>cuarta</em><em> y &uacute;ltima cuota correspondiente a </em><em>18 d&iacute;as</em><em> del mes de </em><em>octubre</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>2.700,00</em></strong><em>.- (Dos Mil Setecientos 00</em><em>/100 Bolivianos). La cancelaci&oacute;n del servicio prestado se realizar&aacute; previa presentaci&oacute;n y aprobaci&oacute;n de informe de actividades de acuerdo a T&eacute;rminos de Referencia, aprobado por el Secretario Departamental de </em><em>Desarrollo Productivo y Econom&iacute;a Plural</em><em> del GAD-BENI.</em></p>
                             </textarea>
                         </div>
-                        <div class="form-group col-md-12 text-right">
+                        <div class="form-group col-md-12 text-right" style="margin-bottom: 0px">
                             <div class="checkbox">
                                 <label><input type="checkbox" required> Aceptar y guardar</label>
                             </div>
@@ -388,7 +418,7 @@
 
 <style>
     .mce-edit-area{
-        max-height: 300px !important;
+        max-height: 250px !important;
         overflow-y: auto;
     }
 </style>
