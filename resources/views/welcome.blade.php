@@ -328,7 +328,7 @@
     <!-- Template Main JS File -->
     <script src="{{ asset('vendor/landingpage/js/main.js') }}"></script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="{{ asset('vendor/jquery/jquery-3.6.0.min.js') }}" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
     {{-- Loading --}}
     <link rel="stylesheet" href="{{ asset('vendor/loading/loading.css') }}">

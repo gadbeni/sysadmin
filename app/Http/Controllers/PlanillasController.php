@@ -470,13 +470,11 @@ class PlanillasController extends Controller
         $paymentschedule_details = PaymentschedulesDetail::with(['paymentschedule.period', 'contract.person'])
                                         ->whereHas('paymentschedule.procedure_type', function($q) use($request){
                                             $q->where('planilla_id', $request->t_planilla);
-                                        })->whereHas('contract.person', function($q) use($request){
-                                            $q->where('afp', $request->afp);
                                         })->whereHas('paymentschedule', function($q) use($period_id, $centralize_code){
                                             $q->where('period_id', $period_id)->where('centralize_code', '<>', NULL)
                                             ->whereRaw($centralize_code != '' ? ' centralize_code = "'.$centralize_code.'"' : 1)
                                             ->where('deleted_at', NULL);
-                                        })->where('deleted_at', NULL)->get();
+                                        })->where('afp', $request->afp)->where('deleted_at', NULL)->get();
 
         return response()->json(['planilla' => $planilla, 'paymentschedule_details' => $paymentschedule_details, 'paymentschedule_details_group' => $paymentschedule_details->groupBy('paymentschedule.centralize_code'), 'centralize_code' => $centralize_code]);
     }

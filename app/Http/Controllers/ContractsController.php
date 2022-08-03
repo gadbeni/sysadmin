@@ -72,7 +72,7 @@ class ContractsController extends Controller
                     })
                     ->whereRaw(Auth::user()->role_id == 25 || (Auth::user()->role_id >= 16 & Auth::user()->role_id <= 18) ? 'procedure_type_id = 2' : 1)
                     // Si el usuario pertenece a jurídico solo puede ver los contratos con estado enviado
-                    ->whereRaw(Auth::user()->role_id >= 19 && Auth::user()->role_id <= 21 ? 'status = "enviado"' : 1)
+                    ->whereRaw(Auth::user()->role_id >= 19 && Auth::user()->role_id <= 21 ? '(status = "enviado" or status = "firmado" or status = "concluido")' : 1)
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
         // dd($data);
         return view('management.contracts.list', compact('data', 'search'));

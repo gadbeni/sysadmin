@@ -16,8 +16,9 @@
             <tbody>
                 @forelse ($data as $item)
                     @php
-                        $addendum = $item->addendums->where('deleted_at', NULL)->sortByDesc('id')->first();
-                        // dd($addendum);
+                        // Contrato posteriores al actual
+                        $contracts = \App\Models\Contract::where('person_id', $item->person_id)->where('deleted_at', NULL)->where('id', '>', $item->id)->get();
+                        $addendums = $item->addendums->where('deleted_at', NULL)->sortByDesc('id');
                     @endphp
                     <tr>
                         <td>{{ $item->id }}</td>
@@ -83,15 +84,15 @@
                                         }
                                     @endphp
                                     <b>Estado</b>: <label class="label label-{{ $label }}">{{ ucfirst($item->status) }}</label>
-                                    @if ($addendum)
+                                    @if (count($addendums) > 0)
                                     @php
-                                        if($addendum->status == "firmado"){
+                                        if($addendums->first()->status == "firmado"){
                                             $class = 'success';
                                             $label = 'firmada';
-                                        }elseif($addendum->status == "elaborado"){
+                                        }elseif($addendums->first()->status == "elaborado"){
                                             $class = 'dark';
                                             $label = 'elaborada';
-                                        }elseif($addendum->status == "concluido"){
+                                        }elseif($addendums->first()->status == "concluido"){
                                             $class = 'warning';
                                             $label = 'concluida';
                                         }else{
@@ -99,7 +100,7 @@
                                             $label = 'desconocida';
                                         }
                                     @endphp
-                                    <label class="label label-{{ $class }}" title="Adenda {{ $label }}"><i class="voyager-calendar"></i></label>
+                                    <label class="label label-{{ $class }} label-addendum" title="Adenda {{ $label }}" data-item='@json($addendums->first())' data-toggle="modal" data-target="#addendum-show-modal" style="cursor: pointer"><i class="voyager-calendar"></i></label>
                                     @endif
                                 </li>
                             </ul>
@@ -129,17 +130,14 @@
                                     <li><a title="Imprimir memorándum de agradecimiento" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-finished']) }}" target="_blank">Imprimir memorándum</a></li>
                                     @endif
 
-                                    @if ($item->status == 'concluido' && 
-                                        (
-                                            ($item->addendums->where('status', 'elaborado')->count() == 0 && $item->addendums->where('status', 'firmado')->count() == 0) ||
-                                            $item->addendums->where('status', 'concluido')->count() < 2
-                                        ) &&
-                                        $item->procedure_type_id == 2)
+                                    @if ($item->status == 'concluido' && count($contracts) == 0 && $item->procedure_type_id == 2 && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
                                     <li><a class="btn-addendum" title="Crear adenda" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' href="#">Crear adenda</a></li>
                                     @endif
 
-                                    @if ($item->status == 'concluido' && $item->addendums->where('status', 'elaborado')->count() == 1 && $item->procedure_type_id == 2)
-                                    <li><a class="btn-addendum-status" title="Firmar adenda" data-toggle="modal" data-target="#addendum-status-modal" data-id="{{ $addendum->id }}" href="#">Firmar adenda</a></li>
+                                    @if (count($addendums) > 0)
+                                        @if ($item->status == 'concluido' && $addendums->first()->status == 'elaborado' && $item->procedure_type_id == 2)
+                                        <li><a class="btn-addendum-status" title="Firmar adenda" data-toggle="modal" data-target="#addendum-status-modal" data-id="{{ $addendums->first()->id }}" href="#">Firmar adenda</a></li>
+                                        @endif
                                     @endif
                                 </ul>
                             </div>
@@ -166,15 +164,12 @@
                                                 <li class="divider"></li>
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.contract']) }}" target="_blank">Contrato</a></li>
                                                 
-                                                {{-- Si hay una adenda firmada y ninguna otra adenda anterior --}}
-                                                @if ($item->addendums->where('status', 'firmado')->count() == 1 && $item->addendums->where('status', 'concluido')->count() == 0)
-                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum_first']) }}" target="_blank">Adenda</a></li>
+                                                {{-- Si hay una adenda firmada --}}
+                                                @if (count($addendums) > 0)
+                                                    @if ($addendums->first()->status == 'firmado')
+                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum_first']) }}" target="_blank">Adenda</a></li>
+                                                    @endif
                                                 @endif
-
-                                                {{-- Si hay una adenda firmada y una adenda anterior --}}
-                                                {{-- @if ($item->addendums->where('status', 'firmado')->count() == 1 && $item->addendums->where('status', 'concluido')->count() == 1)
-                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum_second']) }}" target="_blank">Adenda</a></li>
-                                                @endif --}}
 
                                                 @break
                                             @case(5)
@@ -313,7 +308,7 @@
     </div>
 </form>
 
-{{-- Addendum modal --}}
+{{-- Addendum create modal --}}
 <form action="{{ route('contracts.addendum') }}" id="form-addendum" class="form-submit" method="POST">
     @csrf
     <input type="hidden" name="id">
@@ -354,6 +349,33 @@
         </div>
     </div>
 </form>
+
+{{-- Addendum show modal --}}
+
+<div class="modal modal-primary fade" tabindex="-1" id="addendum-show-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="voyager-certificate"></i> Viendo adenda</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p><b>Dureción</b></p>
+                        <p id="label-date-addendum"></p>
+                        <p><b>Forma de pago</b></p>
+                        <p id="label-details_payments-addendum"></p>
+                        <p id="label-status-addendum"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {{-- Addendum status modal --}}
 <div class="modal fade" tabindex="-1" id="addendum-status-modal" role="dialog">
@@ -423,8 +445,8 @@
     }
 </style>
 
-<script src="{{ asset('vendor/momentjs/moment.min.js') }}"></script>
 <script>
+    moment.locale('es');
     var page = "{{ request('page') }}";
     $(document).ready(function(){
 
@@ -457,12 +479,36 @@
             });
         });
 
+        // Crear adenda
         $('.btn-addendum').click(function(){
             let item = $(this).data('item');
             let date = moment(item.finish, "YYYY-MM-DD").add(1, 'days');
             $('#form-addendum input[name="id"]').val(item.id);
             $('#form-addendum input[name="start"]').val(date.format("YYYY-MM-DD"));
             $('#form-addendum input[name="finish"]').attr('min', date.format("YYYY-MM-DD"));
+        });
+
+        // Mostrar adenda
+        $('.label-addendum').click(function(){
+            let item = $(this).data('item');
+            $('#label-date-addendum').html(`Inicio desde el ${moment(item.start).format('DD [de] MMMM [de] YYYY')} hasta el ${moment(item.finish).format('DD [de] MMMM [de] YYYY')}.`);
+            $('#label-details_payments-addendum').html(`${item.details_payments}`);
+            let style, label;
+            if (item.status == 'elaborado') {
+                style = 'dark';
+                label= 'Elaborada';
+            } else if (item.status == 'firmado') {
+                style = 'success';
+                label= 'Firmada';
+            }else if (item.status == 'concluido') {
+                style = 'warning';
+                label= 'Concluida';
+            }else{
+                style = 'default';
+                label= 'Desconocida';
+            }
+            $('#label-status-addendum').html(`<b>Estado de la adenda</b> <label class="label label-${style}">${label}</label>`);
+            // console.log(item)
         });
 
         $('.btn-addendum-status').click(function(){

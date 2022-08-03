@@ -9,10 +9,10 @@
 @endphp
 
 @section('content')
-    <div class="page-head">
-        <p><strong>CONTRATO MODIFICATORIO DE CONSULTORIA INDIVIDUAL DE LINEA {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }} N&deg; {{ str_pad($addendum->id, 2, "0", STR_PAD_LEFT) }}/2022 RELACIONADO AL CONTRATO {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }}/GAD-BENI N&deg; {{ $code }} </strong></p>
-    </div>
     <div class="content">
+        <div class="page-head">
+            <p><strong>CONTRATO MODIFICATORIO DE CONSULTORIA INDIVIDUAL DE LINEA {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }} N&deg; {{ str_pad($addendum->id, 2, "0", STR_PAD_LEFT) }}/2022 RELACIONADO AL CONTRATO {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }}/GAD-BENI N&deg; {{ $code }} </strong></p>
+        </div>
         <p>&nbsp;</p>
         <p>Conste por el presente Contrato Modificatorio de Consultor&iacute;a Individual de L&iacute;nea, que tiene como contrato principal <strong>{{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }}/GAD-BENI N&deg; {{ $code }}</strong> el cual data del <strong>{{ date('d/m/Y', strtotime($contract->start)) }}</strong>.</p>
         <p>El Gobierno Aut&oacute;nomo Departamental del Beni, a trav&eacute;s de su <strong>{{ Str::upper($contract->direccion_administrativa->nombre) }} ({{ Str::upper($contract->direccion_administrativa->sigla) }})</strong>, con <strong>NIT</strong> N.&ordm; <strong>177396029</strong>, con domicilio legal en el Edificio Central de la Gobernaci&oacute;n del Beni, Acera Sur de la Plaza Mariscal Jos&eacute; Ballivi&aacute;n, en la Ciudad de la Sant&iacute;sima&nbsp; Trinidad, Provincia Cercado, del Departamento del Beni, representado legalmente por el/la <strong>{{ $signature ? $signature->name : setting('firma-autorizada.name') }}</strong>, conforme <strong>Resoluci&oacute;n Administrativa de Gobernaci&oacute;n {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}, de fecha 12 de julio del 2022</strong> en calidad de <strong>{{ $signature ? $signature->job : setting('firma-autorizada.job') }} ({{ Str::upper($contract->direccion_administrativa->sigla) }})</strong><strong> &ndash; Unidad Solicitante</strong>, que en adelante se denominar&aacute; la <strong>ENTIDAD</strong>; y de la otra parte {{ $contract->person->gender == 'masculino' ? 'El Señor' : 'La Señora' }} <strong> {{ $contract->person->first_name }} {{ $contract->person->last_name }}</strong><strong><em>,</em></strong> mayor de edad, h&aacute;bil en toda forma de derecho, con C&eacute;dula de Identidad <strong>N.&deg; </strong><strong>{{ $contract->person->ci }}</strong>, vecina de esta Ciudad, quien en adelante se la/lo denominar&aacute; <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }},</strong> quienes celebran y suscriben el presente <strong><em>Contrato Modificatorio</em></strong>, de acuerdo a los t&eacute;rminos y condiciones siguientes:</p>
@@ -50,7 +50,7 @@
         <p>El objeto y causa del presente contrato <strong>(PRIMER MODIFICATORIO)</strong> es la modificaci&oacute;n del contrato <strong>{{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }}/GAD-BENI N&deg; {{ $code }}</strong>, el cual tiene una vigencia desde el <strong>{{ date('d', strtotime($contract->start)) }}</strong> de <strong>{{ $months[intval(date('m', strtotime($contract->start)))] }}</strong> de <strong>{{ date('Y', strtotime($contract->start)) }}</strong> hasta el <strong>{{ date('d', strtotime($addendum->start."- 1 days")) }}</strong> de <strong>{{ $months[intval(date('m', strtotime($addendum->start."- 1 days")))] }}</strong> del <strong> {{ date('Y', strtotime($addendum->start)) }}</strong>, por consiguiente y en concordancia con lo manifestado en la Cl&aacute;usula Primera del presente documento, se ampl&iacute;a y modifica el contrato <strong>{{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }}/GAD-BENI N&deg; {{ $code }}</strong>, de la siguiente manera:</p>        
         <p><strong><em>VIGENCIA. &ndash;</em></strong></p>
         <p>&nbsp;<em>El presente Primer Contrato Modificatorio entrar&aacute; en vigencia desde </em><strong><em>{{ date('d', strtotime($addendum->start)) }} de {{ $months[intval(date('m', strtotime($addendum->start)))] }} al {{ date('d', strtotime($addendum->finish)) }} de {{ $months[intval(date('m', strtotime($addendum->finish)))] }} de {{ date('Y', strtotime($addendum->start)) }}.</em></strong></p>
-        <p><strong><em>MONTO. - </em></strong><em>El monto total del presente contrato modificatorio ser&aacute; por la suma de </em><strong><em>Bs.- </em></strong><strong><em>13.500,00</em></strong><strong><em>.-</em></strong><em> (</em><em>Trece Mil Quinientos 00</em><em>/100 Bolivianos), el pago de esta consultor&iacute;a ser&aacute; de la siguiente manera: En </em><em>cuatro</em><em> (</em><em>04</em><em>) cuotas mensuales, la primera cuota correspondiente a </em><em>12 d&iacute;as</em><em> del mes de </em><em>julio</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>1.800,00.</em></strong><strong><em>- </em></strong><em>(</em><em>Un Mil Ochocientos 00</em><em>/100 Bolivianos), la segunda </em><em>y tercer</em><em> cuota correspondiente a </em><em>los meses de agosto y septiembre</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>4.500,00</em></strong><em>.-(Cuatro Mil Quinientos 00</em><em>/100 Bolivianos), la </em><em>cuarta</em><em> y &uacute;ltima cuota correspondiente a </em><em>18 d&iacute;as</em><em> del mes de </em><em>octubre</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>2.700,00</em></strong><em>.- (Dos Mil Setecientos 00</em><em>/100 Bolivianos). La cancelaci&oacute;n del servicio prestado se realizar&aacute; previa presentaci&oacute;n y aprobaci&oacute;n de informe de actividades de acuerdo a T&eacute;rminos de Referencia, aprobado por el Secretario Departamental de </em><em>Desarrollo Productivo y Econom&iacute;a Plural</em><em> del GAD-BENI.</em></p>
+        <div class="div-details_payments">{!! $addendum->details_payments !!}</div>
         
         <div class="saltopagina"></div>
         <div class="pt"></div>
@@ -150,6 +150,9 @@
 
 @section('script')
     <script>
-
+        $(document).ready(function(){
+            $('.div-details_payments span').css('font-size', '12px');
+            $('.div-details_payments p').css('font-size', '12px');
+        });
     </script>
 @endsection
