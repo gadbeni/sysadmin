@@ -107,6 +107,7 @@
             function finishContract(id, date) {
                 $('#form-finish input[name="id"]').val(id);
                 $('#form-finish input[name="finish"]').val(date);
+                $('#form-finish input[name="finish"]').attr("max", date);
             }
 
             function downgradeContract(id, status) {

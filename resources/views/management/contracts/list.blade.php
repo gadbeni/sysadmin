@@ -167,7 +167,7 @@
                                                 {{-- Si hay una adenda firmada --}}
                                                 @if (count($addendums) > 0)
                                                     @if ($addendums->first()->status == 'firmado')
-                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum_first']) }}" target="_blank">Adenda</a></li>
+                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum']) }}" target="_blank">Adenda</a></li>
                                                     @endif
                                                 @endif
 
@@ -362,7 +362,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <p><b>Dureción</b></p>
+                        <p><b>Duración</b></p>
                         <p id="label-date-addendum"></p>
                         <p><b>Forma de pago</b></p>
                         <p id="label-details_payments-addendum"></p>

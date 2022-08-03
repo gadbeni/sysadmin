@@ -84,16 +84,12 @@
                 @endif
                 .
             </p>
-            <br>
             <p>
                 Asimismo, hacerle conocer que la presente rotación, no conlleva el traslado mobiliario, equipo y otros enseres del Área de origen.
             </p>
-            <br>
             <p>
                 Deseándole éxito en el desempeño de sus funciones y responsabilidades que devengan de la prestación de sus servicios, y esperando contar con su valioso aporte y participación en el logro de los objetivos del Gobierno Autónomo Departamental del Beni. 
             </p>
-            <br>
-            <br>
             <p>Saludo a usted atentamente.</p>
         </div>
     </div>

@@ -260,7 +260,7 @@
                                             <th>Bono antigüedad</th>
                                             <th>Descuentos</th>
                                             <th>Líquido pagable</th>
-                                            <th class="text-right">Estado</th>
+                                            <th>Estado</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -303,6 +303,78 @@
                                                     @if ($cashiers_payment)
                                                     <br><small>Por {{ $cashiers_payment->cashier->user->name }} <br> {{ date('d-m-Y', strtotime($cashiers_payment->created_at)) }} <br> {{ date('H:i:s', strtotime($cashiers_payment->created_at)) }} </small>
                                                     @endif
+                                                </td>
+                                            </tr>
+                                            @php
+                                                $cont++;
+                                            @endphp
+                                        @empty
+                                            <tr>
+                                                <td colspan="6">No hay datos disponible</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-bordered" style="padding-bottom:5px;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel-heading" style="border-bottom:0;">
+                                    <h3 class="panel-title">Historial de inamovilidades</h3>
+                                </div>
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>N&deg;</th>
+                                            <th>Inicio</th>
+                                            <th>Conclusión</th>
+                                            <th>Observaciones</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $cont = 1;
+                                        @endphp
+                                        @forelse ($contract->addendums as $item)
+                                            <tr>
+                                                <td>{{ str_pad($item->id, 2, "0", STR_PAD_LEFT) }}/2022</td>
+                                                <td>{{ date('d/M/Y', strtotime($item->start)) }}</td>
+                                                <td>{{ date('d/M/Y', strtotime($item->finish)) }}</td>
+                                                <td>{{ $item->observations }}</td>
+                                                <td>
+                                                    @php
+                                                        switch ($item->status) {
+                                                            case 'elaborado':
+                                                                $style = 'dark';
+                                                                $label = 'Elaborada';
+                                                                break;
+                                                            case 'firmado':
+                                                                $style = 'success';
+                                                                $label = 'Firmada';
+                                                                break;
+                                                            case 'concluido':
+                                                                $style = 'warning';
+                                                                $label = 'Concluida';
+                                                                break;
+                                                            default:
+                                                                $style = 'default';
+                                                                $label = 'No definido';
+                                                                break;
+                                                        }
+                                                    @endphp
+                                                    <label class="label label-{{ $style }}">{{ $label }}</label>
+                                                </td>
+                                                <td class="text-right">
+                                                    <a href="{{ route('contracts.print', ['id' => $contract->id, 'document' => 'consultor.addendum']) }}?type={{ $cont == 1 ? 'first' : '' }}" class="btn btn-default btn-sm" target="_blank"><i class="glyphicon glyphicon-print"></i> Imprimir</a>
                                                 </td>
                                             </tr>
                                             @php

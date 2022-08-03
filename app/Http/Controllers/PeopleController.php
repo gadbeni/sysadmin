@@ -53,6 +53,9 @@ class PeopleController extends Controller
             $person = Person::where('id', $id)->whereHas('contracts', function($query){
                 $query->where('status', 'firmado')->where('deleted_at', NULL);
             })->where('deleted_at', NULL)->first();
+            if($person->contracts){
+                return redirect()->route('voyager.people.index')->with(['message' => 'El funcionario no tiene un contrato vigente', 'alert-type' => 'error']);
+            }
 
             $destiny = Contract::where('person_id', $request->destiny_id)->where('status', 'firmado')->where('deleted_at', NULL)->first();
             $responsible = Contract::where('person_id', $request->responsible_id)->where('status', 'firmado')->where('deleted_at', NULL)->first();
@@ -70,7 +73,7 @@ class PeopleController extends Controller
 
             return redirect()->route('voyager.people.index')->with(['message' => 'Rotación registrada correctamente', 'alert-type' => 'success', 'rotation_id' => $rotation->id]);
         } catch (\Throwable $th) {
-            // dd($th);
+            dd($th);
             return redirect()->route('voyager.people.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
