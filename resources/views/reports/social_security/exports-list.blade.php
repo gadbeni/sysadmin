@@ -51,7 +51,7 @@
                             @php
                                 $cont = 1;
                             @endphp
-                            @foreach($data->details as $item)
+                            @foreach($data as $item)
                                 @php
                                 // dd($item);
                                     $period = \App\Models\Period::findOrFail($item->paymentschedule->period_id);

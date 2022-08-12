@@ -103,7 +103,7 @@
                     <td>{{ $item->status }}</td>
                     <td>
                         {{ $item->user->name }} <br>
-                        <small>{{ date('d/m/Y H:i', strtotime($item->created_at)) }}</small>
+                        {{-- <small>{{ date('d/m/Y H:i', strtotime($item->created_at)) }}</small> --}}
                     </td>
                 </tr>
                 @php

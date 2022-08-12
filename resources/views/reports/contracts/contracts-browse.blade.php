@@ -22,7 +22,7 @@
                             <div class="col-md-4" style="margin-top: 30px">
                                 <form name="form_search" id="form-search" action="{{ route('reports.contracts.contracts.list') }}" method="post">
                                     @csrf
-                                    <input type="hidden" name="print">
+                                    <input type="hidden" name="type">
                                     <div class="form-group">
                                         <select name="procedure_type_id" class="form-control select2">
                                             <option selected value="">Todos los tipos de contratos</option>
@@ -98,12 +98,12 @@
                 });
             });
 
-            function report_print(){
+            function report_export(type){
                 $('#form-search').attr('target', '_blank');
-                $('#form-search input[name="print"]').val(1);
+                $('#form-search input[name="type"]').val(type);
                 window.form_search.submit();
                 $('#form-search').removeAttr('target');
-                $('#form-search input[name="print"]').val('');
+                $('#form-search input[name="type"]').val('');
             }
         </script>
     @stop

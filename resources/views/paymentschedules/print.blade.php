@@ -15,7 +15,7 @@
                     <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="100px"></td>
                     <td style="text-align: right">
                         <h3 style="margin: 0px">PLANILLA DE PAGO HABERES AL PERSONAL DEPENDIENTE GAD-BENI</h3>
-                        <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }} @else | Todas las AFP's @endif</span>
+                        <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }} @else | Todas las AFP's @endif @if($cc) | {{ $cc == 1 ? 'Caja Cordes'  : 'Otras Cajas de salud'}} @endif</span>
                         @if ($centralize)
                             <h3 style="margin: 0px">{{ Str::upper($data->procedure_type->name) }}</h3>
                         @else
@@ -526,7 +526,7 @@
                         <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="100px"></td>
                         <td style="text-align: right">
                             <h3 style="margin: 0px">PLANILLA DE PAGO HABERES AL PERSONAL DEPENDIENTE GAD-BENI</h3>
-                            <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }} @else | Todas las AFP's @endif</span>
+                            <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }} @else | Todas las AFP's @endif @if($cc) | {{ $cc == 1 ? 'Caja Cordes'  : 'Otras Cajas de salud'}} @endif </span>
                             @if ($centralize)
                                 <h3 style="margin: 0px">{{ Str::upper($data->procedure_type->name) }}</h3>
                             @else
@@ -841,38 +841,40 @@
 @section('css')
     <style>
         .content {
-            padding-left: 30px;
-            padding-right: 30px;
-            font-size: 13px;
+            /* padding-left: 30px;
+            padding-right: 30px; */
+            font-size: 12px;
         }
         .header{
             width: 100%;
         }
-        .header-resume{
+        /* .header-resume{
             display: none;
-        }
+        } */
         .table-details th{
             font-size: 7px !important
         }
         .table-details td{
-            font-size: 10px !important
+            font-size: 9px !important
         }
         .table-details tfoot td{
             font-size: 11px !important
         }
         .table-resumen{
-            font-size: 11px !important;
-            margin-top: 100px;
-            margin-bottom: 100px;
+            font-size: 10px !important;
+            margin-top: 40px;
+            /* margin-bottom: 100px; */
         }
         table, th, td {
             border-collapse: collapse;
         }
         .saltopagina{
-            display: none;
+            /* display: none; */
+            display: block;
+            page-break-before: always;
         }
         
-        @media print{
+        /* @media print{
             @page {
                 size: landscape;
             }
@@ -903,7 +905,7 @@
                 display: block;
                 page-break-before: always;
             }
-        }
+        } */
     </style>
 @endsection
 

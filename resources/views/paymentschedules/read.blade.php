@@ -805,11 +805,19 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="program_id">AFP</label>
+                            <label for="afp">AFP</label>
                             <select name="afp" class="form-control select2">
                                 <option value="">Todas</option>
                                 <option value="1">Futuro</option>
                                 <option value="2">Previsión</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cc">Caja de salud</label>
+                            <select name="cc" class="form-control select2">
+                                <option value="">Todas</option>
+                                <option value="1">Caja cordes</option>
+                                <option value="2">Otras</option>
                             </select>
                         </div>
                         @php
@@ -828,7 +836,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="program_id">Agrupar por</label>
+                            <label for="group">Agrupar por</label>
                             <select name="group" class="form-control select2">
                                 <option value="">Ninguno</option>
                                 <option value="1">Dirección administrativa</option>
@@ -871,11 +879,12 @@
                 e.preventDefault();
                 $('#print-modal').modal('toggle');
                 let afp = '&afp='+$('#print-modal select[name="afp"] option:selected').val();
+                let cc = '&cc='+$('#print-modal select[name="cc"] option:selected').val();
                 let program = '&program='+$('#print-modal select[name="program_id"] option:selected').val();
                 let group = '&group='+$('#print-modal select[name="group"] option:selected').val();
                 let print_type = '&print_type='+$('#print-modal select[name="print_type"] option:selected').val();
                 console.log(afp,program,group)
-                window.open(centralize+afp+program+group+print_type+'&print=true', '_blank');
+                window.open(centralize+afp+cc+program+group+print_type+'&print=true', '_blank');
             });
 
             $('.form-submit').submit(function(e){

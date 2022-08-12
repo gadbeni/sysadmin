@@ -15,6 +15,7 @@ class PaymentschedulesDetail extends Model
         'paymentschedule_id',
         'contract_id',
         'afp',
+        'cc',
         'item',
         'worked_days',
         'salary',

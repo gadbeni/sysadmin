@@ -422,9 +422,11 @@ class PlanillasController extends Controller
         return view('planillas.payment-recipe-alt', compact('payment', 'planilla'));
     }
 
-    public function planillas_pagos_print_group($id){
+    public function planillas_pagos_print_group($id, $paymentschedule_id = null){
         $paymentschedule_details = PaymentschedulesDetail::with(['paymentschedule', 'paymentschedule.procedure_type', 'contract.person', 'paymentschedule.period'])
                                 ->where('paymentschedule_id', $id)
+                                // En caso de enviar el pago de solo 1 detalle de planilla (para los pagos que no son desde caja)
+                                ->whereRaw($paymentschedule_id ? 'id = '.$paymentschedule_id : 1)
                                 ->where('deleted_at', NULL)->orderBy('item', 'ASC')->get();
         return view('planillas.payment-recipe-group', compact('paymentschedule_details'));
     }

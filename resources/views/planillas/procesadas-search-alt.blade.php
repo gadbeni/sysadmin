@@ -108,6 +108,8 @@
                                     @endif
                                     @if ($item->status == 'pagado' && $item->payment)
                                         <button type="button" onclick="print_recipe({{ $item->payment->id }}, 'sueldo')" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+                                    @elseif ($item->status == 'pagado')
+                                        <button type="button" onclick="print_recipe({{ $item->paymentschedule_id }}, 'sueldo_alt', {{ $item->id }})" title="Imprimir" class="btn btn-default"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
                                     @endif
                                 </td>
                             </tr>
@@ -169,10 +171,14 @@
         });
     });
 
-    function print_recipe(id, type){
+    function print_recipe(id, type, paymentDetail = null){
         switch (type) {
             case 'sueldo':
                 window.open("{{ url('admin/planillas/pagos/print') }}/"+id, "Recibo", `width=700, height=500`);
+                break;
+            case 'sueldo_alt':
+                console.log(id)
+                window.open("{{ url('admin/planillas/pagos/print-group') }}/"+id+"/"+paymentDetail, "Recibo", `width=700, height=500`);
                 break;
             case 'aguinaldo':
                 window.open("{{ url('admin/planillas/pagos/aguinaldos/print') }}/"+id, "Recibo", `width=700, height=500`);

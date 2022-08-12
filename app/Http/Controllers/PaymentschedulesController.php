@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 // Imports
 use App\Imports\PaymentschedulesFilesImport;
@@ -250,6 +251,7 @@ class PaymentschedulesController extends Controller
     public function show($id)
     {
         $afp = request('afp');
+        $cc = request('cc');
         $print = request('print');
         $centralize = request('centralize');
         $program = request('program');
@@ -260,8 +262,8 @@ class PaymentschedulesController extends Controller
 
         $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract' => function($q){
                         $q->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
-                    }, 'details' => function($q){
-                        $q->where('deleted_at', NULL);
+                    }, 'details' => function($q) use($cc){
+                        $q->whereRaw($cc ? "cc = $cc" : 1)->where('deleted_at', NULL);
                     }])
                     ->where('id', $id)->where('deleted_at', NULL)->first();
         
@@ -271,6 +273,7 @@ class PaymentschedulesController extends Controller
                             ->whereHas('paymentschedule', function($q) use($centralize_code){
                                 $q->where('centralize_code', $centralize_code)->where('deleted_at', NULL);
                             })
+                            ->whereRaw($cc ? "cc = $cc" : 1)
                             ->where('deleted_at', NULL)
                             ->get();
         }
@@ -299,7 +302,10 @@ class PaymentschedulesController extends Controller
         }
 
         if($print){
-            return view('paymentschedules.print', compact('data', 'afp', 'centralize', 'program', 'group', 'print_type'));
+            // $view = view('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'print_type'));
+            // return $view;
+            $pdf = PDF::loadView('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'print_type'));
+            return $pdf->setPaper('legal', 'landscape')->stream();
         }
 
         return view('paymentschedules.read', compact('data', 'afp', 'centralize'));

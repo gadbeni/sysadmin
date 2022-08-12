@@ -86,7 +86,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('planillas/pagos/details/payment/multiple', [PlanillasController::class, 'planillas_pagos_details_payment_multiple'])->name('planillas.pagos.details.payment.multiple');
     Route::post('planillas/pagos/update/status', [PlanillasController::class, 'planillas_pagos_update_status'])->name('planillas.pagos.update.status');
     Route::get('planillas/pagos/print/{id}', [PlanillasController::class, 'planillas_pagos_print']);
-    Route::get('planillas/pagos/print-group/{id}', [PlanillasController::class, 'planillas_pagos_print_group'])->name('planillas.pagos.print.group');
+    Route::get('planillas/pagos/print-group/{id}/{paymentschedule_id?}', [PlanillasController::class, 'planillas_pagos_print_group'])->name('planillas.pagos.print.group');
     Route::get('planillas/pagos/aguinaldos/print/{id}', [PlanillasController::class, 'planillas_pagos_aguinaldos_print']);
     Route::post('planillas/pagos/delete', [PlanillasController::class, 'planillas_pagos_delete'])->name('planillas.pagos.delete');
     Route::get('planillas/pagos/delete/print/{id}', [PlanillasController::class, 'planillas_pagos_delete_print']);

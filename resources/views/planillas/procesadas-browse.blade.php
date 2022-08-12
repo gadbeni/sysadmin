@@ -86,12 +86,15 @@
                 </div>
             </div>
         </div>
-        <div style="position: fixed; bottom: 40px; right: 20px; z-index: 10;padding: 10px 20px; background-color: white; box-shadow: 0px 0px 15px 10px white; border-radius: 5px">
-            <div class="btn-group btn-group-lg">
-                <button type="button" class="btn btn-warning btn-lg btn-increment-ticket" ><h4>{{ setting('auxiliares.numero_ticket') == 0  ? 'Iniciar' : 'Siguiente' }} <span class="voyager-double-right"></span></h4></button>
-                <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#reset-tickets-modal"><h4><span class="voyager-settings"></span></h4></button>
+
+        @if ((Auth::user()->role_id >= 2 && Auth::user()->role_id <= 5) || Auth::user()->role_id == 1)
+            <div style="position: fixed; bottom: 40px; right: 20px; z-index: 10;padding: 10px 20px; background-color: white; box-shadow: 0px 0px 15px 10px white; border-radius: 5px">
+                <div class="btn-group btn-group-lg">
+                    <button type="button" class="btn btn-warning btn-lg btn-increment-ticket" ><h4>{{ setting('auxiliares.numero_ticket') == 0  ? 'Iniciar' : 'Siguiente' }} <span class="voyager-double-right"></span></h4></button>
+                    <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#reset-tickets-modal"><h4><span class="voyager-settings"></span></h4></button>
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 @stop
 

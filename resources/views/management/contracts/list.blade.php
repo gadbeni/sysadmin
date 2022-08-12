@@ -167,7 +167,7 @@
                                                 {{-- Si hay una adenda firmada --}}
                                                 @if (count($addendums) > 0)
                                                     @if ($addendums->first()->status == 'firmado')
-                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum']) }}" target="_blank">Adenda</a></li>
+                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum']).(count($addendums) == 1 ? '?type=first' : '') }}" target="_blank">Adenda</a></li>
                                                     @endif
                                                 @endif
 

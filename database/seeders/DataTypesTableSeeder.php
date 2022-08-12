@@ -415,6 +415,42 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2022-07-04 15:38:46',
                 'updated_at' => '2022-07-04 15:40:20',
             ),
+            22 => 
+            array (
+                'id' => 25,
+                'name' => 'direcciones',
+                'slug' => 'direcciones',
+                'display_name_singular' => 'Dirección',
+                'display_name_plural' => 'Direcciones Administrativas',
+                'icon' => 'voyager-list',
+                'model_name' => 'App\\Models\\Direccion',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2022-08-10 13:25:24',
+                'updated_at' => '2022-08-10 13:33:34',
+            ),
+            23 => 
+            array (
+                'id' => 26,
+                'name' => 'memos_types_groups',
+                'slug' => 'memos-types-groups',
+                'display_name_singular' => 'Grupo de memo',
+                'display_name_plural' => 'Grupo de memo',
+                'icon' => 'voyager-list',
+                'model_name' => 'App\\Models\\MemosTypesGroup',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2022-08-10 14:08:21',
+                'updated_at' => '2022-08-10 14:27:06',
+            ),
         ));
         
         

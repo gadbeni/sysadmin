@@ -53,7 +53,7 @@ class PeopleController extends Controller
             $person = Person::where('id', $id)->whereHas('contracts', function($query){
                 $query->where('status', 'firmado')->where('deleted_at', NULL);
             })->where('deleted_at', NULL)->first();
-            if($person->contracts){
+            if(count($person->contracts) == 0){
                 return redirect()->route('voyager.people.index')->with(['message' => 'El funcionario no tiene un contrato vigente', 'alert-type' => 'error']);
             }
 

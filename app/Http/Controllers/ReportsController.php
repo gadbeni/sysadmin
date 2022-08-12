@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 // Models
 use App\Models\PayrollPayment;
@@ -28,6 +29,7 @@ use App\Models\Paymentschedule;
 // Exports
 use App\Exports\MinisterioTrabajoExport;
 use App\Exports\AFPExport;
+use App\Exports\ContractsExport;
 
 class ReportsController extends Controller
 {
@@ -79,13 +81,17 @@ class ReportsController extends Controller
     }
 
     public function contracts_contracts_list(Request $request){
+        // dd($request->all());
         $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'unidad_administrativa', 'type'])
                         ->whereRaw($request->procedure_type_id ? "procedure_type_id = ".$request->procedure_type_id : 1)
                         ->whereRaw($request->status ? "status = '".$request->status."'" : 1)
                         ->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id = ".$request->direccion_administrativa_id : 1)
                         ->where('deleted_at', NULL)->get();
-        if($request->print){
+        if($request->type == 'print'){
             return view('reports.contracts.contracts-print', compact('contracts'));
+        }else if($request->type == 'excel'){
+            // return view('reports.contracts.contracts-excel', compact('contracts'));
+            return Excel::download(new ContractsExport($contracts), 'contratos.xlsx');
         }else{
             return view('reports.contracts.contracts-list', compact('contracts'));
         }
@@ -737,9 +743,11 @@ class ReportsController extends Controller
         })->whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
 
         if($request->type == 'print'){
-            return view('reports.social_security.caratula-list-print', compact('planilla_id', 'planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes', 'paymentschedules', 'afp'));
+            // return view('reports.social_security.caratula-list-print', compact('planilla_id', 'planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes', 'paymentschedules', 'afp'));
+            $pdf = PDF::loadView('reports.social_security.caratula-list-print', compact('planilla_id', 'planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes', 'paymentschedules', 'afp'));
+            return $pdf->stream();
         }else{
-            return view('reports.social_security.caratula-list', compact('planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes', 'paymentschedules', 'afp'));
+            return view('reports.social_security.caratula-list', compact('planilla_id', 'planilla', 'pagos', 'cheques_afp', 'cheques_salud', 'planillahaberes', 'paymentschedules', 'afp'));
         }
     }
 
@@ -805,17 +813,6 @@ class ReportsController extends Controller
             })->where('deleted_at', NULL)->get();
             $title = 'ministerio de trabajo '.date('d-m-Y H:i:s');
         }elseif($type_report == '#form-afp'){
-            // $data = PaymentschedulesDetail::with(['contract.program', 'paymentschedule.period'])
-            // ->whereHas('paymentschedule', function($q) use($paymentschedule_id){
-            //     $q->where('deleted_at', NULL)->whereRaw('(id = "'.intval($paymentschedule_id).'" or centralize_code like "'.intval(explode('-', $paymentschedule_id)[0]).'-c")');
-            // })
-            // ->whereHas('contract', function($q){
-            //     $q->whereRaw('(procedure_type_id = 1 or procedure_type_id = 5)')->where('deleted_at', NULL);
-            // })
-            // ->whereHas('contract.person', function($q) use($afp){
-            //     $q->where('afp', $afp)->where('deleted_at', NULL);
-            // })->where('deleted_at', NULL)->get();
-
             $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract' => function($q){
                         $q->where('deleted_at', NULL)->orderBy('id', 'DESC');
                     }, 'details' => function($q){
@@ -843,7 +840,6 @@ class ReportsController extends Controller
                 $data->details = $details;
             }
         }
-        
         if($type_export == 'excel'){
             if($type_report == '#form-ministerio'){
                 return Excel::download(new MinisterioTrabajoExport($data), 'Ministerios de trabajo '.date('d-m-Y H:i:s').".xlsx");

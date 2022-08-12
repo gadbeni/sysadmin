@@ -40,5 +40,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(UnidadesTableSeeder::class);
         // $this->call(IrremovabilityTypesTableSeeder::class);
         // $this->call(PermissionRoleTableSeeder::class);
+        // $this->call(MemosTypesGroupsTableSeeder::class);
     }
 }

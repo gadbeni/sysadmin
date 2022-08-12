@@ -16,7 +16,11 @@
                 <tr>
                     <td rowspan="2">
                         @if (count($paymentschedules) > 0)
-                            {{ $paymentschedules[0]->direccion_administrativa->nombre }}
+                            @if (str_contains(strtolower($planilla_id), '-c'))
+                                Administración Central
+                            @else
+                                {{ $paymentschedules[0]->direccion_administrativa->nombre }}
+                            @endif
                         @else
                             {{ count($planilla) > 0 ? $planilla[0]->direccion_administrativa : '' }}
                         @endif
