@@ -256,9 +256,9 @@ class PaymentschedulesController extends Controller
         $centralize = request('centralize');
         $program = request('program');
         $group = request('group');
-        $print_type = request('print_type');
+        $type_generate = request('type_generate');
         $excel = request('excel');
-        $type_excel = request('type_excel');
+        $type_render = request('type_render');
 
         $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract' => function($q){
                         $q->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
@@ -302,8 +302,12 @@ class PaymentschedulesController extends Controller
         }
 
         if($print){
-            // return view('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'print_type'));
-            $pdf = PDF::loadView('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'print_type'));
+            if($type_render == 1){
+                $pdf = PDF::loadView('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'type_generate', 'type_render'));
+            }else{
+                return view('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'type_generate', 'type_render'));
+            }
+            
             return $pdf->setPaper('legal', 'landscape')->stream();
         }
 

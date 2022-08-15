@@ -794,54 +794,59 @@
                         <h4 class="modal-title"><i class="glypicon glypicon-print"></i> Imprimir planilla</h4>
                     </div>
                     <div class="modal-body">
-                        
-                        <div class="form-group">
-                            <label for="print_type">Tipo de impresión</label>
-                            <select name="print_type" class="form-control select2">
-                                <option value="1">Normal</option>
-                                <option value="2">Contabilidad</option>
-                                <option value="3">Recursos Humanos</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="afp">AFP</label>
-                            <select name="afp" class="form-control select2">
-                                <option value="">Todas</option>
-                                <option value="1">Futuro</option>
-                                <option value="2">Previsión</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="cc">Caja de salud</label>
-                            <select name="cc" class="form-control select2">
-                                <option value="">Todas</option>
-                                <option value="1">Caja cordes</option>
-                                <option value="2">Otras</option>
-                            </select>
-                        </div>
-                        @php
-                            $contracts = collect();
-                            foreach($data->details as $item){
-                                $contracts->push($item->contract);
-                            }
-                        @endphp
-                        <div class="form-group">
-                            <label for="program_id">Programa/Proyecto</label>
-                            <select name="program_id" class="form-control select2">
-                                <option value="">Todos</option>
-                                @foreach ($contracts->groupBy('program_id') as $item)
-                                    <option value="{{ $item[0]->program->id }}">{{ $item[0]->program->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="group">Agrupar por</label>
-                            <select name="group" class="form-control select2">
-                                <option value="">Ninguno</option>
-                                <option value="1">Dirección administrativa</option>
-                                <option value="2">Programas/Proyectos</option>
-                            </select>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label for="type_generate">Tipo de impresión</label>
+                                <select name="type_generate" class="form-control select2">
+                                    <option value="1">Normal</option>
+                                    <option value="2">Contabilidad</option>
+                                    <option value="3">Recursos Humanos</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="afp">AFP</label>
+                                <select name="afp" class="form-control select2">
+                                    <option value="">Todas</option>
+                                    <option value="1">Futuro</option>
+                                    <option value="2">Previsión</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="cc">Caja de salud</label>
+                                <select name="cc" class="form-control select2">
+                                    <option value="">Todas</option>
+                                    <option value="1">Caja cordes</option>
+                                    <option value="2">Otras</option>
+                                </select>
+                            </div>
+                            @php
+                                $contracts = collect();
+                                foreach($data->details as $item){
+                                    $contracts->push($item->contract);
+                                }
+                            @endphp
+                            <div class="form-group col-md-6">
+                                <label for="program_id">Programa/Proyecto</label>
+                                <select name="program_id" class="form-control select2">
+                                    <option value="">Todos</option>
+                                    @foreach ($contracts->groupBy('program_id') as $item)
+                                        <option value="{{ $item[0]->program->id }}">{{ $item[0]->program->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="group">Agrupar por</label>
+                                <select name="group" class="form-control select2">
+                                    <option value="">Ninguno</option>
+                                    <option value="1">Dirección administrativa</option>
+                                    <option value="2">Programas/Proyectos</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="radio-inline"><input type="radio" name="optradio" class="type_render" value="1" checked>Generar PDF</label>
+                                <label class="radio-inline"><input type="radio" name="optradio" class="type_render" value="2">HTML</label>
+                                {{-- <label class="radio-inline"><input type="radio" name="optradio">Option 3</label> --}}
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -882,9 +887,9 @@
                 let cc = '&cc='+$('#print-modal select[name="cc"] option:selected').val();
                 let program = '&program='+$('#print-modal select[name="program_id"] option:selected').val();
                 let group = '&group='+$('#print-modal select[name="group"] option:selected').val();
-                let print_type = '&print_type='+$('#print-modal select[name="print_type"] option:selected').val();
-                console.log(afp,program,group)
-                window.open(centralize+afp+cc+program+group+print_type+'&print=true', '_blank');
+                let type_generate = '&type_generate='+$('#print-modal select[name="type_generate"] option:selected').val();
+                let type_render = '&type_render='+$(".type_render:checked").val();
+                window.open(centralize+afp+cc+program+group+type_generate+type_render+'&print=true', '_blank');
             });
 
             $('.form-submit').submit(function(e){

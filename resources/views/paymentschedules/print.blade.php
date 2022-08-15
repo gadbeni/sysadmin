@@ -24,7 +24,17 @@
                         @endif
                     </td>
                     <td style="text-align:center; width: 90px">
-                        {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->nombre).' | '.$data->procedure_type->name); !!} <br>
+                        @php
+                            $string_qr = 'Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->nombre).' | '.$data->procedure_type->name;
+                        @endphp
+                        @if ($type_render == 1)
+                            @php
+                                $qrcode = base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($string_qr));
+                            @endphp
+                            <img src="data:image/png;base64, {!! $qrcode !!}"> <br>
+                        @else
+                            {!! QrCode::size(80)->generate($string_qr); !!} <br>
+                        @endif
                     </td>
                 </tr>
                 <tr>
@@ -74,18 +84,18 @@
                         <th rowspan="3">TOTAL DESC.</th>
                         <th rowspan="3">LÍQUIDO PAGABLE</th>
 
-                        @if ($print_type == 1)
+                        @if ($type_generate == 1)
                         <th rowspan="3">FIRMA</th>
                         <th rowspan="3">N&deg;</th>
                         @endif
 
                         {{-- Si es planilla de funcionamiento se muestran los aportes patronales--}}
-                        @if ($print_type == 2)
+                        @if ($type_generate == 2)
                         <th style="text-align: center" colspan="5">APORTES PATRONALES</th>
                         @endif
 
                         {{-- Si se imprime para RRHH --}}
-                        @if ($print_type == 3)
+                        @if ($type_generate == 3)
                         <th rowspan="3">N&deg; DE CUENTA</th>
                         @endif
                     </tr>
@@ -104,7 +114,7 @@
                         <th rowspan="2">DÍAS</th>
                         <th rowspan="2">MULTAS</th>
 
-                        @if ($print_type == 2)
+                        @if ($type_generate == 2)
                         <th>RIESGO PROFESIONAL</th>
                         <th>APORTE VIVIENDA</th>
                         <th>APORTE SOLIDARIO</th>
@@ -126,7 +136,7 @@
                         <th>1%</th>
 
                         {{-- Si es planilla de funcionamiento --}}
-                        @if ($data->procedure_type_id == 5 && $print_type == 2)
+                        @if ($data->procedure_type_id == 5 && $type_generate == 2)
                         <th>1.71%</th>
                         <th>2%</th>
                         <th>3%</th>
@@ -220,7 +230,7 @@
                                 <td colspan="@if ($data->procedure_type_id == 2) 27 @else 26  @endif"><b>{{ $item_group['programatic_category'] }} - {{ $item_group['name'] }} / {{ $item_group['direccion_administrativa'] }}</b></td>
                                 @endif
 
-                                @if ($print_type == 2)
+                                @if ($type_generate == 2)
                                     <td colspan="5"></td>
                                 @endif
                             </tr>
@@ -306,7 +316,7 @@
                                     }
 
                                     // Si es la impresión para contabilidad se debe tomar 5 decimales
-                                    $decimal_quantity = $print_type == 2 ? 5 : 2
+                                    $decimal_quantity = $type_generate == 2 ? 5 : 2
                                 @endphp
                                 <tr>
                                     <td>@if($group) {{ $cont }} @else {{ $item->item ?? $cont }} @endif</td>
@@ -357,13 +367,13 @@
 
                                     <td style="text-align: right"><b>{{ number_format($item->liquid_payable, 2, ',', '.') }}</b></td>
                                     
-                                    @if ($print_type == 1)
+                                    @if ($type_generate == 1)
                                     <td style="width: 150px; height: 50px"></td>
                                     <td>@if($group) {{ $cont }} @else {{ $item->item ?? $cont }} @endif</td>
                                     @endif
 
                                     {{-- Si es planilla de funcionamiento --}}
-                                    @if ($print_type == 2)
+                                    @if ($type_generate == 2)
                                     <td style="text-align: right">{{ number_format($item->common_risk, $decimal_quantity, ',', '.') }}</td>
                                     <td style="text-align: right">{{ number_format($item->housing_employer, $decimal_quantity, ',', '.') }}</td>
                                     <td style="text-align: right">{{ number_format($item->solidary_employer, $decimal_quantity, ',', '.') }}</td>
@@ -371,7 +381,7 @@
                                     <td style="text-align: right">{{ number_format($employer_amount, $decimal_quantity, ',', '.') }}</td>
                                     @endif
 
-                                    @if ($print_type == 3)
+                                    @if ($type_generate == 3)
                                     <td>{{ $item->contract->person->number_account }}</td>
                                     @endif
                                 </tr>
@@ -403,11 +413,11 @@
                                     <td style="text-align: right"><b>{{ number_format($data->procedure_type_id != 2 ? $total_discount_group_program : 0, 2, ',', '.') }}</b></td>
                                     <td style="text-align: right"><b>{{ number_format($total_payable_liquid_group_program, 2, ',', '.') }}</b></td>
                                     
-                                    @if ($print_type == 1)
+                                    @if ($type_generate == 1)
                                     <td colspan="2"></td>
                                     @endif
                                     
-                                    @if ($print_type == 2)
+                                    @if ($type_generate == 2)
                                     <td style="text-align: right"><b>{{ number_format($total_common_risk_group_program, 2, ',', '.') }}</b></td>
                                     <td style="text-align: right"><b>{{ number_format($total_housing_employer_group_program, 2, ',', '.') }}</b></td>
                                     <td style="text-align: right"><b>{{ number_format($total_solidary_employer_group_program, 2, ',', '.') }}</b></td>
@@ -440,11 +450,11 @@
                                 <td style="text-align: right"><b>{{ number_format($data->procedure_type_id != 2 ? $total_discount_group : 0, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_payable_liquid_group, 2, ',', '.') }}</b></td>
                                 
-                                @if ($print_type == 1)
+                                @if ($type_generate == 1)
                                 <td colspan="2"></td>
                                 @endif
                                 
-                                @if ($print_type == 2)
+                                @if ($type_generate == 2)
                                 <td style="text-align: right"><b>{{ number_format($total_common_risk_group, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_housing_employer_group, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_solidary_employer_group, 2, ',', '.') }}</b></td>
@@ -494,13 +504,13 @@
                         </td>
                         <td style="text-align: right"><b>{{ number_format($data->details->sum('liquid_payable'), 2, ',', '.') }}</b></td>
                         
-                        @if ($print_type == 1)
+                        @if ($type_generate == 1)
                         <td></td>
                         <td></td>
                         @endif
 
                         {{-- Si es planilla de funcionamiento --}}
-                        @if ($print_type == 2)
+                        @if ($type_generate == 2)
                         <td style="text-align: right"><b>{{ number_format($total_common_risk, 2, ',', '.') }}</b></td>
                         <td style="text-align: right"><b>{{ number_format($total_housing_employer, 2, ',', '.') }}</b></td>
                         <td style="text-align: right"><b>{{ number_format($total_solidary_employer, 2, ',', '.') }}</b></td>
@@ -508,7 +518,7 @@
                         <td style="text-align: right"><b>{{ number_format($employer_total, 2, ',', '.') }}</b></td>
                         @endif
 
-                        @if ($print_type == 3)
+                        @if ($type_generate == 3)
                         <td></td>
                         @endif
                     </tr>
@@ -538,7 +548,17 @@
                             @endif
                         </td>
                         <td style="text-align:center; width: 90px">
-                            {!! QrCode::size(80)->generate('Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->nombre).' | '.$data->procedure_type->name); !!} <br>
+                            @php
+                                $string_qr = 'Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->nombre).' | '.$data->procedure_type->name;
+                            @endphp
+                            @if ($type_render == 1)
+                                @php
+                                    $qrcode = base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($string_qr));
+                                @endphp
+                                <img src="data:image/png;base64, {!! $qrcode !!}"> <br>
+                            @else
+                                {!! QrCode::size(80)->generate($string_qr); !!} <br>
+                            @endif
                         </td>
                     </tr>
                     <tr>
