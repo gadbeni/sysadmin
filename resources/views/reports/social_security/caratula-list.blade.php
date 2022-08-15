@@ -179,16 +179,21 @@
                     $cont = 0;
                 @endphp
                 @if (count($paymentschedules) > 0)
-                    @forelse ($check_payment_afp->unique() as $item)
-                        @php
-                            $cont++;
-                        @endphp
-                        <tr>
-                            <td>{{ $cont }}</td>
-                            <td>{{ $item['number'] }}</td>
-                            <td>{{ number_format($item['amount'], 2, ',', '.') }}</td>
-                            <td>{{ $item['beneficiary'] }}</td>
-                        </tr>
+                    @php
+                        $check_payment_afp = $check_payment_afp->unique()->groupBy('number');
+                    @endphp
+                    @forelse ($check_payment_afp as $check_payment)
+                        @foreach ($check_payment->groupBy('beneficiary') as $item)
+                            @php
+                                $cont++;
+                            @endphp
+                            <tr>
+                                <td>{{ $cont }}</td>
+                                <td>{{ $item[0]['number'] }}</td>
+                                <td>{{ number_format($item->sum('amount'), 2, ',', '.') }}</td>
+                                <td>{{ $item[0]['beneficiary'] }}</td>
+                            </tr>
+                        @endforeach
                     @empty
                         <tr>
                             <td colspan="4">No hay resultados</td>
@@ -287,16 +292,21 @@
                     $cont = 0;
                 @endphp
                 @if (count($paymentschedules) > 0)
-                    @forelse ($check_payment_cc->unique() as $item)
-                        @php
-                            $cont++;
-                        @endphp
-                        <tr>
-                            <td>{{ $cont }}</td>
-                            <td>{{ $item['number'] }}</td>
-                            <td>{{ number_format($item['amount'], 2, ',', '.') }}</td>
-                            <td>{{ $item['beneficiary'] }}</td>
-                        </tr>
+                    @php
+                        $check_payment_cc = $check_payment_cc->unique()->groupBy('number');
+                    @endphp
+                    @forelse ($check_payment_cc as $check_payment)
+                        @foreach ($check_payment->groupBy('beneficiary') as $item)
+                            @php
+                                $cont++;
+                            @endphp
+                            <tr>
+                                <td>{{ $cont }}</td>
+                                <td>{{ $item[0]['number'] }}</td>
+                                <td>{{ number_format($item->sum('amount'), 2, ',', '.') }}</td>
+                                <td>{{ $item[0]['beneficiary'] }}</td>
+                            </tr>
+                        @endforeach
                     @empty
                         <tr>
                             <td colspan="4">No hay resultados</td>

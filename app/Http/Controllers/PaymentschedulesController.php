@@ -302,8 +302,7 @@ class PaymentschedulesController extends Controller
         }
 
         if($print){
-            // $view = view('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'print_type'));
-            // return $view;
+            // return view('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'print_type'));
             $pdf = PDF::loadView('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'print_type'));
             return $pdf->setPaper('legal', 'landscape')->stream();
         }

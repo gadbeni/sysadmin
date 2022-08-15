@@ -304,6 +304,9 @@
                                             $total_employer_amount_group_program += $employer_amount;
                                         }
                                     }
+
+                                    // Si es la impresión para contabilidad se debe tomar 5 decimales
+                                    $decimal_quantity = $print_type == 2 ? 5 : 2
                                 @endphp
                                 <tr>
                                     <td>@if($group) {{ $cont }} @else {{ $item->item ?? $cont }} @endif</td>
@@ -322,20 +325,20 @@
                                     <td style="text-align: right">{{ number_format($item->seniority_bonus_percentage, 0, ',', '.') }}%</td>
                                     <td style="text-align: right">{{ number_format($item->seniority_bonus_amount, 2, ',', '.') }}</td>
                                     <td style="text-align: right"><b>{{ number_format($item->partial_salary + $item->seniority_bonus_amount, 2, ',', '.') }}</b></td>
-                                    <td style="text-align: right">{{ number_format($item->solidary, 2, ',', '.') }}</td>
-                                    <td style="text-align: right">{{ number_format($item->common_risk, 2, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($item->solidary, $decimal_quantity, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($item->common_risk, $decimal_quantity, ',', '.') }}</td>
 
                                     {{-- Si es planilla de consultoría --}}
                                     @if ($data->procedure_type_id == 2)
-                                    <td style="text-align: right">{{ number_format($item->common_risk, 2, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($item->common_risk, $decimal_quantity, ',', '.') }}</td>
                                     @endif
 
-                                    <td style="text-align: right">{{ number_format($item->afp_commission, 2, ',', '.') }}</td>
-                                    <td style="text-align: right">{{ number_format($item->retirement, 2, ',', '.') }}</td>
-                                    <td style="text-align: right">{{ number_format($item->solidary_national, 2, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($item->afp_commission, $decimal_quantity, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($item->retirement, $decimal_quantity, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($item->solidary_national, $decimal_quantity, ',', '.') }}</td>
                                     
                                     {{-- Si la planilla es de consultoría al total aporte afp le sumamos el riego laboral (que es el mismo monto del riesgo común) --}}
-                                    <td style="text-align: right"><b>{{ number_format($item->labor_total + ($data->procedure_type_id == 2 ? $item->common_risk : 0 ), 2, ',', '.') }}</b></td>
+                                    <td style="text-align: right"><b>{{ number_format($item->labor_total + ($data->procedure_type_id == 2 ? $item->common_risk : 0 ), $decimal_quantity, ',', '.') }}</b></td>
 
                                     <td style="text-align: right">{{ number_format($item->rc_iva_amount, 2, ',', '.') }}</td>
                                     <td style="text-align: right">{{ number_format($item->faults_quantity, floor($item->faults_quantity) < $item->faults_quantity ? 1 : 0, ',', '.') }}</td>
@@ -361,11 +364,11 @@
 
                                     {{-- Si es planilla de funcionamiento --}}
                                     @if ($print_type == 2)
-                                    <td style="text-align: right">{{ number_format($item->common_risk, 2, ',', '.') }}</td>
-                                    <td style="text-align: right">{{ number_format($item->housing_employer, 2, ',', '.') }}</td>
-                                    <td style="text-align: right">{{ number_format($item->solidary_employer, 2, ',', '.') }}</td>
-                                    <td style="text-align: right">{{ number_format($item->health, 2, ',', '.') }}</td>
-                                    <td style="text-align: right">{{ number_format($employer_amount, 2, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($item->common_risk, $decimal_quantity, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($item->housing_employer, $decimal_quantity, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($item->solidary_employer, $decimal_quantity, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($item->health, $decimal_quantity, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($employer_amount, $decimal_quantity, ',', '.') }}</td>
                                     @endif
 
                                     @if ($print_type == 3)

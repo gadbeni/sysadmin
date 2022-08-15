@@ -717,7 +717,7 @@ class ReportsController extends Controller
         $paymentschedules = Paymentschedule::with(['details.contract.person' => function($query) use ($afp){
                                 $query->whereRaw($afp ? "afp = ".$afp : 1);
                             }, 'check_payments' => function($q){
-                                $q->where('deleted_at', NULL);
+                                $q->where('status', 2)->where('deleted_at', NULL);
                             }, 'payroll_payments' => function($q){
                                 $q->where('deleted_at', NULL);
                             }, 'procedure_type'])->whereHas('details.contract.person', function($query) use ($afp){
