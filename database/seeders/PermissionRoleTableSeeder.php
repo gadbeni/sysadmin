@@ -273,6 +273,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'irremovability_people' or
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
+                                            `key` = 'finish_contracts' or
                                             `key` = 'browse_cities' or
                                             `key` = 'edit_cities' or
                                             `key` = 'add_cities' or

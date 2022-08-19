@@ -38,18 +38,18 @@
                                     <select name="planilla_haber_id" id="select-planilla_haber_id" class="form-control" required></select>
                                     <input type="hidden" name="afp_edit" id="input-afp_edit">
                                 </div>
-                                <div class="form-group col-md-3 div-centralizada">
+                                <div class="form-group col-md-6 div-centralizada">
                                     <label for="t_planilla">Tipo de planilla</label>
                                     <select name="t_planilla" id="select-t_planilla" class="form-control select2 select-request">
                                         <option value="1">Funcionamiento</option>
                                         <option value="2">Inversión</option>
                                     </select>
                                 </div>
-                                <div class="form-group col-md-3 div-centralizada">
+                                <div class="form-group col-md-6 div-centralizada">
                                     <label for="periodo">Periodo</label>
                                     <input type="number" min="0" name="periodo" id="input-periodo" class="form-control select-request" placeholder="Periodo"  />
                                 </div>
-                                <div class="form-group col-md-3 div-centralizada">
+                                <div class="form-group col-md-6 div-centralizada">
                                     <label for="afp">Tipo de AFP</label>
                                     <select name="afp" id="select-afp" class="form-control select2 select-request">
                                         {{-- <option value="">Todas las AFP</option> --}}
@@ -57,7 +57,7 @@
                                         <option value="2">Previsión</option>
                                     </select>
                                 </div>
-                                <div class="form-group col-md-3 div-centralizada">
+                                <div class="form-group col-md-6 div-centralizada">
                                     <label for="centralize_code">Código centralizado</label>
                                     <select name="centralize_code" id="select-centralize_code" class="form-control select2 select-request">
                                     </select>

@@ -99,12 +99,14 @@ class SocialSecurityController extends Controller
                 if($request->afp_alt){
                     $period = Period::where('name', $request->periodo)->where('deleted_at', NULL)->first();
                     $period_id = $period ? $period->id : NULL;
+                    $centralize_code = $request->centralize_code;
                     $paymentschedules = Paymentschedule::with(['period', 'details.contract.person'])
                                                     ->whereHas('procedure_type', function($q) use($request){
                                                         $q->where('planilla_id', $request->t_planilla);
-                                                    })->whereHas('details.contract.person', function($q) use($request){
-                                                        $q->where('afp', $request->afp);
+                                                    })->whereHas('details', function($q) use($request){
+                                                        $q->where('afp', $request->afp_alt);
                                                     })->where('period_id', $period_id)->where('centralize_code', '<>', NULL)
+                                                    ->whereRaw($centralize_code != '' ? ' centralize_code = "'.$centralize_code.'"' : 1)
                                                     ->where('deleted_at', NULL)->where('deleted_at', NULL)->get();
                     
                     foreach ($paymentschedules as $item) {
@@ -372,7 +374,7 @@ class SocialSecurityController extends Controller
                     $paymentschedules = Paymentschedule::with(['period', 'details.contract.person'])
                                                     ->whereHas('procedure_type', function($q) use($request){
                                                         $q->where('planilla_id', $request->t_planilla);
-                                                    })->whereHas('details.contract.person', function($q) use($request){
+                                                    })->whereHas('details', function($q) use($request){
                                                         $q->where('afp', $request->afp_alt);
                                                     })->where('period_id', $period_id)->where('centralize_code', '<>', NULL)
                                                     ->whereRaw($centralize_code != '' ? ' centralize_code = "'.$centralize_code.'"' : 1)

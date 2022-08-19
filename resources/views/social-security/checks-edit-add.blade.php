@@ -35,7 +35,7 @@
                                     @endif
                                 </div>
                                 <div class="form-group col-md-6 div-no-centralizada">
-                                    <label for="planilla_haber_id">Planilla(s)</label>
+                                    <label for="planilla_haber_id">Planilla</label>
                                     <select name="planilla_haber_id" id="select-planilla_haber_id" class="form-control"></select>
                                 </div>
                                 <div class="form-group col-md-6 div-centralizada">
@@ -70,6 +70,11 @@
                                     <label for="program_id">Programa/Proyecto</label>
                                     <select name="program_id" id="select-program_id" class="form-control">
                                         <option value="">Todos</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6 div-centralizada">
+                                    <label for="centralize_code">Código centralizado</label>
+                                    <select name="centralize_code" id="select-centralize_code" class="form-control select2 select-request">
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -186,7 +191,7 @@
                             Monto total: <b>${new Intl.NumberFormat('es-ES').format(planillaSelect.total_ganado.toFixed(2))} Bs.</b>
                         `);
 
-                        // console.log(planillaSelect.programs)
+                        console.log(planillaSelect)
                         if(planillaSelect.programs){
                             $('#select-program_id').html(`<option value="">Todos</option>`);
 
