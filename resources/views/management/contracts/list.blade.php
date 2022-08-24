@@ -118,7 +118,7 @@
                                 </button>
                                 <ul class="dropdown-menu" role="menu" style="left: -90px !important">
                                     {{-- Definir siguiente estado --}}
-                                    @if ($item->status != 'concluido' && $item->status != 'firmado' && ($item->cargo_id || $item->job_id))
+                                    @if (auth()->user()->hasPermission('upgrade_contracts') && $item->status != 'concluido' && $item->status != 'firmado' && ($item->cargo_id || $item->job_id))
                                     <li><a href="#" title="Promover a {{ $netx_status }}" data-toggle="modal" data-target="#status-modal" onclick="changeStatus({{ $item->id }}, '{{ $netx_status }}')">Promover</a></li>
                                     @endif
                                     {{-- Si está firmado --}}
@@ -126,7 +126,7 @@
                                     <li><a href="#" title="Finalizar" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}')">Finalizar</a></li>
                                     @endif
                                     {{-- si está concluido y es permanente --}}
-                                    @if ($item->status == 'concluido' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('finish_contracts'))
+                                    @if ($item->status == 'concluido' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('print_finish_contracts'))
                                     <li><a title="Imprimir memorándum de agradecimiento" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-finished']) }}" target="_blank">Imprimir memorándum</a></li>
                                     @endif
 

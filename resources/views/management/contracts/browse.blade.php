@@ -20,7 +20,7 @@
                                 </div> --}}
                             </div>
                             <div class="col-md-4 text-right" style="margin-top: 30px">
-                                @if (auth()->user()->hasPermission('add_contracts'))
+                                @if ((auth()->user()->hasPermission('add_contracts') && auth()->user()->direccion_administrativa_id) || auth()->user()->role_id == 1)
                                     <a href="{{ route('contracts.create') }}" class="btn btn-success">
                                         <i class="voyager-plus"></i> <span>Crear</span>
                                     </a>

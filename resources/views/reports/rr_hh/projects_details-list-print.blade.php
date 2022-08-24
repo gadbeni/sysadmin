@@ -1,30 +1,36 @@
 @extends('layouts.template-print-alt')
 
-@section('page_title', 'Reporte de Ejecución de Programas/proyectos')
+@if ($type_render != 'excel')
+    @section('page_title', 'Reporte de Ejecución de Programas/proyectos')
+@else
+    @section('page_title', 'Programas-proyectos')
+@endif
 
 @section('content')
     <div class="content">
-        <table width="100%">
-            <tr>
-                <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="120px"></td>
-                <td style="text-align: right">
-                    <h2 style="margin-bottom: 0px; margin-top: 5px">
-                        REPORTE DE EJECUCIÓN DE PROGRAMAS/PROYECTOS <br>
-                        {{-- <small>Periodo {{ $period->name }}</small> <br>
-                        @php
-                            $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-                        @endphp --}}
-                        {{-- <small>RECURSOS HUMANOS</small> <br> --}}
-                        <small style="font-size: 11px; font-weight: 100">Impreso por: {{ Auth::user()->name }} <br> {{ date('d/M/Y H:i:s') }}</small>
-                    </h2>
-                </td>
-            </tr>
-            <tr>
-                <tr></tr>
-            </tr>
-        </table>
+        @if ($type_render != 'excel')
+            <table width="100%">
+                <tr>
+                    <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="120px"></td>
+                    <td style="text-align: right">
+                        <h2 style="margin-bottom: 0px; margin-top: 5px">
+                            REPORTE DE EJECUCIÓN DE PROGRAMAS/PROYECTOS <br>
+                            {{-- <small>Periodo {{ $period->name }}</small> <br>
+                            @php
+                                $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                            @endphp --}}
+                            {{-- <small>RECURSOS HUMANOS</small> <br> --}}
+                            <small style="font-size: 11px; font-weight: 100">Impreso por: {{ Auth::user()->name }} <br> {{ date('d/M/Y H:i:s') }}</small>
+                        </h2>
+                    </td>
+                </tr>
+                <tr>
+                    <tr></tr>
+                </tr>
+            </table>
+        @endif
         <br><br>
-        <table style="width: 100%; font-size: 12px" border="1" cellspacing="0" cellpadding="5">
+        <table @if ($type_render != 'excel') style="width: 100%; font-size: 12px" border="1" cellspacing="0" cellpadding="5" @endif>
             <thead>
                 <tr>
                     <th>N&deg;</th>

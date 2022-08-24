@@ -440,7 +440,7 @@
         @endif
 
         {{-- Vista de recursos humanos --}}
-        @if (Auth::user()->role_id == 1 || (Auth::user()->role_id >= 9 && Auth::user()->role_id <= 12) || Auth::user()->role_id == 23 || Auth::user()->role_id == 25)
+        @if (Auth::user()->role_id == 1 || (Auth::user()->role_id >= 9 && Auth::user()->role_id <= 12) || Auth::user()->role_id == 23 || Auth::user()->role_id == 30)
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-bordered">

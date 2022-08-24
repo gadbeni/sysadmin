@@ -845,7 +845,7 @@
                             <div class="form-group col-md-12">
                                 <label class="radio-inline"><input type="radio" name="optradio" class="type_render" value="1" checked>Generar PDF</label>
                                 <label class="radio-inline"><input type="radio" name="optradio" class="type_render" value="2">HTML</label>
-                                {{-- <label class="radio-inline"><input type="radio" name="optradio">Option 3</label> --}}
+                                <label class="radio-inline"><input type="radio" name="optradio" class="type_render" value="3">Excel</label>
                             </div>
                         </div>
                     </div>

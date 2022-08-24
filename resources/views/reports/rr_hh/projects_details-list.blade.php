@@ -1,7 +1,8 @@
 
 <div class="col-md-12 text-right">
     @if (count($program))
-        <button type="button" onclick="report_print()" class="btn btn-danger"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+        <button type="button" onclick="report_export('pdf')" class="btn btn-danger"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+        <button type="button" onclick="report_export('excel')" class="btn btn-success"><i class="glyphicon glyphicon-download"></i> Excel</button>
     @endif
 </div>
 <div class="col-md-12">

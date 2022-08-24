@@ -30,6 +30,7 @@ use App\Models\Paymentschedule;
 use App\Exports\MinisterioTrabajoExport;
 use App\Exports\AFPExport;
 use App\Exports\ContractsExport;
+use App\Exports\ProgramsExport;
 
 class ReportsController extends Controller
 {
@@ -207,6 +208,7 @@ class ReportsController extends Controller
     }
 
     public function contracts_projects_details_list(Request $request){
+        $type_render =$request->type;
         $program = Program::with(['direccion_administrativa', 'procedure_type', 'contracts' => function($q){
                             $q->where('deleted_at', NULL);
                         }, 'contracts.paymentschedules_details' => function($q){
@@ -217,10 +219,14 @@ class ReportsController extends Controller
                         ->whereRaw('YEAR(start) = '.$request->year)
                         ->where('deleted_at', NULL)
                         ->get();
-        if($request->print){
-            return view('reports.rr_hh.projects_details-list-print', compact('program'));
+        if($request->type == 'pdf'){
+            $pdf = PDF::loadView('reports.rr_hh.projects_details-list-print', compact('program', 'type_render'));
+            return $pdf->setPaper('letter', 'landscape')->stream();
+            // return view('reports.rr_hh.projects_details-list-print', compact('program', 'type_render'));
+        }elseif($request->type == 'excel'){
+            return Excel::download(new ProgramsExport($program, $type_render), 'programas.xlsx');
         }else{
-            return view('reports.rr_hh.projects_details-list', compact('program'));
+            return view('reports.rr_hh.projects_details-list', compact('program', 'type_render'));
         }
     }
 

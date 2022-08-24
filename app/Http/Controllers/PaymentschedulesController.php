@@ -13,6 +13,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 // Imports
 use App\Imports\PaymentschedulesFilesImport;
+use App\Exports\PaymentsExport;
 
 // Models
 use App\Models\DireccionesTipo;
@@ -304,11 +305,13 @@ class PaymentschedulesController extends Controller
         if($print){
             if($type_render == 1){
                 $pdf = PDF::loadView('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'type_generate', 'type_render'));
-            }else{
+                return $pdf->setPaper('legal', 'landscape')->stream();
+            }elseif($type_render == 2){
                 return view('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'type_generate', 'type_render'));
+            }elseif($type_render == 3){
+                // return view('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'type_generate', 'type_render'));
+                return Excel::download(new PaymentsExport($data, $afp, $cc, $centralize, $program, $group, $type_generate, $type_render), 'Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').'.xlsx');
             }
-            
-            return $pdf->setPaper('legal', 'landscape')->stream();
         }
 
         return view('paymentschedules.read', compact('data', 'afp', 'centralize'));
@@ -419,7 +422,8 @@ class PaymentschedulesController extends Controller
                 }
 
                 if($request->status == 'pagada' && ($request->pay_all || Auth::user()->direccion_administrativa_id)){
-                    PaymentschedulesDetail::where('paymentschedule_id', $request->id)->where('deleted_at', NULL)->update([
+                    PaymentschedulesDetail::where('paymentschedule_id', $request->id)
+                    ->where('status', 'habilitado')->where('deleted_at', NULL)->update([
                         'status' => 'pagado',
                     ]);
                 }

@@ -1,64 +1,70 @@
-@extends('layouts.template-print-alt')
+@extends('layouts.template-print-alt', compact('type_render'))
 
-@section('page_title', 'Impresión de planilla - '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : ''))
+@if($type_render != 3)
+    @section('page_title', 'Impresión de planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.env('APP_NAME', 'MAMORE'))
+@else
+    @section('page_title', 'Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : ''))
+@endif
 
 @section('content')
     <div class="content">
-        <div class="header">
-            <table width="100%">
-                <tr>
-                    @php
-                        $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-                        $year = Str::substr($data->period->name, 0, 4);
-                        $month = Str::substr($data->period->name, 4, 2);
-                    @endphp
-                    <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="100px"></td>
-                    <td style="text-align: right">
-                        <h3 style="margin: 0px">PLANILLA DE PAGO HABERES AL PERSONAL DEPENDIENTE GAD-BENI</h3>
-                        <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }} @else | Todas las AFP's @endif @if($cc) | {{ $cc == 1 ? 'Caja Cordes'  : 'Otras Cajas de salud'}} @endif</span>
-                        @if ($centralize)
-                            <h3 style="margin: 0px">{{ Str::upper($data->procedure_type->name) }}</h3>
-                        @else
-                            <h3 style="margin: 0px">{{ $data->direccion_administrativa->nombre }} {!! $program ? '<br>'.$program->name : '' !!}</h3>
-                            <span>{{ Str::upper($data->procedure_type->name) }}</span>
-                        @endif
-                    </td>
-                    <td style="text-align:center; width: 90px">
+        @if($type_render != 3)
+            <div class="header" >
+                <table @if($type_render != 3) width="100%" @endif>
+                    <tr>
                         @php
-                            $string_qr = 'Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->nombre).' | '.$data->procedure_type->name;
+                            $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                            $year = Str::substr($data->period->name, 0, 4);
+                            $month = Str::substr($data->period->name, 4, 2);
                         @endphp
-                        @if ($type_render == 1)
-                            @php
-                                $qrcode = base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($string_qr));
-                            @endphp
-                            <img src="data:image/png;base64, {!! $qrcode !!}"> <br>
-                        @else
-                            {!! QrCode::size(80)->generate($string_qr); !!} <br>
-                        @endif
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2"></td>
-                    <td style="text-align: center">
-                        <b>
-                            {{ str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '') }}
-                            @if (!$centralize && $data->centralize)
-                                <br>
-                                <span style="color: red">({{ str_pad($data->centralize_code, 6, "0", STR_PAD_LEFT) }})</span>
+                        <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="100px"></td>
+                        <td style="text-align: right">
+                            <h3 style="margin: 0px">PLANILLA DE PAGO HABERES AL PERSONAL DEPENDIENTE GAD-BENI</h3>
+                            <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }} @else | Todas las AFP's @endif @if($cc) | {{ $cc == 1 ? 'Caja Cordes'  : 'Otras Cajas de salud'}} @endif</span>
+                            @if ($centralize)
+                                <h3 style="margin: 0px">{{ Str::upper($data->procedure_type->name) }}</h3>
+                            @else
+                                <h3 style="margin: 0px">{{ $data->direccion_administrativa->nombre }} {!! $program ? '<br>'.$program->name : '' !!}</h3>
+                                <span>{{ Str::upper($data->procedure_type->name) }}</span>
                             @endif
-                        </b>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3" style="text-align: right">
-                        <small style="font-size: 9px; font-weight: 100">Impreso por: {{ Auth::user()->name }} {{ date('d/M/Y H:i:s') }}</small>
-                    </td>
-                </tr>
-            </table>
-        </div>
+                        </td>
+                        <td style="text-align:center; width: 90px">
+                            @php
+                                $string_qr = 'Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').' | '.$data->period->name.' | '.($centralize ? 'Planilla centralizada' : $data->direccion_administrativa->nombre).' | '.$data->procedure_type->name;
+                            @endphp
+                            @if ($type_render == 1)
+                                @php
+                                    $qrcode = base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($string_qr));
+                                @endphp
+                                <img src="data:image/png;base64, {!! $qrcode !!}"> <br>
+                            @else
+                                {!! QrCode::size(80)->generate($string_qr); !!} <br>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td style="text-align: center">
+                            <b>
+                                {{ str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '') }}
+                                @if (!$centralize && $data->centralize)
+                                    <br>
+                                    <span style="color: red">({{ str_pad($data->centralize_code, 6, "0", STR_PAD_LEFT) }})</span>
+                                @endif
+                            </b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right">
+                            <small style="font-size: 9px; font-weight: 100">Impreso por: {{ Auth::user()->name }} {{ date('d/M/Y H:i:s') }}</small>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        @endif
 
         <div style="margin-top: 20px">
-            <table class="table-details" border="1" cellpadding="2" cellspacing="0">
+            <table @if($type_render != 3) class="table-details" border="1" cellpadding="2" cellspacing="0" @endif>
                 <thead>
                     <tr>
                         <th rowspan="3">N&deg;</th>
@@ -526,10 +532,10 @@
             </table>
         </div>
 
-        @if ($data->procedure_type_id != 2)
+        @if ($data->procedure_type_id != 2 && $type_render != 3)
             <div class="saltopagina"></div>
             <div class="header-resume">
-                <table width="100%">
+                <table @if($type_render != 3) width="100%" @endif>
                     <tr>
                         @php
                             $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -574,7 +580,7 @@
             </div>
 
             <div style="margin-top: 10px">
-                <table class="table-resumen" cellpadding="2" cellspacing="0" width="70%">
+                <table @if($type_render != 3) class="table-resumen" cellpadding="2" cellspacing="0" width="70%" @endif>
                     <thead>
                         <tr>
                             <th colspan="5" class="text-center">RESUMEN</th>

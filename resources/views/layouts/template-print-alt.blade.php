@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>@yield('page_title') | {{ env('APP_NAME', 'SYSADMIN') }}</title>
+    <title>@yield('page_title')</title>
     <!-- Favicon -->
     <?php $admin_favicon = Voyager::setting('admin.icon_image', ''); ?>
     @if($admin_favicon == '')
@@ -59,13 +59,14 @@
     @yield('css')
 </head>
 <body>
-    {{-- <div class="hide-print" style="text-align: right; padding: 10px 20px">
-        <button class="btn-print" onclick="window.close()">Cancelar <i class="fa fa-close"></i></button>
-        <button class="btn-print" onclick="window.print()"> Imprimir <i class="fa fa-print"></i></button>
-    </div> --}}
-    <div id="watermark">
-        <img src="{{ asset('images/icon.png') }}" /> 
-    </div>
+
+    @isset($type_render)
+        @if ($type_render != 3 && $type_render != 'excel')
+            <div id="watermark">
+                <img src="{{ asset('images/icon.png') }}" /> 
+            </div>
+        @endif
+    @endisset
     
     <div class="content">
         @yield('content')

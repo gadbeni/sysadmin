@@ -87,8 +87,10 @@ class PermissionsTableSeeder extends Seeder
 
         // checkes
         $keys = [
+            'upgrade_contracts',
             'downgrade_contracts',
             'finish_contracts',
+            'print_finish_contracts',
         ];
 
         foreach ($keys as $key) {
