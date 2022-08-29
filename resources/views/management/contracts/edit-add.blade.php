@@ -2,7 +2,7 @@
 
 @section('page_title', isset($contract) ? 'Editar contrato' : 'Crear contrato')
 
-@if (((auth()->user()->hasPermission('add_contracts') || auth()->user()->hasPermission('edit_contracts')) && auth()->user()->direccion_administrativa_id) || auth()->user()->role_id == 1)
+@if (auth()->user()->hasPermission('add_contracts') || auth()->user()->hasPermission('edit_contracts'))
 
     @section('page_header')
         <h1 class="page-title">
@@ -36,7 +36,7 @@
                                     <div class="form-group col-md-6">
                                         <label for="person_id">Persona</label>
                                         <select name="person_id" class="form-control select2" required>
-                                            <option value="" disabled>-- Selecciona a la persona --</option>
+                                            <option value="">-- Selecciona a la persona --</option>
                                             @foreach ($people as $item)
                                             <option @if(isset($contract) && $contract->person->id == $item->id) selected @endif value="{{ $item->id }}">{{ $item->first_name }} {{ $item->last_name }} - {{ $item->ci }}</option>
                                             @endforeach

@@ -180,7 +180,7 @@
                 @endphp
                 @if (count($paymentschedules) > 0)
                     @php
-                        $check_payment_afp = $check_payment_afp->unique()->groupBy('number');
+                        $check_payment_afp = $check_payment_afp->groupBy('number');
                     @endphp
                     @forelse ($check_payment_afp as $check_payment)
                         @foreach ($check_payment->groupBy('beneficiary') as $item)
@@ -293,7 +293,7 @@
                 @endphp
                 @if (count($paymentschedules) > 0)
                     @php
-                        $check_payment_cc = $check_payment_cc->unique()->groupBy('number');
+                        $check_payment_cc = $check_payment_cc->groupBy('number');
                     @endphp
                     @forelse ($check_payment_cc as $check_payment)
                         @foreach ($check_payment->groupBy('beneficiary') as $item)

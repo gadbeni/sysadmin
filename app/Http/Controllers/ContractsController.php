@@ -38,8 +38,8 @@ class ContractsController extends Controller
     {
         if(true){
             $date = date('Y-m-d');
-            Contract::where('finish', '<', $date)->where('deleted_at', NULL)->update(['status' => 'concluido']);
-            Addendum::where('finish', '<', $date)->where('deleted_at', NULL)->update(['status' => 'concluido']);
+            Contract::where('finish', '<', $date)->where('deleted_at', NULL)->where('status', 'firmado')->update(['status' => 'concluido']);
+            Addendum::where('finish', '<', $date)->where('deleted_at', NULL)->where('status', 'firmado')->update(['status' => 'concluido']);
         }
         return view('management.contracts.browse');
     }

@@ -14,13 +14,9 @@
                                 <h1 class="page-title">
                                     <i class="voyager-certificate"></i> Contratos
                                 </h1>
-                                {{-- <div class="alert alert-info">
-                                    <strong>Información:</strong>
-                                    <p>Puede obtener el valor de cada parámetro en cualquier lugar de su sitio llamando <code>setting('group.key')</code></p>
-                                </div> --}}
                             </div>
                             <div class="col-md-4 text-right" style="margin-top: 30px">
-                                @if ((auth()->user()->hasPermission('add_contracts') && auth()->user()->direccion_administrativa_id) || auth()->user()->role_id == 1)
+                                @if (auth()->user()->hasPermission('add_contracts'))
                                     <a href="{{ route('contracts.create') }}" class="btn btn-success">
                                         <i class="voyager-plus"></i> <span>Crear</span>
                                     </a>

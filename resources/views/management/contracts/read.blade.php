@@ -246,7 +246,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="panel-heading" style="border-bottom:0;">
-                                    <h3 class="panel-title">Historial de inamovilidades</h3>
+                                    <h3 class="panel-title">Historial de pagos</h3>
                                 </div>
                                 <table class="table table-bordered table-hover">
                                     <thead>

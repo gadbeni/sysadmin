@@ -197,14 +197,14 @@
                             
                             @if ($item->status != 'concluido')
                                 {{-- Se puede editar el contrato si no está firmado --}}
-                                @if (($item->status != 'firmado' && auth()->user()->hasPermission('edit_contracts') || Auth::user()->role_id == 1))
+                                @if ($item->status != 'firmado' && auth()->user()->hasPermission('edit_contracts'))
                                     <a href="{{ route('contracts.edit', ['contract' => $item->id]) }}" title="Editar" class="btn btn-sm btn-primary edit">
                                         <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
                                     </a>
                                 @endif
 
                                 {{-- Si está firmado y tiene permiso de cambiar el estado --}}
-                                @if ($item->status == 'firmado' && auth()->user()->hasPermission('downgrade_contracts'))
+                                @if ($item->status == 'firmado' && auth()->user()->hasPermission('delete_contracts') && auth()->user()->hasPermission('downgrade_contracts'))
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
                                             Anular <span class="caret"></span>
