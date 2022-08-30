@@ -318,7 +318,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             table_name = 'seniority_bonus_people' or
                                             `key` = 'browse_reportspaymentschedulesdetails-status' or
                                             `key` = 'browse_reportscontractscontracts' or
-                                            `key` = 'browse_reportshumans-resourcesaniversarios'")->get();
+                                            `key` = 'browse_reportshumans-resourcesaniversarios' or
+                                            `key` = 'browse_reportshumans-resourcesjobs'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $similar_permissions_rrhh = "table_name = 'admin' or

@@ -108,15 +108,19 @@ class SocialSecurityController extends Controller
                                                     })->where('period_id', $period_id)->where('centralize_code', '<>', NULL)
                                                     ->whereRaw($centralize_code != '' ? ' centralize_code = "'.$centralize_code.'"' : 1)
                                                     ->where('deleted_at', NULL)->where('deleted_at', NULL)->get();
-                    
+                    $aux = 0;
                     foreach ($paymentschedules as $item) {
                         $amount_total = $item->details->where('afp', $request->afp)->sum('partial_salary') + $item->details->where('afp', $request->afp)->sum('seniority_bonus_amount');
+                        $common_risk = $item->details->where('afp', $request->afp)->sum('common_risk');
+                        $labor_total = $item->details->where('afp', $request->afp)->sum('labor_total');
+                        
                         $amount = 0;
                         if($beneficiary->type->id == 4 || $beneficiary->type->id == 5 || $beneficiary->type->id == 6){
-                            $aporte_patronal = ($amount_total * 0.05) + $item->common_risk;
-                            $sip = $item->labor_total + $aporte_patronal - ($amount_total * (5.5 / 100));
+                            $aporte_patronal = ($amount_total * 0.055) + $common_risk;
                             $aporte_solidario = $amount_total * 0.035;
                             $aporte_vivienda = $amount_total * 0.02;
+
+                            $sip = $labor_total + $aporte_patronal - ($amount_total * 0.055);
 
                             switch ($beneficiary->type->id) {
                                 case '4':

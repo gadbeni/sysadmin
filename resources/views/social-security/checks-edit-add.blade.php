@@ -298,11 +298,11 @@
                             sip_solidario = sip + aporte_solidario;
                             sip_solidario_vivienda = sip_solidario + aporte_vivienda;
                         }else{
-                            let aporte_patronal = (planillaSelect.total_ganado * 0.05) + planillaSelect.total_riesgo_comun;
+                            let aporte_patronal = (planillaSelect.total_ganado * 0.055) + parseFloat(planillaSelect.total_riesgo_comun);
                             let aporte_solidario = planillaSelect.total_ganado * 0.035;
                             let aporte_vivienda = planillaSelect.total_ganado * 0.02;
 
-                            sip = planillaSelect.total_aportes_afp + aporte_patronal - (planillaSelect.total_ganado * (5.5 / 100));
+                            sip = parseFloat(planillaSelect.total_aportes_afp) + aporte_patronal - (planillaSelect.total_ganado * 0.055);
                             sip_solidario = sip + aporte_solidario;
                             sip_solidario_vivienda = sip + aporte_solidario + aporte_vivienda;
                         }
