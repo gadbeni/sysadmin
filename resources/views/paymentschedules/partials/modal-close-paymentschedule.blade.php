@@ -17,9 +17,9 @@
                         </p>
                     </div>
                     {{-- El administrador puede cerrar una planilla y cambiar el estado a pagado a los funcionarios que la incluyen --}}
-                    @if (Auth::user()->role_id == 1)
+                    {{-- @if (Auth::user()->role_id == 1) --}}
                     <label class="checkbox-inline"><input type="checkbox" name="pay_all" value="1">Pagar todos los funcionarios que se incluyen esta planilla</label>
-                    @endif
+                    {{-- @endif --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>

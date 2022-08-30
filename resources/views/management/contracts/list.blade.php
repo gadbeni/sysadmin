@@ -43,19 +43,30 @@
                                     @endif
                                 </li>
                                 <li>
-                                    <b>Sueldo: </b> <small>Bs.</small> 
-                                    @if ($item->cargo)
-                                        {{ number_format($item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.') }}
-                                    @elseif ($item->job)
-                                        {{ number_format($item->job->salary, 2, ',', '.') }}
-                                    @else
-                                        0.00
-                                    @endif
+                                    @php
+                                        $salary = 0;
+                                        if ($item->cargo){
+                                            $salary = $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo;
+                                        }elseif ($item->job){
+                                            $salary = $item->job->salary;
+                                        }
+                                    @endphp
+                                    <b>Sueldo: </b> <small>Bs.</small> {{ number_format($salary, 2, ',', '.') }}
                                 </li>
                                 <li><b>Desde </b>{{ date('d/m/Y', strtotime($item->start)) }}
                                 @if ($item->finish)
                                 <b> hasta </b>{{ date('d/m/Y', strtotime($item->finish)) }}
                                 @endif
+                                <li>
+                                    @php
+                                        $total = 0;
+                                        if($item->start && $item->finish){
+                                            $contract_duration = contract_duration_calculate($item->start, $item->finish);
+                                            $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
+                                        }
+                                    @endphp
+                                    <b>Total: </b> <small>Bs.</small> {{ $total ? number_format($total, 2, ',', '.') : 'No definido' }}
+                                </li>
                                 <li>
                                     @php
                                         switch ($item->status) {
