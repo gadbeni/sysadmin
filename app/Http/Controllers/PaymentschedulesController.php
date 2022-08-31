@@ -260,7 +260,6 @@ class PaymentschedulesController extends Controller
         $type_generate = request('type_generate');
         $excel = request('excel');
         $type_render = request('type_render');
-        $float_numbers = request('float_numbers') ?? 2;
 
         $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract' => function($q){
                         $q->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
@@ -305,10 +304,10 @@ class PaymentschedulesController extends Controller
 
         if($print){
             if($type_render == 1){
-                $pdf = PDF::loadView('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'type_generate', 'type_render', 'float_numbers'));
+                $pdf = PDF::loadView('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'type_generate', 'type_render'));
                 return $pdf->setPaper('legal', 'landscape')->stream();
             }elseif($type_render == 2){
-                return view('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'type_generate', 'type_render', 'float_numbers'));
+                return view('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'type_generate', 'type_render'));
             }elseif($type_render == 3){
                 // return view('paymentschedules.print', compact('data', 'afp', 'cc', 'centralize', 'program', 'group', 'type_generate', 'type_render'));
                 return Excel::download(new PaymentsExport($data, $afp, $cc, $centralize, $program, $group, $type_generate, $type_render), 'Planilla '.str_pad($centralize ? $data->centralize_code : $data->id, 6, "0", STR_PAD_LEFT).($data->aditional ? '-A' : '').'.xlsx');

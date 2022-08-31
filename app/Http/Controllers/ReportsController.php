@@ -133,6 +133,7 @@ class ReportsController extends Controller
                     ->whereHas('contracts', function($q) use($request){
                         $q->where('procedure_type_id', $request->procedure_type_id);
                     })
+                    ->whereRaw(Auth::user()->direccion_administrativa_id ? "user_id = ".Auth::user()->id : 1)
                     ->where('deleted_at', NULL)->orderByRaw('DAY(birthday)', 'ASC')
                     ->get();
         // dd($people);

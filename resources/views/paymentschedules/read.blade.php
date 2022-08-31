@@ -795,7 +795,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-12">
                                 <label for="type_generate">Tipo de impresión</label>
                                 <select name="type_generate" class="form-control select2">
                                     <option value="1">Normal</option>
@@ -803,10 +803,10 @@
                                     <option value="3">Recursos Humanos</option>
                                 </select>
                             </div>
-                            <div class="form-group col-md-6">
+                            {{-- <div class="form-group col-md-6">
                                 <label for="float_numbers">Cantidad de decimales</label>
                                 <input type="number" name="float_numbers" class="form-control" min="2" max="5" value="2" required>
-                            </div>
+                            </div> --}}
                             <div class="form-group col-md-6">
                                 <label for="afp">AFP</label>
                                 <select name="afp" class="form-control select2">
@@ -892,9 +892,8 @@
                 let program = '&program='+$('#print-modal select[name="program_id"] option:selected').val();
                 let group = '&group='+$('#print-modal select[name="group"] option:selected').val();
                 let type_generate = '&type_generate='+$('#print-modal select[name="type_generate"] option:selected').val();
-                let float_numbers = '&float_numbers='+$('#print-modal input[name="float_numbers"]').val();
                 let type_render = '&type_render='+$(".type_render:checked").val();
-                window.open(centralize+afp+cc+program+group+type_generate+float_numbers+type_render+'&print=true', '_blank');
+                window.open(centralize+afp+cc+program+group+type_generate+type_render+'&print=true', '_blank');
             });
 
             $('.form-submit').submit(function(e){

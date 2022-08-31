@@ -25,8 +25,10 @@
                                     <input type="hidden" name="print">
                                     <div class="form-group">
                                         <select name="direccion_administrativa_id" class="form-control select2">
+                                            @if (!Auth::user()->direccion_administrativa_id)
                                             <option value="">Todas las direcciones administrativas</option>
-                                            @foreach (App\Models\Direccion::where('estado', 1)->get() as $item)
+                                            @endif
+                                            @foreach (App\Models\Direccion::where('estado', 1)->whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1)->get() as $item)
                                             <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                                             @endforeach
                                         </select>
