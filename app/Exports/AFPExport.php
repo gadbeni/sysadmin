@@ -103,52 +103,6 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
                     $cont++;
                 }
             }
-
-            // foreach($this->data as $item){
-            //     $novelty = '';
-            //     $novelty_date = '';
-            //     if(date('Ym', strtotime($item->contract->start)) == $item->paymentschedule->period->name){
-            //         $novelty = 'I';
-            //         $novelty_date = date('d-m-Y', strtotime($item->contract->start));
-            //     }
-            //     if(date('Ym', strtotime($item->contract->finish)) == $item->paymentschedule->period->name){
-            //         $novelty = 'R';
-            //         $novelty_date = date('d-m-Y', strtotime($item->contract->finish));
-            //     }
-
-            //     // Calcular edad
-            //     $now = \Carbon\Carbon::now();
-            //     $birthday = new \Carbon\Carbon($item->contract->person->birthday);
-            //     $age = $birthday->diffInYears($now);
-            //     $total_amount = $item->partial_salary + $item->seniority_bonus_amount;
-
-            //     array_push($data, [
-            //         'A' => $cont,
-            //         'B' => 'CI',
-            //         'C' => $item->contract->person->ci,
-            //         'D' => '',
-            //         'E' => $item->contract->person->nua_cua,
-            //         'F' => explode(' ', $item->contract->person->last_name)[0],
-            //         'G' => count(explode(' ', $item->contract->person->last_name)) > 1 ? explode(' ', $item->contract->person->last_name)[1] : '',
-            //         'H' => '',
-            //         'I' => explode(' ', $item->contract->person->first_name)[0],
-            //         'J' => count(explode(' ', $item->contract->person->first_name)) > 1 ? explode(' ', $item->contract->person->first_name)[1] : '',
-            //         'K' => 'BENI',
-            //         'L' => $novelty,
-            //         'M' => $novelty_date ? Date::stringToExcel($novelty_date) : '',
-            //         'N' => $item->worked_days,
-            //         'O' => 'N',
-            //         'P' => $age < 65 && $item->contract->person->afp_status == 1 ? number_format($total_amount, 2, '.', '') : 0.0,
-            //         'Q' => $age >= 65 && $item->contract->person->afp_status == 1 ? number_format($total_amount, 2, '.', '') : 0.0,
-            //         'R' => $age < 65 && $item->contract->person->afp_status == 0 ? number_format($total_amount, 2, '.', '') : 0.0,
-            //         'S' => $age >= 65 && $item->contract->person->afp_status == 0 ? number_format($total_amount, 2, '.', '') : 0.0,
-            //         'T' => 0.0,
-            //         'U' => number_format($total_amount, 2, '.', ''),
-            //         'V' => number_format($total_amount, 2, '.', ''),
-            //         'W' => 0.0,
-            //     ]);
-            //     $cont++;
-            // }
         }else{
 
             if($this->group_by == 1){

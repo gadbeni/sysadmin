@@ -19,6 +19,7 @@ use App\Http\Controllers\PeriodsController;
 use App\Http\Controllers\PaymentschedulesController;
 use App\Http\Controllers\ImportsController;
 use App\Http\Controllers\PeopleController;
+use App\Http\Controllers\MemosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -164,8 +165,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('reports/check/check-browse', [CheckController::class, 'report_view'])->name('report.check.browse');
     Route::post('reports/check/chek-list', [ReportsController::class, 'check_list'])->name('reports.check.list');
 
-
-
+    // Finanzas
+    Route::resource('memos', MemosController::class);
+    Route::get('memos/ajax/list', [MemosController::class, 'list']);
 
     // Administrativo
 
@@ -173,8 +175,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::resource('contracts', ContractsController::class);
     Route::get('contracts/ajax/list/{search?}', [ContractsController::class, 'list']);
     Route::post('contracts/status', [ContractsController::class, 'contracts_status'])->name('contracts.status');
-    Route::post('contracts/addendum', [ContractsController::class, 'contracts_addendum'])->name('contracts.addendum');
+    Route::post('contracts/addendum/store', [ContractsController::class, 'contracts_addendum_store'])->name('contracts.addendum.store');
     Route::post('contracts/addendum/status', [ContractsController::class, 'contracts_addendum_status'])->name('contracts.addendum.status');
+    Route::post('contracts/addendum/update', [ContractsController::class, 'contracts_addendum_update'])->name('contracts.addendum.update');
     Route::get('contracts/direccion-administrativa/{id}', [ContractsController::class, 'contracts_direccion_administrativa']);
     Route::get('contracts/{id}/print/{document}', [ContractsController::class, 'print'])->name('contracts.print');
     
@@ -230,7 +233,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('reports/paymentschedules/details-status', [ReportsController::class, 'paymentschedules_details_status_index'])->name('reports.paymentschedules.details.status.index');
     Route::post('reports/paymentschedules/details-status/list', [ReportsController::class, 'paymentschedules_details_status_list'])->name('reports.paymentschedules.details.status.list');
 
-    
     // Complementos
     Route::get('plugins/cashiers/tickets', [PluginsController::class, 'cashiers_tickets'])->name('cashiers.tickets');
     Route::get('plugins/cashiers/tickets/generate', [PluginsController::class, 'cashiers_tickets_generate'])->name('cashiers.tickets.generate');

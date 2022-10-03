@@ -71,6 +71,8 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('memos_types');
         Permission::generateFor('memos');
         Permission::generateFor('direcciones_tipos');
+        Permission::generateFor('person_external_types');
+        Permission::generateFor('person_externals');
 
         // people
         $keys = [
@@ -91,6 +93,8 @@ class PermissionsTableSeeder extends Seeder
             'downgrade_contracts',
             'finish_contracts',
             'print_finish_contracts',
+            'add_addendum_contracts',
+            'edit_addendum_contracts',
         ];
 
         foreach ($keys as $key) {

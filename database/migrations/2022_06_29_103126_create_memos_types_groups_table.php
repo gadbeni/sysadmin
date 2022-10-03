@@ -16,7 +16,8 @@ class CreateMemosTypesGroupsTable extends Migration
         Schema::create('memos_types_groups', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->string('status')->nullable()->default('activo');
+            $table->text('details')->nullable();
+            $table->smallInteger('status')->nullable()->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -26,7 +26,8 @@
                                     <div class="form-group">
                                         <select name="procedure_type_id" class="form-control select2">
                                             <option selected value="">Todos los tipos de contratos</option>
-                                            @foreach (App\Models\ProcedureType::where('deleted_at', NULL)->get() as $item)
+                                            @foreach (App\Models\ProcedureType::where('deleted_at', NULL)
+                                                        ->whereRaw(Auth::user()->role_id == 16 ? 'id = 2' : 1)->get() as $item)
                                                 <option value="{{ $item->id }}">{{ $item->name }}</option>
                                             @endforeach
                                         </select>
@@ -41,7 +42,21 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <select name="direccion_administrativa_id" class="form-control select2">
+                                        <select name="direcciones_tipo_id" id="select-direcciones_tipo_id" class="form-control select2">
+                                            @if (!Auth::user()->direccion_administrativa_id)
+                                            <option value="">Todos los tipos de DA</option>
+                                            @endif
+                                            @foreach (App\Models\DireccionesTipo::with(['direcciones_administrativas' => function($q){
+                                                            $q->whereRaw("estado = 1 and deleted_at is null");
+                                                        }])->whereHas('direcciones_administrativas', function($q){
+                                                            $q->whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1);
+                                                        })->where('estado', 1)->where('deleted_at', NULL)->get() as $item)
+                                            <option value="{{ $item->id }}" data-direcciones='@json($item->direcciones_administrativas)'>{{ $item->nombre }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="direccion_administrativa_id[]" id="select-direccion_administrativa_id" class="form-control select2" multiple @if(Auth::user()->direccion_administrativa_id) required @endif>
                                             @if (!Auth::user()->direccion_administrativa_id)
                                             <option value="">Todas las direcciones administrativas</option>
                                             @endif
@@ -80,6 +95,17 @@
         <script src="{{ url('js/main.js') }}"></script>
         <script>
             $(document).ready(function() {
+
+                $('#select-direcciones_tipo_id').change(function(){
+                    let direcciones = $('#select-direcciones_tipo_id option:selected').data('direcciones');
+                    if (direcciones) {
+                        $('#select-direccion_administrativa_id').html(`<option value="">Todas(os)</option>`)
+                        direcciones.map(item => {
+                            $('#select-direccion_administrativa_id').append(`<option value="${item.id}">${item.nombre}</option>`)
+                        })
+                    }
+                    
+                });
 
                 $('#form-search').on('submit', function(e){
                     e.preventDefault();

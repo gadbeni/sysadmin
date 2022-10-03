@@ -38,5 +38,6 @@ class TemplateDatabaseSeeder extends Seeder
         $this->call(UnidadesTableSeeder::class);
         $this->call(IrremovabilityTypesTableSeeder::class);
         $this->call(MemosTypesGroupsTableSeeder::class);
+        $this->call(PersonExternalTypesTableSeeder::class);
     }
 }

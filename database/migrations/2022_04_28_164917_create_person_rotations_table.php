@@ -15,6 +15,7 @@ class CreatePersonRotationsTable extends Migration
     {
         Schema::create('person_rotations', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained('users');
             $table->foreignId('destiny_id')->nullable()->constrained('people');
             $table->string('destiny_job')->nullable();
             $table->foreignId('responsible_id')->nullable()->constrained('people');

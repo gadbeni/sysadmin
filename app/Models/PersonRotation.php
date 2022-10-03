@@ -12,7 +12,7 @@ class PersonRotation extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'destiny_id', 'destiny_job', 'destiny_dependency', 'responsible_id', 'responsible_job', 'contract_id', 'office_id', 'date', 'observations'
+        'user_id', 'destiny_id', 'destiny_job', 'destiny_dependency', 'responsible_id', 'responsible_job', 'contract_id', 'office_id', 'date', 'observations'
     ];
 
     public function contract(){

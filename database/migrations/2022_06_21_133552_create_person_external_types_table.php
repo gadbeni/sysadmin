@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMemosTypesTable extends Migration
+class CreatePersonExternalTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateMemosTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('memos_types', function (Blueprint $table) {
+        Schema::create('person_external_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('memos_types_group_id')->nullable()->constrained('memos_types_groups');
-            $table->text('name')->nullable();
-            $table->text('concept')->nullable();
-            $table->text('subject')->nullable();
+            $table->string('name')->nullable();
+            $table->text('details')->nullable();
             $table->smallInteger('status')->nullable()->default(1);
             $table->timestamps();
             $table->softDeletes();
@@ -32,6 +30,6 @@ class CreateMemosTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('memos_types');
+        Schema::dropIfExists('person_external_types');
     }
 }

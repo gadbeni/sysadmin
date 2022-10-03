@@ -1,9 +1,9 @@
-
+ 
 
 Migraciones
-    - ejecutar todas las migraciones
+    - ejecutar migraciones
 Seeders
-    - MemosTypesGroupsTableSeeder, MemosTypesTableSeeder, MemosTableSeeder
+    - UpdateBreadSeeder, UpdatePermissionsSeeder, PersonExternalTypesTableSeeder, MemosTypesGroupsTableSeeder
 Paquetes
 
 Comandos
@@ -13,3 +13,6 @@ Otros
 
 NOTA:
 - generar código de adenda
+- agregar historial de eliminación de contratos
+
+

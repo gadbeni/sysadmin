@@ -248,73 +248,74 @@
                                 <div class="panel-heading" style="border-bottom:0;">
                                     <h3 class="panel-title">Historial de pagos</h3>
                                 </div>
-                                <table class="table table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>N&deg;</th>
-                                            <th>Planilla</th>
-                                            <th>Periodo</th>
-                                            <th>Días trabajados</th>
-                                            <th>Sueldo</th>
-                                            <th>Sueldo parcial</th>
-                                            <th>Bono antigüedad</th>
-                                            <th>Descuentos</th>
-                                            <th>Líquido pagable</th>
-                                            <th>Estado</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @php
-                                            $cont = 1;
-                                        @endphp
-                                        @forelse ($contract->paymentschedules_details as $item)
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
                                             <tr>
-                                                <td>{{ $cont }}</td>
-                                                <td>{{ str_pad($item->paymentschedule->id, 6, "0", STR_PAD_LEFT).($item->paymentschedule->aditional ? '-A' : '') }}</td>
-                                                <td>{{ $item->paymentschedule->period->name }}</td>
-                                                <td>{{ $item->worked_days }}</td>
-                                                <td>{{ number_format($item->salary, 2, ',', '.') }}</td>
-                                                <td>{{ number_format($item->partial_salary, 2, ',', '.') }}</td>
-                                                <td>{{ number_format($item->seniority_bonus_amount, 2, ',', '.') }}</td>
-                                                <td>{{ number_format($item->labor_total + $item->rc_iva_amount + $item->faults_amount, 2, ',', '.') }}</td>
-                                                <td>{{ number_format($item->liquid_payable, 2, ',', '.') }}</td>
-                                                <td>
-                                                    @php
-                                                        switch ($item->status) {
-                                                            case 'procesado':
-                                                                $label = 'default';
-                                                                break;
-                                                            case 'habilitado':
-                                                                $label = 'danger';
-                                                                break;
-                                                            case 'pagado':
-                                                                $label = 'success';
-                                                                break;
-                                                            default:
-                                                                $label = 'default';
-                                                                break;
-                                                        }
-                                                    @endphp
-                                                    <label class="label label-{{ $label }}">{{ ucfirst($item->status) }}</label>
-                                                    @php
-                                                        $cashiers_payment = \App\Models\CashiersPayment::with('cashier.user')->where('paymentschedules_detail_id', $item->id)->where('deleted_at', NULL)->first();
-                                                        // dd($cashiers_payment);
-                                                    @endphp
-                                                    @if ($cashiers_payment)
-                                                    <br><small>Por {{ $cashiers_payment->cashier->user->name }} <br> {{ date('d-m-Y', strtotime($cashiers_payment->created_at)) }} <br> {{ date('H:i:s', strtotime($cashiers_payment->created_at)) }} </small>
-                                                    @endif
-                                                </td>
+                                                <th>N&deg;</th>
+                                                <th>Planilla</th>
+                                                <th>Periodo</th>
+                                                <th>Días trabajados</th>
+                                                <th>Sueldo</th>
+                                                <th>Sueldo parcial</th>
+                                                <th>Bono antigüedad</th>
+                                                <th>Descuentos</th>
+                                                <th>Líquido pagable</th>
+                                                <th>Estado</th>
                                             </tr>
+                                        </thead>
+                                        <tbody>
                                             @php
-                                                $cont++;
+                                                $cont = 1;
                                             @endphp
-                                        @empty
-                                            <tr>
-                                                <td colspan="6">No hay datos disponible</td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                                            @forelse ($contract->paymentschedules_details as $item)
+                                                <tr>
+                                                    <td>{{ $cont }}</td>
+                                                    <td>{{ str_pad($item->paymentschedule->id, 6, "0", STR_PAD_LEFT).($item->paymentschedule->aditional ? '-A' : '') }}</td>
+                                                    <td>{{ $item->paymentschedule->period->name }}</td>
+                                                    <td>{{ $item->worked_days }}</td>
+                                                    <td>{{ number_format($item->salary, 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($item->partial_salary, 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($item->seniority_bonus_amount, 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($item->labor_total + $item->rc_iva_amount + $item->faults_amount, 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($item->liquid_payable, 2, ',', '.') }}</td>
+                                                    <td>
+                                                        @php
+                                                            switch ($item->status) {
+                                                                case 'procesado':
+                                                                    $label = 'default';
+                                                                    break;
+                                                                case 'habilitado':
+                                                                    $label = 'danger';
+                                                                    break;
+                                                                case 'pagado':
+                                                                    $label = 'success';
+                                                                    break;
+                                                                default:
+                                                                    $label = 'default';
+                                                                    break;
+                                                            }
+                                                        @endphp
+                                                        <label class="label label-{{ $label }}">{{ ucfirst($item->status) }}</label>
+                                                        @php
+                                                            $cashiers_payment = \App\Models\CashiersPayment::with('cashier.user')->where('paymentschedules_detail_id', $item->id)->where('deleted_at', NULL)->first();
+                                                        @endphp
+                                                        @if ($cashiers_payment)
+                                                        <br><small>Por {{ $cashiers_payment->cashier->user->name }} <br> {{ date('d-m-Y', strtotime($cashiers_payment->created_at)) }} <br> {{ date('H:i:s', strtotime($cashiers_payment->created_at)) }} </small>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                @php
+                                                    $cont++;
+                                                @endphp
+                                            @empty
+                                                <tr>
+                                                    <td colspan="6">No hay datos disponible</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -327,78 +328,142 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="panel-heading" style="border-bottom:0;">
-                                    <h3 class="panel-title">Historial de inamovilidades</h3>
+                                    <h3 class="panel-title">Historial de adendas</h3>
                                 </div>
-                                <table class="table table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>N&deg;</th>
-                                            <th>Inicio</th>
-                                            <th>Conclusión</th>
-                                            <th>Observaciones</th>
-                                            <th>Estado</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @php
-                                            $cont = 1;
-                                        @endphp
-                                        @forelse ($contract->addendums as $item)
+                                <div class="table-responsive">
+                                    <table id="dataTable" class="table table-bordered table-hover">
+                                        <thead>
                                             <tr>
-                                                <td>{{ str_pad($item->id, 2, "0", STR_PAD_LEFT) }}/2022</td>
-                                                <td>{{ date('d/M/Y', strtotime($item->start)) }}</td>
-                                                <td>{{ date('d/M/Y', strtotime($item->finish)) }}</td>
-                                                <td>{{ $item->observations }}</td>
-                                                <td>
-                                                    @php
-                                                        switch ($item->status) {
-                                                            case 'elaborado':
-                                                                $style = 'dark';
-                                                                $label = 'Elaborada';
-                                                                break;
-                                                            case 'firmado':
-                                                                $style = 'success';
-                                                                $label = 'Firmada';
-                                                                break;
-                                                            case 'concluido':
-                                                                $style = 'warning';
-                                                                $label = 'Concluida';
-                                                                break;
-                                                            default:
-                                                                $style = 'default';
-                                                                $label = 'No definido';
-                                                                break;
-                                                        }
-                                                    @endphp
-                                                    <label class="label label-{{ $style }}">{{ $label }}</label>
-                                                </td>
-                                                <td class="text-right">
-                                                    <a href="{{ route('contracts.print', ['id' => $contract->id, 'document' => 'consultor.addendum']) }}?type={{ $cont == 1 ? 'first' : '' }}" class="btn btn-default btn-sm" target="_blank"><i class="glyphicon glyphicon-print"></i> Imprimir</a>
-                                                </td>
+                                                <th>N&deg;</th>
+                                                <th>Inicio</th>
+                                                <th>Conclusión</th>
+                                                <th>Observaciones</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
                                             </tr>
+                                        </thead>
+                                        <tbody>
                                             @php
-                                                $cont++;
+                                                $cont = 1;
                                             @endphp
-                                        @empty
-                                            <tr>
-                                                <td colspan="6">No hay datos disponible</td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                                            @forelse ($contract->addendums as $item)
+                                                <tr>
+                                                    <td>{{ str_pad($item->id, 2, "0", STR_PAD_LEFT) }}/2022</td>
+                                                    <td>{{ date('d/M/Y', strtotime($item->start)) }}</td>
+                                                    <td>{{ date('d/M/Y', strtotime($item->finish)) }}</td>
+                                                    <td>{{ $item->observations }}</td>
+                                                    <td>
+                                                        @php
+                                                            switch ($item->status) {
+                                                                case 'elaborado':
+                                                                    $style = 'dark';
+                                                                    $label = 'Elaborada';
+                                                                    break;
+                                                                case 'firmado':
+                                                                    $style = 'success';
+                                                                    $label = 'Firmada';
+                                                                    break;
+                                                                case 'concluido':
+                                                                    $style = 'warning';
+                                                                    $label = 'Concluida';
+                                                                    break;
+                                                                default:
+                                                                    $style = 'default';
+                                                                    $label = 'No definido';
+                                                                    break;
+                                                            }
+                                                        @endphp
+                                                        <label class="label label-{{ $style }}">{{ $label }}</label>
+                                                    </td>
+                                                    <td class="no-sort no-click bread-actions text-right">
+                                                        <a href="{{ route('contracts.print', ['id' => $contract->id, 'document' => 'consultor.addendum']) }}?type={{ $cont == 1 ? 'first' : '' }}" class="btn btn-default btn-sm" target="_blank">
+                                                            <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
+                                                        </a>
+                                                        @if (auth()->user()->hasPermission('edit_addendum_contracts'))
+                                                        <a href="#" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' title="Editar" class="btn btn-sm btn-primary edit btn-edit-addendum">
+                                                            <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
+                                                        </a>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                @php
+                                                    $cont++;
+                                                @endphp
+                                            @empty
+                                                <tr>
+                                                    <td colspan="6">No hay datos disponible</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <form action="{{ route('contracts.addendum.update') }}" id="form-addendum" class="form-submit" method="POST">
+            @csrf
+            <input type="hidden" name="id">
+            <input type="hidden" name="contract_id" value="{{ $contract->id }}">
+            <div class="modal modal-primary fade" tabindex="-1" id="addendum-modal" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title"><i class="voyager-certificate"></i> Editar adenda</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="start">Inicio</label>
+                                    <input type="date" name="start" class="form-control" readonly required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="finish">Fin</label>
+                                    <input type="date" name="finish" class="form-control" required>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <textarea class="form-control richTextBox" name="details_payments">
+                                        
+                                    </textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <input type="submit" class="btn btn-dark" value="Aceptar">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     @stop
+
+    @section('css')
+        <style>
+            .mce-edit-area{
+                max-height: 200px !important;
+                overflow-y: auto;
+            }
+        </style>
+    @endsection
 
     @section('javascript')
         <script>
             $(document).ready(function () {
-                
+
+                $('.btn-edit-addendum').click(function(){
+                    let item = $(this).data('item');
+                    $('#form-addendum input[name="id"]').val(item.id);
+                    $('#form-addendum input[name="start"]').val(item.start);
+                    $('#form-addendum input[name="finish"]').val(item.finish);
+                    $('.richTextBox').val(item.details_payments);
+                    $.extend({selector: '.richTextBox'}, {})
+                    tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
+                });
             });
         </script>
     @stop

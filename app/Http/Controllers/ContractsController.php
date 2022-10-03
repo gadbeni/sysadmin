@@ -129,8 +129,8 @@ class ContractsController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        if($request->start == $request->finish){
-            return redirect()->route('contracts.create')->with(['message' => 'La fecha de inicio debe ser diferente a la fecha de finalización', 'alert-type' => 'error']);
+        if($request->start <= $request->finish){
+            return redirect()->route('contracts.create')->with(['message' => 'La fecha de inicio debe ser mayor a la fecha de finalización', 'alert-type' => 'error']);
         }
         try {
 
@@ -316,14 +316,14 @@ class ContractsController extends Controller
             }
             $contract->update();
 
-            if($request->observations){
+            // if($request->observations){
                 ContractsHistory::create([
                     'contract_id' => $request->id,
                     'user_id' => Auth::user()->id,
                     'status' => $request->status,
                     'observations' => $request->observations,
                 ]);
-            }
+            // }
 
             if($request->status == 'concluido'){
                 ContractsFinished::create([
@@ -342,7 +342,7 @@ class ContractsController extends Controller
         }
     }
 
-    public function contracts_addendum(Request $request){
+    public function contracts_addendum_store(Request $request){
         // dd($request->all());
         DB::beginTransaction();
         try {
@@ -383,6 +383,30 @@ class ContractsController extends Controller
         }
     }
 
+    public function contracts_addendum_update(Request $request){
+        // dd($request->all());
+        DB::beginTransaction();
+        try {
+
+            $addendum = Addendum::find($request->id);
+            $addendum->finish = $request->finish;
+            $addendum->details_payments = $request->details_payments;
+            $addendum->status = $request->finish >= date('Y-m-d') ? 'firmado' : 'concluido';
+            $addendum->update();
+
+            $contract = Contract::findOrFail($addendum->contract_id);
+            $contract->finish = $addendum->finish;
+            $contract->status = $addendum->finish >= date('Y-m-d') ? 'firmado' : 'concluido';
+            $contract->update();
+
+            DB::commit();
+            return redirect()->route('contracts.show', $request->contract_id)->with(['message' => 'Adenda actualizada', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return redirect()->route('contracts.show', $request->contract_id)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -416,7 +440,7 @@ class ContractsController extends Controller
                             ->whereHas('contracts', function($q) use ($id){
                                 $q->where('direccion_administrativa_id', $id);
                             })
-                            ->whereRaw(Auth::user()->role_id == 25 ? 'procedure_type_id = 2' : 1)
+                            ->whereRaw(Auth::user()->role_id == 25 ? 'id = 2' : 1)
                             ->where('deleted_at', NULL)->get();
         return response()->json($tipo_planilla);
     }

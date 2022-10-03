@@ -171,6 +171,18 @@ if (\Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'http://') || \Ill
     @if(!empty(config('voyager.additional_js')))<!-- Additional Javascript -->
         @foreach(config('voyager.additional_js') as $js)<script type="text/javascript" src="{{ asset($js) }}"></script>@endforeach
     @endif
+
+
+    <script>
+        function delay(fn, ms) {
+            let timer = 0
+            return function(...args) {
+                clearTimeout(timer)
+                timer = setTimeout(fn.bind(this, ...args), ms || 0)
+            }
+        }
+    </script>
+
 </body>
 {{-- Snowfall --}}
 @if (setting('plantillas.navidad'))

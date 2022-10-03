@@ -50,9 +50,12 @@ class PeopleController extends Controller
 
     public function rotation_store($id, Request $request){
         try {
-            $person = Person::where('id', $id)->whereHas('contracts', function($query){
-                $query->where('status', 'firmado')->where('deleted_at', NULL);
-            })->where('deleted_at', NULL)->first();
+            $person = Person::with(['contracts' => function($q){
+                    $q->where('deleted_at', NULL);
+                }])
+                ->where('id', $id)->whereHas('contracts', function($query){
+                    $query->where('status', 'firmado')->where('deleted_at', NULL);
+                })->where('deleted_at', NULL)->first();
             if(count($person->contracts) == 0){
                 return redirect()->route('voyager.people.index')->with(['message' => 'El funcionario no tiene un contrato vigente', 'alert-type' => 'error']);
             }
@@ -61,12 +64,13 @@ class PeopleController extends Controller
             $responsible = Contract::where('person_id', $request->responsible_id)->where('status', 'firmado')->where('deleted_at', NULL)->first();
 
             $rotation = PersonRotation::create([
+                'user_id' => Auth::user()->id,
                 'destiny_id' => $destiny->person_id,
                 'destiny_job' => $destiny->cargo ? $destiny->cargo->Descripcion : $destiny->job->name,
                 'destiny_dependency' => $request->destiny_dependency,
                 'responsible_id' => $responsible->person_id,
                 'responsible_job' => $responsible->cargo ? $responsible->cargo->Descripcion : $responsible->job->name,
-                'contract_id' => $person->contracts->first()->id,
+                'contract_id' => $person->contracts->sortDesc()->first()->id,
                 'date' => $request->date,
                 'observations' => $request->observations
             ]);

@@ -51,7 +51,7 @@ class PaymentschedulesController extends Controller
                     }, 'details.contract.person'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->whereRaw(Auth::user()->role_id >= 6 && Auth::user()->role_id <= 8 ? '(status = "aprobada" or status = "habilitada" or status = "pagada")' : 1)
-                    ->whereRaw(Auth::user()->role_id == 25 ? '(procedure_type_id = 2 or (procedure_type_id = 5 and status = "aprobada")' : 1)
+                    ->whereRaw(Auth::user()->role_id == 25 ? '(procedure_type_id = 2 or (procedure_type_id = 5 and status != "procesada"))' : 1)
                     ->where('status', '!=', 'borrador')
                     ->where('status', '!=', 'anulada')
                     ->where('deleted_at', NULL)

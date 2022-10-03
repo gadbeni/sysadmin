@@ -141,7 +141,7 @@
                                     <li><a title="Imprimir memorándum de agradecimiento" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-finished']) }}" target="_blank">Imprimir memorándum</a></li>
                                     @endif
 
-                                    @if ($item->status == 'concluido' && count($contracts) == 0 && $item->procedure_type_id == 2 && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
+                                    @if (auth()->user()->hasPermission('add_addendum_contracts') && $item->status == 'concluido' && count($contracts) == 0 && $item->procedure_type_id == 2 && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
                                     <li><a class="btn-addendum" title="Crear adenda" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' href="#">Crear adenda</a></li>
                                     @endif
 
@@ -307,7 +307,7 @@
                     </div>
                     <div class="form-group">
                         <label for="observations">Observaciones</label>
-                        <textarea name="observations" class="form-control" rows="3"></textarea>
+                        <textarea name="observations" class="form-control" rows="4" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -320,7 +320,7 @@
 </form>
 
 {{-- Addendum create modal --}}
-<form action="{{ route('contracts.addendum') }}" id="form-addendum" class="form-submit" method="POST">
+<form action="{{ route('contracts.addendum.store') }}" id="form-addendum" class="form-submit" method="POST">
     @csrf
     <input type="hidden" name="id">
     <div class="modal modal-primary fade" tabindex="-1" id="addendum-modal" role="dialog">
@@ -519,7 +519,6 @@
                 label= 'Desconocida';
             }
             $('#label-status-addendum').html(`<b>Estado de la adenda</b> <label class="label label-${style}">${label}</label>`);
-            // console.log(item)
         });
 
         $('.btn-addendum-status').click(function(){
