@@ -16,6 +16,7 @@ class CreateAddendumsTable extends Migration
         Schema::create('addendums', function (Blueprint $table) {
             $table->id();
             $table->foreignId('contract_id')->nullable()->constrained('contracts');
+            $table->foreignId('signature_id')->nullable()->constrained('signatures');
             $table->date('start')->nullable();
             $table->date('finish')->nullable();
             $table->text('details_payments')->nullable();

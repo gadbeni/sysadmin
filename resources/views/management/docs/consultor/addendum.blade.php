@@ -14,7 +14,7 @@
     }
 
     // Solo en caso de adendas firma el director de finanzas
-    $signature = null;
+    $signature = $addendums->first()->signature;
 @endphp
 
 @section('content')

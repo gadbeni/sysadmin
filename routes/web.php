@@ -20,6 +20,7 @@ use App\Http\Controllers\PaymentschedulesController;
 use App\Http\Controllers\ImportsController;
 use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\MemosController;
+use App\Http\Controllers\MemosTypesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -143,8 +144,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('spreadsheets/ajax/list', [SpreadsheetsController::class, 'list']);
     Route::post('spreadsheets/delete/multiple', [SpreadsheetsController::class, 'destroy_multiple'])->name('spreadsheets.delete_multiple');
 
-
-
     // PLANILLAS ADICIONALES
     Route::resource('planillas_adicionales', StipendController::class);
     Route::post('planillas_adicionales/update', [StipendController::class, 'update_planilla'])->name('planilla.adicional.update');
@@ -173,6 +172,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     // *Contratos
     Route::resource('contracts', ContractsController::class);
+    // Route::post('contracts/{contract}/destroy', [ContractsController::class, 'destroy'])->name('contracts.destroy');
     Route::get('contracts/ajax/list/{search?}', [ContractsController::class, 'list']);
     Route::post('contracts/status', [ContractsController::class, 'contracts_status'])->name('contracts.status');
     Route::post('contracts/addendum/store', [ContractsController::class, 'contracts_addendum_store'])->name('contracts.addendum.store');
@@ -181,6 +181,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('contracts/direccion-administrativa/{id}', [ContractsController::class, 'contracts_direccion_administrativa']);
     Route::get('contracts/{id}/print/{document}', [ContractsController::class, 'print'])->name('contracts.print');
     
+
+    // Finanzas
+
+    // * Personas externas
+    Route::get('person-externals/create', [MemosTypesController::class, 'create'])->name('voyager.person-externals.create');
+
     // Reportes
 
     // *Recursos humanos

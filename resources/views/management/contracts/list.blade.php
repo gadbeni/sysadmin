@@ -345,6 +345,15 @@
                                 <p><strong><em>MONTO. - </em></strong><em>El monto total del presente contrato modificatorio ser&aacute; por la suma de </em><strong><em>Bs.- </em></strong><strong><em>13.500,00</em></strong><strong><em>.-</em></strong><em> (</em><em>Trece Mil Quinientos 00</em><em>/100 Bolivianos), el pago de esta consultor&iacute;a ser&aacute; de la siguiente manera: En </em><em>cuatro</em><em> (</em><em>04</em><em>) cuotas mensuales, la primera cuota correspondiente a </em><em>12 d&iacute;as</em><em> del mes de </em><em>julio</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>1.800,00.</em></strong><strong><em>- </em></strong><em>(</em><em>Un Mil Ochocientos 00</em><em>/100 Bolivianos), la segunda </em><em>y tercer</em><em> cuota correspondiente a </em><em>los meses de agosto y septiembre</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>4.500,00</em></strong><em>.-(Cuatro Mil Quinientos 00</em><em>/100 Bolivianos), la </em><em>cuarta</em><em> y &uacute;ltima cuota correspondiente a </em><em>18 d&iacute;as</em><em> del mes de </em><em>octubre</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>2.700,00</em></strong><em>.- (Dos Mil Setecientos 00</em><em>/100 Bolivianos). La cancelaci&oacute;n del servicio prestado se realizar&aacute; previa presentaci&oacute;n y aprobaci&oacute;n de informe de actividades de acuerdo a T&eacute;rminos de Referencia, aprobado por el Secretario Departamental de </em><em>Desarrollo Productivo y Econom&iacute;a Plural</em><em> del GAD-BENI.</em></p>
                             </textarea>
                         </div>
+                        <div class="form-group col-md-12">
+                            <label for="signature_id">Firma autorizada</label>
+                            <select name="signature_id" class="form-control select2">
+                                <option value="">Secretario(a) de Administración y Finanzas</option>
+                                @foreach (App\Models\Signature::where('status', 1)->where('deleted_at', NULL)->get() as $item)
+                                <option @if($item->direccion_administrativa_id == Auth::user()->direccion_administrativa_id) selected @endif value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="form-group col-md-12 text-right" style="margin-bottom: 0px">
                             <div class="checkbox">
                                 <label><input type="checkbox" required> Aceptar y guardar</label>
@@ -430,24 +439,30 @@
 </div>
 
 {{-- Delete modal --}}
-<div class="modal modal-danger fade" tabindex="-1" id="delete-modal-alt" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title"><i class="voyager-trash"></i> Desea eliminar el siguiente registro?</h4>
-            </div>
-            <div class="modal-footer">
-                <form action="#" id="delete_form_alt" method="POST">
+<form action="#" id="delete_form_alt" method="POST">
+    <div class="modal modal-danger fade" tabindex="-1" id="delete-modal-alt" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="voyager-trash"></i> Desea anular el siguiente contrato?</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="observations">Observaciones</label>
+                        <textarea name="observations" class="form-control" rows="4" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
                     <input type="submit" class="btn btn-danger pull-right delete-confirm" value="Sí, eliminar">
-                </form>
-                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancelar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>
 
 <style>
     .mce-edit-area{

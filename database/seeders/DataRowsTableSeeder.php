@@ -3515,7 +3515,7 @@ class DataRowsTableSeeder extends Seeder
                 'type' => 'text_area',
                 'display_name' => 'Dirección',
                 'required' => 0,
-                'browse' => 1,
+                'browse' => 0,
                 'read' => 1,
                 'edit' => 1,
                 'add' => 1,
@@ -3531,7 +3531,7 @@ class DataRowsTableSeeder extends Seeder
                 'type' => 'text',
                 'display_name' => 'Email',
                 'required' => 0,
-                'browse' => 1,
+                'browse' => 0,
                 'read' => 1,
                 'edit' => 1,
                 'add' => 1,
@@ -3733,42 +3733,10 @@ class DataRowsTableSeeder extends Seeder
             ),
             232 => 
             array (
-                'id' => 250,
-                'data_type_id' => 26,
-                'field' => 'name',
-                'type' => 'text',
-                'display_name' => 'Nombre',
-                'required' => 0,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{}',
-                'order' => 4,
-            ),
-            233 => 
-            array (
-                'id' => 251,
-                'data_type_id' => 26,
-                'field' => 'origin',
-                'type' => 'text',
-                'display_name' => 'Origen',
-                'required' => 0,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{}',
-                'order' => 5,
-            ),
-            234 => 
-            array (
                 'id' => 252,
                 'data_type_id' => 26,
                 'field' => 'concept',
-                'type' => 'text',
+                'type' => 'text_area',
                 'display_name' => 'Concepto',
                 'required' => 0,
                 'browse' => 1,
@@ -3779,13 +3747,13 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{}',
                 'order' => 6,
             ),
-            235 => 
+            233 => 
             array (
                 'id' => 253,
                 'data_type_id' => 26,
                 'field' => 'subject',
-                'type' => 'text',
-                'display_name' => 'Asunto',
+                'type' => 'text_area',
+                'display_name' => 'Glosa',
                 'required' => 0,
                 'browse' => 1,
                 'read' => 1,
@@ -3795,7 +3763,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{}',
                 'order' => 7,
             ),
-            236 => 
+            234 => 
             array (
                 'id' => 254,
                 'data_type_id' => 26,
@@ -3811,7 +3779,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{"display":{"width":6},"on":"Activo","off":"Inactivo","checked":true}',
                 'order' => 8,
             ),
-            237 => 
+            235 => 
             array (
                 'id' => 255,
                 'data_type_id' => 26,
@@ -3827,7 +3795,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{}',
                 'order' => 9,
             ),
-            238 => 
+            236 => 
             array (
                 'id' => 256,
                 'data_type_id' => 26,
@@ -3843,7 +3811,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{}',
                 'order' => 10,
             ),
-            239 => 
+            237 => 
             array (
                 'id' => 257,
                 'data_type_id' => 26,
@@ -3859,7 +3827,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{}',
                 'order' => 11,
             ),
-            240 => 
+            238 => 
             array (
                 'id' => 258,
                 'data_type_id' => 26,
@@ -3875,7 +3843,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{"model":"App\\\\Models\\\\MemosTypesGroup","table":"memos_types_groups","type":"belongsTo","column":"memos_types_group_id","key":"id","label":"name","pivot_table":"addendums","pivot":"0","taggable":"0"}',
                 'order' => 3,
             ),
-            241 => 
+            239 => 
             array (
                 'id' => 259,
                 'data_type_id' => 24,
@@ -3891,7 +3859,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{"model":"App\\\\Models\\\\PersonExternalType","table":"person_external_types","type":"belongsTo","column":"person_external_type_id","key":"id","label":"name","pivot_table":"addendums","pivot":"0","taggable":"0"}',
                 'order' => 2,
             ),
-            242 => 
+            240 => 
             array (
                 'id' => 260,
                 'data_type_id' => 24,
@@ -3905,6 +3873,38 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"model":"App\\\\Models\\\\Person","table":"people","type":"belongsTo","column":"person_id","key":"id","label":"ci","pivot_table":"addendums","pivot":"0","taggable":"0"}',
+                'order' => 4,
+            ),
+            241 => 
+            array (
+                'id' => 261,
+                'data_type_id' => 26,
+                'field' => 'description',
+                'type' => 'text',
+                'display_name' => 'Descripción',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{}',
+                'order' => 3,
+            ),
+            242 => 
+            array (
+                'id' => 262,
+                'data_type_id' => 26,
+                'field' => 'destiny',
+                'type' => 'text',
+                'display_name' => 'Destino',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{}',
                 'order' => 4,
             ),
         ));

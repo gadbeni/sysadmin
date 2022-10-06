@@ -129,8 +129,8 @@ class ContractsController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        if($request->start <= $request->finish){
-            return redirect()->route('contracts.create')->with(['message' => 'La fecha de inicio debe ser mayor a la fecha de finalización', 'alert-type' => 'error']);
+        if($request->procedure_type_id != 1 && $request->start >= $request->finish){
+            return redirect()->route('contracts.create')->with(['message' => 'La fecha de finalización debe ser mayor a la fecha de inicio', 'alert-type' => 'error']);
         }
         try {
 
@@ -316,14 +316,12 @@ class ContractsController extends Controller
             }
             $contract->update();
 
-            // if($request->observations){
-                ContractsHistory::create([
-                    'contract_id' => $request->id,
-                    'user_id' => Auth::user()->id,
-                    'status' => $request->status,
-                    'observations' => $request->observations,
-                ]);
-            // }
+            ContractsHistory::create([
+                'contract_id' => $request->id,
+                'user_id' => Auth::user()->id,
+                'status' => $request->status,
+                'observations' => $request->observations,
+            ]);
 
             if($request->status == 'concluido'){
                 ContractsFinished::create([
@@ -349,6 +347,7 @@ class ContractsController extends Controller
 
             Addendum::create([
                 'contract_id' => $request->id,
+                'signature_id' => $request->signature_id ?? NULL,
                 'start' => $request->start,
                 'finish' => $request->finish,
                 'details_payments' => $request->details_payments
@@ -389,6 +388,7 @@ class ContractsController extends Controller
         try {
 
             $addendum = Addendum::find($request->id);
+            $addendum->signature_id = $request->signature_id ?? NULL;
             $addendum->finish = $request->finish;
             $addendum->details_payments = $request->details_payments;
             $addendum->status = $request->finish >= date('Y-m-d') ? 'firmado' : 'concluido';
@@ -413,19 +413,32 @@ class ContractsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
+        // dd($request->all());
+        DB::beginTransaction();
         try {
             if($this->enabled_to_delete($id)){
                 Contract::where('id', $id)->update([
                     'status' => 'anulado',
                     'deleted_at' => Carbon::now()
                 ]);
+
+                ContractsHistory::create([
+                    'contract_id' => $id,
+                    'user_id' => Auth::user()->id,
+                    'status' => 'Anulado',
+                    'observations' => $request->observations,
+                ]);
+
+                DB::commit();
+
                 return response()->json(['message' => 'Anulado exitosamente.']);
             }else{
                 return response()->json(['error' => 'El contrato pertenece a una planilla en proceso de pago.']);
             }
         } catch (\Throwable $th) {
+            DB::rollback();
             //throw $th;
             return response()->json(['error' => 'Ocurrió un error.']);
         }
@@ -448,7 +461,7 @@ class ContractsController extends Controller
     // ================================
     
     public function print($id, $document){
-        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature.person', 'signature.job', 'signature.cargo', 'addendums'])->where('id', $id)->first();
+        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature.person', 'signature.job', 'signature.cargo', 'addendums.signature'])->where('id', $id)->first();
         // Si no tiene comisión evaluadora del sistema actual buscar en el antiguo sistema
         if($contract->workers_memo_alt != null){
             $contract->workers = Contract::with(['person', 'job', 'cargo'])->whereIn('id', json_decode($contract->workers_memo_alt))->get();

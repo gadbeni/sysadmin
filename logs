@@ -1,9 +1,9 @@
- 
+ cambiar name por description y origin por destiny en tabla menos_types
 
 Migraciones
     - ejecutar migraciones
 Seeders
-    - UpdateBreadSeeder, UpdatePermissionsSeeder, PersonExternalTypesTableSeeder, MemosTypesGroupsTableSeeder
+
 Paquetes
 
 Comandos
@@ -13,6 +13,5 @@ Otros
 
 NOTA:
 - generar código de adenda
-- agregar historial de eliminación de contratos
-
-
+- anular adenda
+- evitar finalizar contrato si ya se planillo ese mes

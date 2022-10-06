@@ -32,7 +32,7 @@ class MemosController extends Controller
      */
     public function create()
     {
-        //
+        return view('finance.memos.edit-add');
     }
 
     /**
