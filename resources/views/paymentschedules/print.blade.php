@@ -269,57 +269,57 @@
                             @forelse ($item_group_program as $item)
                                 @php
                                     $cont++;
-                                    $total_salary += number_format($item->salary, 2, '.', '');
-                                    $total_partial_salary += number_format($item->partial_salary, 2, '.', '');
-                                    $total_seniority_bonus_amount += number_format($item->seniority_bonus_amount, 2, '.', '');
+                                    $total_salary += $item->salary;
+                                    $total_partial_salary += $item->partial_salary;
+                                    $total_seniority_bonus_amount += $item->seniority_bonus_amount;
                                     $total_amount += number_format($item->partial_salary + $item->seniority_bonus_amount, 2, '.', '');
-                                    $total_health += number_format($item->health, 2, '.', '');
-                                    $total_common_risk += number_format($item->common_risk, 2, '.', '');
-                                    $total_solidary_employer += number_format($item->solidary_employer, 2, '.', '');
-                                    $total_housing_employer += number_format($item->housing_employer, 2, '.', '');
-                                    $total_solidary += number_format($item->solidary, 2, '.', '');
-                                    $total_afp_commission += number_format($item->afp_commission, 2, '.', '');
-                                    $total_retirement += number_format($item->retirement, 2, '.', '');
-                                    $total_solidary_national += number_format($item->solidary_national, 2, '.', '');
-                                    $total_labor_total += number_format($item->labor_total, 2, '.', '');
-                                    $total_rc_iva_amount += number_format($item->rc_iva_amount, 2, '.', '');
-                                    $total_faults_amount += number_format($item->faults_amount, 2, '.', '');
-                                    $total_liquid_payable += number_format($item->liquid_payable, 2, '.', '');
+                                    $total_health += $item->health;
+                                    $total_common_risk += $item->common_risk;
+                                    $total_solidary_employer += $item->solidary_employer;
+                                    $total_housing_employer += $item->housing_employer;
+                                    $total_solidary += $item->solidary;
+                                    $total_afp_commission += $item->afp_commission;
+                                    $total_retirement += $item->retirement;
+                                    $total_solidary_national += $item->solidary_national;
+                                    $total_labor_total += $item->labor_total;
+                                    $total_rc_iva_amount += $item->rc_iva_amount;
+                                    $total_faults_amount += $item->faults_amount;
+                                    $total_liquid_payable += $item->liquid_payable;
 
                                     $employer_amount = number_format($item->common_risk + $item->solidary_employer + $item->housing_employer + $item->health, 2, '.', '');
-                                    $employer_total += number_format($employer_amount, 2, '.', '');
+                                    $employer_total += $employer_amount;
 
                                     if($group){
                                         $total_amount_group += number_format($item->partial_salary + $item->seniority_bonus_amount, 2, '.', '');
-                                        $total_solidary_group += number_format($item->solidary, 2, '.', '');
-                                        $total_common_risk_group += number_format($item->common_risk, 2, '.', '');
-                                        $total_afp_commission_group += number_format($item->afp_commission, 2, '.', '');
-                                        $total_retirement_group += number_format($item->retirement, 2, '.', '');
-                                        $total_solidary_national_group += number_format($item->solidary_national, 2, '.', '');
+                                        $total_solidary_group += $item->solidary;
+                                        $total_common_risk_group += $item->common_risk;
+                                        $total_afp_commission_group += $item->afp_commission;
+                                        $total_retirement_group += $item->retirement;
+                                        $total_solidary_national_group += $item->solidary_national;
                                         $total_labor_total_group += number_format($item->labor_total + ($data->procedure_type_id == 2 ? $item->common_risk : 0 ), 2, '.', '');
-                                        $total_rc_iva_amount_group += number_format($item->rc_iva_amount, 2, '.', '');
+                                        $total_rc_iva_amount_group += $item->rc_iva_amount;
                                         $total_discount_group += number_format($item->labor_total + $item->rc_iva_amount + $item->faults_amount, 2, '.', '');
-                                        $total_payable_liquid_group += number_format($item->liquid_payable, 2, '.', '');
-                                        $total_solidary_employer_group += number_format($item->solidary_employer, 2, '.', '');
-                                        $total_housing_employer_group += number_format($item->housing_employer, 2, '.', '');
-                                        $total_health_group += number_format($item->health, 2, '.', '');
-                                        $total_employer_amount_group += number_format($employer_amount, 2, '.', '');
+                                        $total_payable_liquid_group += $item->liquid_payable;
+                                        $total_solidary_employer_group += $item->solidary_employer;
+                                        $total_housing_employer_group += $item->housing_employer;
+                                        $total_health_group += $item->health;
+                                        $total_employer_amount_group += $employer_amount;
 
                                         if($group == 1){
                                             $total_amount_group_program += number_format($item->partial_salary + $item->seniority_bonus_amount, 2, '.', '');
-                                            $total_solidary_group_program += number_format($item->solidary, 2, '.', '');
-                                            $total_common_risk_group_program += number_format($item->common_risk, 2, '.', '');
-                                            $total_afp_commission_group_program += number_format($item->afp_commission, 2, '.', '');
-                                            $total_retirement_group_program += number_format($item->retirement, 2, '.', '');
-                                            $total_solidary_national_group_program += number_format($item->solidary_national, 2, '.', '');
+                                            $total_solidary_group_program += $item->solidary;
+                                            $total_common_risk_group_program += $item->common_risk;
+                                            $total_afp_commission_group_program += $item->afp_commission;
+                                            $total_retirement_group_program += $item->retirement;
+                                            $total_solidary_national_group_program += $item->solidary_national;
                                             $total_labor_total_group_program += number_format($item->labor_total + ($data->procedure_type_id == 2 ? $item->common_risk : 0 ), 2, '.', '');
-                                            $total_rc_iva_amount_group_program += number_format($item->rc_iva_amount, 2, '.', '');
+                                            $total_rc_iva_amount_group_program += $item->rc_iva_amount;
                                             $total_discount_group_program += number_format($item->labor_total + $item->rc_iva_amount + $item->faults_amount, 2, '.', '');
-                                            $total_payable_liquid_group_program += number_format($item->liquid_payable, 2, '.', '');
-                                            $total_solidary_employer_group_program += number_format($item->solidary_employer, 2, '.', '');
-                                            $total_housing_employer_group_program += number_format($item->housing_employer, 2, '.', '');
-                                            $total_health_group_program += number_format($item->health, 2, '.', '');
-                                            $total_employer_amount_group_program += number_format($employer_amount, 2, '.', '');
+                                            $total_payable_liquid_group_program += $item->liquid_payable;
+                                            $total_solidary_employer_group_program += $item->solidary_employer;
+                                            $total_housing_employer_group_program += $item->housing_employer;
+                                            $total_health_group_program += $item->health;
+                                            $total_employer_amount_group_program += $employer_amount;
                                         }
                                     }
                                 @endphp
@@ -353,7 +353,7 @@
                                     <td style="text-align: right">{{ number_format($item->solidary_national, 2, ',', '.') }}</td>
                                     
                                     {{-- Si la planilla es de consultoría al total aporte afp le sumamos el riego laboral (que es el mismo monto del riesgo común) --}}
-                                    <td style="text-align: right"><b>{{ number_format(number_format($item->labor_total, 2, '.', '') + ($data->procedure_type_id == 2 ? number_format($item->common_risk, 2, '.', '') : 0 ), 2, ',', '.') }}</b></td>
+                                    <td style="text-align: right"><b>{{ number_format($item->labor_total + ($data->procedure_type_id == 2 ? $item->common_risk : 0 ), 2, ',', '.') }}</b></td>
 
                                     <td style="text-align: right">{{ number_format($item->rc_iva_amount, 2, ',', '.') }}</td>
                                     <td style="text-align: right">{{ number_format($item->faults_quantity, floor($item->faults_quantity) < $item->faults_quantity ? 1 : 0, ',', '.') }}</td>
@@ -365,10 +365,10 @@
                                             // Si el planilla es permanenteo eventual restamos el total de aportes laborales al líquido pagable
                                             $labor_total = 0;
                                             if($data->procedure_type_id == 1 || $data->procedure_type_id == 5){
-                                                $labor_total = number_format($item->labor_total, 2, '.', '');
+                                                $labor_total = $item->labor_total;
                                             }
-                                            $rc_iva_amount = number_format($item->rc_iva_amount, 2, '.', '');
-                                            $faults_amount = number_format($item->faults_amount, 2, '.', '');
+                                            $rc_iva_amount = $item->rc_iva_amount;
+                                            $faults_amount = $item->faults_amount;
                                         @endphp
                                         {{ number_format($labor_total + $rc_iva_amount + $faults_amount, 2, ',', '.') }}
                                     </td>

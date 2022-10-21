@@ -299,6 +299,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'read_contracts' or
                                             `key` = 'upgrade_contracts' or
                                             `key` = 'delete_contracts' or
+                                            `key` = 'add_addendum_contracts' or
                                             `key` = 'print_finish_contracts' or
                                             `key` = 'browse_cities' or
                                             `key` = 'edit_cities' or
@@ -382,6 +383,13 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'edit_contracts' or
                                             `key` = 'upgrade_contracts' or
                                             `key` = 'add_addendum_contracts'")->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        // Roles de auditoría interna
+        $role = Role::where('name', 'auditoria_interna')->firstOrFail();
+        $permissions = Permission::whereRaw("table_name = 'admin' or
+                                            `key` = 'browse_planillaspagos' or
+                                            `key` = 'browse_reportspaymentschedulesdetails-status'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
     }
 }

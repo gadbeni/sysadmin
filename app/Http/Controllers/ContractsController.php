@@ -391,7 +391,7 @@ class ContractsController extends Controller
             $addendum->signature_id = $request->signature_id ?? NULL;
             $addendum->finish = $request->finish;
             $addendum->details_payments = $request->details_payments;
-            $addendum->status = $request->finish >= date('Y-m-d') ? 'firmado' : 'concluido';
+            $addendum->status = $request->finish >= date('Y-m-d') ? 'elaborado' : 'concluido';
             $addendum->update();
 
             $contract = Contract::findOrFail($addendum->contract_id);

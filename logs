@@ -1,7 +1,7 @@
  cambiar name por description y origin por destiny en tabla menos_types
 
 Migraciones
-    - ejecutar migraciones
+
 Seeders
 
 Paquetes

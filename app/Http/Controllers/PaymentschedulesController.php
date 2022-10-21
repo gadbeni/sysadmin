@@ -25,6 +25,7 @@ use App\Models\PaymentschedulesDetail;
 use App\Models\Period;
 use App\Models\PaymentschedulesHistory;
 use App\Models\Program;
+use App\Models\Person;
 
 
 class PaymentschedulesController extends Controller
@@ -622,5 +623,75 @@ class PaymentschedulesController extends Controller
             }
             return redirect()->route('paymentschedules.files.create')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
+    }
+
+    // Aguinaldo
+
+    public function bonus_create(){
+        $people = Person::where('deleted_at', NULL)->get();
+        $cont = 0;
+        foreach ($people as $person) {
+            $contracts = Contract::where('deleted_at', NULL)->whereRaw("(procedure_type_id = 1 or procedure_type_id = 5)")->where('person_id', $person->id)->orderBy('start', 'ASC')->get();
+            $bonus = collect();
+            // Si tiene al menos un contrato
+            if(count($contracts) > 0){
+                $start = Carbon::createFromFormat('Y-m-d', $contracts[0]->start);
+                $finish = Carbon::createFromFormat('Y-m-d', $contracts[0]->finish ?? '2022-12-30');
+
+                // si tiene mas de 1 contrato
+                if(count($contracts) > 1){
+                    for ($i=1; $i < count($contracts); $i++) { 
+
+                        // filtrar que los contratos estén en orden cronológico
+                        if($start->format('Y-m-d') < $contracts[$i]->start){
+                            $current_finish = Carbon::createFromFormat('Y-m-d', $finish->format('Y-m-d'));
+                            $new_start = Carbon::createFromFormat('Y-m-d', $contracts[$i]->start);
+                            if($current_finish->diffInDays($new_start) == 1){
+                                $finish = Carbon::createFromFormat('Y-m-d', $contracts[$i]->finish ?? '2022-12-30');
+
+                                if($i == count($contracts) -1){
+                                    if($start->diffInMonths($finish) >= 2){
+                                        if(contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'))->months >= 3){
+                                            $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d')]);
+                                        }
+                                    }
+                                }
+                            }else{
+                                if($start->diffInMonths($finish) >= 2){
+                                    if(contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'))->months >= 3){
+                                        $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d')]);
+                                    }
+                                }
+
+                                if($i == count($contracts) -1){
+                                    $current_finish = Carbon::createFromFormat('Y-m-d', $contracts[$i]->start);
+                                    $new_start = Carbon::createFromFormat('Y-m-d', $contracts[$i]->finish ?? '2022-12-30');
+                                    if($current_finish->diffInMonths($new_start) >= 2){
+                                        if(contract_duration_calculate($contracts[$i]->start, $contracts[$i]->finish ?? '2022-12-30')->months >= 3){
+                                            $bonus->push(["start" => $contracts[$i]->start, "finish" => $contracts[$i]->finish ?? '2022-12-30']);
+                                        }
+                                    }
+                                }else{
+                                    $start = Carbon::createFromFormat('Y-m-d', $contracts[$i]->start);
+                                    $finish = Carbon::createFromFormat('Y-m-d', $contracts[$i]->finish ?? '2022-12-30');
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    if($start->diffInMonths($finish) >= 2){
+                        if(contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'))->months >= 3){
+                            $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d')]);
+                        }
+                    }
+                }
+            }
+
+            $people[$cont]->bonus = $bonus;
+
+            $cont++;
+        }
+
+        dd($people);
     }
 }

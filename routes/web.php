@@ -110,6 +110,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('paymentschedules/files/store', [PaymentschedulesController::class, 'files_store'])->name('paymentschedules.files.store');
     Route::post('paymentschedules/files/delete', [PaymentschedulesController::class, 'files_delete'])->name('paymentschedules.files.delete');
 
+    // Aguinaldo
+    Route::get('paymentschedules/bonus/create', [PaymentschedulesController::class, 'bonus_create'])->name('paymentschedules.bonus.create');
+
     // Previsión social
     // * Cheques
     Route::get('social-security/checks', [SocialSecurityController::class, 'checks_index'])->name('social-security.checks.index');

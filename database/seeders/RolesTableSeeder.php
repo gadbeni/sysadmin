@@ -139,5 +139,35 @@ class RolesTableSeeder extends Seeder
         if (!$role->exists) {
             $role->fill(['display_name' => 'Gobernador'])->save();
         }
+
+        // Desconcentrada
+        $role = Role::firstOrNew(['name' => 'rrhh_desconcentrada']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Desconcentrada'])->save();
+        }
+
+        // COED
+        $role = Role::firstOrNew(['name' => 'Coed']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'COED'])->save();
+        }
+
+        // Biometrico
+        $role = Role::firstOrNew(['name' => 'Biometrico']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Biometrico'])->save();
+        }
+
+        // Director de finanzas
+        $role = Role::firstOrNew(['name' => 'director_finanzas']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Director de finanzas'])->save();
+        }
+
+        // Auditoría interna
+        $role = Role::firstOrNew(['name' => 'auditoria_interna']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Auditoría interna'])->save();
+        }
     }
 }

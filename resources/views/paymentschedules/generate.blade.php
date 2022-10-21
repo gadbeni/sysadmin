@@ -144,13 +144,13 @@
                                         }
 
                                         // Sueldo actual
-                                        $salary = $item->cargo ? $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo : $item->job->salary;
+                                        $salary = number_format($item->cargo ? $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo : $item->job->salary, 2, '.', '');
                                         // Nivel salarial
                                         $job_item = $item->cargo ? '' : $item->job->item;
                                         $job_level = $item->cargo ? $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->NumNivel : $item->job->level;
 
                                         // Sueldo parcial (en caso de que el trabajador tenga una fecha de ingreso posterior al periodo de la planilla)
-                                        $partial_salary = ($salary/30) * $days_enabled_worker;
+                                        $partial_salary = number_format(($salary/30) * $days_enabled_worker, 2, '.', '');
 
                                         // Calcular bono antigüedad
                                         $minimum_salary = setting('planillas.minimum_salary') ?? 2164;
@@ -166,11 +166,11 @@
                                                     $minimum_salary_quantity = $item->person->seniority_bonus->first()->quantity;
                                                 }
                                             }
-                                            $seniority_bonus_amount = ((($minimum_salary * $minimum_salary_quantity) * ($seniority_bonus_percentage /100)) /30) * $days_enabled_worker;
+                                            $seniority_bonus_amount = number_format(((($minimum_salary * $minimum_salary_quantity) * ($seniority_bonus_percentage /100)) /30) * $days_enabled_worker, 2, '.', '');
                                         }
 
                                         // Total ganado
-                                        $total_amout = $partial_salary + $seniority_bonus_amount;
+                                        $total_amout = number_format($partial_salary + $seniority_bonus_amount, 2, '.', '');
 
                                         // Calcular edad
                                         $now = \Carbon\Carbon::now();
@@ -189,9 +189,9 @@
 
                                         // Si no es consultor o si es c onsultor y <= 20
                                         if($procedure_type_id != 2 || ($procedure_type_id == 2 && $days_enabled_worker >= 20 && $salary >= $minimum_salary)){
-                                            $solidary = $total_amout * 0.005;
-                                            $common_risk = $total_amout *0.0171;
-                                            $retirement = $total_amout * 0.1;
+                                            $solidary = number_format($total_amout * 0.005, 2, '.', '');
+                                            $common_risk = number_format($total_amout *0.0171, 2, '.', '');
+                                            $retirement = number_format($total_amout * 0.1, 2, '.', '');
                                             
                                             // Si es mayor a 57 y menos a 65 años y tiene su AFP inactiva no paga jubilación
                                             if($age >= 58 && $age < 65 && $item->person->afp_status == 0){
@@ -209,45 +209,45 @@
                                                 $common_risk = 0;
                                             }
 
-                                            $afp_commission = $total_amout * 0.005;
+                                            $afp_commission = number_format($total_amout * 0.005, 2, '.', '');
 
                                             
                                             if($total_amout >= 13000){
-                                                $solidary_national = ($total_amout - 13000) *0.01;
+                                                $solidary_national = number_format(($total_amout - 13000) *0.01, 2, '.', '');
                                             }
                                             if ($total_amout >= 25000) {
-                                                $solidary_national = ($total_amout - 25000) *0.05;
+                                                $solidary_national = number_format(($total_amout - 25000) *0.05, 2, '.', '');
                                             }
                                             if ($total_amout >= 35000) {
-                                                $solidary_national = ($total_amout - 35000) *0.1;
+                                                $solidary_national = number_format(($total_amout - 35000) *0.1);
                                             }
 
-                                            $solidary_employer = $total_amout * 0.03;
-                                            $housing_employer = $total_amout * 0.02;
-                                            $health = $total_amout * 0.1;
+                                            $solidary_employer = number_format($total_amout * 0.03, 2, '.', '');
+                                            $housing_employer = number_format($total_amout * 0.02, 2, '.', '');
+                                            $health = number_format($total_amout * 0.1, 2, '.', '');
                                         }
 
-                                        $labor_total = $solidary + $common_risk + $afp_commission + $retirement + $solidary_national;
+                                        $labor_total = number_format($solidary + $common_risk + $afp_commission + $retirement + $solidary_national, 2, '.', '');
 
                                         // Calcular RC-IVA
                                         $rc_iva = $contracts_rc_iva ? $contracts_rc_iva->details->where('person_id', $item->person->id)->first() : null;
-                                        $rc_iva_amount = $rc_iva ? json_decode($rc_iva->details)->iva : 0;
+                                        $rc_iva_amount = number_format($rc_iva ? json_decode($rc_iva->details)->iva : 0, 2, '.', '');
 
                                         // Faltas
                                         $faults = $contracts_faults ? $contracts_faults->details->where('person_id', $item->person->id)->first() : null;
-                                        $faults_quantity = $faults ? json_decode($faults->details)->faults : 0;
-                                        $faults_amount = ($salary / 30) * $faults_quantity;
+                                        $faults_quantity = number_format($faults ? json_decode($faults->details)->faults : 0, 2, '.', '');
+                                        $faults_amount = number_format(($salary / 30) * $faults_quantity, 2, '.', '');
 
                                         // Descuentos
                                         // Si el planilla es permanenteo eventual restamos el total de aportes laborales al líquido pagable
                                         if($procedure_type_id == 1 || $procedure_type_id == 5){
-                                            $total_discount = $labor_total + $faults_amount + $rc_iva_amount;
+                                            $total_discount = number_format($labor_total + $faults_amount + $rc_iva_amount, 2, '.', '');
                                         }else{
-                                            $total_discount = $faults_amount + $rc_iva_amount;
+                                            $total_discount = number_format($faults_amount + $rc_iva_amount, 2, '.', '');
                                         }
 
                                         // Líquido pagable
-                                        $liquid_payable = $total_amout - $total_discount;
+                                        $liquid_payable = number_format($total_amout - $total_discount, 2, '.', '');
 
                                         // Inputs
                                         array_push($array_contract_id, $item->id);
