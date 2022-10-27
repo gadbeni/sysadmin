@@ -628,18 +628,27 @@ class PaymentschedulesController extends Controller
     // Aguinaldo
 
     public function bonus_create(){
-        $people = Person::where('deleted_at', NULL)->get();
+        return view('paymentschedules.bonus-browse');
+    }
+
+    public function bonus_generate(){
+        $people = Person::where('deleted_at', NULL)->orderBy('last_name')->get();
         $cont = 0;
         foreach ($people as $person) {
-            $contracts = Contract::where('deleted_at', NULL)->whereRaw("(procedure_type_id = 1 or procedure_type_id = 5)")->where('person_id', $person->id)->orderBy('start', 'ASC')->get();
+            $contracts = Contract::where('deleted_at', NULL)
+                            ->whereHas('paymentschedules_details', function($q){
+                                $q->where('deleted_at', NULL);
+                            })
+                            ->whereRaw("(procedure_type_id = 1 or procedure_type_id = 5)")->where('person_id', $person->id)->orderBy('start', 'ASC')->get();
             $bonus = collect();
             // Si tiene al menos un contrato
             if(count($contracts) > 0){
-                $start = Carbon::createFromFormat('Y-m-d', $contracts[0]->start);
+                $start = date('Y', strtotime($contracts[0]->start)) == 2022 ? Carbon::createFromFormat('Y-m-d', $contracts[0]->start) : Carbon::createFromFormat('Y-m-d', '2022-01-01');
                 $finish = Carbon::createFromFormat('Y-m-d', $contracts[0]->finish ?? '2022-12-30');
 
                 // si tiene mas de 1 contrato
                 if(count($contracts) > 1){
+                    $contracts_bonus = collect();
                     for ($i=1; $i < count($contracts); $i++) { 
 
                         // filtrar que los contratos estén en orden cronológico
@@ -649,17 +658,30 @@ class PaymentschedulesController extends Controller
                             if($current_finish->diffInDays($new_start) == 1){
                                 $finish = Carbon::createFromFormat('Y-m-d', $contracts[$i]->finish ?? '2022-12-30');
 
+                                // Si el primer contrato no se corta con el segundo agregamos a la lista
+                                if($i == 1){
+                                    $contracts_bonus->push($contracts[0]->id);
+                                }else{
+                                    $contracts_bonus->push($contracts[$i -1]->id);    
+                                }
+
+                                // Agregamos el contrato a la lista
+                                $contracts_bonus->push($contracts[$i]->id);
+
                                 if($i == count($contracts) -1){
                                     if($start->diffInMonths($finish) >= 2){
                                         if(contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'))->months >= 3){
-                                            $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d')]);
+                                            $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d'), "contracts" => $contracts_bonus]);
+                                            $contracts_bonus = collect();
                                         }
                                     }
                                 }
                             }else{
                                 if($start->diffInMonths($finish) >= 2){
                                     if(contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'))->months >= 3){
-                                        $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d')]);
+                                        $contracts_bonus->push($contracts[$i -1]->id);
+                                        $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d'), "contracts" => $contracts_bonus]);
+                                        $contracts_bonus = collect();
                                     }
                                 }
 
@@ -668,20 +690,24 @@ class PaymentschedulesController extends Controller
                                     $new_start = Carbon::createFromFormat('Y-m-d', $contracts[$i]->finish ?? '2022-12-30');
                                     if($current_finish->diffInMonths($new_start) >= 2){
                                         if(contract_duration_calculate($contracts[$i]->start, $contracts[$i]->finish ?? '2022-12-30')->months >= 3){
-                                            $bonus->push(["start" => $contracts[$i]->start, "finish" => $contracts[$i]->finish ?? '2022-12-30']);
+                                            $contracts_bonus->push($contracts[$i]->id);
+                                            $bonus->push(["start" => $contracts[$i]->start, "finish" => $contracts[$i]->finish ?? '2022-12-30', "contracts" => $contracts_bonus]);
+                                            $contracts_bonus = collect();
                                         }
                                     }
-                                }else{
-                                    $start = Carbon::createFromFormat('Y-m-d', $contracts[$i]->start);
-                                    $finish = Carbon::createFromFormat('Y-m-d', $contracts[$i]->finish ?? '2022-12-30');
                                 }
+
+                                $start = Carbon::createFromFormat('Y-m-d', $contracts[$i]->start);
+                                $finish = Carbon::createFromFormat('Y-m-d', $contracts[$i]->finish ?? '2022-12-30');
+                                
                             }
                         }
                     }
                 }else{
                     if($start->diffInMonths($finish) >= 2){
                         if(contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'))->months >= 3){
-                            $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d')]);
+                            $contracts_bonus = collect($contracts[0]->id);
+                            $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d'), "contracts" => $contracts_bonus]);
                         }
                     }
                 }
@@ -692,6 +718,82 @@ class PaymentschedulesController extends Controller
             $cont++;
         }
 
-        dd($people);
+        $cont = 0;
+        foreach ($people as $person) {
+            if(count($person->bonus) > 0){
+                $amounts = collect();
+                foreach ($person->bonus as $bonus) {
+                    $acumulate_days = 0;
+                    $acumulate_amount = 0;
+                    $partial_amounts = collect();
+
+                    $total_duration = contract_duration_calculate($bonus["start"], $bonus["finish"]);
+                    $total_duration_days = $total_duration->months *30 + $total_duration->days;
+
+                    foreach ($bonus['contracts']->sortDesc() as $item) {
+                        // Obtener duración del contrato
+                        $contract = Contract::where('id', $item)->first();
+                        $duration = contract_duration_calculate($contract->start, $contract->finish ?? '2022-12-30');
+                        $days = $duration->months *30 + $duration->days;
+                        
+                        // Obtener salario del contrato
+                        $salary = 0;
+                        if ($contract->cargo){
+                            $salary = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
+                        }elseif ($contract->job){
+                            $salary = $contract->job->salary;
+                        }
+
+                        // Calcular bono antigüedad
+                        $minimum_salary = setting('planillas.minimum_salary') ?? 2164;
+                        $seniority_bonus_percentage = 0;
+                        $seniority_bonus_amount = 0;
+
+                        // Si el tipo de planilla es de personal funcionamiento se calcula el bono antigüedad
+                        if($contract->procedure_type_id  == 1){
+                            if(count($person->seniority_bonus) > 0){
+                                if(date('Ym', strtotime($person->seniority_bonus->first()->start)) <= '202209'){
+                                    $seniority_bonus_percentage = $person->seniority_bonus->first()->type->percentage;
+                                    $seniority_bonus_amount = number_format($minimum_salary * ($seniority_bonus_percentage /100), 2, '.', '');
+                                }
+                            }
+                        }
+
+                        if($days >= 90){
+                            $partial_amounts->push([
+                                "days" => $acumulate_days == 0 ? 90 : 90 - $acumulate_days,
+                                "amount" => $salary,
+                                "bonus" => $seniority_bonus_amount
+                            ]);
+                        }else{
+                            if($acumulate_days + $days > 90){
+                                $quantity_days = 90 - $acumulate_days;
+                            }else{
+                                $quantity_days = $days;
+                            }
+                            $partial_amounts->push([
+                                "days" => $quantity_days,
+                                "amount" => $salary,
+                                "bonus" => $seniority_bonus_amount
+                            ]);
+                        }
+
+                        $acumulate_days += $days;
+
+                        if($acumulate_days >= 90){
+                            break;
+                        }
+                    }
+                    // Agregar la duración total de los proyectos que estan incluidos en ese lapso de tiempo
+                    $amounts->push(collect(["duration" => $total_duration_days, "partial_amounts" => $partial_amounts]));
+                }
+
+                $people[$cont]->amounts = $amounts;
+                $people[$cont]->last_contract = $contract;
+            }
+            $cont++;
+        }
+        // dd($people);
+        return view('paymentschedules.bonus-list', compact('people'));
     }
 }

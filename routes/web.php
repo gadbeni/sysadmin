@@ -112,6 +112,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     // Aguinaldo
     Route::get('paymentschedules/bonus/create', [PaymentschedulesController::class, 'bonus_create'])->name('paymentschedules.bonus.create');
+    Route::get('paymentschedules/bonus/generate', [PaymentschedulesController::class, 'bonus_generate'])->name('paymentschedules.bonus.generate');
 
     // Previsión social
     // * Cheques
