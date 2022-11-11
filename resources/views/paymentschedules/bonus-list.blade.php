@@ -8,6 +8,7 @@
                     <th>NOMBRE COMPLETO</th>
                     <th>CI</th>
                     <th>PLANILLA</th>
+                    <th>DIRECCIÓN ADMINISTRATIVA</th>
                     <th>DETALLE</th>
                 </tr>
             </thead>
@@ -24,6 +25,7 @@
                             <td>{{ $item->last_name }} {{ $item->first_name }}</td>
                             <td>{{ $item->ci }}</td>
                             <td>{{ $item->last_contract->type->name }}</td>
+                            <td>{{ $item->last_contract->direccion_administrativa ? $item->last_contract->direccion_administrativa->nombre : 'No definida' }}</td>
                             <td>
                                 <table class="table">
                                     @foreach ($item->amounts as $amounts)
@@ -51,7 +53,7 @@
                     @endif
                 @endforeach
                 <tr>
-                    <td colspan="5"><b>TOTAL</b></td>
+                    <td colspan="6" class="text-right"><b>TOTAL</b></td>
                     <td class="text-right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
                 </tr>
             </tbody>

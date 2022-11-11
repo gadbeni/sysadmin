@@ -153,7 +153,7 @@
                             <div class="panel-heading" style="border-bottom:0;">
                                 <h3 class="panel-title">Historial de inamovilidades</h3>
                             </div>
-                            <table class="table table-bordered table-hover">
+                            <table id="dataTable" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th>N&deg;</th>
@@ -173,10 +173,14 @@
                                             <td>{{ $cont }}</td>
                                             <td>{{ $item->type->name }}</td>
                                             <td>{{ date('d/m/Y', strtotime($item->start)) }}</td>
-                                            <td>{{ date('d/m/Y', strtotime($item->finish)) }}</td>
+                                            <td>{{ $item->finish ? date('d/m/Y', strtotime($item->finish)) : "No definido" }}</td>
                                             <td>{{ $item->observations }}</td>
-                                            <td class="text-right">
-                                                
+                                            <td class="no-sort no-click bread-actions text-right">
+                                                @if (auth()->user()->hasPermission('delete_irremovability_people'))
+                                                <button type="button" onclick="deleteItem('{{ route('people.irremovability.delete', ['people' => $person->id, 'id' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
+                                                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
+                                                </button>
+                                                @endif
                                             </td>
                                         </tr>
                                         @php
@@ -202,7 +206,7 @@
                             <div class="panel-heading" style="border-bottom:0;">
                                 <h3 class="panel-title">Historial de rotaciones</h3>
                             </div>
-                            <table class="table table-bordered table-hover">
+                            <table id="dataTable" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th>N&deg;</th>
@@ -224,10 +228,15 @@
                                             <tr>
                                                 <td>{{ $cont }}</td>
                                                 <td>{{ date('d/m/Y', strtotime($rotation->date)) }}</td>
-                                                <td>{{ $rotation->destiny->first_name }}</td>
+                                                <td>{{ $rotation->destiny->first_name }} {{ $rotation->destiny->last_name }}</td>
                                                 <td>{{ $rotation->destiny_dependency }}</td>
-                                                <td class="text-right">
+                                                <td class="no-sort no-click bread-actions text-right">
                                                     <a href="{{ url('admin/people/rotation/'.$rotation->id) }}" class="btn btn-default btn-sm" target="_blank"><i class="glyphicon glyphicon-print"></i> Imprimir</a>
+                                                    @if (auth()->user()->hasPermission('delete_rotation_people'))
+                                                    <button type="button" onclick="deleteItem('{{ route('people.rotation.delete', ['people' => $person->id, 'id' => $rotation->id]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
+                                                        <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
+                                                    </button>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -248,6 +257,7 @@
 @stop
 
 @section('javascript')
+    <script src="{{ url('js/main.js') }}"></script>
     <script>
         $(document).ready(function () {
             

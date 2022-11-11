@@ -67,7 +67,7 @@
             <br>
             <p>
                 De mi consideración: <br> <br>
-                En uso de las atribuciones que me confiere el Decreto Supremo 0181 y la Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}, de fecha 12 del mes de julio del 2022, bajo la Modalidad de Contratación Menor, transfiero a ustedes como <b>RESPONSABLE DE EVALUACIÓN</b>, el siguiente proceso de contratación: <br>
+                En uso de las atribuciones que me confiere el Decreto Supremo 0181 y la Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}, de fecha {{ $signature ? $signature->designation_date ? date('d', strtotime($signature->designation_date)).' de '.$months[intval(date('m', strtotime($signature->designation_date)))].' de '.date('Y', strtotime($signature->designation_date)) : setting('firma-autorizada.designation-date') : setting('firma-autorizada.designation-date') }}, bajo la Modalidad de Contratación Menor, transfiero a ustedes como <b>RESPONSABLE DE EVALUACIÓN</b>, el siguiente proceso de contratación: <br>
             </p>
             <table border="1" cellspacing="0" cellpadding="10">
                 <thead>

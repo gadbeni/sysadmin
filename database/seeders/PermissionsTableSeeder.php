@@ -76,8 +76,10 @@ class PermissionsTableSeeder extends Seeder
 
         // people
         $keys = [
-            'rotation_people',
-            'irremovability_people'
+            'add_rotation_people',
+            'delete_rotation_people',
+            'add_irremovability_people',
+            'delete_irremovability_people'
         ];
 
         foreach ($keys as $key) {
@@ -125,9 +127,9 @@ class PermissionsTableSeeder extends Seeder
             'enable_paymentschedules',
             'close_paymentschedules',
             'print_paymentschedules',
-            'browse_paymentschedulesfilesindex',
-            'add_paymentschedulesfiles',
-            'delete_paymentschedulesfiles'
+            'browse_paymentschedules-files',
+            'add_paymentschedules-files',
+            'delete_paymentschedules-files'
         ];
 
         foreach ($keys as $key) {

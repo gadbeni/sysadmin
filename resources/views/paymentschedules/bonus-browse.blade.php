@@ -83,7 +83,7 @@
         });
 
         function list(page = 1){
-            let url = '{{ route("paymentschedules.bonus.generate") }}';
+            let url = '{{ route("bonus.generate") }}';
             let year = $('#input-year').val();
             if(year){
                 $('#div-results').loading({message: 'Cargando...'});

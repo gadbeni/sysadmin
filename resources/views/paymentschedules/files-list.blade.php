@@ -50,7 +50,7 @@
                                 <i class="voyager-book-download"></i> <span class="hidden-xs hidden-sm">Descargar</span>
                             </a>
 
-                            @if (auth()->user()->hasPermission('delete_paymentschedulesfiles'))
+                            @if (auth()->user()->hasPermission('delete_paymentschedules-files'))
                             <button type="button" onclick="deleteFile({{ $item->id }})" data-toggle="modal" data-target="#modal-delete" title="Eliminar" class="btn btn-sm btn-danger edit">
                                 <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
                             </button>
@@ -80,7 +80,7 @@
 </div>
 
 {{-- Modal delete --}}
-<form action="{{ route('paymentschedules.files.delete') }}" method="post">
+<form action="{{ route('paymentschedules-files.delete') }}" method="post">
     <div class="modal modal-danger fade" tabindex="-1" id="modal-delete" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -96,7 +96,7 @@
                     <input type="hidden" name="id">
                     <input type="hidden" name="redirect" value="1">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <input type="submit" class="btn btn-danger delete-confirm" value="Anular">
+                    <input type="submit" class="btn btn-danger delete-confirm" value="Cancelar">
                 </div>
             </div>
         </div>

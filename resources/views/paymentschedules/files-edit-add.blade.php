@@ -18,7 +18,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-bordered">
-                    <form id="form-generate" action="{{ route('paymentschedules.files.generate') }}" method="post" enctype="multipart/form-data">
+                    <form id="form-generate" action="{{ route('paymentschedules-files.generate') }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="panel-body">
                             <div class="row">

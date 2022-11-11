@@ -51,7 +51,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('people/{id}', [PeopleController::class, 'read'])->name('voyager.people.show');
     Route::post('people/{id}/rotation', [PeopleController::class, 'rotation_store'])->name('people.rotation.store');
     Route::get('people/rotation/{id}', [PeopleController::class, 'rotation_print']);
+    Route::delete('people/{people}/rotation/{id}', [PeopleController::class, 'rotation_delete'])->name('people.rotation.delete');
     Route::post('people/{id}/irremovability', [PeopleController::class, 'irremovability_store'])->name('people.irremovability.store');
+    Route::delete('people/{people}/irremovability/{id}', [PeopleController::class, 'irremovability_delete'])->name('people.irremovability.delete');
 
     Route::post('cashiers/store', [CashiersController::class, 'store'])->name('cashiers.store');
     Route::delete('cashiers/destroy/{id}', [CashiersController::class, 'destroy'])->name('voyager.cashiers.destroy');
@@ -103,16 +105,16 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('paymentschedules/update/centralize', [PaymentschedulesController::class, 'update_centralize'])->name('paymentschedules.update.centralize');
     Route::post('paymentschedules/cancel', [PaymentschedulesController::class, 'cancel'])->name('paymentschedules.cancel');
     Route::post('paymentschedules/generate', [PaymentschedulesController::class, 'generate'])->name('paymentschedules.generate');
-    Route::get('paymentschedules/files/index', [PaymentschedulesController::class, 'files_index'])->name('paymentschedules.files.index');
-    Route::get('paymentschedules/files/list/{search?}', [PaymentschedulesController::class, 'files_list'])->name('paymentschedules.files.list');
-    Route::get('paymentschedules/files/create', [PaymentschedulesController::class, 'files_create'])->name('paymentschedules.files.create');
-    Route::post('paymentschedules/files/generate', [PaymentschedulesController::class, 'files_generate'])->name('paymentschedules.files.generate');
-    Route::post('paymentschedules/files/store', [PaymentschedulesController::class, 'files_store'])->name('paymentschedules.files.store');
-    Route::post('paymentschedules/files/delete', [PaymentschedulesController::class, 'files_delete'])->name('paymentschedules.files.delete');
+    Route::get('paymentschedules-files', [PaymentschedulesController::class, 'files_index'])->name('paymentschedules-files.index');
+    Route::get('paymentschedules-files/list/{search?}', [PaymentschedulesController::class, 'files_list'])->name('paymentschedules-files.list');
+    Route::get('paymentschedules-files/create', [PaymentschedulesController::class, 'files_create'])->name('paymentschedules-files.create');
+    Route::post('paymentschedules-files/generate', [PaymentschedulesController::class, 'files_generate'])->name('paymentschedules-files.generate');
+    Route::post('paymentschedules-files/store', [PaymentschedulesController::class, 'files_store'])->name('paymentschedules-files.store');
+    Route::post('paymentschedules-files/delete', [PaymentschedulesController::class, 'files_delete'])->name('paymentschedules-files.delete');
 
     // Aguinaldo
-    Route::get('paymentschedules/bonus/create', [PaymentschedulesController::class, 'bonus_create'])->name('paymentschedules.bonus.create');
-    Route::get('paymentschedules/bonus/generate', [PaymentschedulesController::class, 'bonus_generate'])->name('paymentschedules.bonus.generate');
+    Route::get('bonus/create', [PaymentschedulesController::class, 'bonus_create'])->name('bonus.create');
+    Route::get('bonus/generate', [PaymentschedulesController::class, 'bonus_generate'])->name('bonus.generate');
 
     // Previsión social
     // * Cheques

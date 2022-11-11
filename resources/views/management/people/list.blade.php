@@ -33,10 +33,12 @@
                                 <td>
                                     {{ $item->first_name }} {{ $item->last_name }}
                                     @php
-                                        $irremovability = $item->irremovabilities->where('start', '<=', date('Y-m-d'))->where('finish', '>=', date('Y-m-d'))->first();
+                                        $irremovability = $item->irremovabilities->where('start', '<=', date('Y-m-d'))->first();
                                     @endphp
                                     @if ($irremovability)
-                                    <label class="label label-danger" title="{{ $irremovability->type->name }}">Inamovible</label>
+                                        @if (!$irremovability->finish || $irremovability->finish >= date('Y-m-d'))
+                                        <label class="label label-danger" title="{{ $irremovability->type->name }}">Inamovible</label>        
+                                        @endif
                                     @endif
                                     <br> <small>{{ $item->profession }}</small>
                                 </td>
@@ -54,10 +56,10 @@
                                 Más <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu" style="left: -90px !important">
-                                @if (auth()->user()->hasPermission('rotation_people'))
+                                @if (auth()->user()->hasPermission('add_rotation_people'))
                                 <li><a href="#" class="btn-rotation" data-url="{{ route('people.rotation.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-rotation" >Rotar</a></li>
                                 @endif
-                                @if (auth()->user()->hasPermission('irremovability_people'))
+                                @if (auth()->user()->hasPermission('add_irremovability_people'))
                                 <li><a href="#" class="btn-irremovability" data-url="{{ route('people.irremovability.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-irremovability" >Inamovilidad</a></li>
                                 @endif
                             </ul>

@@ -82,6 +82,17 @@ class PeopleController extends Controller
         }
     }
 
+    public function rotation_delete($people, $id, Request $request){
+        try {
+            $irremovability = PersonRotation::find($id);
+            $irremovability->delete();
+            return redirect()->route('voyager.people.show', $people)->with(['message' => 'Rotación eliminada correctamente', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            // dd($th);
+            return redirect()->route('voyager.people.show', $people)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
+    }
+
     public function rotation_print($id){
         $rotation = PersonRotation::with(['destiny', 'responsible', 'contract.person'])->find($id);
         return view('management.docs.permanente.rotation', compact('rotation'));
@@ -97,10 +108,21 @@ class PeopleController extends Controller
                 'finish' => $request->finish,
                 'observations' => $request->observations,
             ]);
-            return redirect()->route('voyager.people.index')->with(['message' => 'Inamovilidad reggistrada correctamente', 'alert-type' => 'success']);
+            return redirect()->route('voyager.people.index')->with(['message' => 'Inamovilidad registrada correctamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             // dd($th);
             return redirect()->route('voyager.people.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
+    }
+
+    public function irremovability_delete($people, $id, Request $request){
+        try {
+            $irremovability = PersonIrremovability::find($id);
+            $irremovability->delete();
+            return redirect()->route('voyager.people.show', $people)->with(['message' => 'Inamovilidad eliminada correctamente', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            // dd($th);
+            return redirect()->route('voyager.people.show', $people)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 }

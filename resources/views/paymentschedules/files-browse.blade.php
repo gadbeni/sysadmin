@@ -2,7 +2,7 @@
 
 @section('page_title', 'Viendo Archivos')
 
-@if (auth()->user()->hasPermission('browse_paymentschedulesfilesindex'))
+@if (auth()->user()->hasPermission('browse_paymentschedules-files'))
 
 @section('page_header')
     <div class="container-fluid">
@@ -20,8 +20,8 @@
                             </div> --}}
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
-                            @if (auth()->user()->hasPermission('add_paymentschedulesfiles'))
-                            <a href="{{ route('paymentschedules.files.create') }}" class="btn btn-success">
+                            @if (auth()->user()->hasPermission('add_paymentschedules-files'))
+                            <a href="{{ route('paymentschedules-files.create') }}" class="btn btn-success">
                                 <i class="voyager-plus"></i> <span>Crear</span>
                             </a>
                             @endif
@@ -87,7 +87,7 @@
 
         function list(page = 1){
             $('#div-results').loading({message: 'Cargando...'});
-            let url = '{{ url("admin/paymentschedules/files/list") }}';
+            let url = '{{ url("admin/paymentschedules-files/list") }}';
             let search = $('#input-search').val() ? $('#input-search').val() : '';
             $.ajax({
                 url: `${url}/${search}?paginate=${countPage}&page=${page}`,

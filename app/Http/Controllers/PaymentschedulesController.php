@@ -596,11 +596,11 @@ class PaymentschedulesController extends Controller
             ]);
             DB::commit();
 
-            return redirect()->route('paymentschedules.files.create')->with(['message' => 'Registros guardados correctamente.', 'alert-type' => 'success']);
+            return redirect()->route('paymentschedules-files.create')->with(['message' => 'Registros guardados correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return redirect()->route('paymentschedules.files.create')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('paymentschedules-files.create')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
 
@@ -614,14 +614,14 @@ class PaymentschedulesController extends Controller
             if ($request->redirect) {
                 return redirect()->route('paymentschedules.files.index')->with(['message' => 'Borrador anulado correctamente.', 'alert-type' => 'success']);
             }
-            return redirect()->route('paymentschedules.files.create')->with(['message' => 'Borrador anulado correctamente.', 'alert-type' => 'success']);
+            return redirect()->route('paymentschedules-files.create')->with(['message' => 'Borrador anulado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
             if ($request->redirect) {
                 return redirect()->route('paymentschedules.files.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
             }
-            return redirect()->route('paymentschedules.files.create')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('paymentschedules-files.create')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
 

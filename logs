@@ -1,9 +1,9 @@
- cambiar name por description y origin por destiny en tabla menos_types
+
 
 Migraciones
 
 Seeders
-
+    Ejecutar seeders de BREAD, Permisos y settings
 Paquetes
 
 Comandos
