@@ -469,6 +469,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2022-09-29 15:53:04',
                 'updated_at' => '2022-09-29 16:05:57',
             ),
+            25 => 
+            array (
+                'id' => 27,
+                'name' => 'places',
+                'slug' => 'places',
+                'display_name_singular' => 'Lugar',
+                'display_name_plural' => 'Lugares',
+                'icon' => 'voyager-location',
+                'model_name' => 'App\\Models\\Place',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2022-11-15 00:12:22',
+                'updated_at' => '2022-11-15 03:06:09',
+            ),
         ));
         
         
