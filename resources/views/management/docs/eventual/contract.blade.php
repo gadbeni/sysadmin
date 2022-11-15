@@ -8,7 +8,9 @@
     if(
         $contract->direccion_administrativa->direcciones_tipo_id != 3 &&
         $contract->direccion_administrativa->direcciones_tipo_id != 4 &&
-        $contract->direccion_administrativa_id != 48
+        $contract->direccion_administrativa_id != 5 &&
+        $contract->direccion_administrativa_id != 48 &&
+        $contract->direccion_administrativa_id != 53
     ){
         $signature = null;
     }

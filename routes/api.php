@@ -22,3 +22,8 @@ Route::get('places', function(){
     $limit = request('limit') ?? 20;
     return response()->json(['places' => App\Models\Place::selectRaw('id, title, subtitle, description, banner, gallery, '.DB::raw("(ST_AsGeoJSON(location)) AS location"))->where('status', 1)->limit($limit)->get()]);
 });
+
+Route::get('cultures', function(){
+    $limit = request('limit') ?? 20;
+    return response()->json(['cultures' => App\Models\Culture::selectRaw('id, title, subtitle, description, banner, gallery')->where('status', 1)->limit($limit)->get()]);
+});
