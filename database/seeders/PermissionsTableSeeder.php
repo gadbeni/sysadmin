@@ -73,6 +73,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('direcciones_tipos');
         Permission::generateFor('person_external_types');
         Permission::generateFor('person_externals');
+        Permission::generateFor('places');
 
         // people
         $keys = [
