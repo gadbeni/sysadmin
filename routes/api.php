@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// Controllers
+use App\Http\Controllers\DonationsController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,5 +28,17 @@ Route::get('places', function(){
 
 Route::get('cultures', function(){
     $limit = request('limit') ?? 20;
-    return response()->json(['cultures' => App\Models\Culture::selectRaw('id, title, subtitle, description, banner, gallery')->where('status', 1)->limit($limit)->get()]);
+    return response()->json(['cultures' => App\Models\Culture::where('status', 1)->limit($limit)->get()]);
 });
+
+Route::get('posts', function(){
+    $limit = request('limit') ?? 20;
+    return response()->json(['posts' => App\Models\Post::where('status', 1)->limit($limit)->get()]);
+});
+
+// Donaciones
+Route::get('donations_types', function(){
+    $limit = request('limit') ?? 20;
+    return response()->json(['donations_types' => App\Models\DonationsType::where('status', 1)->limit($limit)->get()]);
+});
+Route::post('donations/store', [DonationsController::class, 'store']);

@@ -76,6 +76,8 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('places');
         Permission::generateFor('cultures');
         Permission::generateFor('posts');
+        Permission::generateFor('donations_types');
+        Permission::generateFor('donations');
 
         // people
         $keys = [
