@@ -10,4 +10,7 @@ class PersonExternal extends Model
 {
     use HasFactory, SoftDeletes;
     protected $dates = ['deleted_at'];
+    protected $fillable = [
+        'person_external_type_id', 'person_id', 'full_name', 'ci_nit', 'phone', 'address', 'email', 'observations', 'docs'
+    ];
 }

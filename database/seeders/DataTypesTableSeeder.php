@@ -485,7 +485,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-11-15 00:12:22',
-                'updated_at' => '2022-11-15 15:59:24',
+                'updated_at' => '2022-11-16 22:43:23',
             ),
             26 => 
             array (
@@ -522,6 +522,42 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null}',
                 'created_at' => '2022-11-15 16:00:15',
                 'updated_at' => '2022-11-15 16:00:15',
+            ),
+            28 => 
+            array (
+                'id' => 34,
+                'name' => 'donations_types',
+                'slug' => 'donations-types',
+                'display_name_singular' => 'Tipo de donación',
+                'display_name_plural' => 'Tipos de donación',
+                'icon' => 'voyager-list',
+                'model_name' => 'App\\Models\\DonationsType',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null}',
+                'created_at' => '2022-11-16 22:47:01',
+                'updated_at' => '2022-11-16 22:47:01',
+            ),
+            29 => 
+            array (
+                'id' => 35,
+                'name' => 'donations',
+                'slug' => 'donations',
+                'display_name_singular' => 'Donación',
+                'display_name_plural' => 'Donaciones',
+                'icon' => 'voyager-archive',
+                'model_name' => 'App\\Models\\Donation',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2022-11-16 22:49:20',
+                'updated_at' => '2022-11-16 22:52:16',
             ),
         ));
         
