@@ -78,6 +78,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('posts');
         Permission::generateFor('donations_types');
         Permission::generateFor('donations');
+        Permission::generateFor('afps');
 
         // people
         $keys = [
@@ -134,7 +135,8 @@ class PermissionsTableSeeder extends Seeder
             'print_paymentschedules',
             'browse_paymentschedules-files',
             'add_paymentschedules-files',
-            'delete_paymentschedules-files'
+            'delete_paymentschedules-files',
+            'browse_bonuscreate'
         ];
 
         foreach ($keys as $key) {

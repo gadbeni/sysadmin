@@ -1,10 +1,9 @@
-Agregar person_externals.docs text
-Cambiar person_externals.nit por ci_nit
+
 
 Migraciones
     Ejecutar migraciones
 Seeders
-    Ejecutar seeders de BREAD y Permisos
+    Ejecutar seeders de BREAD y Permisos, afps
 Paquetes
 
 Comandos

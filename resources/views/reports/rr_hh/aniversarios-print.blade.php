@@ -63,7 +63,7 @@
                         @endif
                     </td>
                     <td>{{ $item->ci }}</td>
-                    <td>{{ $item->afp == 1 ? 'Futuro' : 'Previsión' }}</td>
+                    <td>{{ $item->afp_type->name }}</td>
                     <td>{{ date('d', strtotime($item->birthday)).'/'.$months[intval(date('m', strtotime($item->birthday)))].'/'.date('Y', strtotime($item->birthday)) }}</td>
                     <td>{{ $contract ? date('d', strtotime($contract->start)).'/'.$months[intval(date('m', strtotime($contract->start)))].'/'.date('Y', strtotime($contract->start)) : '' }}</td>
                     <td>

@@ -110,7 +110,7 @@
                         <b>NOMBRE: </b> {{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }} <br>
                         <b>CI: </b> {{ $item->contract->person->ci }} <br>
                         <b>CARGO: </b> {{ $item->contract->cargo ? $item->contract->cargo->Descripcion : $item->contract->job->name }} <br>
-                        <b>AFP: </b> {{ $item->afp == 1 ? 'Futuro' : 'Previsión' }} <br>
+                        <b>AFP: </b> {{ $item->afp_type->name }} <br>
                         <b>NUA/CUA: </b> {{ $item->contract->person->nua_cua }} <br>
                         <b>MODALIDAD DE CONTRATACIÓN: </b> {{ ucwords($item->paymentschedule->procedure_type->name) }}
                     </td>

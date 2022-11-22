@@ -53,8 +53,9 @@
                                     {{-- <div class="form-group">
                                         <select name="afp" class="form-control select2">
                                             <option value="">Todas las AFP</option>
-                                            <option value="1">Futuro</option>
-                                            <option value="2">Previsión</option>
+                                            @foreach (App\Models\Afp::where('status', 1)->where('deleted_at', NULL)->get() as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div> --}}
                                     <div class="text-right">

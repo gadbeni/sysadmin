@@ -40,6 +40,10 @@ class PaymentschedulesDetail extends Model
         'status'
     ];
 
+    public function afp_type(){
+        return $this->belongsTo(Afp::class, 'afp', 'id');
+    }
+
     public function paymentschedule(){
         return $this->belongsTo(Paymentschedule::class, 'paymentschedule_id');
     }

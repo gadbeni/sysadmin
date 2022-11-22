@@ -23,7 +23,7 @@ class PeopleController extends Controller
 
     public function list($search = null){
         $paginate = request('paginate') ?? 10;
-        $data = Person::with(['city'])
+        $data = Person::with(['city', 'afp_type'])
                     ->where(function($query) use ($search){
                         if($search){
                             $query->OrwhereHas('city', function($query) use($search){

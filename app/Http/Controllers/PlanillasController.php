@@ -21,6 +21,7 @@ use App\Models\PaymentschedulesDetail;
 use App\Models\Period;
 use App\Models\ProcedureType;
 use App\Models\Person;
+use App\Models\Afp;
 
 class PlanillasController extends Controller
 {
@@ -105,7 +106,8 @@ class PlanillasController extends Controller
                                             $q->whereRaw($afp ? "afp = $afp" : 1);
                                         })
                                         ->where('deleted_at', NULL)->orderBy('item', 'ASC')->get();
-                $title = ucfirst($procedure_type->name).' | '.$months[intval($month)].' de '.$year.' '.($request->afp ? ($request->afp == 1 ? ' | Futuro' : ' | Previsión') : '');
+                $afp_type = Afp::find($request->afp);
+                $title = ucfirst($procedure_type->name).' | '.$months[intval($month)].' de '.$year.' '.($afp_type ? $afp_type->name : '');
                 break;
             case '2':
                 $planilla = DB::connection('mysqlgobe')->table('planillahaberes as p')

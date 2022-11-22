@@ -90,7 +90,7 @@
                                     @if ($item->planilla)
                                         {{ $item->planilla->Afp ? 'FUTURO' : 'PREVISIÓN' }}
                                     @elseif($item->paymentschedulesdetail)
-                                        {{ $item->paymentschedulesdetail->afp == 1 ? 'FUTURO' : 'PREVISIÓN' }}
+                                        {{ $item->paymentschedulesdetail->afp_type->name }}
                                     @endif
                                 </td>
                                 <td>{{ date('d', strtotime($item->created_at)).'/'.$months[intval(date('m', strtotime($item->created_at)))].'/'.date('Y', strtotime($item->created_at)) }} <br> <small>{{ date('H:i', strtotime($item->created_at)) }}</small> </td>

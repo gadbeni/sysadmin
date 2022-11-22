@@ -16,6 +16,10 @@ class Person extends Model
         'city_id', 'user_id', 'first_name', 'last_name', 'ci', 'profession', 'issued', 'phone', 'address', 'email', 'afp', 'afp_status', 'retired', 'cc', 'gender', 'birthday', 'civil_status', 'nua_cua'
     ];
 
+    public function afp_type(){
+        return $this->belongsTo(Afp::class, 'afp', 'id');
+    }
+
     public function contracts(){
         return $this->hasMany(Contract::class);
     }

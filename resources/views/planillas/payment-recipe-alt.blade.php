@@ -100,7 +100,10 @@
                     <b>NOMBRE: </b> {{ $planilla ? $planilla->Nombre_Empleado : $payment->paymentschedulesdetail->contract->person->first_name.' '.$payment->paymentschedulesdetail->contract->person->last_name }} <br>
                     <b>CI: </b> {{ $planilla ? $planilla->CedulaIdentidad : $payment->paymentschedulesdetail->contract->person->ci }} <br>
                     <b>CARGO: </b> {{ $planilla ? $planilla->Cargo : ($payment->paymentschedulesdetail->contract->cargo ? $payment->paymentschedulesdetail->contract->cargo->Descripcion : $payment->paymentschedulesdetail->contract->job->name) }} <br>
-                    <b>AFP: </b> {{ ($planilla ? $planilla->Afp : $payment->paymentschedulesdetail->afp == 1) ? 'Futuro' : 'Previsión' }} <br>
+                    @php
+                        $afp_type = App\Models\Afp::find($planilla ? $planilla->Afp : $payment->paymentschedulesdetail->afp);
+                    @endphp
+                    <b>AFP: </b> {{ $afp_type->name }} <br>
                     <b>NUA/CUA: </b> {{ $planilla ? $planilla->Num_Nua : $payment->paymentschedulesdetail->contract->person->nua_cua }} <br>
                     <b>MODALIDAD DE CONTRATACIÓN: </b> {{ ucwords($planilla ? $planilla->tipo_planilla : $payment->paymentschedulesdetail->paymentschedule->procedure_type->name) }}
                 </td>

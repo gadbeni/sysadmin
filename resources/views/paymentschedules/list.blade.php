@@ -70,8 +70,9 @@
                                     $labor = $detail->sum('labor_total');
 
                                     $afp_total += $patronal + $labor;
+                                    $afp_type = App\Models\Afp::find($key);
                                 @endphp
-                                <span>{{ $key == '1' ? 'Futuro' : 'Previsión' }}</span>:  {{number_format($patronal + $labor, 2, ',', '.') }} (<b>{{ $detail->count() }}</b>)<br>
+                                <span>{{ $afp_type->name }}</span>:  {{number_format($patronal + $labor, 2, ',', '.') }} (<b>{{ $detail->count() }}</b>)<br>
                             @endforeach
                             <b>Total AFP : {{ number_format($afp_total, 2, ',', '.') }}</b> <br>
                             <label class="label label-{{ $label }}">{{ ucfirst($item->status) }}</label>

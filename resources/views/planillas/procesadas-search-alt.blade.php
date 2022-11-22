@@ -64,7 +64,7 @@
                                 <td>{{ $item->item }}</td>
                                 <td class="text-selected" title="{{ str_pad($item->paymentschedule->id, 6, "0", STR_PAD_LEFT).($item->paymentschedule->aditional ? '-A' : '') }}">{{ $item->contract->direccion_administrativa->nombre }}</td>
                                 <td>{{ $item->contract->type->name }}</td>
-                                <td>{{ $item->afp == 1 ? 'Futuro' : 'Previsión' }}</td>
+                                <td>{{ $item->afp_type->name }}</td>
                                 @php
                                     $period = $item->paymentschedule->period->name;
                                     $year = Str::substr($period, 0, 4);

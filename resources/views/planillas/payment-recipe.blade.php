@@ -87,8 +87,11 @@
                 <td style="border: 1px solid #ddd">{{ $planilla ? $planilla->tipo_planilla : '' }}</td>
             </tr>
             <tr>
+                @php
+                    $afp_type = App\Models\Afp::find($planilla ? $planilla->Afp : $payment->paymentschedulesdetail->afp);
+                @endphp
                 <td><b>AFP</b></td>
-                <td style="border: 1px solid #ddd">{{ ($planilla ? $planilla->Afp : $payment->paymentschedulesdetail->afp == 1) ? 'Futuro' : 'Previsión' }}</td>
+                <td style="border: 1px solid #ddd">{{ $afp_type->name }}</td>
                 <td><b>ITEM</b></td>
                 <td style="border: 1px solid #ddd">{{ $planilla ? $planilla->ITEM : $payment->paymentschedulesdetail->item }}</td>
             </tr>

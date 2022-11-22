@@ -49,7 +49,7 @@
                     <td>{{ $item->city ? $item->city->name : 'No definido' }}</td>
                     <td>{{ date('d/m/Y', strtotime($item->birthday)) }} <br> <small>{{ $age }} años</small> </td>
                     <td>{{ $item->phone }}</td>
-                    <td>{{ $item->afp == 1 ? 'Futuro' : 'Previsión' }} <br> <small class="@if(!$item->afp_status) text-warning @elseif(!is_numeric($item->nua_cua) || strlen($item->nua_cua) < 8 ) text-danger @endif" >{{ $item->nua_cua }}</small> </td>
+                    <td>{{ $item->afp_type->name }} <br> <small class="@if(!$item->afp_status) text-warning @elseif(!is_numeric($item->nua_cua) || strlen($item->nua_cua) < 8 ) text-danger @endif" >{{ $item->nua_cua }}</small> </td>
                     <td class="no-sort no-click bread-actions text-right">
                         <div class="btn-group" style="margin-right: 3px">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">

@@ -20,7 +20,10 @@
                         <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="100px"></td>
                         <td style="text-align: right">
                             <h3 style="margin: 0px">PLANILLA DE PAGO HABERES AL PERSONAL DEPENDIENTE GAD-BENI</h3>
-                            <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }} @else | Todas las AFP's @endif @if($cc) | {{ $cc == 1 ? 'Caja Cordes'  : 'Otras Cajas de salud'}} @endif</span>
+                            @php
+                                $afp_type = App\Models\Afp::find($afp);
+                            @endphp
+                            <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp_type->name }} @else | Todas las AFP's @endif @if($cc) | {{ $cc == 1 ? 'Caja Cordes'  : 'Otras Cajas de salud'}} @endif</span>
                             @if ($centralize)
                                 <h3 style="margin: 0px">{{ Str::upper($data->procedure_type->name) }}</h3>
                             @else
@@ -547,7 +550,7 @@
                         <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="100px"></td>
                         <td style="text-align: right">
                             <h3 style="margin: 0px">PLANILLA DE PAGO HABERES AL PERSONAL DEPENDIENTE GAD-BENI</h3>
-                            <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp == 1 ? 'FUTURO' : 'BBVA PREVISION' }} @else | Todas las AFP's @endif @if($cc) | {{ $cc == 1 ? 'Caja Cordes'  : 'Otras Cajas de salud'}} @endif </span>
+                            <span>CORRESPONDIENTE AL MES DE {{ strtoupper($months[intval($month)]) }} DE {{ $year }} @if ($afp) | AFP - {{ $afp_type->name }} @else | Todas las AFP's @endif @if($cc) | {{ $cc == 1 ? 'Caja Cordes'  : 'Otras Cajas de salud'}} @endif </span>
                             @if ($centralize)
                                 <h3 style="margin: 0px">{{ Str::upper($data->procedure_type->name) }}</h3>
                             @else

@@ -28,6 +28,7 @@ class TemplateDatabaseSeeder extends Seeder
         $this->call(CountriesTableSeeder::class);
         $this->call(StatesTableSeeder::class);
         $this->call(CitiesTableSeeder::class);
+        $this->call(AfpsTableSeeder::class);
         $this->call(JobsTableSeeder::class);
         $this->call(ProgramsTableSeeder::class);
         $this->call(OfficesTableSeeder::class);

@@ -119,7 +119,7 @@
                                 <h3 class="panel-title">AFP</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $person->afp == 1 ? 'Futuro' : 'BBVA Previsión' }} @if($person->afp_status == 0) <label class="label label-danger">Jubilado</label>@endif</p>
+                                <p>{{ $person->afp_type->name }} @if($person->afp_status == 0) <label class="label label-danger">Jubilado</label>@endif</p>
                             </div>
                             <hr style="margin:0;">
                         </div>
