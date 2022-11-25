@@ -42,6 +42,7 @@ class PaymentschedulesController extends Controller
      */
     public function index()
     {
+        $this->custom_authorize('browse_paymentschedules');
         return view('paymentschedules.browse');
     }
 
@@ -87,6 +88,7 @@ class PaymentschedulesController extends Controller
      */
     public function create()
     {
+        $this->custom_authorize('add_paymentschedules');
         $direccion_administrativa_id = Auth::user()->direccion_administrativa_id;
         $tipo_da = DireccionesTipo::with(['direcciones_administrativas' => function($q) use($direccion_administrativa_id){
                             $q->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1)->where('estado', 1);
@@ -252,6 +254,7 @@ class PaymentschedulesController extends Controller
      */
     public function show($id)
     {
+        $this->custom_authorize('read_paymentschedules');
         $afp = request('afp');
         $cc = request('cc');
         $print = request('print');

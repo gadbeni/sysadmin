@@ -30,6 +30,7 @@ class VaultsController extends Controller
      */
     public function index()
     {
+        $this->custom_authorize('browse_vaults');
         $vault = Vault::with(['details.cash' => function($q){
                     $q->where('deleted_at', NULL);
                 }, 'details' => function($q){
@@ -93,6 +94,7 @@ class VaultsController extends Controller
     }
 
     public function view_details($id){
+        // $this->custom_authorize('browse_vault');
         $details = VaultsDetail::with(['cash', 'user'])->where('id', $id)->withTrashed()->first();
         // dd($details);
         return view('vaults.details-read', compact('details'));

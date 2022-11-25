@@ -1217,7 +1217,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191"}}',
-                'order' => 20,
+                'order' => 21,
             ),
             75 => 
             array (
@@ -1249,7 +1249,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 22,
+                'order' => 23,
             ),
             77 => 
             array (
@@ -1265,7 +1265,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 23,
+                'order' => 24,
             ),
             78 => 
             array (
@@ -1281,7 +1281,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 24,
+                'order' => 26,
             ),
             79 => 
             array (
@@ -1544,15 +1544,15 @@ class DataRowsTableSeeder extends Seeder
                 'id' => 109,
                 'data_type_id' => 9,
                 'field' => 'afp',
-                'type' => 'select_dropdown',
-                'display_name' => 'AFP',
+                'type' => 'text',
+                'display_name' => 'Afp',
                 'required' => 0,
                 'browse' => 1,
                 'read' => 1,
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"options":{"1":"Futuro","2":"Previsi\\u00f3n"},"display":{"width":6}}',
+                'details' => '{"display":{"width":6}}',
                 'order' => 13,
             ),
             96 => 
@@ -1569,7 +1569,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"default":1}',
-                'order' => 15,
+                'order' => 16,
             ),
             97 => 
             array (
@@ -1601,7 +1601,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
             'details' => '{"options":{"1":"Soltero(a)","2":"Casado(a)"},"display":{"width":6}}',
-                'order' => 17,
+                'order' => 18,
             ),
             99 => 
             array (
@@ -1617,7 +1617,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191|unique:people"},"display":{"width":6}}',
-                'order' => 16,
+                'order' => 17,
             ),
             100 => 
             array (
@@ -3137,7 +3137,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{}',
-                'order' => 21,
+                'order' => 22,
             ),
             195 => 
             array (
@@ -3153,7 +3153,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 14,
+                'order' => 15,
             ),
             196 => 
             array (
@@ -3169,7 +3169,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"display":{"width":6},"resize":{"width":"1000","height":null},"quality":"70%","upsize":true,"thumbnails":[{"name":"medium","scale":"50%"},{"name":"small","scale":"25%"},{"name":"cropped","crop":{"width":"300","height":"250"}}]}',
-                'order' => 19,
+                'order' => 20,
             ),
             197 => 
             array (
@@ -3185,7 +3185,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
-                'order' => 18,
+                'order' => 19,
             ),
             198 => 
             array (
@@ -4546,6 +4546,38 @@ class DataRowsTableSeeder extends Seeder
                 'delete' => 0,
                 'details' => '{}',
                 'order' => 7,
+            ),
+            283 => 
+            array (
+                'id' => 302,
+                'data_type_id' => 9,
+                'field' => 'cc',
+                'type' => 'text',
+                'display_name' => 'Cc',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{}',
+                'order' => 25,
+            ),
+            284 => 
+            array (
+                'id' => 303,
+                'data_type_id' => 9,
+                'field' => 'person_belongsto_afp_relationship',
+                'type' => 'relationship',
+                'display_name' => 'AFP',
+                'required' => 1,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"model":"App\\\\Models\\\\Afp","table":"afps","type":"belongsTo","column":"afp","key":"id","label":"name","pivot_table":"addendums","pivot":"0","taggable":"0"}',
+                'order' => 14,
             ),
         ));
         

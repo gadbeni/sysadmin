@@ -40,6 +40,11 @@ Route::get('login', function () {
 Route::get('/', [HomeController::class, 'index']);
 Route::post('search', [HomeController::class, 'search_payroll_by_ci'])->name('home.search.payroll.ci');
 
+Route::get('policies', function(){
+    return view('policies');
+})->name('home.policies');
+Route::get('person/register', [HomeController::class, 'register_person'])->name('home.register.person');
+
 
 Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Voyager::routes();

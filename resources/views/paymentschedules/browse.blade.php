@@ -18,9 +18,11 @@
                             </div> --}}
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
-                            <a href="{{ route('paymentschedules.create') }}" class="btn btn-success">
-                                <i class="voyager-plus"></i> <span>Crear</span>
-                            </a>
+                            @if(auth()->user()->hasPermission('add_paymentschedules'))
+                                <a href="{{ route('paymentschedules.create') }}" class="btn btn-success">
+                                    <i class="voyager-plus"></i> <span>Crear</span>
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>

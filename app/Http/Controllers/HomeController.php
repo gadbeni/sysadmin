@@ -26,4 +26,8 @@ class HomeController extends Controller
             return response()->json(['error' => 'La cédula de identidad ingresada no está registrada en el sistema.']);
         }
     }
+
+    public function register_person(){
+        return view('register');
+    }
 }

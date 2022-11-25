@@ -68,7 +68,7 @@
                                 @php
                                     $period = $item->paymentschedule->period->name;
                                     $year = Str::substr($period, 0, 4);
-                                    $month = Str::substr($period, 5, 2);
+                                    $month = Str::substr($period, 4, 2);
                                 @endphp
                                 <td>{{ $meses[intval($month)] }}</td>
                                 <td>{{ $year }}</td>
