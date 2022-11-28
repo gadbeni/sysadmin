@@ -43,7 +43,8 @@ Route::post('search', [HomeController::class, 'search_payroll_by_ci'])->name('ho
 Route::get('policies', function(){
     return view('policies');
 })->name('home.policies');
-Route::get('person/register', [HomeController::class, 'register_person'])->name('home.register.person');
+Route::get('register', [HomeController::class, 'register_person'])->name('home.register.person');
+Route::post('register/store', [HomeController::class, 'register_person_store'])->name('home.register.person.store');
 
 
 Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {

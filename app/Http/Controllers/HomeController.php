@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Aguinaldo;
 use App\Models\PaymentschedulesDetail;
 
+// Models
+use App\Models\PersonExternal;
+
 class HomeController extends Controller
 {
     public function index(){
@@ -29,5 +32,29 @@ class HomeController extends Controller
 
     public function register_person(){
         return view('register');
+    }
+
+    public function register_person_store(Request $request){
+        try {
+            $person = PersonExternal::where('ci_nit', $request->ci_nit)->first();
+            if($person){
+                return response()->json(['error' => 1, 'message' => 'La persona ya está registrada']);
+            }
+            PersonExternal::create([
+                'city_id' => $request->city_id,
+                'full_name' => $request->full_name,
+                'birthday' => $request->birthday,
+                'gender' => $request->gender,
+                'job' => $request->job,
+                'family' => $request->family,
+                'ci_nit' => $request->ci_nit,
+                'phone' => $request->phone,
+                'address' => $request->address
+            ]);
+            return response()->json(['success' => 1, 'message' => 'Datos registrados correctamente']);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error en el servidor']);
+        }
     }
 }

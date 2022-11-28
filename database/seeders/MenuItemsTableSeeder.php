@@ -976,7 +976,7 @@ class MenuItemsTableSeeder extends Seeder
                 'order' => 3,
                 'created_at' => '2022-02-20 23:30:10',
                 'updated_at' => '2022-10-28 08:36:31',
-                'route' => 'paymentschedules.files.index',
+                'route' => 'paymentschedules-files.index',
                 'parameters' => 'null',
             ),
             60 => 

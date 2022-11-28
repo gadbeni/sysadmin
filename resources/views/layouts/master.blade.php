@@ -23,6 +23,8 @@
         <!-- Template Main CSS File -->
         <link href="{{ asset('vendor/landingpage/css/style.css') }}" rel="stylesheet">
 
+        @yield('css')
+
         <!-- =======================================================
         * Template Name: NewBiz - v4.3.0
         * Template URL: https://bootstrapmade.com/newbiz-bootstrap-business-template/
@@ -87,7 +89,7 @@
                 </div>
 
                 <div class="col-lg-3 col-md-6 footer-contact">
-                    <h4>Contact Us</h4>
+                    <h4>Contáctanos</h4>
                     <p>
                     A108 Adam Street <br>
                     New York, NY 535022<br>
@@ -231,6 +233,8 @@
             odometer.innerHTML = data.ticket;
         });
         </script>
+
+        @yield('script')
     </body>
 
 </html>
