@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Aguinaldo;
 use App\Models\PaymentschedulesDetail;
+use Illuminate\Support\Facades\Http;
 
 // Models
 use App\Models\PersonExternal;
@@ -51,6 +52,11 @@ class HomeController extends Controller
                 'phone' => $request->phone,
                 'address' => $request->address
             ]);
+            try {
+                Http::get('https://whatsapp-api.beni.gob.bo/?number=591'.$request->phone.'&message=Muchas gracias por contribuir en el desarrollo del Departamento del Beni con tu registro nos ayudará a tomar decisiones en beneficio del Departamento');
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
             return response()->json(['success' => 1, 'message' => 'Datos registrados correctamente']);
         } catch (\Throwable $th) {
             //throw $th;

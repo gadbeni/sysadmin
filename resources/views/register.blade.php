@@ -15,7 +15,7 @@
     <div class="container" data-aos="fade-up">
         <header class="section-header">
           <h3>Registro de datos personales</h3>
-          <p>Laudem latine persequeris id sed, ex fabulas delectus quo. No vel partiendo abhorreant vituperatoribus.</p>
+          <p>Registrate para ayudar a tu departamento y así poder tomar decisiones en favor de este hermoso departamento.</p>
         </header>
         <div class="row justify-content-center">
           <div class="col-md-6 col-lg-5" data-aos="zoom-in" data-aos-delay="100">

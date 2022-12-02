@@ -120,7 +120,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     // Aguinaldo
     Route::get('bonus/create', [PaymentschedulesController::class, 'bonus_create'])->name('bonus.create');
-    Route::get('bonus/generate', [PaymentschedulesController::class, 'bonus_generate'])->name('bonus.generate');
+    Route::post('bonus/generate', [PaymentschedulesController::class, 'bonus_generate'])->name('bonus.generate');
+    Route::post('bonus/store', [PaymentschedulesController::class, 'bonus_store'])->name('bonus.store');
 
     // Previsión social
     // * Cheques

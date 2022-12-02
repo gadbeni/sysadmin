@@ -17,7 +17,12 @@ class CreatePersonExternalsTable extends Migration
             $table->id();
             $table->foreignId('person_external_type_id')->nullable()->constrained('person_external_types');
             $table->foreignId('person_id')->nullable()->constrained('people');
+            $table->foreignId('city_id')->nullable()->constrained('cities');
             $table->string('full_name')->nullable();
+            $table->date('birthday')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('job')->nullable();
+            $table->smallInteger('family')->nullable();
             $table->string('ci_nit')->unique();
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
