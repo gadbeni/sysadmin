@@ -137,7 +137,9 @@ class PermissionsTableSeeder extends Seeder
             'add_paymentschedules-files',
             'delete_paymentschedules-files',
             'browse_bonuses',
-            'add_bonuses'
+            'add_bonuses',
+            'read_bonuses',
+            'delete_bonuses'
         ];
 
         foreach ($keys as $key) {

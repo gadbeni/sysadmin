@@ -29,6 +29,7 @@ use App\Models\Program;
 use App\Models\Person;
 use App\Models\Bonus;
 use App\Models\BonusesDetail;
+use App\Models\ProcedureType;
 
 
 class PaymentschedulesController extends Controller
@@ -634,13 +635,13 @@ class PaymentschedulesController extends Controller
     // Aguinaldo
 
     public function bonuses_index(){
-        $this->custom_authorize('browse_bonus');
-        $bonus = Bonus::where('deleted_at', NULL)->get();
+        $this->custom_authorize('browse_bonuses');
+        $bonus = Bonus::where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
         return view('paymentschedules.bonuses-browse', compact('bonus'));
     }
 
     public function bonuses_create(){
-        $this->custom_authorize('add_bonus');
+        $this->custom_authorize('add_bonuses');
         $direcciones = Direccion::where('deleted_at', NULL)->where('estado', 1)
                         ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)->get();
         return view('paymentschedules.bonuses-edit-add', compact('direcciones'));
@@ -870,7 +871,7 @@ class PaymentschedulesController extends Controller
             return redirect()->route('bonuses.index')->with(['message' => 'Planilla de aguinaldos registrada correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
-            //throw $th;
+            // dd($th);
             return redirect()->route('bonuses.create')->with(['message' => 'Ocurrió un error en el servidor.', 'alert-type' => 'error']);
         }
     }
@@ -878,6 +879,23 @@ class PaymentschedulesController extends Controller
     public function bonuses_show($id){
         $bonus = Bonus::find($id);
         return view('paymentschedules.bonuses-read', compact('bonus'));
+    }
+
+    public function bonuses_print($id, Request $request){
+        $type_render = $request->type_render;
+        $bonus = Bonus::with(['details' => function($q) use($request){
+                    $q->where('procedure_type_id', $request->procedure_type_id)->where('deleted_at', NULL);
+                }])->where('id', $id)->where('deleted_at', NULL)->first();
+        $procedure_type = ProcedureType::find($request->procedure_type_id);
+
+        if($type_render == 1){
+            $pdf = PDF::loadView('paymentschedules.bonuses-print', compact('bonus', 'procedure_type', 'type_render'));
+            return $pdf->setPaper('legal', 'landscape')->stream();
+        }elseif($type_render == 2){
+            return view('paymentschedules.bonuses-print', compact('bonus', 'procedure_type', 'type_render'));
+        }
+
+        // return view('paymentschedules.bonuses-print', compact('bonus', 'procedure_type', 'type_render'));
     }
 
     public function bonuses_delete($id, Request $request){

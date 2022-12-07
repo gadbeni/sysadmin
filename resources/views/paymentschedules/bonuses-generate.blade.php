@@ -54,13 +54,15 @@
                                                     <input type="hidden" name="amount[]" value="{{ $total_amount }}">
                                                 </td>
                                             </tr>
+                                            @php
+                                                $total += $total_amount;
+                                            @endphp
                                         @endforeach
                                     </table>
                                 </td>
                             </tr>
                             @php
                                 $cont++;
-                                $total += $total_amount;
                             @endphp
                         @endif
                     @endforeach

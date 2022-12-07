@@ -14,7 +14,7 @@
                             </h1>
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
-                            @if (auth()->user()->hasPermission('add_bonus'))
+                            @if (auth()->user()->hasPermission('add_bonuses'))
                             <a href="{{ route('bonuses.create') }}" class="btn btn-success">
                                 <i class="voyager-plus"></i> <span>Crear</span>
                             </a>
@@ -40,6 +40,7 @@
                                     <tr>
                                         <th>N&deg;</th>
                                         <th>Dirección administrativa</th>
+                                        <th>N&deg; de personas</th>
                                         <th>Gestión</th>
                                         <th>Acciones</th>
                                     </tr>
@@ -52,14 +53,15 @@
                                         <tr>
                                             <td>{{ $cont }}</td>
                                             <td>{{ $item->direccion->nombre }}</td>
+                                            <td>{{ $item->details->count() }}</td>
                                             <td>{{ $item->year }}</td>
                                             <td class="no-sort no-click bread-actions text-right">
-                                                @if (auth()->user()->hasPermission('delete_people'))
+                                                @if (auth()->user()->hasPermission('read_bonuses'))
                                                 <a href="{{ route('bonuses.show', ['id' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
                                                     <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                                                 </a>
                                                 @endif
-                                                @if (auth()->user()->hasPermission('delete_people'))
+                                                @if (auth()->user()->hasPermission('delete_bonuses'))
                                                 <button title="Borrar" class="btn btn-sm btn-danger delete" onclick="deleteItem('{{ route('bonuses.destroy', ['id' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal">
                                                     <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
                                                 </button>
