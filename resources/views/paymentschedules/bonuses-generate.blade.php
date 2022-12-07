@@ -1,4 +1,4 @@
-<form id="form" action="{{ route('bonus.store') }}" method="post">
+<form id="form" action="{{ route('bonuses.store') }}" method="post">
     @csrf
     <input type="hidden" name="direccion_id" value="{{ $direccion_id }}">
     <input type="hidden" name="year" value="{{ $year }}">
@@ -50,6 +50,7 @@
                                                     <input type="hidden" name="procedure_type_id[]" value="{{ $contract->procedure_type_id }}">
                                                     <input type="hidden" name="contract_id[]" value="{{ $contract->id }}">
                                                     <input type="hidden" name="salary[]" value="{{ $partial_amount /3 }}">
+                                                    <input type="hidden" name="days[]" value="{{ $amounts["duration"] }}">
                                                     <input type="hidden" name="amount[]" value="{{ $total_amount }}">
                                                 </td>
                                             </tr>

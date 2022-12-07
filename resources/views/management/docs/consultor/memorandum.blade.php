@@ -75,7 +75,7 @@
                         <th>Código</th>
                         <th>Modalidad</th>
                         <th>Objeto</th>
-                        <th>programa</th>
+                        <th>Programa/Proyecto</th>
                     </tr>
                 </thead>
                 <tbody>

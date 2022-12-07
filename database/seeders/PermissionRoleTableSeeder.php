@@ -257,7 +257,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'browse_planillaspagos' or
                                             `key` = 'browse_reportshumans-resourcesaniversarios' or
                                             `key` = 'browse_reportscontractscontracts' or
-                                            `key` = 'browse_bonuscreate'")->get();
+                                            `key` = 'browse_bonuses' or
+                                            `key` = 'add_bonuses'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_tecnico_consultoria')->firstOrFail();
@@ -323,7 +324,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'browse_reportscontractscontracts' or
                                             `key` = 'browse_reportshumans-resourcesaniversarios' or
                                             `key` = 'browse_reportshumans-resourcesjobs' or
-                                            `key` = 'browse_bonuscreate'")->get();
+                                            `key` = 'browse_bonuses' or
+                                            `key` = 'add_bonuses'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $similar_permissions_rrhh = "table_name = 'admin' or

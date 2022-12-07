@@ -50,8 +50,6 @@ Route::post('register/store', [HomeController::class, 'register_person_store'])-
 Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Voyager::routes();
 
-    Route::get('test', [ReportsController::class, 'contarcts_people_index'])->name('contarcts.people.index');
-
     Route::get('people', [PeopleController::class, 'index'])->name('voyager.people.index');
     Route::get('people/ajax/list/{search?}', [PeopleController::class, 'list']);
     Route::get('people/{id}', [PeopleController::class, 'read'])->name('voyager.people.show');
@@ -119,9 +117,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('paymentschedules-files/delete', [PaymentschedulesController::class, 'files_delete'])->name('paymentschedules-files.delete');
 
     // Aguinaldo
-    Route::get('bonus/create', [PaymentschedulesController::class, 'bonus_create'])->name('bonus.create');
-    Route::post('bonus/generate', [PaymentschedulesController::class, 'bonus_generate'])->name('bonus.generate');
-    Route::post('bonus/store', [PaymentschedulesController::class, 'bonus_store'])->name('bonus.store');
+    Route::get('bonuses', [PaymentschedulesController::class, 'bonuses_index'])->name('bonuses.index');
+    Route::get('bonuses/create', [PaymentschedulesController::class, 'bonuses_create'])->name('bonuses.create');
+    Route::post('bonuses/generate', [PaymentschedulesController::class, 'bonuses_generate'])->name('bonuses.generate');
+    Route::post('bonuses/store', [PaymentschedulesController::class, 'bonuses_store'])->name('bonuses.store');
+    Route::get('bonuses/{id}', [PaymentschedulesController::class, 'bonuses_show'])->name('bonuses.show');
+    Route::delete('bonuses/{id}', [PaymentschedulesController::class, 'bonuses_delete'])->name('bonuses.destroy');
 
     // Previsión social
     // * Cheques

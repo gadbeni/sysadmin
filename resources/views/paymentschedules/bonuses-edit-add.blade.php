@@ -10,11 +10,11 @@
                     <div class="panel-body" style="padding: 0px">
                         <div class="col-md-8" style="padding: 0px">
                             <h1 class="page-title">
-                                <i class="voyager-logbook"></i> Generar Aguinaldos
+                                <i class="voyager-dollar"></i> Generar Aguinaldos
                             </h1>
                         </div>
                         <div class="col-md-4" style="margin-top: 30px">
-                            <form action="{{ route('bonus.generate') }}" id="form" method="post">
+                            <form action="{{ route('bonuses.generate') }}" id="form" method="post">
                                 @csrf
                                 <div class="form-group">
                                     <label for="direccion_id">Dirección administrativa</label>

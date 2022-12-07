@@ -27,7 +27,8 @@ use App\Models\Period;
 use App\Models\PaymentschedulesHistory;
 use App\Models\Program;
 use App\Models\Person;
-use App\Models\PaymentschedulesBonus;
+use App\Models\Bonus;
+use App\Models\BonusesDetail;
 
 
 class PaymentschedulesController extends Controller
@@ -632,17 +633,24 @@ class PaymentschedulesController extends Controller
 
     // Aguinaldo
 
-    public function bonus_create(){
-        $direcciones = Direccion::where('deleted_at', NULL)->where('estado', 1)
-                        ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)->get();
-        return view('paymentschedules.bonus-browse', compact('direcciones'));
+    public function bonuses_index(){
+        $this->custom_authorize('browse_bonus');
+        $bonus = Bonus::where('deleted_at', NULL)->get();
+        return view('paymentschedules.bonuses-browse', compact('bonus'));
     }
 
-    public function bonus_generate(Request $request){
+    public function bonuses_create(){
+        $this->custom_authorize('add_bonus');
+        $direcciones = Direccion::where('deleted_at', NULL)->where('estado', 1)
+                        ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)->get();
+        return view('paymentschedules.bonuses-edit-add', compact('direcciones'));
+    }
+
+    public function bonuses_generate(Request $request){
         $direccion_id = $request->direccion_id;
         $year = $request->year;
 
-        $bonus = PaymentschedulesBonus::where('deleted_at', null)
+        $bonus = Bonus::where('deleted_at', null)
                     ->where('direccion_id', $direccion_id)->where('year', $year)->first();
         if($bonus){
             return response()->json(['error' => 'Ya se generó la planilla de aguinaldos.']);
@@ -692,7 +700,8 @@ class PaymentschedulesController extends Controller
 
                                 if($i == count($contracts) -1){
                                     if($start->diffInMonths($finish) >= 2){
-                                        if(contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'))->months >= 3){
+                                        $dureation_contract = contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'));
+                                        if($dureation_contract->months *30 + $dureation_contract->days >= 90){
                                             $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d'), "contracts" => $contracts_bonus]);
                                             $contracts_bonus = collect();
                                         }
@@ -700,7 +709,8 @@ class PaymentschedulesController extends Controller
                                 }
                             }else{
                                 if($start->diffInMonths($finish) >= 2){
-                                    if(contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'))->months >= 3){
+                                    $dureation_contract = contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'));
+                                    if($dureation_contract->months *30 + $dureation_contract->days >= 90){
                                         $contracts_bonus->push($contracts[$i -1]->id);
                                         $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d'), "contracts" => $contracts_bonus]);
                                         $contracts_bonus = collect();
@@ -711,7 +721,8 @@ class PaymentschedulesController extends Controller
                                     $current_finish = Carbon::createFromFormat('Y-m-d', $contracts[$i]->start);
                                     $new_start = Carbon::createFromFormat('Y-m-d', $contracts[$i]->finish ?? $year.'-12-30');
                                     if($current_finish->diffInMonths($new_start) >= 2){
-                                        if(contract_duration_calculate($contracts[$i]->start, $contracts[$i]->finish ?? $year.'-12-30')->months >= 3){
+                                        $dureation_contract = contract_duration_calculate($contracts[$i]->start, $contracts[$i]->finish ?? $year.'-12-30');
+                                        if($dureation_contract->months *30 + $dureation_contract->days >= 90){
                                             $contracts_bonus->push($contracts[$i]->id);
                                             $bonus->push(["start" => $contracts[$i]->start, "finish" => $contracts[$i]->finish ?? $year.'-12-30', "contracts" => $contracts_bonus]);
                                             $contracts_bonus = collect();
@@ -727,7 +738,8 @@ class PaymentschedulesController extends Controller
                     }
                 }else{
                     if($start->diffInMonths($finish) >= 2){
-                        if(contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'))->months >= 3){
+                        $dureation_contract = contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'));
+                        if($dureation_contract->months *30 + $dureation_contract->days >= 90){
                             $contracts_bonus = collect($contracts[0]->id);
                             $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d'), "contracts" => $contracts_bonus]);
                         }
@@ -822,39 +834,65 @@ class PaymentschedulesController extends Controller
             }
         });
 
-        return view('paymentschedules.bonus-list', compact('people', 'direccion_id', 'year'));
+        return view('paymentschedules.bonuses-generate', compact('people', 'direccion_id', 'year'));
     }
 
-    public function bonus_store(Request $request){
-        // dd($request->all());
+    public function bonuses_store(Request $request){
         $direccion_id = $request->direccion_id;
         $year = $request->year;
 
-        $bonus = PaymentschedulesBonus::where('deleted_at', null)
+        $bonus = Bonus::where('deleted_at', null)
                     ->where('direccion_id', $direccion_id)->where('year', $year)->first();
         if($bonus){
-            return redirect()->route('bonus.create')->with(['message' => 'Ya se generó la planilla de aguinaldos.', 'alert-type' => 'error']);
+            return redirect()->route('bonuses.create')->with(['message' => 'Ya se generó la planilla de aguinaldos.', 'alert-type' => 'error']);
         }
 
         DB::beginTransaction();
+
+        $bonus = Bonus::create([
+            'user_id' => Auth::user()->id,
+            'direccion_id' => $direccion_id,
+            'year' => $year
+        ]);
+
         try {
             for ($i=0; $i < count($request->contract_id); $i++) { 
-                PaymentschedulesBonus::create([
-                    'user_id' => Auth::user()->id,
-                    'direccion_id' => $direccion_id,
-                    'year' => $year,
+                BonusesDetail::create([
+                    'bonus_id' => $bonus->id,
                     'contract_id' => $request->contract_id[$i],
                     'procedure_type_id' => $request->procedure_type_id[$i],
                     'salary' => $request->salary[$i],
+                    'days' => $request->days[$i],
                     'amount' => $request->amount[$i],
                 ]);
             }
             DB::commit();
-            return redirect()->route('bonus.create')->with(['message' => 'Planilla de aguinaldos registrada correctamente.', 'alert-type' => 'success']);
+            return redirect()->route('bonuses.index')->with(['message' => 'Planilla de aguinaldos registrada correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
             //throw $th;
-            return redirect()->route('bonus.create')->with(['message' => 'Ocurrió un error en el servidor.', 'alert-type' => 'error']);
+            return redirect()->route('bonuses.create')->with(['message' => 'Ocurrió un error en el servidor.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function bonuses_show($id){
+        $bonus = Bonus::find($id);
+        return view('paymentschedules.bonuses-read', compact('bonus'));
+    }
+
+    public function bonuses_delete($id, Request $request){
+        DB::beginTransaction();
+        try {
+
+            Bonus::where('id', $id)->delete();
+            BonusesDetail::where('bonus_id', $id)->delete();
+
+            DB::commit();
+            return redirect()->route('bonuses.index')->with(['message' => 'Planilla de aguinaldos eliminada correctamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            //throw $th;
+            return redirect()->route('bonuses.index')->with(['message' => 'Ocurrió un error en el servidor.', 'alert-type' => 'error']);
         }
     }
 }

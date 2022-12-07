@@ -339,9 +339,7 @@
         <script src="{{ url('js/main.js') }}"></script>
         <script>
             $(document).ready(() => {
-                $('#dataTable').DataTable({
-                    language
-                });
+                $('#dataTable').DataTable({language});
             });
 
             $('#delete_editar').on('show.bs.modal', function (event) {

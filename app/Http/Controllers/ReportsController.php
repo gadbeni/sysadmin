@@ -936,7 +936,7 @@ class ReportsController extends Controller
         }
     }
 
-    public function contarcts_people_index(){
+    public function contracts_people_index(){
         $contarcts = Person::with(['contracts' => function($q){
                         $q->where('deleted_at', NULL);
                     }, 'contracts.job', 'contracts.cargo', 'contracts.direccion_administrativa'])->where('deleted_at', NULL)

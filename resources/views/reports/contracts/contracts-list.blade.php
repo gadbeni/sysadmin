@@ -30,7 +30,7 @@
                             <th>Inicio</th>
                             <th>Fin</th>
                             <th>Monto total</th>
-                            <th>Programa</th>
+                            <th>Programa/Proyecto</th>
                             <th>Cat. prog.</th>
                             <th>Estado</th>
                             <th>Registrado</th>
