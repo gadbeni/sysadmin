@@ -765,7 +765,8 @@ class PaymentschedulesController extends Controller
         foreach ($people as $person) {
             if(count($person->bonus) > 0){
                 $amounts = collect();
-                foreach ($person->bonus as $bonus) {
+                // dd($person->bonus);
+                foreach ($person->bonus->sortDesc() as $bonus) {
                     $acumulate_days = 0;
                     $acumulate_amount = 0;
                     $partial_amounts = collect();
@@ -844,8 +845,8 @@ class PaymentschedulesController extends Controller
                 foreach ($person->amounts->sortKeysDesc() as $amount) {
                     $days = 0;
                     $last_contract = null;
+                    $months = collect();
                     foreach ($amount['contract']->sortDesc() as $item) {
-                        $months = collect();
                         $contract = Contract::find($item);
                         $contract_continue = true;
                         
