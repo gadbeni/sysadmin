@@ -1,6 +1,6 @@
 <form id="form" action="{{ route('bonuses.store') }}" method="post">
     @csrf
-    <input type="hidden" name="direccion_id" value="{{ $direccion_id }}">
+    <input type="hidden" name="direccion_id" value="{{ $direccion->id }}">
     <input type="hidden" name="year" value="{{ $year }}">
     <div class="col-md-12">
         <div id="dataTable" class="table-responsive">
@@ -22,78 +22,84 @@
                     @endphp
                     @foreach ($people as $item)
                         @if ($item->amounts)
-                            <tr>
-                                <td>{{ $cont }}</td>
-                                <td>{{ $item->id }}</td>
-                                <td>{{ $item->last_name }} {{ $item->first_name }}</td>
-                                <td>{{ $item->ci }}</td>
-                                <td>{{ $item->last_contract->direccion_administrativa ? $item->last_contract->direccion_administrativa->nombre : 'No definida' }}</td>
-                                <td>
-                                    <table class="table">
-                                        @foreach ($item->amounts as $amounts)
-                                            @php
-                                                // dd($amounts);
-                                                $contract = App\Models\Contract::find($amounts["contract"]->sortDesc()->first());
-                                            @endphp
-                                            <tr>
+                            @php
+                                $contract = App\Models\Contract::find($item->amounts[count($item->amounts) -1]['contract'][count($item->amounts[count($item->amounts) -1]['contract']) -1]);
+                                // dd($contract->direccion_administrativa_id);
+                            @endphp
+                            @if ($contract->direccion_administrativa_id == $direccion->id)
+                                <tr>
+                                    <td>{{ $cont }}</td>
+                                    <td>{{ $item->id }}</td>
+                                    <td>{{ $item->last_name }} {{ $item->first_name }}</td>
+                                    <td>{{ $item->ci }}</td>
+                                    <td>{{ $direccion->nombre }}</td>
+                                    <td>
+                                        <table class="table">
+                                            @foreach ($item->amounts as $amounts)
                                                 @php
-                                                    $index = 1;
-                                                    $subtotal_amount = 0;
-
-                                                    // Si es planilla permanente hay que agregar el mes de enero manualmente
-                                                    // debido a que no se planillo enero en el sistema
-                                                    if(count($amounts['months']) > 0){
-                                                        if($contract->procedure_type_id == 1 && $amounts['months'][count($amounts['months']) -1]['period'] == '202202'){
-                                                            $data = $amounts['months'][count($amounts['months']) -1];
-                                                            $amounts['months']->push([
-                                                                'partial_salary' => $data['partial_salary'],
-                                                                'seniority_bonus_amount' => $data['seniority_bonus_amount'],
-                                                                'worked_days' => $data['worked_days'],
-                                                                'period' => '202201'
-                                                            ]);
-                                                        }
-                                                    }
-
+                                                    // dd($amounts);
+                                                    $contract = App\Models\Contract::find($amounts["contract"]->sortDesc()->first());
                                                 @endphp
-                                                <td>{{ $contract->type->name }}</td>
-                                                @foreach ($amounts['months']->groupBy('period')->sort() as $month)
+                                                <tr>
                                                     @php
-                                                        $partial_salary = 0;
-                                                        $seniority_bonus_amount = 0;
-                                                        $worked_days = 0;
-                                                        $period = '';
+                                                        $index = 1;
+                                                        $subtotal_amount = 0;
+
+                                                        // Si es planilla permanente hay que agregar el mes de enero manualmente
+                                                        // debido a que no se planillo enero en el sistema
+                                                        if(count($amounts['months']) > 0){
+                                                            if($contract->procedure_type_id == 1 && $amounts['months'][count($amounts['months']) -1]['period'] == '202202'){
+                                                                $data = $amounts['months'][count($amounts['months']) -1];
+                                                                $amounts['months']->push([
+                                                                    'partial_salary' => $data['partial_salary'],
+                                                                    'seniority_bonus_amount' => $data['seniority_bonus_amount'],
+                                                                    'worked_days' => $data['worked_days'],
+                                                                    'period' => '202201'
+                                                                ]);
+                                                            }
+                                                        }
+
                                                     @endphp
-                                                    @foreach ($month as $month_group)
+                                                    <td>{{ $contract->type->name }}</td>
+                                                    @foreach ($amounts['months']->groupBy('period')->sort()->take(3) as $month)
                                                         @php
-                                                            $partial_salary += $month_group['partial_salary'];
-                                                            $seniority_bonus_amount += $month_group['seniority_bonus_amount'];
-                                                            $worked_days += $month_group['worked_days'];
-                                                            $period = $month_group['period'];
+                                                            $partial_salary = 0;
+                                                            $seniority_bonus_amount = 0;
+                                                            $worked_days = 0;
+                                                            $period = '';
+                                                        @endphp
+                                                        @foreach ($month as $month_group)
+                                                            @php
+                                                                $partial_salary += $month_group['partial_salary'];
+                                                                $seniority_bonus_amount += $month_group['seniority_bonus_amount'];
+                                                                $worked_days += $month_group['worked_days'];
+                                                                $period = $month_group['period'];
+                                                            @endphp
+                                                        @endforeach
+                                                        <td class="text-center" style="cursor: pointer" title="{{ $period }}">
+                                                            {{ $partial_salary + $seniority_bonus_amount }} <br>
+                                                            <small style="font-size: 9px">{{ $worked_days }} Días</small>
+                                                            <input type="hidden" name="partial_salary_{{ $index }}[]" value="{{ $partial_salary }}">
+                                                            <input type="hidden" name="seniority_bonus_amount_{{ $index }}[]" value="{{ $seniority_bonus_amount }}">
+                                                        </td>
+                                                        @php
+                                                            $subtotal_amount += $partial_salary + $seniority_bonus_amount;
+                                                            $index++;
                                                         @endphp
                                                     @endforeach
-                                                    <td class="text-center" style="cursor: pointer" title="{{ $period }}">
-                                                        {{ $partial_salary + $seniority_bonus_amount }} <br>
-                                                        <small style="font-size: 9px">{{ $worked_days }} Días</small>
-                                                        <input type="hidden" name="partial_salary_{{ $index }}[]" value="{{ $partial_salary }}">
-                                                        <input type="hidden" name="seniority_bonus_amount_{{ $index }}[]" value="{{ $seniority_bonus_amount }}">
-                                                    </td>
-                                                    @php
-                                                        $subtotal_amount += $partial_salary + $seniority_bonus_amount;
-                                                        $index++;
-                                                    @endphp
-                                                @endforeach
-                                                <td class="text-right">{{ $amounts["duration"] }}</td>
-                                                <td class="text-right">{{ number_format($subtotal_amount /3, 2, ',', '.') }}</td>
-                                                <td class="text-right">{{ number_format((($subtotal_amount /3) /360) * $amounts["duration"], 2, ',', '.') }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </table>
-                                </td>
-                            </tr>
-                            @php
-                                $total += (($subtotal_amount /3) /360) * $amounts["duration"];
-                                $cont++;
-                            @endphp
+                                                    <td class="text-right">{{ $amounts["duration"] }}</td>
+                                                    <td class="text-right">{{ number_format($subtotal_amount /3, 2, ',', '.') }}</td>
+                                                    <td class="text-right">{{ number_format((($subtotal_amount /3) /360) * $amounts["duration"], 2, ',', '.') }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </table>
+                                    </td>
+                                </tr>
+                                @php
+                                    $total += (($subtotal_amount /3) /360) * $amounts["duration"];
+                                    $cont++;
+                                @endphp
+                            @endif
                         @endif
                     @endforeach
                     <tr>

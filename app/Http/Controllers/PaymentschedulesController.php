@@ -661,18 +661,21 @@ class PaymentschedulesController extends Controller
 
         $people = Person::where('deleted_at', NULL)
                     ->whereHas('contracts', function($q) use($direccion_id){
-                        $q->where('direccion_administrativa_id', $direccion_id)->where('deleted_at', NULL);
+                        $q->where('direccion_administrativa_id', $direccion_id)
+                        ->whereRaw('(procedure_type_id = 1 or procedure_type_id = 5)')->where('deleted_at', NULL);
                     })
                     ->orderBy('last_name')
-                    // ->limit(60)
+                    // ->limit(20)
                     ->get();
+        // dd($people);
         $cont = 0;
         foreach ($people as $person) {
             $contracts = Contract::where('deleted_at', NULL)
                             ->whereHas('paymentschedules_details', function($q){
                                 $q->where('deleted_at', NULL);
                             })
-                            ->whereRaw("(procedure_type_id = 1 or procedure_type_id = 5)")->where('person_id', $person->id)->orderBy('start', 'ASC')->get();
+                            ->whereRaw("(procedure_type_id = 1 or procedure_type_id = 5)")
+                            ->where('deleted_at', NULL)->where('person_id', $person->id)->orderBy('start', 'ASC')->get();
             $bonus = collect();
             // Si tiene al menos un contrato
             if(count($contracts) > 0){
@@ -766,14 +769,13 @@ class PaymentschedulesController extends Controller
             if(count($person->bonus) > 0){
                 $amounts = collect();
                 // dd($person->bonus);
-                foreach ($person->bonus->sortDesc() as $bonus) {
+                foreach ($person->bonus as $bonus) {
                     $acumulate_days = 0;
                     $acumulate_amount = 0;
                     $partial_amounts = collect();
 
                     $total_duration = contract_duration_calculate($bonus["start"], $bonus["finish"]);
                     $total_duration_days = $total_duration->months *30 + $total_duration->days;
-
                     foreach ($bonus['contracts']->sortDesc() as $item) {
                         // Obtener duración del contrato
                         $contract = Contract::where('id', $item)->first();
@@ -842,11 +844,14 @@ class PaymentschedulesController extends Controller
         foreach ($people as $person) {
             if($person->amounts){
                 $index = 0;
-                foreach ($person->amounts->sortKeysDesc() as $amount) {
+                foreach ($person->amounts->sortKeys() as $amount) {
                     $days = 0;
                     $last_contract = null;
                     $months = collect();
-                    foreach ($amount['contract']->sortDesc() as $item) {
+                    // if($person->ci == '7602393'){
+                    //     dd($amount['contract']);
+                    // }
+                    foreach ($amount['contract']->sortKeysDesc() as $item) {
                         $contract = Contract::find($item);
                         $contract_continue = true;
                         
@@ -895,14 +900,14 @@ class PaymentschedulesController extends Controller
             $cont++;
         }
 
-        // dd($people);
-
         // Eliminar a las personas que no cumplan con los 90 días
         $people = $people->reject(function ($value, $key) {
             return $value->last_contract ? false : true;
         });
 
-        return view('paymentschedules.bonuses-generate', compact('people', 'direccion_id', 'year'));
+        $direccion = Direccion::find($direccion_id);
+
+        return view('paymentschedules.bonuses-generate', compact('people', 'direccion', 'year'));
     }
 
     public function bonuses_store(Request $request){
