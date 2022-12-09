@@ -13,7 +13,8 @@
                     <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="100px"></td>
                     <td style="text-align: right">
                         <h3 style="margin: 0px">PLANILLA DE AGUINALDOS AL PERSONAL DEPENDIENTE GAD-BENI</h3>
-                        <span>CORRESPONDIENTE A LA GESTIÓN {{ $bonus->year }}</span>
+                        <span>CORRESPONDIENTE A LA GESTIÓN {{ $bonus->year }}</span> <br>
+                        <b>{{ Str::upper($bonus->direccion->nombre) }}</b>
                         <h3 style="margin: 0px">{{ Str::upper($procedure_type->name) }}</h3>
                     </td>
                     <td style="text-align:center; width: 90px">
@@ -55,7 +56,7 @@
                         <th>Nombre completo</th>
                         <th>CI</th>
                         <th>Sueldo promedio</th>
-                        <th>Días de contrato</th>
+                        <th>Días trabajados</th>
                         <th>Monto</th>
                     </tr>
                 </thead>

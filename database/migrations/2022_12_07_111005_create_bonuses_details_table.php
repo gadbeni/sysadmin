@@ -18,7 +18,9 @@ class CreateBonusesDetailsTable extends Migration
             $table->foreignId('bonus_id')->nullable()->constrained('bonuses');
             $table->foreignId('contract_id')->nullable()->constrained('contracts');
             $table->foreignId('procedure_type_id')->nullable()->constrained('procedure_types');
-            $table->decimal('salary', 10, 2)->nullable();
+            $table->decimal('salary_1', 10, 2)->nullable();
+            $table->decimal('salary_2', 10, 2)->nullable();
+            $table->decimal('salary_3', 10, 2)->nullable();
             $table->smallInteger('days')->nullable();
             $table->decimal('amount', 10, 2)->nullable();
             $table->smallInteger('status')->nullable()->default(1);

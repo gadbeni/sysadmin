@@ -91,7 +91,7 @@
                                 <label for="direccion_administrativa_id">Dirección Administrativa</label>
                                 <select name="direccion_administrativa_id" class="form-control select2">
                                     <option value="">No definida</option>
-                                    @foreach(\App\Models\Direccion::all() as $direccion)
+                                    @foreach(\App\Models\Direccion::where('estado', 1)->where('deleted_at', NULL)->get() as $direccion)
                                         <option @if($dataTypeContent->direccion_administrativa_id == $direccion->id) selected @endif value="{{ $direccion->id }}">{{ $direccion->nombre }}</option>
                                     @endforeach
                                 </select>

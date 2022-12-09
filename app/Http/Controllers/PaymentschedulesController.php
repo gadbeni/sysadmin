@@ -636,14 +636,16 @@ class PaymentschedulesController extends Controller
 
     public function bonuses_index(){
         $this->custom_authorize('browse_bonuses');
-        $bonus = Bonus::where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
+        $bonus = Bonus::where('deleted_at', NULL)
+                    ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_id = ".Auth::user()->direccion_administrativa_id : 1)
+                    ->orderBy('id', 'DESC')->get();
         return view('paymentschedules.bonuses-browse', compact('bonus'));
     }
 
     public function bonuses_create(){
         $this->custom_authorize('add_bonuses');
         $direcciones = Direccion::where('deleted_at', NULL)->where('estado', 1)
-                        ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)->get();
+                        ->whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1)->get();
         return view('paymentschedules.bonuses-edit-add', compact('direcciones'));
     }
 
@@ -657,8 +659,16 @@ class PaymentschedulesController extends Controller
             return response()->json(['error' => 'Ya se generó la planilla de aguinaldos.']);
         }
 
-        $people = Person::where('deleted_at', NULL)->orderBy('last_name')->get();
+        $people = Person::where('deleted_at', NULL)
+                    ->whereHas('contracts', function($q) use($direccion_id){
+                        $q->where('direccion_administrativa_id', $direccion_id)->where('deleted_at', NULL);
+                    })
+                    ->orderBy('last_name')->get();
+        // dd($people);
+        
         $cont = 0;
+
+
         foreach ($people as $person) {
             $contracts = Contract::where('deleted_at', NULL)
                             ->whereHas('paymentschedules_details', function($q){
@@ -746,94 +756,32 @@ class PaymentschedulesController extends Controller
                         }
                     }
                 }
+                $people[$cont]->bonus = $bonus;
+                $cont++;
             }
-
-            $people[$cont]->bonus = $bonus;
-
-            $cont++;
         }
 
         $cont = 0;
         foreach ($people as $person) {
-            if(count($person->bonus) > 0){
-                $amounts = collect();
+            if ($person->bonus) {
+                # code...
+            
                 foreach ($person->bonus as $bonus) {
-                    $acumulate_days = 0;
-                    $acumulate_amount = 0;
-                    $partial_amounts = collect();
-
-                    $total_duration = contract_duration_calculate($bonus["start"], $bonus["finish"]);
-                    $total_duration_days = $total_duration->months *30 + $total_duration->days;
-
-                    foreach ($bonus['contracts']->sortDesc() as $item) {
-                        // Obtener duración del contrato
-                        $contract = Contract::where('id', $item)->first();
-                        $duration = contract_duration_calculate($contract->start, $contract->finish ?? $year.'-12-30');
-                        $days = $duration->months *30 + $duration->days;
-                        
-                        // Obtener salario del contrato
-                        $salary = 0;
-                        if ($contract->cargo){
-                            $salary = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
-                        }elseif ($contract->job){
-                            $salary = $contract->job->salary;
-                        }
-
-                        // Calcular bono antigüedad
-                        $minimum_salary = setting('planillas.minimum_salary') ?? 2164;
-                        $seniority_bonus_percentage = 0;
-                        $seniority_bonus_amount = 0;
-
-                        // Si el tipo de planilla es de personal funcionamiento se calcula el bono antigüedad
-                        if($contract->procedure_type_id  == 1){
-                            if(count($person->seniority_bonus) > 0){
-                                if(date('Ym', strtotime($person->seniority_bonus->first()->start)) <= $year.'09'){
-                                    $seniority_bonus_percentage = $person->seniority_bonus->first()->type->percentage;
-                                    $seniority_bonus_amount = number_format($minimum_salary * ($seniority_bonus_percentage /100), 2, '.', '');
-                                }
-                            }
-                        }
-
-                        if($days >= 90){
-                            $partial_amounts->push([
-                                "days" => $acumulate_days == 0 ? 90 : 90 - $acumulate_days,
-                                "amount" => $salary,
-                                "bonus" => $seniority_bonus_amount
-                            ]);
-                        }else{
-                            if($acumulate_days + $days > 90){
-                                $quantity_days = 90 - $acumulate_days;
-                            }else{
-                                $quantity_days = $days;
-                            }
-                            $partial_amounts->push([
-                                "days" => $quantity_days,
-                                "amount" => $salary,
-                                "bonus" => $seniority_bonus_amount
-                            ]);
-                        }
-
-                        $acumulate_days += $days;
-
-                        if($acumulate_days >= 90){
-                            break;
+                    $months = collect();
+                    $days = 0;
+                    foreach ($bonus['contracts'] as $item) {
+                        $contract = Contract::find($item);
+                        foreach ($contract->paymentschedules_details->sortByDesc('paymentschedule.period_id') as $payments) {
+                            $days += $payments->worked_days;
+                            $months->push(['amount' => $payments->partial_salary + $payments->seniority_bonus_amount]);
                         }
                     }
-                    // Agregar la duración total de los proyectos que estan incluidos en ese lapso de tiempo
-                    $amounts->push(collect(["duration" => $total_duration_days, "partial_amounts" => $partial_amounts, "contract" => $bonus["contracts"]]));
                 }
-
-                $people[$cont]->amounts = $amounts;
-                $people[$cont]->last_contract = $contract;
+                $people[$cont]->months = $months;
+                $cont++;
             }
-            $cont++;
         }
-        
-        $people = $people->reject(function ($value, $key) use($request) {
-            if($value->last_contract){
-                return $value->last_contract->direccion_administrativa_id != $request->direccion_id;
-            }
-        });
+        // dd($people);
 
         return view('paymentschedules.bonuses-generate', compact('people', 'direccion_id', 'year'));
     }

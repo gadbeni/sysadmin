@@ -66,7 +66,7 @@
     <script>
         $(document).ready(function() {
             $('#form').submit(function(e){
-                e.preventDefault();
+                // e.preventDefault();
                 $('#div-results').loading({message: 'Cargando...'});
                 $.post($(this).attr('action'), $(this).serialize(), function(response){
                     if(response.error){

@@ -50,7 +50,7 @@
                                         <th>Nombre completo</th>
                                         <th>CI</th>
                                         <th>Sueldo promedio</th>
-                                        <th>Días de contrato</th>
+                                        <th>Días trabajados</th>
                                         <th>Monto</th>
                                     </tr>
                                 </thead>

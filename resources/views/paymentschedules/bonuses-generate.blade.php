@@ -11,7 +11,7 @@
                         <th>ID</th>
                         <th>NOMBRE COMPLETO</th>
                         <th>CI</th>
-                        <th>DIRECCIÓN ADMINISTRATIVA</th>
+                        {{-- <th>DIRECCIÓN ADMINISTRATIVA</th> --}}
                         <th>DETALLE</th>
                     </tr>
                 </thead>
@@ -21,42 +21,20 @@
                         $total = 0;
                     @endphp
                     @foreach ($people as $item)
-                        @if ($item->amounts)
+                        @if ($item->months)
                             <tr>
                                 <td>{{ $cont }}</td>
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->last_name }} {{ $item->first_name }}</td>
                                 <td>{{ $item->ci }}</td>
                                 {{-- <td>{{ $item->last_contract->type->name }}</td> --}}
-                                <td>{{ $item->last_contract->direccion_administrativa ? $item->last_contract->direccion_administrativa->nombre : 'No definida' }}</td>
+                                {{-- <td>{{ $item->last_contract->direccion_administrativa ? $item->last_contract->direccion_administrativa->nombre : 'No definida' }}</td> --}}
                                 <td>
-                                    <table class="table">
-                                        @foreach ($item->amounts as $amounts)
-                                            @php
-                                                $contract = App\Models\Contract::find($amounts["contract"]->sortDesc()->first());
-                                                $partial_amount = 0;
-                                                foreach ($amounts["partial_amounts"] as $amount) {
-                                                    $partial_amount += ($amount["amount"] /30) * $amount["days"] + ($amount["bonus"] /30) * $amount["days"];
-                                                    // $partial_amount += ($amount["amount"] / 30) * $amount["days"];
-                                                }
-                                                $total_amount = (($partial_amount /3) /360) *$amounts["duration"];
-                                            @endphp
+                                    <table>
+                                        @foreach ($item->months as $month)
                                             <tr>
-                                                <td>{{ $contract->type->name }}</td>
-                                                <td>{{ $amounts["duration"] }} dias</td>
-                                                <td>sueldo: {{ number_format($partial_amount /3, 2, ',', '.') }}</td>
-                                                <td class="text-right">
-                                                    <b>{{ number_format($total_amount, 2, ',', '.') }}</b>
-                                                    <input type="hidden" name="procedure_type_id[]" value="{{ $contract->procedure_type_id }}">
-                                                    <input type="hidden" name="contract_id[]" value="{{ $contract->id }}">
-                                                    <input type="hidden" name="salary[]" value="{{ $partial_amount /3 }}">
-                                                    <input type="hidden" name="days[]" value="{{ $amounts["duration"] }}">
-                                                    <input type="hidden" name="amount[]" value="{{ $total_amount }}">
-                                                </td>
+                                                <td>{{ $month['amount'] }}</td>
                                             </tr>
-                                            @php
-                                                $total += $total_amount;
-                                            @endphp
                                         @endforeach
                                     </table>
                                 </td>
@@ -67,7 +45,7 @@
                         @endif
                     @endforeach
                     <tr>
-                        <td colspan="5" class="text-right"><b>TOTAL</b></td>
+                        <td colspan="4" class="text-right"><b>TOTAL</b></td>
                         <td class="text-right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
                     </tr>
                 </tbody>
