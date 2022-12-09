@@ -663,12 +663,10 @@ class PaymentschedulesController extends Controller
                     ->whereHas('contracts', function($q) use($direccion_id){
                         $q->where('direccion_administrativa_id', $direccion_id)->where('deleted_at', NULL);
                     })
-                    ->orderBy('last_name')->get();
-        // dd($people);
-        
+                    ->orderBy('last_name')
+                    // ->limit(60)
+                    ->get();
         $cont = 0;
-
-
         foreach ($people as $person) {
             $contracts = Contract::where('deleted_at', NULL)
                             ->whereHas('paymentschedules_details', function($q){
@@ -711,8 +709,8 @@ class PaymentschedulesController extends Controller
 
                                 if($i == count($contracts) -1){
                                     if($start->diffInMonths($finish) >= 2){
-                                        $dureation_contract = contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'));
-                                        if($dureation_contract->months *30 + $dureation_contract->days >= 90){
+                                        $duration_contract = contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'));
+                                        if($duration_contract->months *30 + $duration_contract->days >= 90){
                                             $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d'), "contracts" => $contracts_bonus]);
                                             $contracts_bonus = collect();
                                         }
@@ -720,8 +718,8 @@ class PaymentschedulesController extends Controller
                                 }
                             }else{
                                 if($start->diffInMonths($finish) >= 2){
-                                    $dureation_contract = contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'));
-                                    if($dureation_contract->months *30 + $dureation_contract->days >= 90){
+                                    $duration_contract = contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'));
+                                    if($duration_contract->months *30 + $duration_contract->days >= 90){
                                         $contracts_bonus->push($contracts[$i -1]->id);
                                         $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d'), "contracts" => $contracts_bonus]);
                                         $contracts_bonus = collect();
@@ -732,8 +730,8 @@ class PaymentschedulesController extends Controller
                                     $current_finish = Carbon::createFromFormat('Y-m-d', $contracts[$i]->start);
                                     $new_start = Carbon::createFromFormat('Y-m-d', $contracts[$i]->finish ?? $year.'-12-30');
                                     if($current_finish->diffInMonths($new_start) >= 2){
-                                        $dureation_contract = contract_duration_calculate($contracts[$i]->start, $contracts[$i]->finish ?? $year.'-12-30');
-                                        if($dureation_contract->months *30 + $dureation_contract->days >= 90){
+                                        $duration_contract = contract_duration_calculate($contracts[$i]->start, $contracts[$i]->finish ?? $year.'-12-30');
+                                        if($duration_contract->months *30 + $duration_contract->days >= 90){
                                             $contracts_bonus->push($contracts[$i]->id);
                                             $bonus->push(["start" => $contracts[$i]->start, "finish" => $contracts[$i]->finish ?? $year.'-12-30', "contracts" => $contracts_bonus]);
                                             $contracts_bonus = collect();
@@ -749,39 +747,159 @@ class PaymentschedulesController extends Controller
                     }
                 }else{
                     if($start->diffInMonths($finish) >= 2){
-                        $dureation_contract = contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'));
-                        if($dureation_contract->months *30 + $dureation_contract->days >= 90){
+                        $duration_contract = contract_duration_calculate($start->format('Y-m-d'), $finish->format('Y-m-d'));
+                        if($duration_contract->months *30 + $duration_contract->days >= 90){
                             $contracts_bonus = collect($contracts[0]->id);
                             $bonus->push(["start" => $start->format('Y-m-d'), "finish" => $finish->format('Y-m-d'), "contracts" => $contracts_bonus]);
                         }
                     }
                 }
-                $people[$cont]->bonus = $bonus;
-                $cont++;
             }
+
+            $people[$cont]->bonus = $bonus;
+
+            $cont++;
         }
 
         $cont = 0;
         foreach ($people as $person) {
-            if ($person->bonus) {
-                # code...
-            
+            if(count($person->bonus) > 0){
+                $amounts = collect();
                 foreach ($person->bonus as $bonus) {
-                    $months = collect();
-                    $days = 0;
-                    foreach ($bonus['contracts'] as $item) {
-                        $contract = Contract::find($item);
-                        foreach ($contract->paymentschedules_details->sortByDesc('paymentschedule.period_id') as $payments) {
-                            $days += $payments->worked_days;
-                            $months->push(['amount' => $payments->partial_salary + $payments->seniority_bonus_amount]);
+                    $acumulate_days = 0;
+                    $acumulate_amount = 0;
+                    $partial_amounts = collect();
+
+                    $total_duration = contract_duration_calculate($bonus["start"], $bonus["finish"]);
+                    $total_duration_days = $total_duration->months *30 + $total_duration->days;
+
+                    foreach ($bonus['contracts']->sortDesc() as $item) {
+                        // Obtener duración del contrato
+                        $contract = Contract::where('id', $item)->first();
+                        $duration = contract_duration_calculate($contract->start, $contract->finish ?? $year.'-12-30');
+                        $days = $duration->months *30 + $duration->days;
+                        
+                        // Obtener salario del contrato
+                        $salary = 0;
+                        if ($contract->cargo){
+                            $salary = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
+                        }elseif ($contract->job){
+                            $salary = $contract->job->salary;
+                        }
+
+                        // Calcular bono antigüedad
+                        $minimum_salary = setting('planillas.minimum_salary') ?? 2164;
+                        $seniority_bonus_percentage = 0;
+                        $seniority_bonus_amount = 0;
+
+                        // Si el tipo de planilla es de personal funcionamiento se calcula el bono antigüedad
+                        if($contract->procedure_type_id  == 1){
+                            if(count($person->seniority_bonus) > 0){
+                                if(date('Ym', strtotime($person->seniority_bonus->first()->start)) <= $year.'09'){
+                                    $seniority_bonus_percentage = $person->seniority_bonus->first()->type->percentage;
+                                    $seniority_bonus_amount = number_format($minimum_salary * ($seniority_bonus_percentage /100), 2, '.', '');
+                                }
+                            }
+                        }
+
+                        if($days >= 90){
+                            $partial_amounts->push([
+                                "days" => $acumulate_days == 0 ? 90 : 90 - $acumulate_days,
+                                "amount" => $salary,
+                                "bonus" => $seniority_bonus_amount
+                            ]);
+                        }else{
+                            if($acumulate_days + $days > 90){
+                                $quantity_days = 90 - $acumulate_days;
+                            }else{
+                                $quantity_days = $days;
+                            }
+                            $partial_amounts->push([
+                                "days" => $quantity_days,
+                                "amount" => $salary,
+                                "bonus" => $seniority_bonus_amount
+                            ]);
+                        }
+
+                        $acumulate_days += $days;
+
+                        if($acumulate_days >= 90){
+                            break;
                         }
                     }
+                    // Agregar la duración total de los proyectos que estan incluidos en ese lapso de tiempo
+                    $amounts->push(collect(["duration" => $total_duration_days, "partial_amounts" => $partial_amounts, "contract" => $bonus["contracts"]]));
                 }
-                $people[$cont]->months = $months;
-                $cont++;
+
+                $people[$cont]->amounts = $amounts;
+                $people[$cont]->last_contract = $contract;
             }
+            $cont++;
         }
+        
+        $cont = 0;
+        foreach ($people as $person) {
+            if($person->amounts){
+                $index = 0;
+                foreach ($person->amounts->sortKeysDesc() as $amount) {
+                    $days = 0;
+                    $last_contract = null;
+                    foreach ($amount['contract']->sortDesc() as $item) {
+                        $months = collect();
+                        $contract = Contract::find($item);
+                        $contract_continue = true;
+                        
+                        // Si ya estamos recorriendo el segundo contrato de la lista
+                        if($last_contract){
+                            // Obtener el inicio del ultimo contrato almacenado en la variable
+                            $start = Carbon::createFromFormat('Y-m-d', $last_contract->start);
+                            // Obtener el fin del siguente contrato de la lista
+                            $finish = Carbon::createFromFormat('Y-m-d', $contract->finish ?? $year.'-12-30');
+
+                            // Si la diferencia es mayor a 1 día ya no se sigue obteniendo el sueldo de ese mes hasta completar los 90 días
+                            if($finish->diffInDays($start) > 1){
+                                $contract_continue = false;
+                            }
+                        }
+                        
+                        $last_contract = $contract;
+                        if($contract_continue){
+                            foreach ($contract->paymentschedules_details->sortByDesc('paymentschedule.period.name') as $payments) {
+                                if(
+                                    $payments->paymentschedule->period->name != $year.'12' && // Que el periodo consultado no sea diciembre
+                                    (date('Ym', strtotime($contract->finish)) != $payments->paymentschedule->period->name || date('d', strtotime($contract->finish)) >= 30 || count($months) > 0 /* Que el periodo consultado no sea el mes de finalización de contrato o q sea fin de mes*/)
+                                ){
+                                    if($days >= 90){
+                                        break;
+                                    }
+                                    $days += $payments->worked_days;
+                                    $months->push([
+                                        'partial_salary' => $payments->partial_salary,
+                                        'seniority_bonus_amount' => $payments->seniority_bonus_amount,
+                                        'worked_days' => $payments->worked_days,
+                                        'period' => $payments->paymentschedule->period->name
+                                    ]);
+                                }
+                            }
+                            if($days >= 90){
+                                break;
+                            }
+                        }
+                    }
+
+                    $people[$cont]->amounts[$index]->put('months', $months);
+                    $index++;
+                }
+            }
+            $cont++;
+        }
+
         // dd($people);
+
+        // Eliminar a las personas que no cumplan con los 90 días
+        $people = $people->reject(function ($value, $key) {
+            return $value->last_contract ? false : true;
+        });
 
         return view('paymentschedules.bonuses-generate', compact('people', 'direccion_id', 'year'));
     }

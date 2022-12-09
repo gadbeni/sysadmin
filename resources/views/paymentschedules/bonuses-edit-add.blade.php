@@ -30,7 +30,7 @@
                                     <input type="number" name="year" min="2022" step="1" value="{{ date('Y') }}" class="form-control" id="input-year" placeholder="Año" readonly>
                                 </div>
                                 <div class="form-group text-right">
-                                    <button class="btn btn-primary btn-sm" id="btn-submit" style="margin: 0px">
+                                    <button class="btn btn-primary btn-sm" style="margin: 0px">
                                         Generar <i class="voyager-settings"></i>
                                     </button>
                                 </div>
@@ -66,7 +66,7 @@
     <script>
         $(document).ready(function() {
             $('#form').submit(function(e){
-                // e.preventDefault();
+                e.preventDefault();
                 $('#div-results').loading({message: 'Cargando...'});
                 $.post($(this).attr('action'), $(this).serialize(), function(response){
                     if(response.error){
