@@ -52,12 +52,13 @@
                 <thead>
                     <tr>
                         <th>N&deg;</th>
-                        <th>Planilla</th>
-                        <th>Nombre completo</th>
+                        <th>PLANILLA</th>
+                        <th>NOMBRE COMPLETO</th>
                         <th>CI</th>
-                        <th>Sueldo promedio</th>
-                        <th>Días trabajados</th>
-                        <th>Monto</th>
+                        <th>MESES</th>
+                        <th>SUELDO PROMEDIO</th>
+                        <th>DÍAS TRABAJADOS</th>
+                        <th>AGUINALDO</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,18 +79,32 @@
                                 @endif
                             </td>
                             <td>{{ $item->contract->person->ci }}</td>
-                            <td style="text-align: right">{{ $item->salary }}</td>
-                            <td style="text-align: right">{{ $item->days }}</td>
-                            <td style="text-align: right">{{ $item->amount }}</td>
+                            <td>
+                                <table width="100%">
+                                    <tr>
+                                        <td align="center">{{ number_format($item->partial_salary_1 + $item->seniority_bonus_1, 2, ',', '.') }}</td>
+                                        <td align="center">{{ number_format($item->partial_salary_2 + $item->seniority_bonus_2, 2, ',', '.') }}</td>
+                                        <td align="center">{{ number_format($item->partial_salary_3 + $item->seniority_bonus_3, 2, ',', '.') }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td style="text-align:center">
+                                @php
+                                    $promedio = ($item->partial_salary_1 + $item->seniority_bonus_1 + $item->partial_salary_2 + $item->seniority_bonus_2 + $item->partial_salary_3 + $item->seniority_bonus_3) /3;
+                                @endphp
+                                {{ number_format($promedio, 2, ',', '.') }}
+                            </td>
+                            <td style="text-align:center">{{ $item->days }}</td>
+                            <td style="text-align:center">{{ number_format(($promedio / 360) * $item->days, 2, ',', '.') }}</td>
                         </tr>
                         @php
                             $cont++;
-                            $total += $item->amount;
+                            $total += ($promedio / 360) * $item->days;
                         @endphp
                     @endforeach
                     <tr>
-                        <td colspan="6" style="text-align: right"><b>TOTAL</b></td>
-                        <td style="text-align: right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
+                        <td colspan="7" style="text-align:center"><b>TOTAL</b></td>
+                        <td style="text-align:center"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
                     </tr>
                 </tbody>
             </table>

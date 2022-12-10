@@ -46,12 +46,13 @@
                                 <thead>
                                     <tr>
                                         <th>N&deg;</th>
-                                        <th>Planilla</th>
-                                        <th>Nombre completo</th>
+                                        <th>PLANILLA</th>
+                                        <th>NOMBRE COMPLETO</th>
                                         <th>CI</th>
-                                        <th>Sueldo promedio</th>
-                                        <th>Días trabajados</th>
-                                        <th>Monto</th>
+                                        <th>MESES</th>
+                                        <th>SUELDO PROMEDIO</th>
+                                        <th>DÍAS TRABAJADOS</th>
+                                        <th>AGUINALDO</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -72,17 +73,31 @@
                                                 @endif
                                             </td>
                                             <td>{{ $item->contract->person->ci }}</td>
-                                            <td class="text-right">{{ $item->salary }}</td>
+                                            <td>
+                                                <table class="table">
+                                                    <tr>
+                                                        <td>{{ number_format($item->partial_salary_1 + $item->seniority_bonus_1, 2, ',', '.') }}</td>
+                                                        <td>{{ number_format($item->partial_salary_2 + $item->seniority_bonus_2, 2, ',', '.') }}</td>
+                                                        <td>{{ number_format($item->partial_salary_3 + $item->seniority_bonus_3, 2, ',', '.') }}</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td class="text-right">
+                                                @php
+                                                    $promedio = ($item->partial_salary_1 + $item->seniority_bonus_1 + $item->partial_salary_2 + $item->seniority_bonus_2 + $item->partial_salary_3 + $item->seniority_bonus_3) /3;
+                                                @endphp
+                                                {{ number_format($promedio, 2, ',', '.') }}
+                                            </td>
                                             <td class="text-right">{{ $item->days }}</td>
-                                            <td class="text-right">{{ $item->amount }}</td>
+                                            <td class="text-right">{{ number_format(($promedio / 360) * $item->days, 2, ',', '.') }}</td>
                                         </tr>
                                         @php
                                             $cont++;
-                                            $total += $item->amount;
+                                            $total += ($promedio / 360) * $item->days;
                                         @endphp
                                     @endforeach
                                     <tr>
-                                        <td colspan="6" class="text-right"><b>TOTAL</b></td>
+                                        <td colspan="7" class="text-right"><b>TOTAL</b></td>
                                         <td class="text-right"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
                                     </tr>
                                 </tbody>
@@ -129,6 +144,14 @@
         </div>
     </form>
 @stop
+
+@section('css')
+    <style>
+        th{
+            text-align: center
+        }
+    </style>
+@endsection
 
 @section('javascript')
     <script>

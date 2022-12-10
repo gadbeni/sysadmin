@@ -14,11 +14,13 @@ class BonusesDetail extends Model
         'bonus_id',
         'contract_id',
         'procedure_type_id',
-        'salary_1',
-        'salary_2',
-        'salary_3',
+        'partial_salary_1',
+        'seniority_bonus_1',
+        'partial_salary_2',
+        'seniority_bonus_2',
+        'partial_salary_3',
+        'seniority_bonus_3',
         'days',
-        'amount',
         'status',
         'observations'
     ];

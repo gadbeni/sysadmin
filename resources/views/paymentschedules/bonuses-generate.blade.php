@@ -80,25 +80,30 @@
                                                             {{ $partial_salary + $seniority_bonus_amount }} <br>
                                                             <small style="font-size: 9px">{{ $worked_days }} Días</small>
                                                             <input type="hidden" name="partial_salary_{{ $index }}[]" value="{{ $partial_salary }}">
-                                                            <input type="hidden" name="seniority_bonus_amount_{{ $index }}[]" value="{{ $seniority_bonus_amount }}">
+                                                            <input type="hidden" name="seniority_bonus_{{ $index }}[]" value="{{ $seniority_bonus_amount }}">
                                                         </td>
                                                         @php
                                                             $subtotal_amount += $partial_salary + $seniority_bonus_amount;
                                                             $index++;
                                                         @endphp
                                                     @endforeach
-                                                    <td class="text-right">{{ $amounts["duration"] }}</td>
+                                                    <td class="text-right">
+                                                        {{ $amounts["duration"] }}
+                                                        <input type="hidden" name="procedure_type_id[]" value="{{ $contract->procedure_type_id }}">
+                                                        <input type="hidden" name="contract_id[]" value="{{ $contract->id }}">
+                                                        <input type="hidden" name="days[]" value="{{ $amounts["duration"] }}">
+                                                    </td>
                                                     <td class="text-right">{{ number_format($subtotal_amount /3, 2, ',', '.') }}</td>
                                                     <td class="text-right">{{ number_format((($subtotal_amount /3) /360) * $amounts["duration"], 2, ',', '.') }}</td>
                                                 </tr>
+                                                @php
+                                                    $total += (($subtotal_amount /3) /360) * $amounts["duration"];
+                                                    $cont++;
+                                                @endphp
                                             @endforeach
                                         </table>
                                     </td>
                                 </tr>
-                                @php
-                                    $total += (($subtotal_amount /3) /360) * $amounts["duration"];
-                                    $cont++;
-                                @endphp
                             @endif
                         @endif
                     @endforeach
@@ -114,7 +119,7 @@
         <label class="checkbox-inline"><input type="checkbox" value="" required>Aceptar y continuar</label>
     </div>
     <div class="col-md-12 text-right">
-        <button type="submit" id="btn-submit" disabled class="btn btn-success btn-lg">Guardar</button>
+        <button type="submit" id="btn-submit" class="btn btn-success btn-lg">Guardar</button>
     </div>    
 </form>
 <script>

@@ -934,16 +934,20 @@ class PaymentschedulesController extends Controller
                     'bonus_id' => $bonus->id,
                     'contract_id' => $request->contract_id[$i],
                     'procedure_type_id' => $request->procedure_type_id[$i],
-                    'salary' => $request->salary[$i],
+                    'partial_salary_1' => $request->partial_salary_1[$i],
+                    'seniority_bonus_1' => $request->seniority_bonus_1[$i],
+                    'partial_salary_2' => $request->partial_salary_2[$i],
+                    'seniority_bonus_2' => $request->seniority_bonus_2[$i],
+                    'partial_salary_3' => $request->partial_salary_3[$i],
+                    'seniority_bonus_3' => $request->seniority_bonus_3[$i],
                     'days' => $request->days[$i],
-                    'amount' => $request->amount[$i],
                 ]);
             }
             DB::commit();
             return redirect()->route('bonuses.index')->with(['message' => 'Planilla de aguinaldos registrada correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
-            // dd($th);
+            dd($th);
             return redirect()->route('bonuses.create')->with(['message' => 'Ocurrió un error en el servidor.', 'alert-type' => 'error']);
         }
     }
