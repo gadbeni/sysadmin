@@ -464,7 +464,10 @@ class ContractsController extends Controller
         $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature.person', 'signature.job', 'signature.cargo', 'addendums.signature'])->where('id', $id)->first();
         // Si no tiene comisión evaluadora del sistema actual buscar en el antiguo sistema
         if($contract->workers_memo_alt != null){
-            $contract->workers = Contract::with(['person', 'job', 'cargo'])->whereIn('id', json_decode($contract->workers_memo_alt))->get();
+            $contract->workers = Contract::with(['person', 'job', 'cargo', 'alternate_job' => function($q){
+                                        $q->where('status', 1)->where('deleted_at', NULL);
+                                    }])
+                                    ->whereIn('id', json_decode($contract->workers_memo_alt))->get();
         }else{
             $contract->workers = $contract->workers_memo != null && $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
         }

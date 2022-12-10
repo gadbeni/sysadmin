@@ -541,6 +541,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2022-11-21 13:26:08',
                 'updated_at' => '2022-11-21 13:26:08',
             ),
+            29 => 
+            array (
+                'id' => 36,
+                'name' => 'contracts_alternates_jobs',
+                'slug' => 'contracts-alternates-jobs',
+                'display_name_singular' => 'Cargo Alterno',
+                'display_name_plural' => 'Cargos Alternos',
+                'icon' => 'voyager-list',
+                'model_name' => 'App\\Models\\ContractsAlternatesJob',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2022-12-10 10:34:47',
+                'updated_at' => '2022-12-10 10:43:03',
+            ),
         ));
         
         
