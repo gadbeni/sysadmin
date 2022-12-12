@@ -100,4 +100,8 @@ class Contract extends Model
     public function addendums(){
         return $this->hasMany(Addendum::class);
     }
+
+    public function alternate_job(){
+        return $this->hasMany(ContractsAlternatesJob::class);
+    }
 }

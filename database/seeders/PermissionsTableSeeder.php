@@ -79,6 +79,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('donations_types');
         Permission::generateFor('donations');
         Permission::generateFor('afps');
+        Permission::generateFor('contracts_alternates_jobs');
 
         // people
         $keys = [

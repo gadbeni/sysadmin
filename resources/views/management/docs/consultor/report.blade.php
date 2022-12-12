@@ -38,7 +38,11 @@
                             @forelse ($contract->workers as $item)
                                 @if (isset($item->person))
                                     <b>A:</b> {{ $item->person->first_name }} {{ $item->person->last_name }}<br>
-                                    <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b> <br> <br>
+                                    @if ($item->alternate_job->count() > 0)
+                                        <b>{{ Str::upper($item->alternate_job->last()->name) }}</b> <br> <br>
+                                    @else
+                                        <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b> <br> <br>
+                                    @endif
                                 @else
                                     <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
                                     <b>{{ $item->Cargo }}</b> <br> <br>
@@ -160,7 +164,11 @@
                                 ....................................................... <br>
                                 @if (isset($item->person))
                                     <b>A:</b> {{ $item->person->first_name }} {{ $item->person->last_name }}<br>
-                                    <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b> <br> <br>
+                                    @if ($item->alternate_job->count() > 0)
+                                        <b>{{ Str::upper($item->alternate_job->last()->name) }}</b> <br> <br>
+                                    @else
+                                        <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b> <br> <br>
+                                    @endif
                                 @else
                                     <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
                                     <b>{{ $item->Cargo }}</b> <br> <br>
