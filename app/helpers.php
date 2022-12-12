@@ -19,31 +19,36 @@ if (! function_exists('contract_duration_calculate')) {
         $count_months = 0;
         $dia_fin = 31;
 
-        if($start->format('Y-m') == $finish->format('Y-m')){
+        if($start->format('Ym') == $finish->format('Ym')){
             $count_months = 0;
-            if($finish->format('d') < 30){
-                $dia_fin = $finish->format('d') +1;
+            $count_days = $start->diffInDays($finish) +1;
+            if($finish->format('m') == 2 && $count_days == 28){
+                $count_days += 2;
             }
-            $count_days = $dia_fin - $start->format('d');
         }else{
             $count_months = 0;
-            $count_days = 31 - $start->format('d');
+            $start_day = $start->format('d') > 30 ? 30 : $start->format('d');
+            $count_days = 30 - $start_day +1;
             $start = Carbon\Carbon::parse($start->addMonth()->format('Y-m').'-01');
             while ($start <= $finish) {
                 $count_months++;
                 $start->addMonth();
             }
             $count_months--;
-            $count_days += $start->subMonth()->diffInDays($finish) +1;
-            if($count_days > 30){
-                $count_days -= 30;
+
+            // Calcula la cantidad de días del ultimo mes
+            $count_days_last_month = $start->subMonth()->diffInDays($finish) +1;
+            // Si es mayor o igual a 30 se toma como un mes completo
+            if($count_days_last_month >= 30 || ($finish->format('m') == 2 && $count_days_last_month == 28)){
+                $count_days_last_month = 0;
                 $count_months++;
             }
+            $count_days += $count_days_last_month;
         }
 
-        if($finish->format('d') > 30){
-            $count_days--;
-        }
+        // if($finish->format('d') > 30){
+        //     $count_days--;
+        // }
 
         return json_decode(json_encode(['months' => $count_months, 'days' => $count_days]));
     }

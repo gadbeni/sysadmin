@@ -15,3 +15,6 @@ NOTA:
 - generar código de adenda
 - anular adenda
 - evitar finalizar contrato si ya se planillo ese mes
+- validar contratos eventuales que sean de una gestión
+- validar contratos para q no se pisen las fechas
+- evitar que se genere el aguinal de un contrato existente

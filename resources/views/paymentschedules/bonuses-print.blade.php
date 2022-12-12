@@ -59,6 +59,9 @@
                         <th>SUELDO PROMEDIO</th>
                         <th>DÍAS TRABAJADOS</th>
                         <th>AGUINALDO</th>
+                        @if ($signature_field)
+                        <th>FIRMA</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -96,6 +99,9 @@
                             </td>
                             <td style="text-align:center">{{ $item->days }}</td>
                             <td style="text-align:center">{{ number_format(($promedio / 360) * $item->days, 2, ',', '.') }}</td>
+                            @if ($signature_field)
+                            <td style="width: 180px; height: 50px"></td>
+                            @endif
                         </tr>
                         @php
                             $cont++;

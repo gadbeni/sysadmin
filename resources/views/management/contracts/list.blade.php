@@ -58,14 +58,14 @@
                                 <b> hasta </b>{{ date('d/m/Y', strtotime($item->finish)) }}
                                 @endif
                                 <li>
-                                    @php
-                                        $total = 0;
-                                        if($item->start && $item->finish){
+                                    @if ($item->start && $item->finish)
+                                        @php
                                             $contract_duration = contract_duration_calculate($item->start, $item->finish);
-                                            $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
-                                        }
-                                    @endphp
-                                    <b>Total: </b> <small>Bs.</small> {{ $total ? number_format($total, 2, ',', '.') : 'No definido' }}
+                                            $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);    
+                                        @endphp
+                                        <b>Duración: </b> {{ ($contract_duration->months * 30) + $contract_duration->days }} Días <br>
+                                        <b>Total: </b> <small>Bs.</small> {{ $total ? number_format($total, 2, ',', '.') : 'No definido' }}
+                                    @endif
                                 </li>
                                 <li>
                                     @php

@@ -117,7 +117,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title"><i class="glypicon glypicon-print"></i> Imprimir planilla</h4>
+                        <h4 class="modal-title"><i class="glypicon glypicon-print"></i> Imprimir planilla de aguinaldos</h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -133,6 +133,9 @@
                                 <label class="radio-inline"><input type="radio" name="type_render" value="2">HTML</label>
                                 {{-- <label class="radio-inline"><input type="radio" name="type_render" value="3">Excel</label> --}}
                             </div>
+                            <div class="form-group col-md-12 checkbox">
+                                <label><input type="checkbox" name="signature_field" value="1">Imprimir el espacio donde va la firma</label>
+                              </div>
                         </div>
                     </div>
                     <div class="modal-footer">

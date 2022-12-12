@@ -134,6 +134,7 @@ class ContractsController extends Controller
         }
         try {
 
+            // Verificar que no haya ningun proceso de contratación vigente
             $contract_person = Contract::where('person_id', $request->person_id)->where('status', '<>', 'concluido')->where('deleted_at', NULL)->first();
             if($contract_person){
                 return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso', 'alert-type' => 'warning']);

@@ -947,7 +947,7 @@ class PaymentschedulesController extends Controller
             return redirect()->route('bonuses.index')->with(['message' => 'Planilla de aguinaldos registrada correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
-            dd($th);
+            // dd($th);
             return redirect()->route('bonuses.create')->with(['message' => 'Ocurrió un error en el servidor.', 'alert-type' => 'error']);
         }
     }
@@ -959,16 +959,17 @@ class PaymentschedulesController extends Controller
 
     public function bonuses_print($id, Request $request){
         $type_render = $request->type_render;
+        $signature_field = $request->signature_field;
         $bonus = Bonus::with(['details' => function($q) use($request){
                     $q->where('procedure_type_id', $request->procedure_type_id)->where('deleted_at', NULL);
                 }])->where('id', $id)->where('deleted_at', NULL)->first();
         $procedure_type = ProcedureType::find($request->procedure_type_id);
 
         if($type_render == 1){
-            $pdf = PDF::loadView('paymentschedules.bonuses-print', compact('bonus', 'procedure_type', 'type_render'));
+            $pdf = PDF::loadView('paymentschedules.bonuses-print', compact('bonus', 'procedure_type', 'type_render', 'signature_field'));
             return $pdf->setPaper('legal', 'landscape')->stream();
         }elseif($type_render == 2){
-            return view('paymentschedules.bonuses-print', compact('bonus', 'procedure_type', 'type_render'));
+            return view('paymentschedules.bonuses-print', compact('bonus', 'procedure_type', 'type_render', 'signature_field'));
         }
 
         // return view('paymentschedules.bonuses-print', compact('bonus', 'procedure_type', 'type_render'));

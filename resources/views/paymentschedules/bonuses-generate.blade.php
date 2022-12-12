@@ -57,6 +57,16 @@
                                                                     'period' => '202201'
                                                                 ]);
                                                             }
+
+                                                            if(count($amounts['months']) <= 2 && $contract->procedure_type_id == 5 && $amounts['months'][count($amounts['months']) -1]['period'] == '202202'){
+                                                                $data = $amounts['months'][count($amounts['months']) -1];
+                                                                $amounts['months']->push([
+                                                                    'partial_salary' => number_format(($data['partial_salary'] /30) * 28, 2, '.', ''),
+                                                                    'seniority_bonus_amount' => number_format(($data['seniority_bonus_amount'] /30) *28, 2, '.', ''),
+                                                                    'worked_days' => 28,
+                                                                    'period' => '202201'
+                                                                ]);
+                                                            }
                                                         }
 
                                                     @endphp

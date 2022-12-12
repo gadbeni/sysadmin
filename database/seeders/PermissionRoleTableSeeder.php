@@ -184,7 +184,11 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'browse_paymentschedules-files' or
                                             `key` = 'browse_planillaspagos' or
                                             table_name = 'reports_rrhh' or 
-                                            `key` = 'browse_reportscontractscontracts'")->get();
+                                            `key` = 'browse_reportscontractscontracts' or
+                                            `key` = 'browse_bonuses' or
+                                            `key` = 'add_bonuses' or
+                                            `key` = 'read_bonuses' or
+                                            `key` = 'delete_bonuses'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_jefe_unidad')->firstOrFail();
