@@ -960,16 +960,19 @@ class PaymentschedulesController extends Controller
     public function bonuses_print($id, Request $request){
         $type_render = $request->type_render;
         $signature_field = $request->signature_field;
+        $program = $request->program_id ? Program::find($request->program_id) : null;
         $bonus = Bonus::with(['details' => function($q) use($request){
                     $q->where('procedure_type_id', $request->procedure_type_id)->where('deleted_at', NULL);
+                }, 'details.contract' => function($q) use($program){
+                    $q->whereRaw($program ? 'program_id = '.$program->id : 1);
                 }])->where('id', $id)->where('deleted_at', NULL)->first();
         $procedure_type = ProcedureType::find($request->procedure_type_id);
 
         if($type_render == 1){
-            $pdf = PDF::loadView('paymentschedules.bonuses-print', compact('bonus', 'procedure_type', 'type_render', 'signature_field'));
+            $pdf = PDF::loadView('paymentschedules.bonuses-print', compact('bonus', 'procedure_type', 'type_render', 'signature_field', 'program'));
             return $pdf->setPaper('legal', 'landscape')->stream();
         }elseif($type_render == 2){
-            return view('paymentschedules.bonuses-print', compact('bonus', 'procedure_type', 'type_render', 'signature_field'));
+            return view('paymentschedules.bonuses-print', compact('bonus', 'procedure_type', 'type_render', 'signature_field', 'program'));
         }
 
         // return view('paymentschedules.bonuses-print', compact('bonus', 'procedure_type', 'type_render'));

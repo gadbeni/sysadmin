@@ -129,8 +129,13 @@ class ContractsController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        if($request->procedure_type_id != 1 && $request->start >= $request->finish){
-            return redirect()->route('contracts.create')->with(['message' => 'La fecha de finalización debe ser mayor a la fecha de inicio', 'alert-type' => 'error']);
+        if($request->procedure_type_id != 1){
+            if($request->start >= $request->finish){
+                return redirect()->route('contracts.create')->with(['message' => 'La fecha de finalización debe ser mayor a la fecha de inicio.', 'alert-type' => 'error']);
+            }
+            if(date('Y', strtotime($request->start)) != date('Y', strtotime($request->finish))){
+                return redirect()->route('contracts.create')->with(['message' => 'El contrato no puede iniciar y finalizar en una gestón diferente.', 'alert-type' => 'error']);
+            }
         }
         try {
 
@@ -306,7 +311,10 @@ class ContractsController extends Controller
         try {
 
             // Verificar si el contrato tenga pagos realizados
-            if(!$this->enabled_to_delete($request->id) && !$request->finish){
+            $payment = PaymentschedulesDetail::where('contract_id', $request->id)
+                        ->whereRaw("(status = 'procesado' OR status = 'enviado' OR status = 'aprobado' OR status = 'habilitado')")
+                        ->where('deleted_at', NULL)->first();
+            if($payment && $request->finish){
                 return response()->json(['error' => 'El contrato pertenece a una planilla en proceso de pago.']);
             }
 
@@ -419,7 +427,8 @@ class ContractsController extends Controller
         // dd($request->all());
         DB::beginTransaction();
         try {
-            if($this->enabled_to_delete($id)){
+            $payments = PaymentschedulesDetail::where('contract_id', $id)->where('deleted_at', NULL)->first();
+            if(!$payments){
                 Contract::where('id', $id)->update([
                     'status' => 'anulado',
                     'deleted_at' => Carbon::now()
@@ -436,7 +445,7 @@ class ContractsController extends Controller
 
                 return response()->json(['message' => 'Anulado exitosamente.']);
             }else{
-                return response()->json(['error' => 'El contrato pertenece a una planilla en proceso de pago.']);
+                return response()->json(['error' => 'El contrato ya fue planillado, no se puede eliminar.']);
             }
         } catch (\Throwable $th) {
             DB::rollback();
@@ -479,10 +488,4 @@ class ContractsController extends Controller
     }
 
     // **** Métodos funcionales ****
-    public function enabled_to_delete($id){
-        $contracts = PaymentschedulesDetail::where('contract_id', $id)
-                        ->whereRaw("(status = 'procesado' OR status = 'enviado' OR status = 'aprobado' OR status = 'habilitado')")
-                        ->where('deleted_at', NULL)->first();
-        return $contracts ? false : true;
-    }
 }

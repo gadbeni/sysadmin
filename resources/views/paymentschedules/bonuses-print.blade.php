@@ -15,11 +15,14 @@
                         <h3 style="margin: 0px">PLANILLA DE AGUINALDOS AL PERSONAL DEPENDIENTE GAD-BENI</h3>
                         <span>CORRESPONDIENTE A LA GESTIÓN {{ $bonus->year }}</span> <br>
                         <b>{{ Str::upper($bonus->direccion->nombre) }}</b>
+                        @if ($program)
+                        <br> <b>{{ Str::upper($program->name) }}</b>
+                        @endif
                         <h3 style="margin: 0px">{{ Str::upper($procedure_type->name) }}</h3>
                     </td>
                     <td style="text-align:center; width: 90px">
                         @php
-                            $string_qr = 'Planilla '.str_pad($bonus->id, 6, "0", STR_PAD_LEFT).' | '.$bonus->year.' | '.' | '.$procedure_type->name;
+                            $string_qr = 'Planilla de aguinaldos '.str_pad($bonus->id, 6, "0", STR_PAD_LEFT).' | Gestión '.$bonus->year.' | Planilla '.$procedure_type->name;
                         @endphp
                         @if ($type_render == 1)
                             @php
@@ -55,11 +58,11 @@
                         <th>PLANILLA</th>
                         <th>NOMBRE COMPLETO</th>
                         <th>CI</th>
-                        <th>MESES</th>
-                        <th>SUELDO PROMEDIO</th>
-                        <th>DÍAS TRABAJADOS</th>
                         <th>INICIO</th>
                         <th>FIN</th>
+                        <th>DÍAS TRABAJADOS</th>
+                        <th>MESES</th>
+                        <th>SUELDO PROMEDIO</th>
                         <th>AGUINALDO</th>
                         @if ($signature_field)
                         <th>FIRMA</th>
@@ -68,70 +71,79 @@
                 </thead>
                 <tbody>
                     @php
-                        $cont = 1;
+                        $cont = 0;
                         $total = 0;
                     @endphp
                     @foreach ($bonus->details as $item)
-                        <tr>
-                            <td>{{ $cont }}</td>
-                            <td>{{ $item->procedure_type->name }}</td>
-                            <td>
-                                {{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }} <br>
-                                @if ($item->contract->cargo)
-                                    <b>{{ $item->contract->cargo->Descripcion }}</b>
-                                @elseif($item->contract->job)
-                                    <b>{{ $item->contract->job->name }}</b>
-                                @endif
-                            </td>
-                            <td>{{ $item->contract->person->ci }}</td>
-                            <td>
-                                <table width="100%">
-                                    <tr>
-                                        <td align="center">{{ number_format($item->partial_salary_1 + $item->seniority_bonus_1, 2, ',', '.') }}</td>
-                                        <td align="center">{{ number_format($item->partial_salary_2 + $item->seniority_bonus_2, 2, ',', '.') }}</td>
-                                        <td align="center">{{ number_format($item->partial_salary_3 + $item->seniority_bonus_3, 2, ',', '.') }}</td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td style="text-align:center">
-                                @php
-                                    $promedio = ($item->partial_salary_1 + $item->seniority_bonus_1 + $item->partial_salary_2 + $item->seniority_bonus_2 + $item->partial_salary_3 + $item->seniority_bonus_3) /3;
-                                @endphp
-                                {{ number_format($promedio, 2, ',', '.') }}
-                            </td>
-                            <td style="text-align:center">{{ $item->days }}</td>
+                        @if ($item->contract)
                             @php
-                                $start_contract = $item->contract;
-                                $aux = true;
-                                while ($aux) {
-                                    $contract = App\Models\Contract::where('person_id', $start_contract->person_id)
-                                                ->where('finish', '<', $start_contract->start)
-                                                ->orderBy('finish', 'DESC')->where('deleted_at', NULL)->first();
-                                    if($contract){
-                                        $current_start = Carbon\Carbon::createFromFormat('Y-m-d', $item->contract->start);
-                                        $new_finish = Carbon\Carbon::createFromFormat('Y-m-d', $contract->finish);
-                                        if($current_start->diffInDays($new_finish) == 1){
-                                            $start_contract = $contract;
+                                $cont++;
+                            @endphp
+                            <tr>
+                                <td>{{ $cont }}</td>
+                                <td>{{ $item->procedure_type->name }}</td>
+                                <td>
+                                    {{ $item->contract->person->first_name }} {{ $item->contract->person->last_name }} <br>
+                                    @if ($item->contract->cargo)
+                                        <b>{{ $item->contract->cargo->Descripcion }}</b>
+                                    @elseif($item->contract->job)
+                                        <b>{{ $item->contract->job->name }}</b>
+                                    @endif
+                                </td>
+                                <td>{{ $item->contract->person->ci }}</td>
+                                @php
+                                    $start_contract = $item->contract;
+                                    $aux = true;
+                                    while ($aux) {
+                                        $contract = App\Models\Contract::where('person_id', $start_contract->person_id)
+                                                    ->where('finish', '<', $start_contract->start)
+                                                    ->orderBy('finish', 'DESC')->where('deleted_at', NULL)->first();
+                                        if($contract){
+                                            $current_start = Carbon\Carbon::createFromFormat('Y-m-d', $item->contract->start);
+                                            $new_finish = Carbon\Carbon::createFromFormat('Y-m-d', $contract->finish);
+                                            if($current_start->diffInDays($new_finish) == 1){
+                                                $start_contract = $contract;
+                                            }else{
+                                                $aux = false;
+                                            }
                                         }else{
                                             $aux = false;
                                         }
-                                    }else{
-                                        $aux = false;
                                     }
-                                }
+                                @endphp
+                                <td>{{ date('d-m-Y', strtotime($start_contract->start)) }}</td>
+                                <td>{{ $item->contract->finish ? date('d-m-Y', strtotime($item->contract->finish)) : '31-12-'.$bonus->year }}</td>
+                                <td style="text-align:center">{{ $item->days }}</td>
+                                <td>
+                                    <table width="100%">
+                                        <tr>
+                                            <td align="center">{{ number_format($item->partial_salary_1 + $item->seniority_bonus_1, 2, ',', '.') }}</td>
+                                            <td align="center">{{ number_format($item->partial_salary_2 + $item->seniority_bonus_2, 2, ',', '.') }}</td>
+                                            <td align="center">{{ number_format($item->partial_salary_3 + $item->seniority_bonus_3, 2, ',', '.') }}</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td style="text-align:center">
+                                    @php
+                                        $promedio = ($item->partial_salary_1 + $item->seniority_bonus_1 + $item->partial_salary_2 + $item->seniority_bonus_2 + $item->partial_salary_3 + $item->seniority_bonus_3) /3;
+                                    @endphp
+                                    {{ number_format($promedio, 2, ',', '.') }}
+                                </td>
+                                <td style="text-align:center">{{ number_format(($promedio / 360) * $item->days, 2, ',', '.') }}</td>
+                                @if ($signature_field)
+                                <td style="width: 180px; height: 50px"></td>
+                                @endif
+                            </tr>
+                            @php
+                                $total += ($promedio / 360) * $item->days;
                             @endphp
-                            <td>{{ date('d-m-Y', strtotime($start_contract->start)) }}</td>
-                            <td>{{ $item->contract->finish ? date('d-m-Y', strtotime($item->contract->finish)) : '' }}</td>
-                            <td style="text-align:center">{{ number_format(($promedio / 360) * $item->days, 2, ',', '.') }}</td>
-                            @if ($signature_field)
-                            <td style="width: 180px; height: 50px"></td>
-                            @endif
-                        </tr>
-                        @php
-                            $cont++;
-                            $total += ($promedio / 360) * $item->days;
-                        @endphp
+                        @endif
                     @endforeach
+                    @if ($cont == 0)
+                    <tr>
+                        <td colspan="10" style="text-align: center">No hay datos</td>
+                    </tr>
+                    @endif
                     <tr>
                         <td colspan="9" style="text-align:right"><b>TOTAL</b></td>
                         <td style="text-align:center"><b>{{ number_format($total, 2, ',', '.') }}</b></td>

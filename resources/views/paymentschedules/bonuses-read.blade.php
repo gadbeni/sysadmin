@@ -49,11 +49,11 @@
                                         <th>PLANILLA</th>
                                         <th>NOMBRE COMPLETO</th>
                                         <th>CI</th>
-                                        <th>MESES</th>
-                                        <th>SUELDO PROMEDIO</th>
-                                        <th>DÍAS TRABAJADOS</th>
                                         <th>INICIO</th>
                                         <th>FIN</th>
+                                        <th>DÍAS TRABAJADOS</th>
+                                        <th>MESES</th>
+                                        <th>SUELDO PROMEDIO</th>
                                         <th>AGUINALDO</th>
                                     </tr>
                                 </thead>
@@ -75,6 +75,29 @@
                                                 @endif
                                             </td>
                                             <td>{{ $item->contract->person->ci }}</td>
+                                            @php
+                                                $start_contract = $item->contract;
+                                                $aux = true;
+                                                while ($aux) {
+                                                    $contract = App\Models\Contract::where('person_id', $start_contract->person_id)
+                                                                ->where('finish', '<', $start_contract->start)
+                                                                ->orderBy('finish', 'DESC')->where('deleted_at', NULL)->first();
+                                                    if($contract){
+                                                        $current_start = Carbon\Carbon::createFromFormat('Y-m-d', $start_contract->start);
+                                                        $new_finish = Carbon\Carbon::createFromFormat('Y-m-d', $contract->finish);
+                                                        if($current_start->diffInDays($new_finish) == 1){
+                                                            $start_contract = $contract;
+                                                        }else{
+                                                            $aux = false;
+                                                        }
+                                                    }else{
+                                                        $aux = false;
+                                                    }
+                                                }
+                                            @endphp
+                                            <td>{{ date('d-m-Y', strtotime($start_contract->start)) }}</td>
+                                            <td>{{ $item->contract->finish ? date('d-m-Y', strtotime($item->contract->finish)) : '31-12-'.$bonus->year }}</td>
+                                            <td class="text-right">{{ $item->days }}</td>
                                             <td>
                                                 <table class="table">
                                                     <tr>
@@ -90,29 +113,6 @@
                                                 @endphp
                                                 {{ number_format($promedio, 2, ',', '.') }}
                                             </td>
-                                            <td class="text-right">{{ $item->days }}</td>
-                                            @php
-                                                $start_contract = $item->contract;
-                                                $aux = true;
-                                                while ($aux) {
-                                                    $contract = App\Models\Contract::where('person_id', $start_contract->person_id)
-                                                                ->where('finish', '<', $start_contract->start)
-                                                                ->orderBy('finish', 'DESC')->where('deleted_at', NULL)->first();
-                                                    if($contract){
-                                                        $current_start = Carbon\Carbon::createFromFormat('Y-m-d', $item->contract->start);
-                                                        $new_finish = Carbon\Carbon::createFromFormat('Y-m-d', $contract->finish);
-                                                        if($current_start->diffInDays($new_finish) == 1){
-                                                            $start_contract = $contract;
-                                                        }else{
-                                                            $aux = false;
-                                                        }
-                                                    }else{
-                                                        $aux = false;
-                                                    }
-                                                }
-                                            @endphp
-                                            <td>{{ date('d-m-Y', strtotime($start_contract->start)) }}</td>
-                                            <td>{{ $item->contract->finish ? date('d-m-Y', strtotime($item->contract->finish)) : '' }}</td>
                                             <td class="text-right">{{ number_format(($promedio / 360) * $item->days, 2, ',', '.') }}</td>
                                         </tr>
                                         @php
@@ -150,6 +150,15 @@
                                 <select name="procedure_type_id" class="form-control select2">
                                     <option value="1">Permanente</option>
                                     <option value="5">Eventual</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label for="program_id">Programa/Proyecto</label>
+                                <select name="program_id" class="form-control select2">
+                                    <option value="">--Todos--</option>
+                                    @foreach ($bonus->details->groupBy('contract.program_id') as $key => $item)
+                                    <option value="{{ $key }}">{{ App\Models\Program::find($key)->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-md-12">
