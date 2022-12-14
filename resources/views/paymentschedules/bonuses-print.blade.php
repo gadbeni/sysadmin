@@ -58,6 +58,8 @@
                         <th>MESES</th>
                         <th>SUELDO PROMEDIO</th>
                         <th>DÍAS TRABAJADOS</th>
+                        <th>INICIO</th>
+                        <th>FIN</th>
                         <th>AGUINALDO</th>
                         @if ($signature_field)
                         <th>FIRMA</th>
@@ -98,6 +100,28 @@
                                 {{ number_format($promedio, 2, ',', '.') }}
                             </td>
                             <td style="text-align:center">{{ $item->days }}</td>
+                            @php
+                                $start_contract = $item->contract;
+                                $aux = true;
+                                while ($aux) {
+                                    $contract = App\Models\Contract::where('person_id', $start_contract->person_id)
+                                                ->where('finish', '<', $start_contract->start)
+                                                ->orderBy('finish', 'DESC')->where('deleted_at', NULL)->first();
+                                    if($contract){
+                                        $current_start = Carbon\Carbon::createFromFormat('Y-m-d', $item->contract->start);
+                                        $new_finish = Carbon\Carbon::createFromFormat('Y-m-d', $contract->finish);
+                                        if($current_start->diffInDays($new_finish) == 1){
+                                            $start_contract = $contract;
+                                        }else{
+                                            $aux = false;
+                                        }
+                                    }else{
+                                        $aux = false;
+                                    }
+                                }
+                            @endphp
+                            <td>{{ date('d-m-Y', strtotime($start_contract->start)) }}</td>
+                            <td>{{ $item->contract->finish ? date('d-m-Y', strtotime($item->contract->finish)) : '' }}</td>
                             <td style="text-align:center">{{ number_format(($promedio / 360) * $item->days, 2, ',', '.') }}</td>
                             @if ($signature_field)
                             <td style="width: 180px; height: 50px"></td>
@@ -109,7 +133,7 @@
                         @endphp
                     @endforeach
                     <tr>
-                        <td colspan="7" style="text-align:center"><b>TOTAL</b></td>
+                        <td colspan="9" style="text-align:right"><b>TOTAL</b></td>
                         <td style="text-align:center"><b>{{ number_format($total, 2, ',', '.') }}</b></td>
                     </tr>
                 </tbody>
