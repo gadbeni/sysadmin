@@ -252,7 +252,9 @@
 </form>
 
 <style>
-
+    .dropdown-toggle{
+        border: 0px
+    }
 </style>
 
 <script>

@@ -122,8 +122,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('bonuses/generate', [PaymentschedulesController::class, 'bonuses_generate'])->name('bonuses.generate');
     Route::post('bonuses/store', [PaymentschedulesController::class, 'bonuses_store'])->name('bonuses.store');
     Route::get('bonuses/{id}', [PaymentschedulesController::class, 'bonuses_show'])->name('bonuses.show');
+    Route::put('bonuses/{id}', [PaymentschedulesController::class, 'bonuses_update'])->name('bonuses.update');
     Route::post('bonuses/{id}/print', [PaymentschedulesController::class, 'bonuses_print'])->name('bonuses.print');
     Route::delete('bonuses/{id}', [PaymentschedulesController::class, 'bonuses_delete'])->name('bonuses.destroy');
+    Route::get('bonuses/{id}/recipe/{detail_id?}', [PaymentschedulesController::class, 'bonuses_recipes'])->name('bonuses.recipe');
 
     // Previsión social
     // * Cheques

@@ -957,6 +957,13 @@ class PaymentschedulesController extends Controller
         return view('paymentschedules.bonuses-read', compact('bonus'));
     }
 
+    public function bonuses_update($id){
+        $bonus = Bonus::find($id);
+        $bonus->status = 2;
+        $bonus->update();
+        return redirect()->route('bonuses.index')->with(['message' => 'Planilla de aguinaldos promovida exitosamente.', 'alert-type' => 'success']);
+    }
+
     public function bonuses_print($id, Request $request){
         $type_render = $request->type_render;
         $signature_field = $request->signature_field;
@@ -992,5 +999,14 @@ class PaymentschedulesController extends Controller
             //throw $th;
             return redirect()->route('bonuses.index')->with(['message' => 'Ocurrió un error en el servidor.', 'alert-type' => 'error']);
         }
+    }
+
+    public function bonuses_recipes($id, $detail_id = null){
+        $bonus = Bonus::with(['details' => function($q) use($detail_id){
+                        $q->whereRaw($detail_id ? 'id = '.$detail_id : 1);
+                    }])->where('id', $id)->where('deleted_at', NULL)->first();
+        // return view('planillas.bonuses-recipe-group', compact('bonus'));
+        $pdf = PDF::loadView('planillas.bonuses-recipe-group', compact('bonus'));
+        return $pdf->setPaper('letter')->stream();
     }
 }

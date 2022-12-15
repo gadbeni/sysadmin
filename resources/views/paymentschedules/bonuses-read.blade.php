@@ -42,7 +42,7 @@
                 <div class="panel panel-bordered" style="padding-bottom:5px;">
                     <div class="row">
                         <div class="col-md-12">
-                            <table class="table table-bordered table-hover">
+                            <table id="dataTable" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th>N&deg;</th>
@@ -55,6 +55,7 @@
                                         <th>MESES</th>
                                         <th>SUELDO PROMEDIO</th>
                                         <th>AGUINALDO</th>
+                                        <th>ACCIONES</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -114,6 +115,13 @@
                                                 {{ number_format($promedio, 2, ',', '.') }}
                                             </td>
                                             <td class="text-right">{{ number_format(($promedio / 360) * $item->days, 2, ',', '.') }}</td>
+                                            <td class="no-sort no-click bread-actions text-right">
+                                                @if ($bonus->status == 2)
+                                                <a title="Imprimir boleta de pago" class="btn btn-sm btn-danger" href="{{ route('bonuses.recipe', ['id' => $bonus->id, 'detail_id' => $item->id]) }}" target="_blank">
+                                                    <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
+                                                </a>
+                                                @endif
+                                            </td>
                                         </tr>
                                         @php
                                             $cont++;
