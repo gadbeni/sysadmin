@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class unidad extends Model
+class Unidad extends Model
 {
-    use HasFactory;
-
+    use HasFactory, SoftDeletes;
+    protected $dates = ['deleted_at'];
     protected $table = 'unidades';
 
     public function direccion_administrativa(){

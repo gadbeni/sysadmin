@@ -13,7 +13,7 @@ class Direccion extends Model
     protected $table = 'direcciones';
 
     public function unidades_administrativas(){
-        return $this->hasMany(unidad::class, 'direccion_id');
+        return $this->hasMany(Unidad::class, 'direccion_id');
     }
 
     public function tipo(){

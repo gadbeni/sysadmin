@@ -69,12 +69,10 @@
                 <div class="row">
 
                 <div class="col-lg-6 col-md-6 footer-info">
-                    {{-- <h3> --}}
-                        <a href="{{ url('') }}">
-                            <img src="{{ asset('images/icon-alt.png') }}" alt="GADBENI" class="img-fluid" width="200px">
-                        </a>
-                    {{-- </h3> --}}
-                    <p>Cras fermentum odio eu feugiat lide par naso tierra. Justo eget nada terra videa magna derita valies darta donna mare fermentum iaculis eu non diam phasellus. Scelerisque felis imperdiet proin fermentum leo. Amet volutpat consequat mauris nunc congue.</p>
+                    <a href="{{ url('') }}">
+                        <img src="{{ asset('images/icon-alt.png') }}" alt="GADBENI" class="img-fluid" width="220px">
+                    </a>
+                    <p>Sistema integral de administración del Gobierno Autónomo Departamental del Beni.</p>
                 </div>
 
                 <div class="col-lg-3 col-md-6 footer-links">
@@ -91,11 +89,10 @@
                 <div class="col-lg-3 col-md-6 footer-contact">
                     <h4>Contáctanos</h4>
                     <p>
-                    A108 Adam Street <br>
-                    New York, NY 535022<br>
-                    United States <br>
-                    <strong>Phone:</strong> +1 5589 55488 55<br>
-                    <strong>Email:</strong> info@example.com<br>
+                        Plaza Principal acera sur <br>
+                        Santísima Trinidad - Beni - Bolivia <br>
+                        <strong>Telefono/Celular:</strong> +591 73961213<br>
+                        <strong>Email:</strong> despacho@beni.gob.bo<br>
                     </p>
 
                     <div class="social-links">

@@ -105,7 +105,7 @@ class ContractsController extends Controller
                     ->whereRaw("id not in (select person_id from contracts where status <> 'concluido' and deleted_at is null)")
                     ->get();
         $direccion_administrativas = Direccion::whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1)->get();
-        $unidad_administrativas = unidad::get();
+        $unidad_administrativas = Unidad::get();
         // $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $contracts = Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get();
         $programs = Program::where('deleted_at', NULL)->get();
@@ -224,7 +224,7 @@ class ContractsController extends Controller
 
         $people = Person::where('id', $contract->person->id)->where('deleted_at', NULL)->get();
         $direccion_administrativas = Direccion::whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1)->get();
-        $unidad_administrativas = unidad::get();
+        $unidad_administrativas = Unidad::get();
         // $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $contracts = Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get();
         $programs = Program::where('deleted_at', NULL)->get();
