@@ -217,6 +217,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('reports/humans-resources/relationships/list', [ReportsController::class, 'humans_resources_relationships_list'])->name('reports.humans_resources.relationships.list');
     Route::get('reports/humans-resources/projects/details', [ReportsController::class, 'contracts_projects_details_index'])->name('reports.humans_resources.projects.details.index');
     Route::post('reports/humans-resources/projects/details', [ReportsController::class, 'contracts_projects_details_list'])->name('reports.humans_resources.projects.details.list');
+    Route::get('reports/humans-resources/bonus', [ReportsController::class, 'bonus_index'])->name('reports.humans_resources.bonus.index');
+    Route::post('reports/humans-resources/bonus/list', [ReportsController::class, 'bonus_list'])->name('reports.humans_resources.bonus.list');
 
     // *Previsión social
     Route::get('reports/social-security/payments', [ReportsController::class, 'social_security_payments_index'])->name('reports.social_security.payments');

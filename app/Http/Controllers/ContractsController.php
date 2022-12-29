@@ -139,19 +139,21 @@ class ContractsController extends Controller
         }
         try {
 
+            // Si es un contrato permanente se el id_da se obtiene de la tabal jobs, sino se obtiene del request
+            $direccion_administrativa_id = $request->procedure_type_id == 1 ? Job::find($request->cargo_id)->direccion_administrativa_id : $request->direccion_administrativa_id;
+
             // Verificar que no haya ningun proceso de contratación vigente
             $contract_person = Contract::where('person_id', $request->person_id)->where('status', '<>', 'concluido')->where('deleted_at', NULL)->first();
             if($contract_person){
                 return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso', 'alert-type' => 'warning']);
             }
 
-            $older_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
+            $count_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
                         ->where('procedure_type_id', $request->procedure_type_id)
-                        ->whereHas('user', function($q){
-                            $q->where('direccion_administrativa_id', Auth::user()->direccion_administrativa_id);
-                        })->count();
-            $d_a = Direccion::find(Auth::user()->direccion_administrativa_id);
-            $code = ($d_a ? $d_a->sigla.'-' : '').str_pad($older_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
+                        ->where('direccion_administrativa_id', $direccion_administrativa_id)
+                        ->count();
+            $d_a = Direccion::find($direccion_administrativa_id);
+            $code = ($d_a ? $d_a->sigla.'-' : '').str_pad($count_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
 
             $contract = Contract::create([
                 'person_id' => $request->person_id,
@@ -160,8 +162,7 @@ class ContractsController extends Controller
                 'cargo_id' => $request->procedure_type_id != 1 ? $request->cargo_id : NULL,
                 // Si es un contrato de permanente
                 'job_id' => $request->procedure_type_id == 1 ? $request->cargo_id : NULL,
-                // Si es un contrato permanente se el id_da se obtiene de la tabal jobs, sino se obtiene del request
-                'direccion_administrativa_id' => $request->procedure_type_id == 1 ? Job::find($request->cargo_id)->direccion_administrativa_id : $request->direccion_administrativa_id,
+                'direccion_administrativa_id' => $direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'procedure_type_id' => $request->procedure_type_id,
                 'user_id' => Auth::user()->id,
@@ -248,18 +249,20 @@ class ContractsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
         try {
+
+            // Si es un contrato permanente se el id_da se obtiene de la tabal jobs, sino se obtiene del request
+            $direccion_administrativa_id = $request->procedure_type_id == 1 ? Job::find($request->cargo_id)->direccion_administrativa_id : $request->direccion_administrativa_id;
+
             $contract = Contract::find($id);
-            // Si se cambia el año de inicio o la dirección administrativa se debe actualizar el código
-            if(date('Y', strtotime($contract->start)) != date('Y', strtotime($request->start)) || $contract->unidad_administrativa_id != $request->unidad_administrativa_id){
-                $older_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
-                            ->where('procedure_type_id', $request->procedure_type_id)
-                            ->whereHas('user', function($q){
-                                $q->where('direccion_administrativa_id', Auth::user()->direccion_administrativa_id);
-                            })->count();
-                $d_a = Direccion::find(Auth::user()->direccion_administrativa_id);
-                $code = ($d_a ? $d_a->sigla.'-' : '').str_pad($older_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
+            // Si se cambia el año de inicio o la dirección administrativa se debe actualizar el código de contrato
+            if(date('Y', strtotime($contract->start)) != date('Y', strtotime($request->start)) || $contract->direccion_administrativa_id != $direccion_administrativa_id){
+                $count_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
+                        ->where('procedure_type_id', $request->procedure_type_id)
+                        ->where('direccion_administrativa_id', $direccion_administrativa_id)
+                        ->count();
+                $d_a = Direccion::find($direccion_administrativa_id);
+                $code = ($d_a ? $d_a->sigla.'-' : '').str_pad($count_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
             }else{
                 $code = $contract->code;
             }
@@ -271,8 +274,7 @@ class ContractsController extends Controller
                 'cargo_id' => $request->procedure_type_id != 1 ? $request->cargo_id : NULL,
                 // Si es un contrato de permanente
                 'job_id' => $request->procedure_type_id == 1 ? $request->cargo_id : NULL,
-                // Si es un contrato permanente se el id_da se obtiene de la tabal jobs, sino se obtiene del request
-                'direccion_administrativa_id' => $request->procedure_type_id == 1 ? Job::find($request->cargo_id)->direccion_administrativa_id : $request->direccion_administrativa_id,
+                'direccion_administrativa_id' => $direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'signature_id' => $request->signature_id,
                 'signature_code' => $request->signature_code,

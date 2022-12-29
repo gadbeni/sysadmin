@@ -181,6 +181,7 @@ class PermissionsTableSeeder extends Seeder
             'browse_reportshumans-resourcesjobs',
             'browse_reportshumans-resourcesrelationships',
             'browse_reportshumans-resourcesprojectsdetails',
+            'browse_reportshumans-resourcesbonus',
             'browse_reportspaymentschedulesdetails-status',
         ];
 

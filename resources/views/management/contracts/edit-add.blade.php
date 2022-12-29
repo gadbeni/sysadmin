@@ -245,8 +245,7 @@
                             <div class="panel-heading"><h6 class="panel-title">Cuadro de nivel de consultoría</h6></div>
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="form-group col-md-6">
-                                        {{-- <label for="table_report"></label> --}}
+                                    <div class="form-group col-md-12">
                                         <textarea class="form-control richTextBox" name="table_report">
                                             {{
                                                 isset($contract) ?
@@ -340,8 +339,7 @@
                                             }}
                                         </textarea>
                                     </div>
-                                    <div class="form-group col-md-6">
-                                        {{-- <label for="table_report"></label> --}}
+                                    {{-- <div class="form-group col-md-6">
                                         <textarea class="form-control richTextBox" name="details_report">
                                             {{
                                                 isset($contract) ?
@@ -349,7 +347,7 @@
                                                 '<p><span style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">El monto total a cancelar ser&aacute; de </span><strong style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">Bs.- 11.550,00 (Once mil quinientos cincuenta 00/100 Bolivianos)</strong><span style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">, mismos que ser&aacute;n cancelados en cuatro (04) cuotas mensuales: la primera correspondiente a nueve (09) d&iacute;as del mes de septiembre por&nbsp;</span><strong style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">Bs.- 1.200.00</strong><span style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">&nbsp;(Un mil doscientos 00/100 bolivianos), la segunda, tercera y cuarta cuota correspondiente a los meses de octubre, noviembre y diciembre por un monto mensual de&nbsp;</span><strong style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">Bs.- 4.000.00</strong><span style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">&nbsp;(cuatro mil 00/100 bolivianos).</span></p>'
                                             }}
                                         </textarea>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>

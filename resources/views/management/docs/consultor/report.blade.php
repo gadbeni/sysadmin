@@ -7,6 +7,7 @@
         <div class="page-head">
             @php
                 $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+                $cardinals = array('', 'primera', 'segunda', 'tercera', 'cuarta', 'quinta', 'sexta', 'septima', 'octava', 'novena', 'decima', 'decima primera', 'decima segunda');
                 $code = $contract->code;
                 if(!in_array($contract->direccion_administrativa_id, [13, 48, 55]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4])){
                     $signature = null;   
@@ -146,7 +147,10 @@
 
             <div>
                 <p><b>3. MONTO Y FORMA DE PAGO</b></p>
-                {!! $contract->details_report !!}
+
+                @include('management.docs.consultor.partials.payment_details', ['contract' => $contract])
+
+                {{-- {!! $contract->details_report !!} --}}
 
                 <p>Para efectos del pago de sus haberes mensuales, se, deberá de presentar Informe de Actividades mensuales, el cual deberá de estar debidamente aprobado por su inmediato superior.</p>
                 

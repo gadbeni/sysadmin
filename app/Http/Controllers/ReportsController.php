@@ -18,19 +18,21 @@ use App\Models\Spreadsheet;
 use App\Models\Direccion;
 use App\Models\Contract;
 use App\Models\Period;
+use App\Models\Paymentschedule;
 use App\Models\PaymentschedulesDetail;
 use App\Models\ProcedureType;
 use App\Models\Job;
 use App\Models\Cargo;
 use App\Models\Person;
 use App\Models\Program;
-use App\Models\Paymentschedule;
+use App\Models\BonusesDetail;
 
 // Exports
 use App\Exports\MinisterioTrabajoExport;
 use App\Exports\AFPExport;
 use App\Exports\ContractsExport;
 use App\Exports\ProgramsExport;
+use App\Exports\BonusExport;
 
 class ReportsController extends Controller
 {
@@ -999,6 +1001,28 @@ class ReportsController extends Controller
         }else{
             return view('reports.check.check-list', compact('detalle', 'inicio', 'fin'));
 
+        }
+    }
+
+    public function bonus_index(){
+        $this->custom_authorize('browse_reportshumans-resourcesbonus');
+        return view('reports.paymentschedules.bonus-browse');
+    }
+
+    public function bonus_list(Request $request){
+        $year = $request->year;
+        $bonuses = BonusesDetail::whereHas('bonus', function($q) use($year){
+                        $q->where('year', $year)->where('deleted_at', NULL);
+                    })
+                    ->whereHas('contract', function($q){
+                        $q->where('procedure_type_id', 1);
+                    })
+                    ->where('deleted_at', NULL)->get();
+        if($request->type == 'excel'){
+            // return view('reports.paymentschedules.bonus-excel', compact('bonuses', 'year'));
+            return Excel::download(new BonusExport($bonuses, $year), 'aguinaldos-'.$year.'.xlsx');
+        }else{
+            return view('reports.paymentschedules.bonus-list', compact('bonuses', 'year'));
         }
     }
 }

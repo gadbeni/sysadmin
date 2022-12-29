@@ -42,6 +42,7 @@
                                         <th>Dirección administrativa</th>
                                         <th>N&deg; de personas</th>
                                         <th>Gestión</th>
+                                        <th>Registrado</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -55,6 +56,11 @@
                                             <td>{{ $item->direccion->nombre }}</td>
                                             <td>{{ $item->details->count() }}</td>
                                             <td>{{ $item->year }}</td>
+                                            <td>
+                                                {{ $item->user ? $item->user->name : '' }} <br>
+                                                {{ date('d/m/Y H:i', strtotime($item->created_at)) }} <br>
+                                                <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
+                                            </td>
                                             <td class="no-sort no-click bread-actions text-right">
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">

@@ -32,4 +32,8 @@ class BonusesDetail extends Model
     public function procedure_type(){
         return $this->belongsTo(ProcedureType::class, 'procedure_type_id');
     }
+
+    public function bonus(){
+        return $this->belongsTo(Bonus::class, 'bonus_id');
+    }
 }

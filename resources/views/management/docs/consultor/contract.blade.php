@@ -4,6 +4,7 @@
 
 @php
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+    $cardinals = array('', 'primera', 'segunda', 'tercera', 'cuarta', 'quinta', 'sexta', 'septima', 'octava', 'novena', 'decima', 'decima primera', 'decima segunda');
     $code = $contract->code;
 @endphp
 
@@ -98,16 +99,18 @@
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA SEPTIMA</strong></span><strong>. - (LUGAR DE PRESTACI&Oacute;N DE SERVICIOS). </strong></p>
         <p><strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong> realizar&aacute; la <strong>CONSULTOR&Iacute;A</strong>, objeto del presente contrato en las oficinas de la/el <strong>{{ Str::upper($contract->unidad_administrativa->nombre) }} </strong>dependiente de la/el <strong>{{ Str::upper($contract->direccion_administrativa->nombre) }}. </strong>{{--ubicada en el edificio central del GAD-BENI frente de la plaza principal.--}}</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA OCTAVA</strong></span><strong>. - (DEL MONTO Y FORMA DE PAGO)</strong></p>
-        
-        {!! $contract->details_report !!}
 
-        <p>Para efectos del pago de sus haberes mensuales, <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong><strong>, </strong>deber&aacute; de presentar Informe de Actividades mensuales, el cual deber&aacute; de estar debidamente aprobado por su inmediato superior.</p>
+        @include('management.docs.consultor.partials.payment_details', ['contract' => $contract])
+
+        {{-- {!! $contract->details_report !!} --}}
+
+        <p>Para efectos del pago de sus haberes mensuales, <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, deber&aacute; de presentar Informe de Actividades mensuales, el cual deber&aacute; de estar debidamente aprobado por su inmediato superior.</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA NOVENA</strong></span><strong>.- (PASAJES Y VIATICOS)</strong></p>
         <p>Los gastos por pasajes, vi&aacute;ticos que se requieran para el desarrollo de las actividades {{ $contract->person->gender == 'masculino' ? 'del consultor' : 'de la consultora' }} en las provincias y/o capitales de Bolivia, ser&aacute;n proporcionados por el Gobierno Aut&oacute;nomo Departamental del Beni.</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA</strong></span><strong>. - (PAGO DE AFP.) </strong></p>
         <p>Correr&aacute; por cuenta del <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong> el pago de la su AFP y al momento de solicitar la cancelaci&oacute;n de sus haberes mensuales deber&aacute; adjuntar el formulario mediante el cual se evidencie la cancelaci&oacute;n del mismo.</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA PRIMERA</strong></span><strong>. - (DE LAS ESTIPULACIONES SOBRE IMPUESTOS) </strong></p>
-        <p>Correr&aacute; por cuenta del <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong><strong> </strong>el pago de todos los impuestos vigentes en el pa&iacute;s.</p>
+        <p>Correr&aacute; por cuenta del <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>el pago de todos los impuestos vigentes en el pa&iacute;s.</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA SEGUNDA</strong></span><strong>. - (PREVISI&Oacute;N) </strong></p>
         <p>El Contrato s&oacute;lo podr&aacute; modificarse previa aprobaci&oacute;n de la MAE., las causas modificatorias deber&aacute;n ser sustentadas por informe t&eacute;cnico y legal que establezcan la viabilidad t&eacute;cnica y de financiamiento</p>
         <p>La Referida Modificaci&oacute;n se realizar&aacute; mediante un Contrato Modificatorio, establecido en el Art&iacute;culo 89 del Decreto Supremo N&deg; 0181, de 28 de junio de 2009, de las Normas B&aacute;sicas del Sistema de Administraci&oacute;n de Bienes y Servicios &ndash; NB-SABS.</p>

@@ -64,7 +64,7 @@
                                             $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);    
                                         @endphp
                                         <b>Duración: </b> {{ ($contract_duration->months * 30) + $contract_duration->days }} Días <br>
-                                        <b>Total: </b> <small>Bs.</small> {{ $total ? number_format($total, 2, ',', '.') : 'No definido' }}
+                                        <b>Total: </b> <small>Bs.</small> {{ number_format($total, 2, ',', '.') }}
                                     @endif
                                 </li>
                                 <li>
