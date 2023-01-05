@@ -6,14 +6,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+use Storage;
 
 use App\Models\Person;
 use App\Models\PersonRotation;
 use App\Models\Contract;
 use App\Models\PersonIrremovability;
+use App\Models\PersonFile;
 
 class PeopleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(){
         $people =   Person::whereHas('contracts', function($query){
                         $query->where('status', 'firmado')->where('deleted_at', NULL);
@@ -87,6 +95,60 @@ class PeopleController extends Controller
             $irremovability = PersonRotation::find($id);
             $irremovability->delete();
             return redirect()->route('voyager.people.show', $people)->with(['message' => 'Rotación eliminada correctamente', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            // dd($th);
+            return redirect()->route('voyager.people.show', $people)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
+    }
+
+    public function file_store($id, Request $request){
+        // dd($request->all());
+        try {
+            $file_name = Str::random(20).'.'.$request->file->getClientOriginalExtension();
+            $dir = "people/$id/".date('F').date('Y');
+            Storage::makeDirectory($dir);
+            Storage::disk('public')->put($dir.'/'.$file_name, file_get_contents($request->file));
+            PersonFile::create([
+                'user_id' => Auth::user()->id,
+                'person_id' => $id,
+                'title' => $request->title,
+                'file' => $dir.'/'.$file_name,
+                'observations' => $request->observations,
+            ]);
+            
+            return redirect()->route('voyager.people.index')->with(['message' => 'File registrado correctamente', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            // throw $th;
+            return redirect()->route('voyager.people.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
+    }
+
+    public function file_update($id, Request $request){
+        try {
+            $file = PersonFile::find($request->id);
+            $file->title = $request->title;
+            if($request->file){
+                $file_name = Str::random(20).'.'.$request->file->getClientOriginalExtension();
+                $dir = "people/$id/".date('F').date('Y');
+                Storage::makeDirectory($dir);
+                Storage::disk('public')->put($dir.'/'.$file_name, file_get_contents($request->file));
+                $file->file = $dir.'/'.$file_name;
+            }
+            $file->observations = $request->observations;
+            $file->update();
+
+            return redirect()->route('voyager.people.show', $id)->with(['message' => 'File editado correctamente', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            // throw $th;
+            return redirect()->route('voyager.people.show', $id)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
+    }
+
+    public function file_delete($people, $id, Request $request){
+        try {
+            $file = PersonFile::find($id);
+            $file->delete();
+            return redirect()->route('voyager.people.show', $people)->with(['message' => 'File eliminado correctamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             // dd($th);
             return redirect()->route('voyager.people.show', $people)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);

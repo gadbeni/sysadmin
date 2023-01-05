@@ -35,4 +35,12 @@ class Person extends Model
     public function irremovabilities(){
         return $this->hasMany(PersonIrremovability::class);
     }
+
+    public function user(){
+        return $this->belongsTo(User::class)->withTrashed();
+    }
+
+    public function files(){
+        return $this->hasMany(PersonFile::class);
+    }
 }

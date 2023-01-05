@@ -87,7 +87,10 @@ class PermissionsTableSeeder extends Seeder
             'add_rotation_people',
             'delete_rotation_people',
             'add_irremovability_people',
-            'delete_irremovability_people'
+            'delete_irremovability_people',
+            'add_file_people',
+            'edit_file_people',
+            'delete_file_people'
         ];
 
         foreach ($keys as $key) {

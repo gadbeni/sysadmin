@@ -247,6 +247,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'read_people' or
                                             `key` = 'edit_people' or
                                             `key` = 'add_people' or
+                                            `key` = 'add_file_people' or
+                                            `key` = 'edit_file_people' or
                                             `key` = 'add_rotation_people' or
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
@@ -300,6 +302,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'read_people' or
                                             `key` = 'edit_people' or
                                             `key` = 'add_people' or
+                                            `key` = 'add_file_people' or
+                                            `key` = 'edit_file_people' or
                                             `key` = 'add_rotation_people' or
                                             `key` = 'add_irremovability_people' or
                                             `key` = 'browse_contracts' or
@@ -346,6 +350,8 @@ class PermissionRoleTableSeeder extends Seeder
                                     `key` = 'read_people' or
                                     `key` = 'edit_people' or
                                     `key` = 'add_people' or
+                                    `key` = 'add_file_people' or
+                                    `key` = 'edit_file_people' or
                                     `key` = 'add_rotation_people' or
                                     `key` = 'browse_contracts' or
                                     `key` = 'read_contracts' or

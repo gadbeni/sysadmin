@@ -56,6 +56,9 @@
                                 Más <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu" style="left: -90px !important">
+                                @if (auth()->user()->hasPermission('add_file_people'))
+                                <li><a href="#" class="btn-add-file" data-url="{{ route('people.file.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-add-file" >Agregar file</a></li>
+                                @endif
                                 @if (auth()->user()->hasPermission('add_rotation_people'))
                                 <li><a href="#" class="btn-rotation" data-url="{{ route('people.rotation.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-rotation" >Rotar</a></li>
                                 @endif
@@ -115,6 +118,12 @@
                 page = link.split('=')[1];
                 list(page);
             }
+        });
+
+        $('.btn-add-file').click(function(e){
+            e.preventDefault();
+            let url = $(this).data('url');
+            $('#add-file-form').attr('action', url);
         });
 
         $('.btn-rotation').click(function(e){

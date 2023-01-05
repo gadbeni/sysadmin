@@ -515,7 +515,7 @@
             </div>
             <div class="col-md-4">
                 <div class="panel">
-                    <div class="panel-body" style="height: 250px; overflow-y: auto">
+                    <div class="panel-body">
                         <h4>Cumpleaños</h4>
                         @php
                             $birthdays = App\Models\Person::whereHas('contracts', function($q){

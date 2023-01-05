@@ -151,6 +151,67 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">File</h3>
+                            </div>
+                            <table id="dataTable" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>N&deg;</th>
+                                        <th>Título</th>
+                                        <th>Observaciones</th>
+                                        <th>Registrado</th>
+                                        <th class="text-right">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $cont = 1;
+                                    @endphp
+                                    @forelse ($person->files as $item)
+                                        <tr>
+                                            <td>{{ $cont }}</td>
+                                            <td>{{ $item->title }}</td>
+                                            <td>{{ $item->observations }}</td>
+                                            <td title="Actualizado {{ date('d/m/Y H:i', strtotime($item->updated_at)) }}">
+                                                {{ $item->user ? $item->user->name : '' }} <br>
+                                                {{ date('d/m/Y H:i', strtotime($item->created_at)) }} <br>
+                                                <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
+                                            </td>
+                                            <td class="no-sort no-click bread-actions text-right">
+                                                <a href="{{ url('storage/'.$item->file) }}" class="btn btn-warning" target="_blank"><i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span></a>
+                                                @if (auth()->user()->hasPermission('edit_file_people'))
+                                                <button type="button" data-item='@json($item)' data-url="{{ route('people.file.update', ['id' => $person->id]) }}" data-toggle="modal" data-target="#modal-edit-file" title="Editar" class="btn btn-sm btn-info btn-edit-file">
+                                                    <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
+                                                </button>
+                                                @endif
+                                                @if (auth()->user()->hasPermission('delete_file_people'))
+                                                <button type="button" onclick="deleteItem('{{ route('people.file.delete', ['people' => $person->id, 'id' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger delete">
+                                                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
+                                                </button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @php
+                                            $cont++;
+                                        @endphp
+                                    @empty
+                                        <tr>
+                                            <td colspan="5">No hay datos disponible</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-bordered" style="padding-bottom:5px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel-heading" style="border-bottom:0;">
                                 <h3 class="panel-title">Historial de inamovilidades</h3>
                             </div>
                             <table id="dataTable" class="table table-bordered table-hover">
@@ -254,13 +315,63 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal edit file --}}
+    <form class="form-submit" id="edit-file-form" action="#" method="post" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+        <input type="hidden" name="id">
+        <div class="modal modal-primary fade" tabindex="-1" id="modal-edit-file" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-file-text"></i> Editar file</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input type="text" name="title" class="form-control" required >
+                        </div>
+                        <div class="form-group">
+                            <label>Archivo</label>
+                            <input type="file" name="file" class="form-control" accept="application/pdf">
+                        </div>
+                        <div class="form-group">
+                            <label>Observaciones</label>
+                            <textarea name="observations" class="form-control" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark btn-submit" value="Guardar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
 @stop
 
 @section('javascript')
     <script src="{{ url('js/main.js') }}"></script>
     <script>
         $(document).ready(function () {
-            
+            $('.btn-edit-file').click(function(e){
+                e.preventDefault();
+                let url = $(this).data('url');
+                let item = $(this).data('item');
+
+                $('#edit-file-form').attr('action', url);
+                $('#edit-file-form input[name="id"]').val(item.id);
+                $('#edit-file-form input[name="title"]').val(item.title);
+                $('#edit-file-form textarea[name="observations"]').val(item.observations);
+            });
+
+            $('.form-submit').submit(function(){
+                $('.btn-submit').val('Guardando...');
+                $('.btn-submit').attr('disabled', 'disabled');
+            });
         });
     </script>
 @stop

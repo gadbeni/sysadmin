@@ -19,11 +19,15 @@
         $dias_primera_cuota = $start->diffInDays($finish) +1;
 
         // Si el contrato tiene mas de 30 días
-        $dias_primera_cuota = $dias_primera_cuota > 30 ? 30 : $dias_primera_cuota;
+        if($dias_primera_cuota >= 30){
+            $meses_intermedias_cuotas++;
+            $dias_primera_cuota = 0;
+        }
 
         // Si es febrero y el contrato dura todo el mes
         if($start->format('m') == 2 && $dias_primera_cuota == 28){
-            $dias_primera_cuota = 30;
+            $meses_intermedias_cuotas++;
+            $dias_primera_cuota = 0;
         }
     }else{
         
@@ -79,22 +83,25 @@
     @php
         $cont = 1;
     @endphp
-    @if (!$dias_primera_cuota && $meses_intermedias_cuotas)
-        , la 
-        @while ($cont <= $meses_intermedias_cuotas)
-            {{ $cardinals[$cont].($cont == $meses_intermedias_cuotas ? '' : ($cont == $meses_intermedias_cuotas -1 ? ' y ' : ', ')) }} 
-            @php
-                $cont++;
-            @endphp
-        @endwhile
-    @elseif($dias_primera_cuota && $meses_intermedias_cuotas)
-        , la 
-        @while ($cont <= $meses_intermedias_cuotas)
-            {{ $cardinals[$cont +1].($cont == $meses_intermedias_cuotas ? '' : ($cont == $meses_intermedias_cuotas -1 ? ' y ' : ', ')) }} 
-            @php
-                $cont++;
-            @endphp
-        @endwhile
+
+    @if ($meses_intermedias_cuotas > 1)
+        @if (!$dias_primera_cuota && $meses_intermedias_cuotas)
+            , la 
+            @while ($cont <= $meses_intermedias_cuotas)
+                {{ $cardinals[$cont].($cont == $meses_intermedias_cuotas ? '' : ($cont == $meses_intermedias_cuotas -1 ? ' y ' : ', ')) }} 
+                @php
+                    $cont++;
+                @endphp
+            @endwhile
+        @elseif($dias_primera_cuota && $meses_intermedias_cuotas)
+            , la 
+            @while ($cont <= $meses_intermedias_cuotas)
+                {{ $cardinals[$cont +1].($cont == $meses_intermedias_cuotas ? '' : ($cont == $meses_intermedias_cuotas -1 ? ' y ' : ', ')) }} 
+                @php
+                    $cont++;
+                @endphp
+            @endwhile
+        @endif
     @endif
 
     @if ($meses_intermedias_cuotas)
