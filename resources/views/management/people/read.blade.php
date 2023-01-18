@@ -151,7 +151,16 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel-heading" style="border-bottom:0;">
-                                <h3 class="panel-title">File</h3>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h3 class="panel-title">Documentación</h3>
+                                    </div>
+                                    <div class="col-md-4 text-right" style="padding-top: 20px">
+                                        @if (auth()->user()->hasPermission('add_file_people'))
+                                        <a href="#" class="btn btn-success btn-add-file" data-url="{{ route('people.file.store', ['id' => $person->id]) }}" data-toggle="modal" data-target="#modal-add-file" ><i class="voyager-plus"></i> <span>Agregar</span></a>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                             <table id="dataTable" class="table table-bordered table-hover">
                                 <thead>
@@ -178,7 +187,9 @@
                                                 <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
                                             </td>
                                             <td class="no-sort no-click bread-actions text-right">
+                                                @if (auth()->user()->hasPermission('browse_file_people'))
                                                 <a href="{{ url('storage/'.$item->file) }}" class="btn btn-warning" target="_blank"><i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span></a>
+                                                @endif
                                                 @if (auth()->user()->hasPermission('edit_file_people'))
                                                 <button type="button" data-item='@json($item)' data-url="{{ route('people.file.update', ['id' => $person->id]) }}" data-toggle="modal" data-target="#modal-edit-file" title="Editar" class="btn btn-sm btn-info btn-edit-file">
                                                     <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
@@ -316,6 +327,9 @@
         </div>
     </div>
 
+    {{-- Modal add file --}}
+    @include('management.people.partials.modal-add-file')
+
     {{-- Modal edit file --}}
     <form class="form-submit" id="edit-file-form" action="#" method="post" enctype="multipart/form-data">
         @csrf
@@ -326,7 +340,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title"><i class="voyager-file-text"></i> Editar file</h4>
+                        <h4 class="modal-title"><i class="voyager-file-text"></i> Editar documentación</h4>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -371,6 +385,12 @@
             $('.form-submit').submit(function(){
                 $('.btn-submit').val('Guardando...');
                 $('.btn-submit').attr('disabled', 'disabled');
+            });
+
+            $('.btn-add-file').click(function(e){
+                e.preventDefault();
+                let url = $(this).data('url');
+                $('#add-file-form').attr('action', url);
             });
         });
     </script>

@@ -247,7 +247,9 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'read_people' or
                                             `key` = 'edit_people' or
                                             `key` = 'add_people' or
+                                            `key` = 'browse_file_people' or
                                             `key` = 'add_file_people' or
+                                            `key` = 'edit_file_people' or
                                             `key` = 'edit_file_people' or
                                             `key` = 'add_rotation_people' or
                                             `key` = 'browse_contracts' or
@@ -298,10 +300,13 @@ class PermissionRoleTableSeeder extends Seeder
         $permissions = Permission::whereRaw("table_name = 'admin' or
                                             `key` = 'browse_programs' or
                                             `key` = 'read_programs' or
+                                            `key` = 'add_programs' or
+                                            `key` = 'edit_programs' or
                                             `key` = 'browse_people' or
                                             `key` = 'read_people' or
                                             `key` = 'edit_people' or
                                             `key` = 'add_people' or
+                                            `key` = 'browse_file_people' or
                                             `key` = 'add_file_people' or
                                             `key` = 'edit_file_people' or
                                             `key` = 'add_rotation_people' or
@@ -350,6 +355,7 @@ class PermissionRoleTableSeeder extends Seeder
                                     `key` = 'read_people' or
                                     `key` = 'edit_people' or
                                     `key` = 'add_people' or
+                                    `key` = 'browse_file_people' or
                                     `key` = 'add_file_people' or
                                     `key` = 'edit_file_people' or
                                     `key` = 'add_rotation_people' or

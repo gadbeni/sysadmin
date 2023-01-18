@@ -320,10 +320,23 @@ class ContractsController extends Controller
                 return response()->json(['error' => 'El contrato pertenece a una planilla en proceso de pago.']);
             }
 
+            // Si se finaliza el contrato
             $contract = Contract::findOrFail($request->id);
             $contract->status = $request->status;
             if ($request->finish) {
                 $contract->finish = $request->finish;
+            }
+
+            // Si se retaura el contrato
+            if($request->status == 'restaurar'){
+
+                // Si la persona tiene un contrato activo no se debe restaurar
+                if(Contract::where('person_id', $contract->person_id)->whereRaw('(status = "elaborado" or status = "enviado" or status = "firmado")')->where('deleted_at', NULL)->first()){
+                    return response()->json(['error' => 'La persona ya tiene un contrato firmado o en proceso de elaboración.']);
+                }
+
+                $contract->finish = NULL;
+                $contract->status = 'firmado';
             }
             $contract->update();
 
@@ -347,6 +360,7 @@ class ContractsController extends Controller
             return response()->json(['message' => 'Cambio realizo exitosamente.']);
         } catch (\Throwable $th) {
             DB::rollback();
+            // dd($th);
             return response()->json(['error' => 'Ocurrió un error.']);
         }
     }

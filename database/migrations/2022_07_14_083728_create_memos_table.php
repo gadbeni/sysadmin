@@ -18,7 +18,10 @@ class CreateMemosTable extends Migration
             $table->foreignId('origin_id')->nullable()->constrained('people');
             $table->foreignId('destiny_id')->nullable()->constrained('people');
             $table->foreignId('memos_type_id')->nullable()->constrained('memos_types');
+            $table->foreignId('person_id')->nullable()->constrained('person_externals');
             $table->foreignId('person_external_id')->nullable()->constrained('person_externals');
+            $table->string('order_name')->nullable();
+            $table->string('order_job')->nullable();
             $table->string('code')->nullable();
             $table->string('da_sigep')->nullable();
             $table->string('origin')->nullable();

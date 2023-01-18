@@ -150,6 +150,11 @@
                                         <li><a class="btn-addendum-status" title="Firmar adenda" data-toggle="modal" data-target="#addendum-status-modal" data-id="{{ $addendums->first()->id }}" href="#">Firmar adenda</a></li>
                                         @endif
                                     @endif
+
+                                    {{-- Restaurar contrato --}}
+                                    @if (auth()->user()->hasPermission('restore_contracts') && $item->status == 'concluido' && $item->procedure_type_id == 1)
+                                    <li><a href="#" title="Restaurar" data-toggle="modal" data-target="#status-modal" onclick="changeStatus({{ $item->id }}, 'restaurar')">Restaurar</a></li>
+                                    @endif
                                 </ul>
                             </div>
 
@@ -188,6 +193,8 @@
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-alt']) }}" target="_blank">Contrato</a></li>
                                                 @elseif ($item->direccion_administrativa_id == 32 || $item->direccion_administrativa_id == 36 || $item->direccion_administrativa_id == 57)
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-health']) }}" target="_blank">Contrato</a></li>
+                                                @elseif ($item->direccion_administrativa_id == 5)
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-sedeges']) }}" target="_blank">Contrato</a></li>
                                                 @else
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract']) }}" target="_blank">Contrato</a></li>
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-inamovible']) }}" target="_blank">Contrato inamovible</a></li>

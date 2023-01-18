@@ -88,6 +88,7 @@ class PermissionsTableSeeder extends Seeder
             'delete_rotation_people',
             'add_irremovability_people',
             'delete_irremovability_people',
+            'browse_file_people',
             'add_file_people',
             'edit_file_people',
             'delete_file_people'
@@ -105,6 +106,7 @@ class PermissionsTableSeeder extends Seeder
             'upgrade_contracts',
             'downgrade_contracts',
             'finish_contracts',
+            'restore_contracts',
             'print_finish_contracts',
             'add_addendum_contracts',
             'edit_addendum_contracts',

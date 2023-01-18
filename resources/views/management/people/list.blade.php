@@ -57,7 +57,7 @@
                             </button>
                             <ul class="dropdown-menu" role="menu" style="left: -90px !important">
                                 @if (auth()->user()->hasPermission('add_file_people'))
-                                <li><a href="#" class="btn-add-file" data-url="{{ route('people.file.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-add-file" >Agregar file</a></li>
+                                <li><a href="#" class="btn-add-file" data-url="{{ route('people.file.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-add-file" >Agregar documentación</a></li>
                                 @endif
                                 @if (auth()->user()->hasPermission('add_rotation_people'))
                                 <li><a href="#" class="btn-rotation" data-url="{{ route('people.rotation.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-rotation" >Rotar</a></li>
