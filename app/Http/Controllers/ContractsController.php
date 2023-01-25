@@ -108,7 +108,7 @@ class ContractsController extends Controller
         $unidad_administrativas = Unidad::get();
         // $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $contracts = Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get();
-        $programs = Program::where('deleted_at', NULL)->get();
+        $programs = Program::where('year', date('Y'))->where('deleted_at', NULL)->get();
         $cargos = Cargo::with(['nivel' => function($q){
             $q->where('Estado', 1);
         }])->where('estado', 1)->get();
@@ -314,7 +314,9 @@ class ContractsController extends Controller
 
             // Verificar si el contrato tenga pagos realizados
             $payment = PaymentschedulesDetail::where('contract_id', $request->id)
-                        ->whereRaw("(status = 'procesado' OR status = 'enviado' OR status = 'aprobado' OR status = 'habilitado')")
+                        ->whereHas('paymentschedule.period', function($q) use($request){
+                            $q->whereRaw('name = "'.date('Ym', strtotime($request->finish)).'"')->where('status', '<>', 'anulada')->where('deleted_at', NULL);
+                        })
                         ->where('deleted_at', NULL)->first();
             if($payment && $request->finish){
                 return response()->json(['error' => 'El contrato pertenece a una planilla en proceso de pago.']);

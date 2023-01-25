@@ -76,7 +76,7 @@ class PaymentschedulesController extends Controller
                                 $query->whereRaw($search ? 'nombre like "%'.$search.'%"' : 1);
                             })
                             ->OrWhereRaw($search ? "id = '".intval($search)."'" : 1)
-                            ->OrWhereRaw($search ? 'centralize_code like "%'.$search.'%"' : 1)
+                            ->OrWhereRaw($search ? 'centralize_code like "%'.ltrim($search, "0").'%"' : 1)
                             ->OrWhereRaw($search ? "status like '%".$search."%'" : 1);
                         }
                     })
