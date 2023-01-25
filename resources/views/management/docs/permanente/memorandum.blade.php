@@ -69,13 +69,16 @@
             <br>
             <p style="text-align: center"><u><b>DESIGNACIÓN</b></u></p>
             <p>
-                Mediante el presente comunico a Usted que, a partir de la fecha, es {{ $contract->person->gender == 'masculino' ? 'desigando' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->job->name) }}</b>, dependiente de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b> con el nivel salarial <b>{{ $contract->job->level }}</b> item <b>{{ $contract->job->item }}</b> de <b>PERSONAL PERMANENTE</b>.
+                El Gobierno Autónomo Departamental del Beni - GAD-BENI, comunica a Usted que a partir de la fecha ha sido {{ $contract->person->gender == 'masculino' ? 'desigando' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->job->name) }}</b>, dependiente de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b>.
             </p>
             <p>
-                Así mismo, se debe presentar SIPPASE, REJAB, Solvencia Fiscal y Declaración Jurada Bienes y Rentas, en la Dirección Departamental de Recursos Humanos dependiente del Gobierno Autónomo del Beni.
+                Su remuneración será cancelada con cargo a la partida {{ $contract->program->number }}, con un haber mensual de <b>Bs. {{ NumerosEnLetras::convertir($contract->job->salary, 'Bolivianos', true) }}</b>, en el item N&deg; {{ $contract->job->item }} con el nivel salarial <b>{{ $contract->job->level }}</b>, debiendo coordinar con la Dirección Administrativa Financiera para la asignación de activo fijos, manuales y reglamentos que rigen en la entidad.
             </p>
             <p>
-                Deseándole éxito en sus funciones y responsabilidades que devengan de la prestación de sus servicios, de conformidad del art. 28 de la ley Nº 1178 y esperando contar con su valioso aporte y participación en el logro de los objetivos del Gobierno Autónomo Departamental del Beni, saludo a usted.
+                Al desearle éxito en sus funciones, le hacemos conocer que los desarrollos de sus actividades se supeditaran al POAI, instructivos, circulares, memorándums, reglamentos específicos y manuales de procedimientos vigentes del <b>Gobierno Autónomo Departamental del Beni</b> (GAD-BENI), disposiciones con la función pública y otras funciones que fueran asignadas por su inmediato superior.
+            </p>
+            <p>
+                Se le recuerda, efectuar su Declaración Jurada de Bienes y Rentas ante la Contraloría General del Estado de conformidad al Decreto Supremo N°1233.
             </p>
         </div>
     </div>

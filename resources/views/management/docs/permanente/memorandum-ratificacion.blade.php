@@ -4,13 +4,14 @@
 
 @php
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-    $code = $contract->code;
+    $date = $contract->ratifications->last()->date;
+    $code = str_pad($contract->ratifications->last()->id, 4, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($date));
     $signature = null;
 @endphp
 
 @section('qr_code')
     <div id="qr_code">
-        {!! QrCode::size(80)->generate('Ratificación de '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d').' de '.$months[intval(date('m'))].' de '.date('Y').' con un sueldo de '.number_format($contract->job->salary, 2, ',', '.').' Bs.'); !!}
+        {!! QrCode::size(80)->generate('Ratificación de '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($date)).' de '.$months[intval(date('m', strtotime($date)))].' de '.date('Y', strtotime($date)).' con un sueldo de '.number_format($contract->job->salary, 2, ',', '.').' Bs.'); !!}
     </div>
 @endsection
 
@@ -48,7 +49,7 @@
                             <option value="Loreto">Loreto</option>
                             <option value="San Andrés">San Andrés</option>
                         </select>
-                        <span id="label-location">Santísima Trinidad</span>, {{ date('d') }} de {{ $months[intval(date('m'))] }} de {{ date('Y') }}
+                        <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($date)) }} de {{ $months[intval(date('m', strtotime($date)))] }} de {{ date('Y', strtotime($date)) }}
                     </p>
                 </div>
                 <div class="border-left">
@@ -61,10 +62,16 @@
             <br>
             <p style="text-align: center"><u><b>RATIFICACIÓN</b></u></p>
             <p>
-                Mediante el presente comunico a Usted que ha sido  {{ $contract->person->gender == 'masculino' ? 'ratificado' : 'ratificada' }} en el cargo  <b>{{ Str::upper($contract->job->name) }}</b>, bajo la dependincia de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b> con el nivel salarial <b>{{ $contract->job->level }}</b> de <b>PERSONAL PERMANENTE</b>.
+                El Gobierno Autónomo Departamental del Beni - GAD-BENI, comunica a Usted que ha sido {{ $contract->person->gender == 'masculino' ? 'ratificado' : 'ratificada' }} en el cargo de <b>{{ Str::upper($contract->job->name) }}</b>, dependiente de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b> con el item N&deg; {{ $contract->job->item }}.
             </p>
             <p>
-                Deseándole éxito en sus funciones y responsabilidades que devengan de la prestación de sus servicios, de conformidad del art. 28 de la ley Nº 1178 y esperando contar con su valioso aporte y participación en el logro de los objetivos del <b>Gobierno Autónomo Departamental del Beni</b>, saludo a usted.
+                Al desearle éxito en sus funciones, le hacemos conocer que los desarrollos de sus actividades se supeditaran al POAI, instructivos, circulares, memorándums, reglamentos específicos y manuales de procedimientos vigentes del <b>Gobierno Autónomo Departamental del Beni</b> (GAD-BENI), disposiciones con la función pública y otras funciones que fueran asignadas por su inmediato superior.
+            </p>
+            <p>
+                Se le recuerda, efectuar su SIPPASE, REJAB y Solvencia Fiscal, así mismo presentar a la Dirección Departamental de Recursos Humanos dependiente de la Secretaria Departamental de Administración y Finanzas del Gobierno Autónomo del Beni.
+            </p>
+            <p>
+                Con este motivo, saludo a usted muy atentamente.
             </p>
         </div>
     </div>

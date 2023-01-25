@@ -104,4 +104,8 @@ class Contract extends Model
     public function alternate_job(){
         return $this->hasMany(ContractsAlternatesJob::class);
     }
+
+    public function ratifications(){
+        return $this->hasMany(ContractRatification::class);
+    }
 }

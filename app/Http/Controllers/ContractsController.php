@@ -21,6 +21,7 @@ use App\Models\ContractsHistory;
 use App\Models\PaymentschedulesDetail;
 use App\Models\ContractsFinished;
 use App\Models\Addendum;
+use App\Models\ContractRatification;
 
 class ContractsController extends Controller
 {
@@ -136,6 +137,14 @@ class ContractsController extends Controller
             if(date('Y', strtotime($request->start)) != date('Y', strtotime($request->finish))){
                 return redirect()->route('contracts.create')->with(['message' => 'El contrato no puede iniciar y finalizar en una gestón diferente.', 'alert-type' => 'error']);
             }
+
+            // Verificar que el contrato no inicie pisando un contrato previo
+            $contract_person = Contract::where('person_id', $request->person_id)
+                                ->where('finish', '>=', $request->start)->where('status', '<>', 'anulado')
+                                ->where('deleted_at', NULL)->first();
+            if($contract_person){
+                return redirect()->route('contracts.create')->with(['message' => 'El inicio de contrato coincide con el fin de otro contrato.', 'alert-type' => 'warning']);
+            }
         }
         try {
 
@@ -145,7 +154,7 @@ class ContractsController extends Controller
             // Verificar que no haya ningun proceso de contratación vigente
             $contract_person = Contract::where('person_id', $request->person_id)->where('status', '<>', 'concluido')->where('deleted_at', NULL)->first();
             if($contract_person){
-                return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso', 'alert-type' => 'warning']);
+                return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso.', 'alert-type' => 'warning']);
             }
 
             $count_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
@@ -363,6 +372,22 @@ class ContractsController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
+            return response()->json(['error' => 'Ocurrió un error.']);
+        }
+    }
+
+    public function contracts_ratificate(Request $request){
+        // dd($request->all());
+        try {
+            ContractRatification::create([
+                'contract_id' => $request->id,
+                'user_id' => Auth::user()->id,
+                'date' => $request->date,
+                'observations' => $request->observations,
+            ]);
+            return response()->json(['message' => 'Ratificación exitosa.']);
+        } catch (\Throwable $th) {
+            // throw $th;
             return response()->json(['error' => 'Ocurrió un error.']);
         }
     }

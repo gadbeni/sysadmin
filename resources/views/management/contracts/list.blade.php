@@ -133,6 +133,9 @@
                                     <li><a href="#" title="Promover a {{ $netx_status }}" data-toggle="modal" data-target="#status-modal" onclick="changeStatus({{ $item->id }}, '{{ $netx_status }}')">Promover</a></li>
                                     @endif
                                     {{-- Si está firmado --}}
+                                    @if ($item->status == 'firmado' && auth()->user()->hasPermission('ratificate_contracts'))
+                                    <li><a href="#" title="Ratificar" data-toggle="modal" data-target="#ratificate-modal" onclick="ratificateContract({{ $item->id }})">Ratificar</a></li>
+                                    @endif
                                     @if ($item->status == 'firmado' && auth()->user()->role_id == 1)
                                     <li><a href="#" title="Finalizar" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}')">Finalizar</a></li>
                                     @endif
@@ -167,9 +170,11 @@
                                     <ul class="dropdown-menu" role="menu">
                                         @switch($item->procedure_type_id)
                                             @case(1)
-                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum']) }}" target="_blank">Memoramdum de desiganación</a></li>
-                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-reasigancion']) }}" target="_blank">Memoramdum de reasignación</a></li>
-                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-ratificacion']) }}" target="_blank">Memoramdum de ratificación</a></li>
+                                                <li><a title="Desiganación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum']) }}" target="_blank">Desiganación</a></li>
+                                                @if ($item->ratifications->count() > 0 && auth()->user()->hasPermission('ratificate_contracts'))
+                                                <li><a title="Ratificación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-ratificacion']) }}" target="_blank">Ratificación</a></li>
+                                                @endif
+                                                <li><a title="Reasignación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-reasigancion']) }}" target="_blank">Reasignación</a></li>
                                                 @break
                                             @case(2)
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.autorization']) }}" target="_blank">Autorización</a></li>
@@ -327,6 +332,36 @@
     </div>
 </form>
 
+{{-- Finish modal --}}
+<form action="{{ route('contracts.ratificate') }}" id="form-ratificate" class="form-submit" method="POST">
+    {{ csrf_field() }}
+    <div class="modal fade" tabindex="-1" id="ratificate-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="voyager-calendar"></i> Desea ratificar el siguiente contrato?</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id">
+                    <div class="form-group">
+                        <label for="">Fecha de ratificación</label>
+                        <input type="date" name="date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="observations">Observaciones</label>
+                        <textarea name="observations" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" class="btn btn-dark" value="Aceptar">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 {{-- Addendum create modal --}}
 <form action="{{ route('contracts.addendum.store') }}" id="form-addendum" class="form-submit" method="POST">
     @csrf
@@ -379,7 +414,6 @@
 </form>
 
 {{-- Addendum show modal --}}
-
 <div class="modal modal-primary fade" tabindex="-1" id="addendum-show-modal" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -500,6 +534,7 @@
             $('#status-modal').modal('hide');
             $('#addendum-modal').modal('hide');
             $('#addendum-status-modal').modal('hide');
+            $('#ratificate-modal').modal('hide');
             e.preventDefault();
             $('#div-results').loading({message: 'Cargando...'});
             $.post($(this).attr('action'), $(this).serialize(), function(res){

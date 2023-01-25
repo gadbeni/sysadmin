@@ -106,6 +106,10 @@
                 $('#form-finish input[name="finish"]').attr("max", date);
             }
 
+            function ratificateContract(id) {
+                $('#form-ratificate input[name="id"]').val(id);
+            }
+
             function downgradeContract(id, status) {
                 $('#downgrade-form input[name="id"]').val(id);
                 $('#downgrade-form input[name="status"]').val(status);

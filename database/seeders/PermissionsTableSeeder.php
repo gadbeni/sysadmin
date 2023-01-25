@@ -107,6 +107,7 @@ class PermissionsTableSeeder extends Seeder
             'downgrade_contracts',
             'finish_contracts',
             'restore_contracts',
+            'ratificate_contracts',
             'print_finish_contracts',
             'add_addendum_contracts',
             'edit_addendum_contracts',

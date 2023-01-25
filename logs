@@ -14,9 +14,4 @@ Otros
 NOTA:
 - generar código de adenda
 - anular adenda
-- evitar finalizar contrato si ya se planillo ese mes
-- validar contratos para q no se pisen las fechas
-- evitar que se genere el aguinal de un contrato existente
 - centralizar planilla
-- Editar contrato (si no se ha planillado que se pueda cambiar las fechas, si se planilló que solo se pueda cambiar la forma de pago)
-- subir file de funcionarios

@@ -173,6 +173,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'read_contracts' or
                                             `key` = 'upgrade_contracts' or
                                             `key` = 'downgrade_contracts' or
+                                            `key` = 'ratificate_contracts' or
                                             `key` = 'print_finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
@@ -201,6 +202,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'read_contracts' or
                                             `key` = 'upgrade_contracts' or
                                             `key` = 'downgrade_contracts' or
+                                            `key` = 'ratificate_contracts' or
                                             `key` = 'print_finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
@@ -225,6 +227,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'read_contracts' or
                                             `key` = 'upgrade_contracts' or
                                             `key` = 'downgrade_contracts' or
+                                            `key` = 'ratificate_contracts' or
                                             `key` = 'print_finish_contracts' or
                                             `key` = 'browse_paymentschedules' or
                                             `key` = 'read_paymentschedules' or
@@ -316,6 +319,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'edit_contracts' or
                                             `key` = 'read_contracts' or
                                             `key` = 'upgrade_contracts' or
+                                            `key` = 'ratificate_contracts' or
                                             `key` = 'delete_contracts' or
                                             `key` = 'add_addendum_contracts' or
                                             `key` = 'print_finish_contracts' or
