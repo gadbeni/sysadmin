@@ -21,6 +21,8 @@ use App\Http\Controllers\ImportsController;
 use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\MemosController;
 use App\Http\Controllers\MemosTypesController;
+use App\Http\Controllers\TcInboxController;
+use App\Http\Controllers\TcOutboxController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +51,17 @@ Route::post('register/store', [HomeController::class, 'register_person_store'])-
 
 Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Voyager::routes();
+
+    // ____________________Trimite y correspondencia_____________________
+    Route::resource('inbox', TcInboxController::class);
+
+
+    Route::resource('outbox', TcOutboxController::class);
+
+    // ______________________________FIN_________________________________
+
+
+
 
     Route::get('people', [PeopleController::class, 'index'])->name('voyager.people.index');
     Route::get('people/ajax/list/{search?}', [PeopleController::class, 'list']);
