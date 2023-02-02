@@ -19,4 +19,8 @@ class Direccion extends Model
     public function tipo(){
         return $this->belongsTo(DireccionesTipo::class, 'direcciones_tipo_id');
     }
+
+    public function city(){
+        return $this->belongsTo(City::class, 'city_id');
+    }
 }

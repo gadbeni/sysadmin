@@ -204,7 +204,7 @@
                                                 @else
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract']) }}" target="_blank">Contrato</a></li>
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-inamovible']) }}" target="_blank">Contrato inamovible</a></li>
-                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-desigancion']) }}" target="_blank">Memorandum</a></li>
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-designacion']) }}" target="_blank">Memorandum</a></li>
                                                 @endif
 
                                                 @break

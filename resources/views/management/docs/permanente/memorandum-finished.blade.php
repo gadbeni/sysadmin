@@ -26,28 +26,11 @@
                 <div class="border-right">
                     <p style="position:absolute; bottom: 10px">
                         <select id="location-id">
-                            <option value="Santísima Trinidad">Santísima Trinidad</option>
-                            <option value="Guayaramerín">Guayaramerín</option>
-                            <option value="Riberalta">Riberalta</option>
-                            <option value="Santa Rosa">Santa Rosa</option>
-                            <option value="Reyes">Reyes</option>
-                            <option value="Rurrenabaque">Rurrenabaque</option>
-                            <option value="Yucumo">Yucumo</option>
-                            <option value="San Borja">San Borja</option>
-                            <option value="San Ignacio">San Ignacio</option>
-                            <option value="San Ramón">San Ramón</option>
-                            <option value="San Joaquín">San Joaquín</option>
-                            <option value="Puerto Siles">Puerto Siles</option>
-                            <option value="Santa Ana">Santa Ana</option>
-                            <option value="Magdalena">Magdalena</option>
-                            <option value="Baures">Baures</option>
-                            <option value="Huacaraje">Huacaraje</option>
-                            <option value="Exaltación">Exaltación</option>
-                            <option value="San Javier">San Javier</option>
-                            <option value="Loreto">Loreto</option>
-                            <option value="San Andrés">San Andrés</option>
+                            @foreach (App\Models\City::where('states_id', 1)->where('deleted_at', NULL)->get() as $item)
+                            <option value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>    
+                            @endforeach
                         </select>
-                        <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}
+                        <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
                     </p>
                 </div>
                 <div class="border-left">
@@ -59,9 +42,6 @@
             </div>
             <br>
             <p style="text-align: center"><u><b>AGRADECIMIENTO</b></u></p>
-            {{-- <p>
-                Mediante el presente comunico a Usted que, a partir de la fecha y hasta el {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}, es {{ $contract->person->gender == 'masculino' ? 'desigando' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b>, bajo la dependincia de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b> con el nivel salarial <b>{{ $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->NumNivel }}</b> por el monto de <b>{{ number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 0, ',', '.') }} Bs.</b> de la <b>Planilla de Inversión (Personal Eventual)</b>, según clasificador presupuestario partida 12100. Designación que conlleva todas las implicancias y efectos de la Ley 2027 y 1178, Ley 1413 del PGE  2022 y su respectivo D.S. 4646.
-            </p> --}}
             <p style="margin-top: 50px">
                 De mi consideración: <br><br><br>
                 A través de la presente, comunico a usted que a partir de la fecha de su recepción del presente memorándum, queda desvinculada del cargo de <b>{{ Str::upper($contract->job->name) }}</b>, dependiente de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b>.

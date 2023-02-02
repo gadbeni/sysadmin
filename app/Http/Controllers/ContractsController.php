@@ -237,7 +237,7 @@ class ContractsController extends Controller
         $unidad_administrativas = Unidad::get();
         // $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $contracts = Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get();
-        $programs = Program::where('deleted_at', NULL)->get();
+        $programs = Program::where('year', date('Y'))->where('deleted_at', NULL)->get();
         $cargos = Cargo::with(['nivel' => function($q){
                         $q->where('Estado', 1);
                     }])->where('estado', 1)->get();

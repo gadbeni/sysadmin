@@ -269,7 +269,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-01-27 14:14:05',
-                'updated_at' => '2022-01-27 14:29:50',
+                'updated_at' => '2023-02-02 11:39:29',
             ),
             14 => 
             array (
@@ -341,7 +341,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"desc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-02-16 15:00:56',
-                'updated_at' => '2022-04-12 12:59:49',
+                'updated_at' => '2023-01-24 09:58:32',
             ),
             18 => 
             array (
@@ -576,6 +576,24 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-12-15 16:30:00',
                 'updated_at' => '2022-12-15 16:53:00',
+            ),
+            31 => 
+            array (
+                'id' => 40,
+                'name' => 'direcciones',
+                'slug' => 'direcciones',
+                'display_name_singular' => 'Dirección',
+                'display_name_plural' => 'Direcciones',
+                'icon' => 'voyager-list',
+                'model_name' => 'App\\Models\\Direccion',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2023-02-02 10:42:32',
+                'updated_at' => '2023-02-02 11:05:47',
             ),
         ));
         

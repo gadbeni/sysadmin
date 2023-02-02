@@ -17,7 +17,7 @@
         </div>
         <div class="page-body">
             <p>
-                En el marco del D.S. N° 0181, Normas Básicas del Sistema de Administración de Bienes y Servicios, La Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}, de fecha {{ $signature ? $signature->designation_date ? date('d', strtotime($signature->designation_date)).' de '.$months[intval(date('m', strtotime($signature->designation_date)))].' de '.date('Y', strtotime($signature->designation_date)) : setting('firma-autorizada.designation-date') : setting('firma-autorizada.designation-date') }}, que desigan al RESPONSABLE DEL PROCESO DE CONTRATACIÓN DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO – RPA, AUTORIZÓ el inicio del proceso de contratación, de acuerdo al siguiente detalle:
+                En el marco del D.S. N° 0181, Normas Básicas del Sistema de Administración de Bienes y Servicios, La Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}, de fecha {{ $signature ? $signature->designation_date ? date('d', strtotime($signature->designation_date)).' de '.$months[intval(date('m', strtotime($signature->designation_date)))].' de '.date('Y', strtotime($signature->designation_date)) : setting('firma-autorizada.designation-date') : setting('firma-autorizada.designation-date') }}, que designa al RESPONSABLE DEL PROCESO DE CONTRATACIÓN DE APOYO NACIONAL A LA PRODUCCIÓN Y EMPLEO – RPA, AUTORIZÓ el inicio del proceso de contratación, de acuerdo al siguiente detalle:
             </p>
 
             <table width="100%" style="margin-top: 20px" cellspacing="5">
@@ -91,28 +91,11 @@
 
             <p style="margin-top: 80px">
                 <select id="location-id">
-                    <option value="Santísima Trinidad">Santísima Trinidad</option>
-                    <option value="Guayaramerín">Guayaramerín</option>
-                    <option value="Riberalta">Riberalta</option>
-                    <option value="Santa Rosa">Santa Rosa</option>
-                    <option value="Reyes">Reyes</option>
-                    <option value="Rurrenabaque">Rurrenabaque</option>
-                    <option value="Yucumo">Yucumo</option>
-                    <option value="San Borja">San Borja</option>
-                    <option value="San Ignacio">San Ignacio</option>
-                    <option value="San Ramón">San Ramón</option>
-                    <option value="San Joaquín">San Joaquín</option>
-                    <option value="Puerto Siles">Puerto Siles</option>
-                    <option value="Santa Ana">Santa Ana</option>
-                    <option value="Magdalena">Magdalena</option>
-                    <option value="Baures">Baures</option>
-                    <option value="Huacaraje">Huacaraje</option>
-                    <option value="Exaltación">Exaltación</option>
-                    <option value="San Javier">San Javier</option>
-                    <option value="Loreto">Loreto</option>
-                    <option value="San Andrés">San Andrés</option>
+                    @foreach (App\Models\City::where('states_id', 1)->where('deleted_at', NULL)->get() as $item)
+                    <option value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>    
+                    @endforeach
                 </select>
-                <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->date_autorization)) }} de {{ $months[intval(date('m', strtotime($contract->date_autorization)))] }} de {{ date('Y', strtotime($contract->date_autorization)) }} <br>
+                <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
                 <small><i>Cc/arch.</i></small>
             </p>
         </div>

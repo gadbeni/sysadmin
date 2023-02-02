@@ -80,6 +80,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('donations');
         Permission::generateFor('afps');
         Permission::generateFor('contracts_alternates_jobs');
+        Permission::generateFor('direcciones');
         Permission::generateFor('unidades');
 
         // people
