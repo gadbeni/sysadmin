@@ -92,7 +92,7 @@
             <p style="margin-top: 80px">
                 <select id="location-id">
                     @foreach (App\Models\City::where('states_id', 1)->where('deleted_at', NULL)->get() as $item)
-                    <option value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>    
+                    <option @if($item->name == $contract->direccion_administrativa->city->name) selected @endif value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>
                     @endforeach
                 </select>
                 <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
