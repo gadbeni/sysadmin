@@ -170,7 +170,7 @@
                                     <ul class="dropdown-menu" role="menu">
                                         @switch($item->procedure_type_id)
                                             @case(1)
-                                                <li><a title="Desiganación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum']) }}" target="_blank">Desiganación</a></li>
+                                            <li><a title="Designación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum']) }}" target="_blank">Designación</a></li>
                                                 @if ($item->ratifications->count() > 0 && auth()->user()->hasPermission('ratificate_contracts'))
                                                 <li><a title="Ratificación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-ratificacion']) }}" target="_blank">Ratificación</a></li>
                                                 @endif
