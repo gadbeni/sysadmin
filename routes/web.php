@@ -23,6 +23,7 @@ use App\Http\Controllers\MemosController;
 use App\Http\Controllers\MemosTypesController;
 use App\Http\Controllers\TcInboxController;
 use App\Http\Controllers\TcOutboxController;
+use App\Http\Controllers\TcController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,7 +70,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
 
 
-    Route::get('/mamore/getpeoplederivacion/',[TcController::class, 'getPeoplesDerivacion'])->name('mamore.getpeoplederivacion');
+    Route::get('mamore/getpeoplederivacion',[TcController::class, 'getPeoplesDerivacion'])->name('getpeoplederivacion');
+
 
 
     // ______________________________FIN_________________________________

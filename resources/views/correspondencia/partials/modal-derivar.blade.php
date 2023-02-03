@@ -58,8 +58,7 @@
 <script>
     $(document).ready(function () {
         
-
-        ruta = "{{ route('mamore.getpeoplederivacion') }}";
+        ruta = "{{ route('getpeoplederivacion') }}";
         $("#select-destinatario").select2({
             maximumSelectionLength: 20,
             ajax: { 
@@ -82,7 +81,6 @@
                     };
                 }
             },
-            //allowClear: true
         });
         $('#toggleswitch').on('change', function() {
             if (this.checked) {
