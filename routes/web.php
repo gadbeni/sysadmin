@@ -54,9 +54,23 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     // ____________________Trimite y correspondencia_____________________
     Route::resource('inbox', TcInboxController::class);
+    Route::get('inbox/list/{funcionario_id}/{type}', [TcInboxController::class, 'derivacion_list']);
+    Route::post('inbox/delete/derivacion', [TcInboxController::class, 'bandejaDerivationDelete'])->name('inbox-derivation.delete');
+    Route::post('inbox/{id}/archivar', [TcInboxController::class, 'derivacion_archivar'])->name('inbox.archivar');
+    Route::post('inbox/store/derivacion', [TcInboxController::class, 'store_derivacion'])->name('inbox.derivacion');
+
+
+
+    // Route::get('inbox/{id}', [TcInboxController::class, 'derivacion_show'])->name('bandeja.show');
 
 
     Route::resource('outbox', TcOutboxController::class);
+
+
+
+
+    Route::get('/mamore/getpeoplederivacion/',[TcController::class, 'getPeoplesDerivacion'])->name('mamore.getpeoplederivacion');
+
 
     // ______________________________FIN_________________________________
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Inbox extends Model
+class TcInbox extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -24,4 +24,9 @@ class Inbox extends Model
 
     ];
 
+
+
+    public function outbox(){
+        return $this->belongsTo(TcOutbox::class, 'entrada_id');
+    }
 }
