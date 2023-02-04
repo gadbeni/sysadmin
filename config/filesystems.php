@@ -41,6 +41,11 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
+        
+        'siscor' => [
+            'driver' => 'local',
+            'root' => storage_path('app'),
+        ],
 
         's3' => [
             'driver' => 's3',

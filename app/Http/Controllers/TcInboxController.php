@@ -15,6 +15,8 @@ use App\Models\TcPersona;
 use App\Models\TcVia;
 use App\Models\Unidad;
 use PHPUnit\Framework\MockObject\Stub\ReturnReference;
+use Illuminate\Support\Str;
+use Storage;
 
 use function PHPUnit\Framework\returnSelf;
 
@@ -329,6 +331,32 @@ class TcInboxController extends Controller
         }
 
 
+        public function store_file(Request $request){
+            try {
+                return 1;
+                $file = $request->file('file');
+                if ($file) {
+                    $nombre_origen = $file->getClientOriginalName();
+                    $newFileName = Str::random(20).'.'.$file->getClientOriginalExtension();
+                    $dir = "entradas/".date('F').date('Y');
+                    Storage::makeDirectory($dir);
+                    Storage::disk('public')->put($dir.'/'.$newFileName, file_get_contents($file));
+
+ 
+
+                    TcArchivo::create([
+                        'nombre_origen' => $nombre_origen,
+                        'entrada_id' => $request->id,
+                        'ruta' => $dir.'/'.$newFileName,
+                        'user_id' => Auth::user()->id
+                    ]);
+                }
+                return redirect()->back()->with(['message' => 'Archivo agregado correctamente.', 'alert-type' => 'success']);
+            } catch (\Throwable $th) {
+                // dd($th);
+                return redirect()->back()->with(['message' => 'Ocurrio un error.', 'alert-type' => 'error']);
+            }
+        }
 
 
 

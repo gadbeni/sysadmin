@@ -158,7 +158,7 @@
                                                     <td>{{ $item->nombre_origen }}</td>
                                                     <td>{{ $item->user->name ?? 'RDE' }}</td>
                                                     <td>{{ date('d/m/Y H:i:s', strtotime($item->created_at)) }} <br><small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small></td>
-                                                    <td><a href="{{ url('storage/'.$item->ruta) }}" class="btn btn-sm btn-info" target="_blank"> <i class="voyager-eye"></i> Ver</a></td>
+                                                    <td><a href="{{ url('https://siscor.beni.gob.bo/storage/'.$item->ruta) }}" class="btn btn-sm btn-info" target="_blank"> <i class="voyager-eye"></i> Ver</a></td>
                                                 </tr>
                                                 @php
                                                     $cont++;
