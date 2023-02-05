@@ -62,11 +62,21 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
 
 
+
     // Route::get('inbox/{id}', [TcInboxController::class, 'derivacion_show'])->name('bandeja.show');
 
 
     Route::resource('outbox', TcOutboxController::class);
     Route::get('outbox/ajax/list', [TcOutboxController::class, 'list']);
+    Route::get('outbox/{outbox}/print', [TcOutboxController::class, 'print'])->name('outbox.print');
+    Route::get('outbox/{outbox}/printhr', [TcOutboxController::class, 'printhr'])->name('outbox.printhr');
+    Route::post('outbox/read/nci/file', [TcOutboxController::class, 'entradaFile'])->name('outbox-file-nci.store');
+    Route::post('outbox/store/vias', [TcOutboxController::class, 'store_vias'])->name('store.vias');
+    Route::post('outbox/nulledvia', [TcOutboxController::class, 'anulacion_via'])->name('via.nulled');
+    Route::post('outbox/delete/derivacion', [TcOutboxController::class, 'delete_derivacion'])->name('delete.outbox');
+    Route::post('outbox/delete/derivacions', [TcOutboxController::class, 'delete_derivacions'])->name('delete.outboxs');
+    Route::post('outbox/delete/derivacion/file', [TcOutboxController::class, 'delete_derivacion_file'])->name('delete.outbox.file');
+
 
 
 

@@ -40,6 +40,10 @@ class TcOutbox extends Model
     function archivos(){
         return $this->hasMany(TcArchivo::class, 'entrada_id');
     }
+    function vias(){
+        return $this->hasMany(TcVia::class, 'entrada_id');
+    }
+
     public function person()
     {
         return $this->belongsTo(TcPersona::class, 'people_id_para');

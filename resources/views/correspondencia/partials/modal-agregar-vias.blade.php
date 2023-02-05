@@ -53,32 +53,7 @@
 
 <script>
     $(document).ready(function () {
-        // ruta = "{{ route('mamore.getpeoplederivacion') }}";
-        // $("#select-via").select2({
-        //     ajax: { 
-        //         allowClear: true,
-        //         url: ruta,
-        //         type: "get",
-        //         dataType: 'json',
-        //         delay: 500,
-        //         data:  (params) =>  {
-        //             var query = {
-        //                 search: params.term,
-        //                 type: destinatario_id,
-        //                 externo: intern_externo
-        //             }
-        //             return query;
-        //         },
-        //         processResults: function (response) {
-        //             return {
-        //                 results: response
-        //             };
-        //         }
-        //     }
-        // });
-
-
-        ruta = "{{ route('mamore.getpeople') }}";
+        ruta = "{{ route('getpeoplederivacion') }}";
                 intern_externo=1;
                 // alert(1);
                 $("#select-funcionario_id_destinov").select2({
