@@ -142,4 +142,44 @@ class TcOutboxController extends Controller
         }
     }
 
+    // para eliminar la primera derivacion del tramite
+    public function delete_derivacions(Request $request){
+        DB::beginTransaction();
+        try {
+            TcInbox::where('entrada_id', $request->entrada_id)->where('deleted_at', null)->update(['deleted_at' => Carbon::now()]);
+
+            TcVia::where('entrada_id', $request->entrada_id)->where('deleted_at', null)->update(['deleted_at' => Carbon::now()]);
+
+            DB::commit();
+            return redirect()->route('outbox.show', ['outbox' => $request->entrada_id])->with(['message' => 'Derivación anulada exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('outbox.show', ['outbox' => $request->entrada_id])->with(['message' => 'Ocurrio un error.', 'alert-type' => 'error']);
+        }
+    }
+    public function delete_derivacion(Request $request){
+        // return $request;
+        DB::beginTransaction();
+        try {
+            $ok = TcInbox::where('id', $request->id)->where('deleted_at', null)->where('entrada_id', $request->entrada_id)->first();
+            // return $ok;
+            $ok->update(['deleted_at' => Carbon::now()]);
+
+            $data = TcInbox::where('parent_id', $ok->parent_id)->where('deleted_at', null)->where('entrada_id', $request->entrada_id)->count();
+            
+            // return $data;
+            if($data == 0)
+            {
+                TcInbox::where('id', $ok->parent_id)->where('deleted_at', null)->where('entrada_id', $request->entrada_id)
+                ->update(['derivation'=>0, 'ok'=>'NO']);
+            }
+
+            DB::commit();
+            return redirect()->route('outbox.show', ['outbox' => $request->entrada_id])->with(['message' => 'Derivación anulada exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('outbox.show', ['outbox' => $request->entrada_id])->with(['message' => 'Ocurrio un error.', 'alert-type' => 'error']);
+        }
+    }
+
 }

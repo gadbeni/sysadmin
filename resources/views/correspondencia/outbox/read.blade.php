@@ -26,6 +26,9 @@
                         </a>
                       </li>
                     </ul>
+                    {{-- @php
+                        dd($data->inbox->whereNull('deleted_at'));
+                    @endphp --}}
                     @if ($data->inbox->whereNull('deleted_at')->count() == 0)
                         @if (count($nci)>0)
                             <button data-toggle="modal" data-target="#modal-derivar" onclick="derivacionItem({{ $data->id }}, {{ $data->people_id_para }})" title="Derivar" class="btn btn-sm btn-dark view" style="border: 0px">
