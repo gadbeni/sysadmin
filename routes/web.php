@@ -66,6 +66,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
 
     Route::resource('outbox', TcOutboxController::class);
+    Route::get('outbox/ajax/list', [TcOutboxController::class, 'list']);
 
 
 

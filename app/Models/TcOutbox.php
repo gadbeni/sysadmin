@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TcOutbox extends Model
 {
-    use HasFactory;
+    // use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $connection = 'siscor';
     protected $table = 'entradas';
 
@@ -37,5 +39,9 @@ class TcOutbox extends Model
     
     function archivos(){
         return $this->hasMany(TcArchivo::class, 'entrada_id');
+    }
+    public function person()
+    {
+        return $this->belongsTo(TcPersona::class, 'people_id_para');
     }
 }

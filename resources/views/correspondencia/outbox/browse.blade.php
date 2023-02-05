@@ -50,6 +50,7 @@
             </div>
         </div>
 
+        @include('correspondencia.partials.modal-delete',['name'=>'Si anula esta entrada tambien anulara la derivacion si tuviese, desea continuar?'])
         
     @stop
 
@@ -57,6 +58,75 @@
         <style>
             .select2-container {
                 width: 100% !important;
+            }
+        </style>
+
+        <style>
+            .entrada:hover{
+                cursor: pointer;
+                opacity: .7;
+            }
+            .unread{
+                background-color: rgba(135, 183, 148, 0.2) !important
+            }
+
+
+
+            /* ALL LOADERS */
+
+            .loader{
+                width: 100px;
+                height: 100px;
+                border-radius: 100%;
+                position: relative;
+                margin: 0 auto;
+            }
+            /* LOADER 3 */
+
+            #loader-3:before, #loader-3:after{
+                content: "";
+                width: 20px;
+                height: 20px;
+                position: absolute;
+                top: 0;
+                left: calc(50% - 10px);
+                background-color: #5eaf4a;
+                animation: squaremove 1s ease-in-out infinite;
+            }
+
+            #loader-3:after{
+                bottom: 0;
+                animation-delay: 0.5s;
+            }
+
+            @keyframes squaremove{
+                0%, 100%{
+                    -webkit-transform: translate(0,0) rotate(0);
+                    -ms-transform: translate(0,0) rotate(0);
+                    -o-transform: translate(0,0) rotate(0);
+                    transform: translate(0,0) rotate(0);
+                }
+
+                25%{
+                    -webkit-transform: translate(40px,40px) rotate(45deg);
+                    -ms-transform: translate(40px,40px) rotate(45deg);
+                    -o-transform: translate(40px,40px) rotate(45deg);
+                    transform: translate(40px,40px) rotate(45deg);
+                }
+
+                50%{
+                    -webkit-transform: translate(0px,80px) rotate(0deg);
+                    -ms-transform: translate(0px,80px) rotate(0deg);
+                    -o-transform: translate(0px,80px) rotate(0deg);
+                    transform: translate(0px,80px) rotate(0deg);
+                }
+
+                75%{
+                    -webkit-transform: translate(-40px,40px) rotate(45deg);
+                    -ms-transform: translate(-40px,40px) rotate(45deg);
+                    -o-transform: translate(-40px,40px) rotate(45deg);
+                    transform: translate(-40px,40px) rotate(45deg);
+                }
             }
         </style>
     @stop
@@ -79,8 +149,11 @@
                 });
             });
             function list(page = 1){
-                $("#div-results").LoadingOverlay("show");
-                let url = '{{ url("admin/entradas/ajax/list") }}';
+                // $("#div-results").LoadingOverlay("show");
+                var loader = '<div class="col-md-12 bg"><div class="loader" id="loader-3"></div></div>'
+                $('#div-results').html(loader);
+
+                let url = '{{ url("admin/outbox/ajax/list") }}';
                 let search = $('#input-search').val() ? $('#input-search').val() : '';
                 $.ajax({
                     url: `${url}?search=${search}&paginate=${countPage}&page=${page}`,
