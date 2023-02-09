@@ -333,17 +333,13 @@ class TcInboxController extends Controller
 
         public function store_file(Request $request){
             try {
-                return 1;
                 $file = $request->file('file');
                 if ($file) {
                     $nombre_origen = $file->getClientOriginalName();
                     $newFileName = Str::random(20).'.'.$file->getClientOriginalExtension();
                     $dir = "entradas/".date('F').date('Y');
                     Storage::makeDirectory($dir);
-                    Storage::disk('public')->put($dir.'/'.$newFileName, file_get_contents($file));
-
- 
-
+                    Storage::disk('siscor')->put($dir.'/'.$newFileName, file_get_contents($file));
                     TcArchivo::create([
                         'nombre_origen' => $nombre_origen,
                         'entrada_id' => $request->id,

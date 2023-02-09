@@ -59,6 +59,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('inbox/delete/derivacion', [TcInboxController::class, 'bandejaDerivationDelete'])->name('inbox-derivation.delete');
     Route::post('inbox/{id}/archivar', [TcInboxController::class, 'derivacion_archivar'])->name('inbox.archivar');
     Route::post('inbox/store/derivacion', [TcInboxController::class, 'store_derivacion'])->name('inbox.derivacion');
+    Route::post('inbox/store/file', [TcInboxController::class, 'store_file']);
+
 
 
 
@@ -68,6 +70,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     Route::resource('outbox', TcOutboxController::class);
     Route::get('outbox/ajax/list', [TcOutboxController::class, 'list']);
+    Route::post('outbox/store/file', [TcOutboxController::class, 'store_file']);
     Route::get('outbox/{outbox}/print', [TcOutboxController::class, 'print'])->name('outbox.print');
     Route::get('outbox/{outbox}/printhr', [TcOutboxController::class, 'printhr'])->name('outbox.printhr');
     Route::post('outbox/read/nci/file', [TcOutboxController::class, 'entradaFile'])->name('outbox-file-nci.store');
@@ -76,12 +79,16 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('outbox/delete/derivacion', [TcOutboxController::class, 'delete_derivacion'])->name('delete.outbox');
     Route::post('outbox/delete/derivacions', [TcOutboxController::class, 'delete_derivacions'])->name('delete.outboxs');
     Route::post('outbox/delete/derivacion/file', [TcOutboxController::class, 'delete_derivacion_file'])->name('delete.outbox.file');
+    Route::post('outbox/store/derivacion', [TcOutboxController::class, 'store_derivacion'])->name('outbox.derivacion');
+
 
 
 
 
 
     Route::get('mamore/getpeoplederivacion',[TcController::class, 'getPeoplesDerivacion'])->name('getpeoplederivacion');
+    Route::get('cite/{id?}/{cite?}',[TcController::class,'getCite'])->name('cite.get');
+
 
 
 

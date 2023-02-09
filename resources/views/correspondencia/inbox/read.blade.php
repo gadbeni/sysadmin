@@ -128,12 +128,12 @@
                                             <h3 class="panel-title">Archivos</h3>
                                         </div>
                                         <div class="col-md-3 text-right">
-                                            {{-- @if ($data->estado_id != 4)
+                                            @if ($data->estado_id != 4)
                                             <a href="#" data-toggle="modal" data-target="#modal-upload" class="btn btn-success" style="margin: 15px;">
                                                 <span class="voyager-plus"></span>&nbsp;
                                                 Agregar nuevo
                                             </a>
-                                            @endif --}}
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -304,6 +304,8 @@
 
 
         @include('correspondencia.partials.modal-derivar', ['id' => $data->id, $der_id = $derivacion->id, 'redirect' => 'inbox.index'])
+
+        @include('correspondencia.partials.modal-dropzone', ['title' => 'Agregar archivo', 'id' => $data->id, 'action' => url('admin/inbox/store/file')])
 
 
     @stop

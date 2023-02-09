@@ -44,11 +44,11 @@
                         <a href="{{ route('outbox.show', ['outbox' => $item->id]) }}" title="Ver" class="btn btn-sm btn-info view">
                             <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                         </a>
-                        @if ($item->inbox->count() == 0)
+                        {{-- @if ($item->inbox->count() == 0)
                             <a href="{{ route('outbox.edit', ['outbox' => $item->id]) }}" title="Editar" class="btn btn-sm btn-warning">
                                 <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
                             </a>
-                        @endif
+                        @endif --}}
 
                         @if ($item->inbox->whereNull('deleted_at')->count() <= 1)
                             <button title="Anular" class="btn btn-sm btn-danger delete" data-toggle="modal" data-target="#delete_modal" onclick="deleteItem('{{ url('admin/outbox/'.$item->id) }}')">

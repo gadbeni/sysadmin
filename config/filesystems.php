@@ -44,7 +44,7 @@ return [
         
         'siscor' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
+            'root' => storage_path('../../siscorv/storage/app/public'),
         ],
 
         's3' => [

@@ -1,7 +1,7 @@
 {{-- Single delete modal --}}
 <form action="{{ isset($action) ? $action : '#' }}" method="POST" class="" id="my-awesome-dropzone " enctype="multipart/form-data">
-    <div class="modal modal-success fade" tabindex="-1" id="modal-upload" role="dialog">
-        <div class="modal-dialog">
+    <div class="modal fade" tabindex="-1" id="modal-upload" role="dialog">
+        <div class="modal-dialog modal-success">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>

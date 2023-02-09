@@ -20,7 +20,7 @@
                         </a>
                       </li>
                       <li>
-                        <a href="{{ route('outbox.printhr', ['outbox' => $data->id]) }}" target="_blank">
+                        <a href="{{ asset('file/Hojaruta.pdf') }}" target="_blank">
                             <span class="glyphicon glyphicon-print"></span>&nbsp;
                                 Hoja de Ruta
                         </a>
@@ -432,10 +432,10 @@
         </div>
 
         {{-- para derivar la correspondencia --}}
-        {{-- @include('correspondencia.partials.modal-derivar') --}}
+        @include('correspondencia.partials.modal-derivarOutbox')
 
         {{-- delete via modal --}}
-        {{-- @include('correspondencia.partials.modal-dropzone', ['title' => 'Agregar archivo', 'id' => $data->id, 'action' => url('admin/entradas/store/file')]) --}}
+        @include('correspondencia.partials.modal-dropzone', ['title' => 'Agregar archivo', 'id' => $data->id, 'action' => url('admin/outbox/store/file')])
 
         {{-- Personas modal --}}
         @include('correspondencia.partials.modal-agregar-vias', ['id' => $data->id])

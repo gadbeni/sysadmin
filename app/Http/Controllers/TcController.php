@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Direccion;
 use App\Models\Person;
+use App\Models\TcOutbox;
 use App\Models\TcPersona;
 use App\Models\TcPersonaExt;
 use App\Models\Unidad;
@@ -47,7 +48,7 @@ class TcController extends Controller
         $funcionarios = [];
         if (!$search && $type > 0)
         {
-            $funcionarios = DB::connection('mamore')->table('people as p')
+            $funcionarios = DB::table('people as p')
                                         ->join('contracts as c', 'c.person_id', 'p.id')
                                         ->where('c.status','firmado')
                                         ->where('c.deleted_at', null)
@@ -171,8 +172,45 @@ class TcController extends Controller
             return "Error";
         }
         return $funcionario;
+    }
 
-        // return response()->json($funcionario);
+
+    // para saber si el cite ya se encuentra registrado 
+    public function getCite($id,$cite)
+    {
+       $aux ='';
+       $i =0;
+       $cite = strtoupper($cite);
+
+       while($i < strlen($cite))
+       {
+           if($cite[$i]=='&')
+           {
+               $aux = $aux.'/';
+           }
+           else
+           {
+               $aux = $aux.$cite[$i];
+           }
+           $i++;
+       }
+
+       if($id == 1)
+       {
+           $ok = TcOutbox::where('cite', $aux)->where('deleted_at', null)->first();
+       }
+       else
+       {
+           $ok = TcOutbox::where('id', '!=', $id)->where('cite', $aux)->where('deleted_at', null)->first();
+       }
+       if($ok)
+       {
+           return 1;
+       }
+       else
+       {
+           return 0;
+       }
     }
 
     // public function getPeopleSN($id)
