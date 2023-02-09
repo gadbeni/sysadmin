@@ -1,11 +1,3 @@
-<link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.8.0/sweetalert2.min.css" rel="stylesheet" />
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.8.0/sweetalert2.min.js"></script>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
-
 
 @extends('voyager::master')
 
@@ -65,7 +57,6 @@
                                     <div id="divcite" class="form-group tip col-md-6">
                                         <label class="control-label">Nro de cite</label>
                                         <input type="text" id="input1" maxlength="50" class="form-control input1" onkeypress="return check(event)" style="text-transform:uppercase" placeholder="DF-1/2022">
-                                        <input type="text" id="input2" maxlength="50" class="form-control input2" style="text-transform:uppercase" placeholder="1/2022">
                                         <span id="icon"  style="display: none; color:red">
                                             <b>El cite  ya se encuentra registrado</b>
                                         </span>
@@ -156,7 +147,7 @@
                                     
                                     <div class="form-group col-md-12" id="div-detalle">
                                         <label class="control-label">Cuerpo</label> 
-                                        <textarea class="form-control richTextBox" rows="20" id="bloquear" name="detalles">{{old('detalles') ? : $outbox->detalles}}</textarea>
+                                        <textarea class="form-control richTextBox" name="detalles">{{old('detalles') ? : $outbox->detalles}}</textarea>
                                     </div>
                                    
                                 </div>
@@ -179,8 +170,11 @@
 
 
     @section('javascript')
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.8.0/sweetalert2.min.js"></script>
+
    
-        {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> Para bloquear el text-area --}}
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             entrada_id = "<?php echo $outbox->id; ?>"; 
@@ -218,76 +212,13 @@
                     }
                 });
             };
-            input2.oninput = function() {
-                // result.innerHTML = input1.value;
-                var cite ="";
-                var aux = '';
-                var i =0;
-                cite = input2.value;
-
-                while(i < cite.length){
-                    if(cite.charAt(i) == '/'){
-                        aux = aux + '&';   
-                    }
-                    else
-                    {
-                        aux = aux + cite.charAt(i);
-                    }
-                    i++;
-                }
-                if(!entrada_id)
-                {
-                    entrada_id=1;
-                }
-                $.get('{{route('cite.get')}}/'+entrada_id+'/'+aux, function(data){ 
-                    if(data == 1)
-                    {
-                        $('#icon').fadeIn();         
-                        $('#btn_save').attr('disabled', true);           
-                    }      
-                    else
-                    {
-                        $('#icon').fadeOut();
-                        $('#btn_save').attr('disabled', false);
-                    }
-                });
-            };
-
+        
             var okletra = true;
             var oknumero = true;
             var auxl=0;
             var auxn=0;
             $(document).ready(function(){
 
-                $('#form-create-customer').submit(function(e){
-                    e.preventDefault();
-                    $('.btn-save-customer').attr('disabled', true);
-                    $('.btn-save-customer').val('Guardando...');
-                    $.post($(this).attr('action'), $(this).serialize(), function(data){
-                        if(data.category.id){
-                            // $('#select-category').trigger('reset');
-                            // $('#div_category').load()
-                            toastr.success('Categoria Registrada..', 'Éxito');
-                            $(this).trigger('reset');
-                        }else{
-                            toastr.error(data.error, 'Error');
-                        }
-                    })
-                    .always(function(){
-                        $('.btn-save-customer').attr('disabled', false);
-                        $('.btn-save-customer').val('Guardar');
-                        $('#nombre').val('');
-                        $('#organization_id').val('').trigger('change');
-
-                        $('#modal-create-customer').modal('hide');
-                    });
-                });
-
-
-
-
-
-               // $('#divcite').fadeOut();
                 ruta = "{{ route('getpeoplederivacion') }}";
                 intern_externo=1;
                 $("#select-funcionario_id_destino").select2({
@@ -318,25 +249,17 @@
                     }
                 });
 
-
-
-
                 var additionalConfig = {
                     selector: 'textarea.richTextBox[name="detalles"]',
                 }
 
-                
-
-
                 edit = "<?php echo $outbox->id; ?>";
                 if(edit)
                 {
+                    // alert(1);
                     tipo = "<?php echo $outbox->tipo; ?>";
                     if(tipo == 'I')
                     {
-                        $('#input2').fadeOut();
-                        $('#input2').removeAttr('required');
-                        $('#input2').removeAttr('name', 'cite');
                         $('#input1').fadeIn();
                         $('#input1').attr('required', 'required');
                         $('#input1').attr('name', 'cite');
@@ -345,65 +268,20 @@
                         auxl=0
                         ;
                     }
-                    else
-                    {
-                        $('#input1').fadeOut();
-                        $('#input1').removeAttr('required');
-                        $('#input1').removeAttr('name', 'cite');
-                        $('#input2').fadeIn();
-                        $('#input2').attr('required', 'required');
-                        $('#input2').attr('name', 'cite');
-                        auxn =5;
-                        auxl=5;
-                    }
-                    // alert(edit)
                 }
                 else
                 {
                     $('#input1').fadeIn();
-                    $('#input2').fadeOut();
                 }
 
                 tinymce.init(window.voyagerTinyMCE.getConfig(additionalConfig));
                 
-                $('#select-tipo').change(function(){
-                    let tipo = $('#select-tipo option:selected').val();
-                    if(tipo == 'E'){
-                        $('#div-remitente').fadeOut();
-                        $('#input-remitente').fadeIn();
-                        $('#div-detalle').fadeOut();
-                        $('#div-entity_id').fadeIn();
-                        $('#input2').fadeIn();
-                        $('#input2').attr('required', 'required');
-                        $('#input2').attr('name', 'cite');
-                        $('#input1').fadeOut();
-                        $('#input1').removeAttr('required');
-                        $('#input1').removeAttr('name', 'cite');
-                        auxn =5;
-                        auxl=5;
-                        
-                    }else{
-                        $('#div-remitente').fadeIn();
-                        $('#input-remitente').fadeOut();
-                        $('#div-detalle').fadeIn();
-                        $('#div-entity_id').fadeOut();
-                        $('#input1').fadeIn();
-                        $('#input1').attr('required', 'required');
-                        $('#input1').attr('name', 'cite');
 
-                        $('#input2').fadeOut();
-                        $('#input2').removeAttr('required');
-                        $('#input2').removeAttr('name', 'cite');
-                        auxn =0;
-                        auxl=0;
-                    }
-                });
             });
             
             function check(e) {   
                 tecla = (document.all) ? e.keyCode : e.which;
 
-                //Tecla de retroceso para borrar, siempre la permite
                 if (tecla == 8) {
             
                     return true;
@@ -411,14 +289,12 @@
 
                 var numero =0;
                 var letra =0;
-                // Patron de entrada, en este caso solo acepta numeros y letras
                 patron = /[A-Za-z0-9-/-]/;
                 tecla_final = String.fromCharCode(tecla);
                 // alert(patron.test(tecla_final))
                 if(patron.test(tecla_final))
                 {
                     var contenido =document.getElementsByClassName("input1")[0].value;
-                    // var contenido =document.getElementsByClassName("input2")[0].value;
                     var cadena =  contenido+tecla_final;
                     // alert(cadena)
 
@@ -511,17 +387,6 @@
                 }
                 else
                 {
-                    // swal({
-                    //     title: "Error",
-                    //     text: "El Campo Nro. CITE tiene que tener minimo 2 letras y 5 numeros.\nEjemplo: DF-1/2022",
-                    //     // text: "Esta acción ya no se podrá deshacer, Así que piénsalo bien.",
-                    //     type: "error",
-                    //     showCancelButton: false,
-                    //     // confirmButtonColor: '#3085d6',
-                    //     // cancelButtonColor: '#d33',
-                    //     // confirmButtonText: 'Si, estoy seguro',
-                    //     // cancelButtonText: "Cancelar"
-                    //     });
 
                     Swal.fire({
                         icon: 'error',
@@ -529,14 +394,6 @@
                         text: "El Campo Nro. CITE tiene que tener minimo 2 letras y 5 numeros.\nEjemplo: DF-1/2022",
                         // footer: '<a href="">Why do I have this issue?</a>'
                     })
-                    // alertify.confirm("This is a confirm dialog.",
-                    // function() {
-                    //     alertify.success('Ok');
-                    // },
-                    // function() {
-                    //     alertify.error('Cancel');
-                    // }
-                    // );
                     div = document.getElementById('flotante');
                     div.style.display = '';
                     return;
@@ -547,11 +404,11 @@
 
 
             $(document).ready(function(){
-                $("#bloquear").on('paste', function(e){
+                $("#input1").on('paste', function(e){
                     e.preventDefault();
                     // alert('Esta acción está prohibida');
                 })                
-                $("#bloquear").on('copy', function(e){
+                $("#input1").on('copy', function(e){
                     e.preventDefault();
                     // alert('Esta acción está prohibida');
                 })
@@ -563,24 +420,10 @@
             $(document).on('change','.imageLength',function(){
                 var fileName = this.files[0].name;
                 var fileSize = this.files[0].size;
-
-                // if(fileSize > 10000000){
-                //     Swal.fire({
-                //         icon: 'error',
-                //         title: 'Oops...',
-                //         text: 'El archivo no debe superar los 10 MB!'
-                //     })
-                //     this.value = '';
-                //     this.files[0].name = '';
-                // }
-                
-                    // recuperamos la extensión del archivo
                     var ext = fileName.split('.').pop();
                     
-                    // Convertimos en minúscula porque 
-                    // la extensión del archivo puede estar en mayúscula
                     ext = ext.toLowerCase();
-                    // console.log(ext);
+
                     switch (ext) {
                         case 'jpg':
                         case 'jpeg':
@@ -592,7 +435,7 @@
                                 title: 'Oops...',
                                 text: 'El archivo no tiene la extensión adecuada!'
                             })
-                            this.value = ''; // reset del valor
+                            this.value = ''; 
                             this.files[0].name = '';
                     }
             });

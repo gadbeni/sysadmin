@@ -181,6 +181,96 @@ class TcOutboxController extends Controller
     }
 
 
+    public function edit(TcOutbox $outbox)
+    {
+        $getFuncionario = new TcController();
+
+        $user_auth = Person::where('ci', Auth::user()->ci)->first();  
+
+        $funcionario = $getFuncionario->getPeople($user_auth->id);
+        // return $outbox;
+
+        // $funcionario = Persona::where('user_id', Auth::user()->id)->first();
+        return view('correspondencia.outbox.add-edit', compact('outbox','funcionario'));
+    }
+
+
+    public function update(Request $request, TcOutbox $outbox)
+    {
+        $getFuncionario = new TcController();
+
+        DB::beginTransaction();
+        try {
+
+            // return $outbox;
+            $request->merge(['cite' =>  strtoupper($request->cite)]);
+
+            $persona = Person::where('ci', Auth::user()->ici)->first();
+
+            $unidad_id_remitente = NULL;
+            $direccion_id_remitente = null;
+            $funcionario_remitente = NULL;
+            
+
+            if($request->tipo == 'I'){
+                $unidad_id_remitente = $outbox->unidad_id_remitente;
+                $direccion_id_remitente = $outbox->direccion_id_remitente;
+            }
+
+            // return $direccion_id_remitente;
+            // return $entrada;
+            $date = Carbon::now();
+
+            $outbox->update([
+                'tipo' => $request->tipo,
+                'remitente' => $request->remitent_interno,
+                'cite' => $request->cite,
+                'referencia' => $request->referencia,
+                'nro_hojas' => $request->nro_hojas,
+                'urgent' => ($request->urgent) ? true : false,
+                'deadline' => $request->deadline,
+                // 'estado' => 'activo',
+                'detalles' => $request->detalles,
+                // 'funcionario_id_remitente' => $request->funcionario_id_remitente,
+                'people_id_de' => $request->funcionario_id_remitente,
+                'unidad_id_remitente' => $unidad_id_remitente,
+                'direccion_id_remitente' => $direccion_id_remitente,
+                'people_id_para' => $request->funcionario_id_destino,
+                'job_para' => $getFuncionario->getPeople($request->funcionario_id_destino)->cargo,
+                'entity_id' => $request->entity_id,
+                'actualizado_por' => auth()->user()->email,
+                'category_id' => $request->category_id,
+                'fecha_actualizacion' => $date->toDateTimeString()
+            ]);
+
+            $file = $request->file('archivos');
+            if ($file) {
+                for ($i=0; $i < count($file); $i++) { 
+                    $nombre_origen = $file[$i]->getClientOriginalName();
+                    $newFileName = Str::random(20).'.'.$file[$i]->getClientOriginalExtension();
+                    $dir = "entradas/".date('F').date('Y');
+                    Storage::makeDirectory($dir);
+                    Storage::disk('siscor')->put($dir.'/'.$newFileName, file_get_contents($file[$i]));
+                    TcArchivo::create([
+                        'nombre_origen' => $nombre_origen,
+                        'entrada_id' => $outbox->id,
+                        'ruta' => $dir.'/'.$newFileName,
+                        'user_id' => Auth::user()->id
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('outbox.index')->with(['message' => 'Registro actualizado exitosamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            //  dd($th);
+            DB::rollback();
+            // return 1;
+            return redirect()->route('outbox.index')->with(['message' => 'Ocurrio un error.', 'alert-type' => 'error']);
+        }
+    }
+
+
     public function destroy($id)
     {  
         DB::beginTransaction();
