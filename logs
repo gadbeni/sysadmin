@@ -1,7 +1,8 @@
-
+Eliminar campo desiny de la tabla meno_types
+Agregar campo number_acount en la tabla person_external
 
 Migraciones
-    - Ejecutar migraciones
+    
 Seeders
     
 Paquetes
@@ -14,4 +15,3 @@ Otros
 NOTA:
 - generar código de adenda
 - anular adenda
-- centralizar planilla

@@ -18,7 +18,7 @@
                     <option @if($item->name == $contract->direccion_administrativa->city->name) selected @endif value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>
                     @endforeach
                 </select>
-                <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
+                <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->date_note)) }} de {{ $months[intval(date('m', strtotime($contract->date_note)))] }} de {{ date('Y', strtotime($contract->date_note)) }} <br>
                 <b>INV/CI/GAD BENI/MCD N° {{ $code }}</b>
             </p>
             <br>
@@ -81,7 +81,7 @@
             </table>
 
             <p>
-                Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la Unidad de Contrataciones de Bienes y Servicios dependiente de la Secretaría Departamental Administrativa, ubicada en edificio ex CORDEBENI Calle Cochabamba y Joaquín de Sierra, con un plazo no mayor a 48 horas a partir la fecha, debiendo presentar la siguiente documentación:
+                Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la Unidad de Contrataciones de Bienes y Servicios dependiente de la Secretaría Departamental Administrativa, ubicada en Edificio de Gobernación en Acera Sud de la Plaza Mariscal José Ballivián, con un plazo no mayor a 48 horas a partir la fecha, debiendo presentar la siguiente documentación:
             </p>
 
             <table align="center">
