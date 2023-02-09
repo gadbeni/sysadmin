@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Direccion;
+use App\Http\Controllers\TcController;
 use App\Models\TcArchivo;
 use Illuminate\Http\Request;
 use Prophecy\Doubler\Generator\Node\ReturnTypeNode;
@@ -149,7 +150,11 @@ class TcInboxController extends Controller
 
 
     public function derivacion_archivar(Request $request){
-        // return $request;
+        $getPeople = new TcController();
+        if(!$getPeople->isset())
+        {
+            return redirect()->route('outbox.index')->with(['message' => 'Se encuentra sin contrato activo', 'alert-type' => 'error']);
+        }
         try {
             TcInbox::where('id',$request->derivacion_id)->update(['ok'=>'ARCHIVADO']);
             return redirect()->route('inbox.index')->with(['message' => 'Correspondencia archivada exitosamente.', 'alert-type' => 'success']);
@@ -162,7 +167,11 @@ class TcInboxController extends Controller
 
     public function bandejaDerivationDelete(Request $request)
     {
-        // return $request;
+        $getPeople = new TcController();
+        if(!$getPeople->isset())
+        {
+            return redirect()->route('outbox.index')->with(['message' => 'Se encuentra sin contrato activo', 'alert-type' => 'error']);
+        }
 
         DB::beginTransaction();
         try {
@@ -188,8 +197,11 @@ class TcInboxController extends Controller
 
 
     public function store_derivacion(Request $request){
-        //    return $request;
-            $getPeople = new TcController();
+        $getPeople = new TcController();
+        if(!$getPeople->isset())
+        {
+            return redirect()->route('outbox.index')->with(['message' => 'Se encuentra sin contrato activo', 'alert-type' => 'error']);
+        }
             $destinatarios = $request->destinatarios;
             $persona = TcPersona::where('ci', Auth::user()->ci)->first();
             // return $persona;
@@ -268,7 +280,11 @@ class TcInboxController extends Controller
 
 
         public function add_derivacion($funcionario, $request, $rechazo = NULL, $rde = null){
-            // return 11;
+            $getPeople = new TcController();
+            if(!$getPeople->isset())
+            {
+                return redirect()->route('outbox.index')->with(['message' => 'Se encuentra sin contrato activo', 'alert-type' => 'error']);
+            }
             $persona = TcPersona::where('ci', Auth::user()->ci)->first();
     
             $vias = TcVia::where('entrada_id',$request->id)->where('deleted_at', null)->get();
@@ -332,6 +348,11 @@ class TcInboxController extends Controller
 
 
         public function store_file(Request $request){
+            $getPeople = new TcController();
+            if(!$getPeople->isset())
+            {
+                return redirect()->route('outbox.index')->with(['message' => 'Se encuentra sin contrato activo', 'alert-type' => 'error']);
+            }
             try {
                 $file = $request->file('file');
                 if ($file) {

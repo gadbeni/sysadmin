@@ -14,6 +14,26 @@ use Illuminate\Support\Facades\Auth;
 
 class TcController extends Controller
 {
+
+
+    public function isset()
+    {
+        $people = Person::where('ci', Auth::user()->ci)->first();
+
+        if(!$people)
+        {
+            return 0;
+        }
+        $funcionario = $this->getPeople($people->id);
+
+        if(!$funcionario || $funcionario == 'Error')
+        {
+            return 0;
+        }
+        return 1;
+    }
+
+
     // static function getIdDireccionInfo($direccion_id) {
     //     try {
     //         return DB::connection('mamore')->table('direcciones')
