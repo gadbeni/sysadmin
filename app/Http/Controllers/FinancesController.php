@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 // Models
 use App\Models\PersonExternal;
@@ -27,7 +30,7 @@ class FinancesController extends Controller
             ]);
             return redirect()->route('voyager.person-externals.index')->with(['message' => 'Registro guardado exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
-            //throw $th;
+            // throw $th;
             return redirect()->route('voyager.person-externals.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }

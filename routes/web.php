@@ -184,10 +184,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('reports/check/check-browse', [CheckController::class, 'report_view'])->name('report.check.browse');
     Route::post('reports/check/chek-list', [ReportsController::class, 'check_list'])->name('reports.check.list');
 
-    // Finanzas
-    Route::resource('memos', MemosController::class);
-    Route::get('memos/ajax/list', [MemosController::class, 'list']);
-
     // Administrativo
 
     // *Contratos
@@ -208,6 +204,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     // * Personas externas
     Route::get('person-externals/create', [FinancesController::class, 'person_external_create'])->name('voyager.person-externals.create');
     Route::post('person-externals/store', [FinancesController::class, 'person_external_store'])->name('voyager.person-externals.store');
+
+    // * Memos
+    Route::resource('memos', MemosController::class);
+    Route::get('memos/ajax/list', [MemosController::class, 'list']);
+    Route::get('memos/{id}/print', [MemosController::class, 'print']);
 
     // Reportes
 

@@ -1,10 +1,11 @@
-Eliminar campo desiny de la tabla meno_types
+Eliminar eliminar tablas de memo
 Agregar campo number_acount en la tabla person_external
+Agregar campos job_alt, designation_alt, designation_date_alt en tabla signatures
 
 Migraciones
     
 Seeders
-    
+    MemosTypesGroupsTableSeeder, UpdateBreadSeeder, UpdatePermissionsSeeder
 Paquetes
 
 Comandos

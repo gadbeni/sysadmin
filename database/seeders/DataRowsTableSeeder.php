@@ -2401,7 +2401,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 9,
+                'order' => 12,
             ),
             149 => 
             array (
@@ -2417,7 +2417,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 10,
+                'order' => 13,
             ),
             150 => 
             array (
@@ -2433,7 +2433,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 11,
+                'order' => 14,
             ),
             151 => 
             array (
@@ -2449,7 +2449,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"off":"Inactivo","on":"Activo","checked":true}',
-                'order' => 8,
+                'order' => 11,
             ),
             152 => 
             array (
@@ -3728,22 +3728,22 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{}',
-                'order' => 7,
+                'details' => '{"validation":{"rule":"required"}}',
+                'order' => 5,
             ),
             232 => 
             array (
                 'id' => 253,
                 'data_type_id' => 26,
                 'field' => 'subject',
-                'type' => 'rich_text_box',
+                'type' => 'text',
                 'display_name' => 'Asunto',
                 'required' => 0,
                 'browse' => 0,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
+                'read' => 0,
+                'edit' => 0,
+                'add' => 0,
+                'delete' => 0,
                 'details' => '{"validation":{"rule":"required"}}',
                 'order' => 6,
             ),
@@ -3761,7 +3761,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"display":{"width":6},"on":"Activo","off":"Inactivo","checked":true}',
-                'order' => 8,
+                'order' => 7,
             ),
             234 => 
             array (
@@ -3777,7 +3777,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 9,
+                'order' => 8,
             ),
             235 => 
             array (
@@ -3793,7 +3793,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 10,
+                'order' => 9,
             ),
             236 => 
             array (
@@ -3809,7 +3809,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 11,
+                'order' => 10,
             ),
             237 => 
             array (
@@ -4592,7 +4592,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{}',
+                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
                 'order' => 5,
             ),
             286 => 
@@ -4608,7 +4608,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{}',
+                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
                 'order' => 6,
             ),
             287 => 
@@ -4624,7 +4624,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{}',
+                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
                 'order' => 7,
             ),
             288 => 
@@ -4640,7 +4640,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{}',
+                'details' => '{"on":"Activo","off":"Inactivo","checked":true,"display":{"width":6}}',
                 'order' => 8,
             ),
             289 => 
@@ -5282,6 +5282,54 @@ class DataRowsTableSeeder extends Seeder
                 'delete' => 1,
                 'details' => '{"display":{"width":6}}',
                 'order' => 9,
+            ),
+            329 => 
+            array (
+                'id' => 380,
+                'data_type_id' => 17,
+                'field' => 'job_alt',
+                'type' => 'text',
+                'display_name' => 'Cargo RPA',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
+                'order' => 8,
+            ),
+            330 => 
+            array (
+                'id' => 381,
+                'data_type_id' => 17,
+                'field' => 'designation_alt',
+                'type' => 'text',
+                'display_name' => 'Decreto de designación RPA',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
+                'order' => 9,
+            ),
+            331 => 
+            array (
+                'id' => 382,
+                'data_type_id' => 17,
+                'field' => 'designation_date_alt',
+                'type' => 'text',
+                'display_name' => 'Fecha de designación RPA',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
+                'order' => 10,
             ),
         ));
         
