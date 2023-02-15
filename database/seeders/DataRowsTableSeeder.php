@@ -1217,7 +1217,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191"}}',
-                'order' => 21,
+                'order' => 22,
             ),
             75 => 
             array (
@@ -1249,7 +1249,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 23,
+                'order' => 24,
             ),
             77 => 
             array (
@@ -1265,7 +1265,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 24,
+                'order' => 25,
             ),
             78 => 
             array (
@@ -1601,7 +1601,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
             'details' => '{"options":{"1":"Soltero(a)","2":"Casado(a)"},"display":{"width":6}}',
-                'order' => 18,
+                'order' => 19,
             ),
             99 => 
             array (
@@ -3137,7 +3137,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{}',
-                'order' => 22,
+                'order' => 23,
             ),
             195 => 
             array (
@@ -3169,7 +3169,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"display":{"width":6},"resize":{"width":"1000","height":null},"quality":"70%","upsize":true,"thumbnails":[{"name":"medium","scale":"50%"},{"name":"small","scale":"25%"},{"name":"cropped","crop":{"width":"300","height":"250"}}]}',
-                'order' => 20,
+                'order' => 21,
             ),
             197 => 
             array (
@@ -3179,13 +3179,13 @@ class DataRowsTableSeeder extends Seeder
                 'type' => 'text',
                 'display_name' => 'Número de cuenta',
                 'required' => 0,
-                'browse' => 1,
+                'browse' => 0,
                 'read' => 1,
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
-                'order' => 19,
+                'order' => 20,
             ),
             198 => 
             array (
@@ -4504,16 +4504,16 @@ class DataRowsTableSeeder extends Seeder
                 'id' => 302,
                 'data_type_id' => 9,
                 'field' => 'cc',
-                'type' => 'text',
-                'display_name' => 'Cc',
+                'type' => 'select_dropdown',
+                'display_name' => 'Caja de Salud',
                 'required' => 0,
-                'browse' => 1,
+                'browse' => 0,
                 'read' => 1,
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{}',
-                'order' => 25,
+                'details' => '{"options":{"1":"Caja Cordes","2":"Caja Petrolera"},"display":{"width":6}}',
+                'order' => 18,
             ),
             281 => 
             array (

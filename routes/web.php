@@ -63,9 +63,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('inbox/store/file', [TcInboxController::class, 'store_file']);
 
 
-
-
-
     // Route::get('inbox/{id}', [TcInboxController::class, 'derivacion_show'])->name('bandeja.show');
 
 

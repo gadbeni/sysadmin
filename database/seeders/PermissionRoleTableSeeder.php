@@ -281,6 +281,10 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'read_people' or
                                             `key` = 'edit_people' or
                                             `key` = 'add_people' or
+                                            `key` = 'browse_programs' or
+                                            `key` = 'read_programs' or
+                                            `key` = 'add_programs' or
+                                            `key` = 'edit_programs' or
                                             `key` = 'browse_contracts' or
                                             `key` = 'read_contracts' or
                                             `key` = 'edit_contracts' or
@@ -421,6 +425,19 @@ class PermissionRoleTableSeeder extends Seeder
         $permissions = Permission::whereRaw("table_name = 'admin' or
                                             `key` = 'browse_planillaspagos' or
                                             `key` = 'browse_reportspaymentschedulesdetails-status'")->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        // Roles de dirección de finanzas
+        $role = Role::where('name', 'direccion_finanzas_director')->firstOrFail();
+        $permissions = Permission::whereRaw("table_name = 'admin' or
+                                            table_name = 'memos_types' or
+                                            table_name = 'memos'")->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        $role = Role::where('name', 'direccion_finanzas_tecnico')->firstOrFail();
+        $permissions = Permission::whereRaw("table_name = 'admin' or
+                                            table_name = 'memos_types' or
+                                            table_name = 'memos'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
     }
 }

@@ -19,6 +19,7 @@ class MemosController extends Controller
      */
     public function index()
     {
+        $this->custom_authorize('browse_memos');
         return view('finance.memos.browse');
     }
 
@@ -35,6 +36,7 @@ class MemosController extends Controller
      */
     public function create()
     {
+        $this->custom_authorize('add_memos');
         return view('finance.memos.edit-add');
     }
 
@@ -80,11 +82,14 @@ class MemosController extends Controller
      */
     public function show($id)
     {
-        //
+        $this->custom_authorize('read_memos');
+        $memo = Memo::find($id);
+        return view('finance.memos.read', compact('memo'));
     }
 
     public function print($id)
     {
+        $this->custom_authorize('read_memos');
         $memo = Memo::find($id);
         return view('finance.memos.print', compact('memo'));
     }
@@ -97,6 +102,7 @@ class MemosController extends Controller
      */
     public function edit($id)
     {
+        $this->custom_authorize('edit_memos');
         $memo = Memo::find($id);
         return view('finance.memos.edit-add', compact('memo'));
     }
@@ -142,6 +148,6 @@ class MemosController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->custom_authorize('delete_memos');
     }
 }

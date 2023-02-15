@@ -82,6 +82,8 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('contracts_alternates_jobs');
         Permission::generateFor('direcciones');
         Permission::generateFor('unidades');
+        Permission::generateFor('inbox');
+        Permission::generateFor('outbox');
 
         // people
         $keys = [

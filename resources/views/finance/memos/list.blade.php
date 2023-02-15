@@ -46,7 +46,15 @@
                         <td>{{ number_format($item->amount, 2, ',', '.') }}</td>
                         <td>{{ date('d/m/Y', strtotime($item->date)) }}</td>
                         <td class="no-sort no-click bread-actions text-right">
-                            <a href="#" title="Ver" class="btn btn-sm btn-warning view">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                                    Más <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" style="left: -90px !important">
+                                    <li><a href="{{ url('admin/memos/'.$item->id.'/print') }}" title="Imprimir" target="_blank">Imprimir</a></li>
+                                </ul>
+                            </div>
+                            <a href="{{ route('memos.show', $item->id) }}" title="Ver" class="btn btn-sm btn-warning view">
                                 <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                             </a>
                             <a href="{{ route('memos.edit', $item->id) }}" title="Editar" class="btn btn-sm btn-primary edit">
