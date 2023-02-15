@@ -69,7 +69,13 @@ class PeopleController extends Controller
             }
 
             $destiny = Contract::where('person_id', $request->destiny_id)->where('status', 'firmado')->where('deleted_at', NULL)->first();
+            if(!$destiny){
+                return redirect()->route('voyager.people.index')->with(['message' => 'El funcionario solicitante no tiene un contrato vigente', 'alert-type' => 'error']);
+            }
             $responsible = Contract::where('person_id', $request->responsible_id)->where('status', 'firmado')->where('deleted_at', NULL)->first();
+            if(!$responsible){
+                return redirect()->route('voyager.people.index')->with(['message' => 'El funcionario responsable no tiene un contrato vigente', 'alert-type' => 'error']);
+            }
 
             $rotation = PersonRotation::create([
                 'user_id' => Auth::user()->id,
@@ -85,7 +91,7 @@ class PeopleController extends Controller
 
             return redirect()->route('voyager.people.index')->with(['message' => 'Rotación registrada correctamente', 'alert-type' => 'success', 'rotation_id' => $rotation->id]);
         } catch (\Throwable $th) {
-            dd($th);
+            // dd($th);
             return redirect()->route('voyager.people.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }

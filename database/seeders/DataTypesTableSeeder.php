@@ -269,7 +269,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-01-27 14:14:05',
-                'updated_at' => '2022-01-27 14:29:50',
+                'updated_at' => '2023-02-02 11:39:29',
             ),
             14 => 
             array (
@@ -305,7 +305,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-02-13 15:20:26',
-                'updated_at' => '2022-11-11 11:55:30',
+                'updated_at' => '2023-02-14 10:50:03',
             ),
             16 => 
             array (
@@ -341,7 +341,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"desc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-02-16 15:00:56',
-                'updated_at' => '2022-04-12 12:59:49',
+                'updated_at' => '2023-01-24 09:58:32',
             ),
             18 => 
             array (
@@ -431,7 +431,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-09-21 14:59:27',
-                'updated_at' => '2022-09-29 16:16:52',
+                'updated_at' => '2023-02-09 16:38:45',
             ),
             23 => 
             array (
@@ -467,7 +467,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"id","order_display_column":"id","order_direction":"desc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-09-29 15:53:04',
-                'updated_at' => '2023-01-06 12:09:58',
+                'updated_at' => '2023-02-13 14:54:35',
             ),
             25 => 
             array (
@@ -557,7 +557,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-12-10 10:34:47',
-                'updated_at' => '2022-12-10 10:43:03',
+                'updated_at' => '2023-02-13 11:57:11',
             ),
             30 => 
             array (
@@ -576,6 +576,24 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-12-15 16:30:00',
                 'updated_at' => '2022-12-15 16:53:00',
+            ),
+            31 => 
+            array (
+                'id' => 40,
+                'name' => 'direcciones',
+                'slug' => 'direcciones',
+                'display_name_singular' => 'Dirección',
+                'display_name_plural' => 'Direcciones',
+                'icon' => 'voyager-list',
+                'model_name' => 'App\\Models\\Direccion',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2023-02-02 10:42:32',
+                'updated_at' => '2023-02-02 11:05:47',
             ),
         ));
         

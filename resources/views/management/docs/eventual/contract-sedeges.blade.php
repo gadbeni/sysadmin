@@ -17,8 +17,7 @@
     <div class="content" style="text-align: justify">
         <h2 class="text-center" style="font-size: 18px">CONTRATO DE PRESTACI&Oacute;N DE SERVICIOS PARA PERSONAL EVENTUAL <br> <small>GAD-BENI-C.E-{{ $code }}</small></h2>
         <p>&nbsp;</p>
-        
-        <p><span>Conste por el presente Contrato Administrativo de Personal Eventual, que celebra por una parte el Servicio Departamental de Gesti&oacute;n Social <strong>(SEDEGES &ndash; Beni)</strong>, con&nbsp; NIT N. 177396029, con domicilio en la calle Manuel limpias N<span style="color: black; mso-themecolor: text1;">&ordm;</span> 45, de la ciudad de la sant&iacute;sima Trinidad, <span style="color: black; mso-themecolor: text1;">P</span>rovincia <span style="color: black; mso-themecolor: text1;">Cercado </span>del Departamento del Beni, representado legalmente por la/el <strong>{{ $signature ? $signature->name : setting('firma-autorizada.name') }}</strong>, con Cedula de Identidad <strong>N&ordm; {{ $signature ? $signature->ci : setting('firma-autorizada.ci') }}</strong>, en su <span style="color: black; mso-themecolor: text1;">condici&oacute;n</span> de <strong>{{ $signature ? $signature->job : setting('firma-autorizada.job') }}</strong> designada mediante Resoluci&oacute;n de Gobernaci&oacute;n N&ordm; {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}, de fecha {{ $signature ? $signature->designation_date ? date('d', strtotime($signature->designation_date)).' de '.$months[intval(date('m', strtotime($signature->designation_date)))].' de '.date('Y', strtotime($signature->designation_date)) : setting('firma-autorizada.designation-date') : setting('firma-autorizada.designation-date') }}; que en adelante se denominar&aacute; simplemente como <strong>SEDEGES &ndash; Beni</strong>; y por otra parte {{ $contract->person->gender == 'masculino' ? 'el señor' : 'la señora' }} <b>{{ $contract->person->first_name }} {{ $contract->person->last_name }} </b>mayor de edad, h&aacute;bil por derecho, titular de la <span style="color: black; mso-themecolor: text1;">C&eacute;dula </span>de Identidad <strong>N&ordm; {{ $contract->person->ci }}</strong>, en adelante para efectos del presente Contrato denominado simplemente {!! $contract->person->gender == 'masculino' ? 'el <b>CONTRATADO</b>' : 'la <b>CONTRATADA</b>' !!}, quienes celebran y suscriben el presente Contrato Administrativo al tenor de las siguientes Cl&aacute;usulas:</span></p>
+        <p><span>Conste por el presente Contrato Administrativo de Personal Eventual, que celebra por una parte el Servicio Departamental de Gesti&oacute;n Social <strong>(SEDEGES &ndash; Beni)</strong>, con <strong>NIT N&ordm; {{ $contract->direccion_administrativa->nit ?? '177396029' }}</strong>, con domicilio ubicado en {{ $contract->direccion_administrativa->direccion ?? 'el edificio de Gobernación en Acera Sud de la Plaza Mariscal José Ballivián' }}, en la Ciudad/Localidad de {{ $contract->direccion_administrativa->city->name ?? 'la SANTISIMA TRINIDAD' }}, Provincia {{ $contract->direccion_administrativa->city->province ?? 'CERCADO' }} del Departamento del BENI, representado legalmente por la/el <strong>{{ $signature ? $signature->name : setting('firma-autorizada.name') }}</strong>, con Cedula de Identidad <strong>N&ordm; {{ $signature ? $signature->ci : setting('firma-autorizada.ci') }}</strong>, en su <span style="color: black; mso-themecolor: text1;">condici&oacute;n</span> de <strong>{{ $signature ? $signature->job : setting('firma-autorizada.job') }}</strong> designada mediante Resoluci&oacute;n de Gobernaci&oacute;n N&ordm; {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}, de fecha {{ $signature ? $signature->designation_date ? date('d', strtotime($signature->designation_date)).' de '.$months[intval(date('m', strtotime($signature->designation_date)))].' de '.date('Y', strtotime($signature->designation_date)) : setting('firma-autorizada.designation-date') : setting('firma-autorizada.designation-date') }}; que en adelante se denominar&aacute; simplemente como <strong>SEDEGES &ndash; Beni</strong>; y por otra parte {{ $contract->person->gender == 'masculino' ? 'el señor' : 'la señora' }} <b>{{ $contract->person->first_name }} {{ $contract->person->last_name }} </b>mayor de edad, h&aacute;bil por derecho, titular de la <span style="color: black; mso-themecolor: text1;">C&eacute;dula </span>de Identidad <strong>N&ordm; {{ $contract->person->ci }}</strong>, en adelante para efectos del presente Contrato denominado simplemente {!! $contract->person->gender == 'masculino' ? 'el <b>CONTRATADO</b>' : 'la <b>CONTRATADA</b>' !!}, quienes celebran y suscriben el presente Contrato Administrativo al tenor de las siguientes Cl&aacute;usulas:</span></p>
         <p><span>&nbsp;</span></p>
         <p><strong><span>CL&Aacute;USULA PRIMERA. - (ANTECEDENTES):</span></strong></p>
         <p><span>A requerimiento de las diferentes Unidades (Jefaturas, &Aacute;reas, Secciones y Centros) del Servicio Departamental de Gesti&oacute;n Social (<strong>SEDEGES &ndash; Beni)</strong>, el &Aacute;rea de Recursos Humanos da inicio a los procesos de reclutamiento y selecci&oacute;n de Personal Eventual. En este sentido, el &Aacute;rea de Recursos Humanos, ha evaluado el perfil profesional al Postulante y ha realizado la revisi&oacute;n documental del Curriculum Vitae presentado <strong>(t&iacute;tulos y certificados)</strong> por <strong>{{ $contract->person->gender == 'masculino' ? 'el' : 'la' }} postulante,</strong> recomendando al Director (a) del Servicio Departamental de Gesti&oacute;n Social &nbsp;(<strong>SEDEGES &ndash; Beni)</strong>, su contrataci&oacute;n, y elaboraci&oacute;n del Contrato, tomando en cuenta que re&uacute;ne y cumple con el est&aacute;ndar de los requisitos exigidos para el cargo.</span></p>
@@ -203,28 +202,12 @@
         <p>&nbsp;</p>
         <p style="text-align: right;">
             <select id="location-id">
-                <option value="Santísima Trinidad">Santísima Trinidad</option>
-                <option value="Guayaramerín">Guayaramerín</option>
-                <option value="Riberalta">Riberalta</option>
-                <option value="Santa Rosa">Santa Rosa</option>
-                <option value="Reyes">Reyes</option>
-                <option value="Rurrenabaque">Rurrenabaque</option>
-                <option value="Yucumo">Yucumo</option>
-                <option value="San Borja">San Borja</option>
-                <option value="San Ignacio">San Ignacio</option>
-                <option value="San Ramón">San Ramón</option>
-                <option value="San Joaquín">San Joaquín</option>
-                <option value="Puerto Siles">Puerto Siles</option>
-                <option value="Santa Ana">Santa Ana</option>
-                <option value="Magdalena">Magdalena</option>
-                <option value="Baures">Baures</option>
-                <option value="Huacaraje">Huacaraje</option>
-                <option value="Exaltación">Exaltación</option>
-                <option value="San Javier">San Javier</option>
-                <option value="Loreto">Loreto</option>
-                <option value="San Andrés">San Andrés</option>
+                @foreach (App\Models\City::where('states_id', 1)->where('deleted_at', NULL)->get() as $item)
+                <option @if($item->name == $contract->direccion_administrativa->city->name) selected @endif value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>
+                @endforeach
             </select>
-            <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}</p>
+            <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
+        </p>
         <table width="100%" style="text-align: center; margin-top: 120px;">
             <tr>
                 <td style="width: 50%">

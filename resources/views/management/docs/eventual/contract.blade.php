@@ -127,7 +127,7 @@
                         <li><p><em>Por matrimonio, gozará de 3 (tres) días hábiles, inmediatos al acontecimiento debiendo presentar copia del Certificado de Matrimonio o del Certificado de Inscripción expedida por el Oficial de Registro Civil que acredite la fecha de realización del Matrimonio, dentro de los cinco (5) días hábiles siguientes.</em></p></li>
                         <li><p><em>Por fallecimiento de padres, cónyuge, hermanos o hijos, 3 (tres) días hábiles de licencia inmediatos al hecho; de los padres políticos, hermanos políticos y/o abuelos, 2 (dos) días hábiles inmediatos al hecho; debiendo el Servidor o Servidora pública, presentar en copias el Certificado de Defunción pertinente, dentro de los siguientes 5 (cinco) días hábiles siguientes de ocurrido el suceso.</em></p></li>
                         <li><p><em>Por enfermedad o invalidez, se otorgará las licencias respectivas según el Régimen de Seguridad Social y se justificarán con el Parte de Baja, otorgado por el ente gestor de salud respectivo. Es preciso mencionar qué, en caso de enfermedad para efectos de Control de Asistencia, no serán consideradas, ni tendrán validez alguna, Certificados o Bajas Médicas extendidas por otras instituciones o médicos particulares, solo se podrá acreditar la misma por el ente gestor de salud del GAD - Beni.</em></p></li>
-                        <li><p><em>Por atención médica de la Servidora o Servidor público, en casos de emergencia o intervenciones quirúrgicas respaldados con el Parte de Baja, correspondiente del ente gestor de salud del SEDEGES - Beni.</em></p></li>
+                        <li><p><em>Por atención médica de la Servidora o Servidor público, en casos de emergencia o intervenciones quirúrgicas respaldados con el Parte de Baja, correspondiente del ente gestor de salud del GAD - Beni.</em></p></li>
                         <li><p><em>Las Contratadas gozarán de licencia remunerada de un (1) día hábil al año, divisible en dos medias jornadas, a objeto de someterse a un examen médico y lectura de los resultados del examen Papanicolaou, Mamografía y otros.</em></p></li>
                         <li><p><em>En el caso de nacimiento de hijos, el padre progenitor gozará de 3 (tres) días hábiles de licencia a partir del alumbramiento de la conyugue o conviviente, con la obligación de presentar el Certificado correspondiente, dentro los cinco (5) días hábiles siguientes.</em></p></li>
                     </ol>
@@ -173,28 +173,12 @@
         <p><em>En se&ntilde;al de aceptaci&oacute;n y estricto cumplimiento firman el presente Contrato en tres ejemplares de un mismo tenor y validez, la/el <b>{{ $signature ? $signature->name : setting('firma-autorizada.name') }}</b>, en su calidad de <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }} GAD-BENI </b>y por otra parte {{ $contract->person->gender == 'masculino' ? 'el Sr.' : 'la Sra.' }} <b>{{ $contract->person->first_name }} {{ $contract->person->last_name }}</b>, en calidad de <b>{{ $contract->person->gender == 'masculino' ? 'CONTRATADO' : 'CONTRATADA' }}</b>.</em></p>
         <p style="text-align: right;">
             <select id="location-id">
-                <option value="Santísima Trinidad">Santísima Trinidad</option>
-                <option value="Guayaramerín">Guayaramerín</option>
-                <option value="Riberalta">Riberalta</option>
-                <option value="Santa Rosa">Santa Rosa</option>
-                <option value="Reyes">Reyes</option>
-                <option value="Rurrenabaque">Rurrenabaque</option>
-                <option value="Yucumo">Yucumo</option>
-                <option value="San Borja">San Borja</option>
-                <option value="San Ignacio">San Ignacio</option>
-                <option value="San Ramón">San Ramón</option>
-                <option value="San Joaquín">San Joaquín</option>
-                <option value="Puerto Siles">Puerto Siles</option>
-                <option value="Santa Ana">Santa Ana</option>
-                <option value="Magdalena">Magdalena</option>
-                <option value="Baures">Baures</option>
-                <option value="Huacaraje">Huacaraje</option>
-                <option value="Exaltación">Exaltación</option>
-                <option value="San Javier">San Javier</option>
-                <option value="Loreto">Loreto</option>
-                <option value="San Andrés">San Andrés</option>
+                @foreach (App\Models\City::where('states_id', 1)->where('deleted_at', NULL)->get() as $item)
+                <option @if($item->name == $contract->direccion_administrativa->city->name) selected @endif value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>
+                @endforeach
             </select>
-            <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}</p>
+            <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
+        </p>
         <table width="100%" style="text-align: center; margin-top: 120px;">
             <tr>
                 <td style="width: 50%">

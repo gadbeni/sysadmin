@@ -20,6 +20,7 @@ use App\Http\Controllers\PaymentschedulesController;
 use App\Http\Controllers\ImportsController;
 use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\MemosController;
+use App\Http\Controllers\FinancesController;
 use App\Http\Controllers\MemosTypesController;
 use App\Http\Controllers\TcInboxController;
 use App\Http\Controllers\TcOutboxController;
@@ -231,10 +232,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('reports/check/check-browse', [CheckController::class, 'report_view'])->name('report.check.browse');
     Route::post('reports/check/chek-list', [ReportsController::class, 'check_list'])->name('reports.check.list');
 
-    // Finanzas
-    Route::resource('memos', MemosController::class);
-    Route::get('memos/ajax/list', [MemosController::class, 'list']);
-
     // Administrativo
 
     // *Contratos
@@ -253,7 +250,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     // Finanzas
 
     // * Personas externas
-    Route::get('person-externals/create', [MemosTypesController::class, 'create'])->name('voyager.person-externals.create');
+    Route::get('person-externals/create', [FinancesController::class, 'person_external_create'])->name('voyager.person-externals.create');
+    Route::post('person-externals/store', [FinancesController::class, 'person_external_store'])->name('voyager.person-externals.store');
+
+    // * Memos
+    Route::resource('memos', MemosController::class);
+    Route::get('memos/ajax/list', [MemosController::class, 'list']);
+    Route::get('memos/{id}/print', [MemosController::class, 'print']);
 
     // Reportes
 

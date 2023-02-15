@@ -37,6 +37,7 @@ class ContractsController extends Controller
      */
     public function index()
     {
+        $this->custom_authorize('browse_contracts');
         if(true){
             $date = date('Y-m-d');
             Contract::where('finish', '<', $date)->where('deleted_at', NULL)->where('status', 'firmado')->update(['status' => 'concluido']);
@@ -46,6 +47,7 @@ class ContractsController extends Controller
     }
 
     public function list($search = null){
+        $this->custom_authorize('browse_contracts');
         $paginate = request('paginate') ?? 10;
         $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa.tipo', 'type'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
@@ -86,6 +88,8 @@ class ContractsController extends Controller
      */
     public function create()
     {
+        $this->custom_authorize('add_contracts');
+
         $role_id = Auth::user()->role_id;
         $direccion_administrativa_id = Auth::user()->direccion_administrativa_id;
         $ids = '';
@@ -99,7 +103,7 @@ class ContractsController extends Controller
 
         $ids = substr($ids, 0, -1);
         $procedure_type = ProcedureType::where('deleted_at', NULL)
-                            ->whereRaw(Auth::user()->role_id == 25 ? 'id = 2' : 1)
+                            ->whereRaw(Auth::user()->role_id == 16 || Auth::user()->role_id == 25 ? 'id = 2' : 1)
                             ->whereRaw($ids ? "id in ($ids)" : 1)->get();
 
         $people = Person::where('deleted_at', NULL)
@@ -215,6 +219,7 @@ class ContractsController extends Controller
      */
     public function show($id)
     {
+        $this->custom_authorize('read_contracts');
         $contract = Contract::find($id);
         return view('management.contracts.read', compact('contract'));
     }
@@ -227,7 +232,14 @@ class ContractsController extends Controller
      */
     public function edit($id)
     {
+        $this->custom_authorize('edit_contracts');
         $contract = Contract::with(['user', 'person', 'program'])->where('id', $id)->first();
+
+        // Evitar que editen un contrato ingresando por URL
+        if($contract->status != 'elaborado' && $contract->status != 'enviado' && auth()->user()->role_id != 1){
+            abort(403, 'THIS ACTION IS UNAUTHORIZED.');
+        }
+
         $role_id = Auth::user()->role_id;
         $direccion_administrativa_id = Auth::user()->direccion_administrativa_id;
         $procedure_type = ProcedureType::where('deleted_at', NULL)->where('id', $contract->procedure_type_id)->get();
@@ -237,7 +249,7 @@ class ContractsController extends Controller
         $unidad_administrativas = Unidad::get();
         // $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $contracts = Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get();
-        $programs = Program::where('deleted_at', NULL)->get();
+        $programs = Program::where('year', date('Y'))->where('deleted_at', NULL)->get();
         $cargos = Cargo::with(['nivel' => function($q){
                         $q->where('Estado', 1);
                     }])->where('estado', 1)->get();
@@ -359,10 +371,12 @@ class ContractsController extends Controller
             ]);
 
             if($request->status == 'concluido'){
+                $last_contract = ContractsFinished::where('deleted_at', NULL)->where('code', '<>', NULL)->orderBy('id', 'DESC')->first();
+                $last_code = str_replace("A-", "", explode('/', $last_contract->code)[0]);
                 ContractsFinished::create([
                     'contract_id' => $request->id,
                     'role_id' => Auth::user()->id,
-                    'code' => 'A-'.str_pad(ContractsFinished::count() +1, 3, "0", STR_PAD_LEFT).'/'.date('Y'),
+                    'code' => $contract->procedure_type_id == 1 ? 'A-'.str_pad($last_code +1, 3, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->finish)) : NULL,
                     'observations' => $request->observations
                 ]);
             }
@@ -371,7 +385,7 @@ class ContractsController extends Controller
             return response()->json(['message' => 'Cambio realizo exitosamente.']);
         } catch (\Throwable $th) {
             DB::rollback();
-            // dd($th);
+            dd($th);
             return response()->json(['error' => 'Ocurrió un error.']);
         }
     }
@@ -506,7 +520,7 @@ class ContractsController extends Controller
                             ->whereHas('contracts', function($q) use ($id){
                                 $q->where('direccion_administrativa_id', $id);
                             })
-                            ->whereRaw(Auth::user()->role_id == 25 ? 'id = 2' : 1)
+                            ->whereRaw(Auth::user()->role_id == 16 || Auth::user()->role_id == 25 ? 'id = 2' : 1)
                             ->where('deleted_at', NULL)->get();
         return response()->json($tipo_planilla);
     }

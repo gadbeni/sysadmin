@@ -127,7 +127,11 @@
                                 </button>
                                 <ul class="dropdown-menu" role="menu" style="left: -90px !important">
                                     @if ($item->centralize && Auth::user()->role_id == 1 && $item->status != 'pagada')
-                                        <li><a href="#" class="btn-descentralize" data-id="{{ $item->id }}" data-toggle="modal" data-target="#descentralize-modal" title="Descentralizar">Descentralizar</a></li>
+                                        <li><a href="#" class="btn-update-centralize" data-id="{{ $item->id }}" data-type="decentralize" data-toggle="modal" data-target="#update-centralize-modal" title="Descentralizar">Descentralizar</a></li>
+                                    @endif
+
+                                    @if (!$item->centralize && Auth::user()->role_id == 1 && $item->status != 'pagada')
+                                        <li><a href="#" class="btn-update-centralize" data-id="{{ $item->id }}" data-type="centralize" data-toggle="modal" data-target="#update-centralize-modal" title="Centralizar">Centralizar</a></li>
                                     @endif
 
                                     @if ( ($item->status == 'aprobada' || $item->status == 'habilitada' || $item->status == 'pagada') && (auth()->user()->hasPermission('print_paymentschedules') || Auth::user()->role_id == 1) )
@@ -204,9 +208,9 @@
 </form>
 
 {{-- approve modal --}}
-<form id="form-descentralize" class="form-submit" action="{{ route('paymentschedules.update.centralize') }}" method="POST">
+<form id="form-update-centralize" class="form-submit" action="{{ route('paymentschedules.update.centralize') }}" method="POST">
     @csrf
-    <div class="modal fade submit-modal" tabindex="-1" id="descentralize-modal" role="dialog">
+    <div class="modal fade submit-modal" tabindex="-1" id="update-centralize-modal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -215,10 +219,11 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" name="id">
+                    <input type="hidden" name="type">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <input type="submit" class="btn btn-info" value="Sí, descantralizar">
+                    <input type="submit" class="btn btn-info" value="Sí, aceptar">
                 </div>
             </div>
         </div>
@@ -279,8 +284,14 @@
             $('#form-close input[name="id"]').val($(this).data('id'));
         });
 
-        $('.btn-descentralize').click(function(){
-            $('#form-descentralize input[name="id"]').val($(this).data('id'));
+        $('.btn-update-centralize').click(function(){
+            $('#form-update-centralize input[name="id"]').val($(this).data('id'));
+            $('#form-update-centralize input[name="type"]').val($(this).data('type'));
+            if($(this).data('type') == 'centralize'){
+                $('#form-update-centralize .modal-title').html(`<i class="glyphicon glyphicon-pushpin"></i> Desea centralizar planilla?`);
+            }else{
+                $('#form-update-centralize .modal-title').html(`<i class="glyphicon glyphicon-pushpin"></i> Desea descentralizar planilla?`);
+            }
         });
 
         $('.btn-cancel').click(function(){

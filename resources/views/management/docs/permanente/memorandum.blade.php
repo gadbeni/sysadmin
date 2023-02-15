@@ -35,28 +35,11 @@
                 <div class="border-right">
                     <p style="position:absolute; bottom: 10px">
                         <select id="location-id">
-                            <option value="Santísima Trinidad">Santísima Trinidad</option>
-                            <option value="Guayaramerín">Guayaramerín</option>
-                            <option value="Riberalta">Riberalta</option>
-                            <option value="Santa Rosa">Santa Rosa</option>
-                            <option value="Reyes">Reyes</option>
-                            <option value="Rurrenabaque">Rurrenabaque</option>
-                            <option value="Yucumo">Yucumo</option>
-                            <option value="San Borja">San Borja</option>
-                            <option value="San Ignacio">San Ignacio</option>
-                            <option value="San Ramón">San Ramón</option>
-                            <option value="San Joaquín">San Joaquín</option>
-                            <option value="Puerto Siles">Puerto Siles</option>
-                            <option value="Santa Ana">Santa Ana</option>
-                            <option value="Magdalena">Magdalena</option>
-                            <option value="Baures">Baures</option>
-                            <option value="Huacaraje">Huacaraje</option>
-                            <option value="Exaltación">Exaltación</option>
-                            <option value="San Javier">San Javier</option>
-                            <option value="Loreto">Loreto</option>
-                            <option value="San Andrés">San Andrés</option>
+                            @foreach (App\Models\City::where('states_id', 1)->where('deleted_at', NULL)->get() as $item)
+                            <option @if($item->name == $contract->direccion_administrativa->city->name) selected @endif value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>
+                            @endforeach
                         </select>
-                        <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
+                        <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
                     </p>
                 </div>
                 <div class="border-left">
@@ -69,7 +52,7 @@
             <br>
             <p style="text-align: center"><u><b>DESIGNACIÓN</b></u></p>
             <p>
-                El Gobierno Autónomo Departamental del Beni - GAD-BENI, comunica a Usted que a partir de la fecha ha sido {{ $contract->person->gender == 'masculino' ? 'desigando' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->job->name) }}</b>, dependiente de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b>.
+                El Gobierno Autónomo Departamental del Beni - GAD-BENI, comunica a Usted que a partir de la fecha ha sido {{ $contract->person->gender == 'masculino' ? 'designado' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->job->name) }}</b>, dependiente de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b>.
             </p>
             <p>
                 Su remuneración será cancelada con cargo a la partida {{ $contract->program->number }}, con un haber mensual de <b>Bs. {{ NumerosEnLetras::convertir($contract->job->salary, 'Bolivianos', true) }}</b>, en el item N&deg; {{ $contract->job->item }} con el nivel salarial <b>{{ $contract->job->level }}</b>, debiendo coordinar con la Dirección Administrativa Financiera para la asignación de activo fijos, manuales y reglamentos que rigen en la entidad.

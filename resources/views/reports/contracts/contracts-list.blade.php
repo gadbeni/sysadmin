@@ -87,8 +87,8 @@
                             <td>{{ date('d/m/Y', strtotime($item->start)) }}</td>
                             <td>{{ $item->finish ? date('d/m/Y', strtotime($item->finish)) : '' }}</td>
                             <td>{{ number_format($total, 2, ',', '.') }}</td>
-                            <td>{{ $item->program->name }}</td>
-                            <td>{{ $item->program->programatic_category }}</td>
+                            <td>{{ $item->program ? $item->program->name : 'No definido' }}</td>
+                            <td>{{ $item->program ? $item->program->programatic_category : 'No definida' }}</td>
                             <td>{{ $item->status }}</td>
                             <td>
                                 {{ $item->user->name }} <br>

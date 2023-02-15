@@ -170,7 +170,7 @@
                                     <ul class="dropdown-menu" role="menu">
                                         @switch($item->procedure_type_id)
                                             @case(1)
-                                                <li><a title="Desiganación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum']) }}" target="_blank">Desiganación</a></li>
+                                            <li><a title="Designación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum']) }}" target="_blank">Designación</a></li>
                                                 @if ($item->ratifications->count() > 0 && auth()->user()->hasPermission('ratificate_contracts'))
                                                 <li><a title="Ratificación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-ratificacion']) }}" target="_blank">Ratificación</a></li>
                                                 @endif
@@ -204,7 +204,7 @@
                                                 @else
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract']) }}" target="_blank">Contrato</a></li>
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-inamovible']) }}" target="_blank">Contrato inamovible</a></li>
-                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-desigancion']) }}" target="_blank">Memorandum</a></li>
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-designacion']) }}" target="_blank">Memorandum</a></li>
                                                 @endif
 
                                                 @break
@@ -221,7 +221,7 @@
                             
                             @if ($item->status != 'concluido')
                                 {{-- Se puede editar el contrato si no está firmado --}}
-                                @if ($item->status != 'firmado' && auth()->user()->hasPermission('edit_contracts'))
+                                @if (($item->status != 'firmado' && auth()->user()->hasPermission('edit_contracts')) || auth()->user()->role_id == 1)
                                     <a href="{{ route('contracts.edit', ['contract' => $item->id]) }}" title="Editar" class="btn btn-sm btn-primary edit">
                                         <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
                                     </a>

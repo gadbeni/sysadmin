@@ -15,19 +15,20 @@ class CreateMemosTable extends Migration
     {
         Schema::create('memos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('origin_id')->nullable()->constrained('people');
-            $table->foreignId('destiny_id')->nullable()->constrained('people');
+            $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->foreignId('origin_id')->nullable()->constrained('contracts');
+            $table->string('origin_alternate_job')->nullable();
+            $table->foreignId('destiny_id')->nullable()->constrained('contracts');
+            $table->string('destiny_alternate_job')->nullable();
             $table->foreignId('memos_type_id')->nullable()->constrained('memos_types');
-            $table->foreignId('person_id')->nullable()->constrained('person_externals');
             $table->foreignId('person_external_id')->nullable()->constrained('person_externals');
-            $table->string('order_name')->nullable();
-            $table->string('order_job')->nullable();
+            $table->smallInteger('number')->nullable();
+            $table->string('type')->nullable();
             $table->string('code')->nullable();
             $table->string('da_sigep')->nullable();
-            $table->string('origin')->nullable();
+            $table->string('source')->nullable();
             $table->decimal('amount', 10, 2)->nullable();
             $table->text('concept')->nullable();
-            $table->text('subject')->nullable();
             $table->text('imputation')->nullable();
             $table->date('date')->nullable();
             $table->timestamps();

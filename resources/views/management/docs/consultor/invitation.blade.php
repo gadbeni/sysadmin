@@ -8,34 +8,17 @@
             @php
                 $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
                 $code = $contract->code;
-                if(!in_array($contract->direccion_administrativa_id, [13, 48, 55]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4])){
+                if(!in_array($contract->direccion_administrativa_id, [5, 13, 48, 55]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4])){
                     $signature = null;   
                 }
             @endphp
             <p style="font-size: 13px">
                 <select id="location-id">
-                    <option value="Santísima Trinidad">Santísima Trinidad</option>
-                    <option value="Guayaramerín">Guayaramerín</option>
-                    <option value="Riberalta">Riberalta</option>
-                    <option value="Santa Rosa">Santa Rosa</option>
-                    <option value="Reyes">Reyes</option>
-                    <option value="Rurrenabaque">Rurrenabaque</option>
-                    <option value="Yucumo">Yucumo</option>
-                    <option value="San Borja">San Borja</option>
-                    <option value="San Ignacio">San Ignacio</option>
-                    <option value="San Ramón">San Ramón</option>
-                    <option value="San Joaquín">San Joaquín</option>
-                    <option value="Puerto Siles">Puerto Siles</option>
-                    <option value="Santa Ana">Santa Ana</option>
-                    <option value="Magdalena">Magdalena</option>
-                    <option value="Baures">Baures</option>
-                    <option value="Huacaraje">Huacaraje</option>
-                    <option value="Exaltación">Exaltación</option>
-                    <option value="San Javier">San Javier</option>
-                    <option value="Loreto">Loreto</option>
-                    <option value="San Andrés">San Andrés</option>
+                    @foreach (App\Models\City::where('states_id', 1)->where('deleted_at', NULL)->get() as $item)
+                    <option @if($item->name == $contract->direccion_administrativa->city->name) selected @endif value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>
+                    @endforeach
                 </select>
-                <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }} <br>
+                <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }} <br>
                 <b>INV/CI/GAD BENI/MCD N° {{ $code }}</b>
             </p>
             <br>

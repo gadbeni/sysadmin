@@ -455,7 +455,21 @@ class PaymentschedulesController extends Controller
         DB::beginTransaction();
         try {
             
-            Paymentschedule::where('id', $request->id)->update(['centralize' => 0, 'centralize_code' => NULL]);
+            if($request->type == 'centralize'){
+                
+                $item = Paymentschedule::find($request->id);
+                $paymentschedule = Paymentschedule::where('period_id', $item->period_id)
+                                        ->where('procedure_type_id', $item->procedure_type_id)->where('centralize', 1)
+                                        ->where('status', "<>", $item->status)->where('deleted_at', NULL)->first();
+                if(!$paymentschedule){
+                    return response()->json(['error' => 'No existe planilla centralizada para este periodo.']);
+                }
+                Paymentschedule::where('id', $request->id)->update(['centralize' => 1, 'centralize_code' => $paymentschedule->centralize_code]);
+            }
+
+            if($request->type == 'decentralize'){
+                Paymentschedule::where('id', $request->id)->update(['centralize' => 0, 'centralize_code' => NULL]);
+            }
             
             DB::commit();
             return response()->json(['message' => 'Cambio realizado exitosamente.']);

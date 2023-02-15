@@ -17,7 +17,6 @@ class CreateMemosTypesTable extends Migration
             $table->id();
             $table->foreignId('memos_types_group_id')->nullable()->constrained('memos_types_groups');
             $table->text('description')->nullable();
-            $table->text('destiny')->nullable();
             $table->text('concept')->nullable();
             $table->text('subject')->nullable();
             $table->smallInteger('status')->nullable()->default(1);

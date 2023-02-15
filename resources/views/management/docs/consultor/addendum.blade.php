@@ -91,28 +91,11 @@
         <p>&nbsp;</p>
         <p style="text-align: right;">
             <select id="location-id">
-                <option value="Santísima Trinidad">Santísima Trinidad</option>
-                <option value="Guayaramerín">Guayaramerín</option>
-                <option value="Riberalta">Riberalta</option>
-                <option value="Santa Rosa">Santa Rosa</option>
-                <option value="Reyes">Reyes</option>
-                <option value="Rurrenabaque">Rurrenabaque</option>
-                <option value="Yucumo">Yucumo</option>
-                <option value="San Borja">San Borja</option>
-                <option value="San Ignacio">San Ignacio</option>
-                <option value="San Ramón">San Ramón</option>
-                <option value="San Joaquín">San Joaquín</option>
-                <option value="Puerto Siles">Puerto Siles</option>
-                <option value="Santa Ana">Santa Ana</option>
-                <option value="Magdalena">Magdalena</option>
-                <option value="Baures">Baures</option>
-                <option value="Huacaraje">Huacaraje</option>
-                <option value="Exaltación">Exaltación</option>
-                <option value="San Javier">San Javier</option>
-                <option value="Loreto">Loreto</option>
-                <option value="San Andrés">San Andrés</option>
+                @foreach (App\Models\City::where('states_id', 1)->where('deleted_at', NULL)->get() as $item)
+                <option @if($item->name == $contract->direccion_administrativa->city->name) selected @endif value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>
+                @endforeach
             </select>
-            <span id="label-location">Santísima Trinidad</span>, {{ date('d', strtotime($addendums->first()->start)) }} de {{ $months[intval(date('m', strtotime($addendums->first()->start)))] }} de {{ date('Y', strtotime($addendums->first()->start)) }}
+            <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
         </p>
 
         <br>

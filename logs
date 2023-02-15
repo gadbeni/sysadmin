@@ -1,9 +1,11 @@
-
+Eliminar eliminar tablas de memo
+Agregar campo number_acount en la tabla person_external
+Agregar campos job_alt, designation_alt, designation_date_alt en tabla signatures
 
 Migraciones
-    - Ejecutar migraciones
-Seeders
     
+Seeders
+    MemosTypesGroupsTableSeeder, UpdateBreadSeeder, UpdatePermissionsSeeder
 Paquetes
 
 Comandos
@@ -14,4 +16,3 @@ Otros
 NOTA:
 - generar código de adenda
 - anular adenda
-- centralizar planilla
