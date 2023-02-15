@@ -21,6 +21,10 @@ use App\Http\Controllers\ImportsController;
 use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\MemosController;
 use App\Http\Controllers\FinancesController;
+use App\Http\Controllers\MemosTypesController;
+use App\Http\Controllers\TcInboxController;
+use App\Http\Controllers\TcOutboxController;
+use App\Http\Controllers\TcController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +53,50 @@ Route::post('register/store', [HomeController::class, 'register_person_store'])-
 
 Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Voyager::routes();
+
+    // ____________________Trimite y correspondencia_____________________
+    Route::resource('inbox', TcInboxController::class);
+    Route::get('inbox/list/{funcionario_id}/{type}', [TcInboxController::class, 'derivacion_list']);
+    Route::post('inbox/delete/derivacion', [TcInboxController::class, 'bandejaDerivationDelete'])->name('inbox-derivation.delete');
+    Route::post('inbox/{id}/archivar', [TcInboxController::class, 'derivacion_archivar'])->name('inbox.archivar');
+    Route::post('inbox/store/derivacion', [TcInboxController::class, 'store_derivacion'])->name('inbox.derivacion');
+    Route::post('inbox/store/file', [TcInboxController::class, 'store_file']);
+
+
+
+
+
+    // Route::get('inbox/{id}', [TcInboxController::class, 'derivacion_show'])->name('bandeja.show');
+
+
+    Route::resource('outbox', TcOutboxController::class);
+    Route::get('outbox/ajax/list', [TcOutboxController::class, 'list']);
+    Route::post('outbox/store/file', [TcOutboxController::class, 'store_file']);
+    Route::get('outbox/{outbox}/print', [TcOutboxController::class, 'print'])->name('outbox.print');
+    Route::get('outbox/{outbox}/printhr', [TcOutboxController::class, 'printhr'])->name('outbox.printhr');
+    Route::post('outbox/read/nci/file', [TcOutboxController::class, 'entradaFile'])->name('outbox-file-nci.store');
+    Route::post('outbox/store/vias', [TcOutboxController::class, 'store_vias'])->name('store.vias');
+    Route::post('outbox/nulledvia', [TcOutboxController::class, 'anulacion_via'])->name('via.nulled');
+    Route::post('outbox/delete/derivacion', [TcOutboxController::class, 'delete_derivacion'])->name('delete.outbox');
+    Route::post('outbox/delete/derivacions', [TcOutboxController::class, 'delete_derivacions'])->name('delete.outboxs');
+    Route::post('outbox/delete/derivacion/file', [TcOutboxController::class, 'delete_derivacion_file'])->name('delete.outbox.file');
+    Route::post('outbox/store/derivacion', [TcOutboxController::class, 'store_derivacion'])->name('outbox.derivacion');
+
+
+
+
+
+
+    Route::get('mamore/getpeoplederivacion',[TcController::class, 'getPeoplesDerivacion'])->name('getpeoplederivacion');
+    Route::get('cite/{id?}/{cite?}',[TcController::class,'getCite'])->name('cite.get');
+
+
+
+
+    // ______________________________FIN_________________________________
+
+
+
 
     Route::get('people', [PeopleController::class, 'index'])->name('voyager.people.index');
     Route::get('people/ajax/list/{search?}', [PeopleController::class, 'list']);

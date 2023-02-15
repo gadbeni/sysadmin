@@ -77,6 +77,21 @@ return [
             'engine' => null,
         ],
 
+
+        'siscor' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST_SISCOR', 'localhost'),
+            'port' => env('DB_PORT_SISCOR', '3306'),
+            'database' => env('DB_DATABASE_SISCOR', 'forge'),
+            'username' => env('DB_USERNAME_SISCOR', 'forge'),
+            'password' => env('DB_PASSWORD_SISCOR', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
