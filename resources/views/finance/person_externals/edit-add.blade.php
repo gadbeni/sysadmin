@@ -1,11 +1,11 @@
 @extends('voyager::master')
 
-@section('page_title', 'Añadir Persona externa')
+@section('page_title', 'Añadir Beneficiarios')
 
 @section('page_header')
     <h1 class="page-title">
         <i class="voyager-people"></i>
-        Añadir Persona externa
+        Añadir Beneficiarios
     </h1>
 @stop
 

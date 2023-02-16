@@ -402,8 +402,8 @@ class DataTypesTableSeeder extends Seeder
                 'id' => 23,
                 'name' => 'person_external_types',
                 'slug' => 'person-external-types',
-                'display_name_singular' => 'Tipo de persona externa',
-                'display_name_plural' => 'Tipos de persona externa',
+                'display_name_singular' => 'Tipo de Beneficiario',
+                'display_name_plural' => 'Tipos de Beneficiario',
                 'icon' => 'voyager-list',
                 'model_name' => 'App\\Models\\PersonExternalType',
                 'policy_name' => NULL,
@@ -413,15 +413,15 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-09-21 14:45:09',
-                'updated_at' => '2022-09-21 15:00:02',
+                'updated_at' => '2023-02-15 16:27:18',
             ),
             22 => 
             array (
                 'id' => 24,
                 'name' => 'person_externals',
                 'slug' => 'person-externals',
-                'display_name_singular' => 'Persons Externa',
-                'display_name_plural' => 'Personas Externas',
+                'display_name_singular' => 'Beneficiario',
+                'display_name_plural' => 'Beneficiarios',
                 'icon' => 'voyager-people',
                 'model_name' => 'App\\Models\\PersonExternal',
                 'policy_name' => NULL,
@@ -431,7 +431,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-09-21 14:59:27',
-                'updated_at' => '2023-02-09 16:38:45',
+                'updated_at' => '2023-02-15 16:22:37',
             ),
             23 => 
             array (
