@@ -30,6 +30,7 @@ class CreatePersonExternalsTable extends Migration
             $table->string('email')->nullable();
             $table->text('observations')->nullable();
             $table->text('docs')->nullable();
+            $table->text('location')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

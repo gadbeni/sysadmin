@@ -24,11 +24,11 @@
                                     @csrf
                                     <input type="hidden" name="print">
                                     <div class="form-group">
-                                        <input type="date" name="start" class="form-control" value="{{ date('Y-m-d') }}" required>
+                                        <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}" required>
                                     </div>
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
                                         <input type="date" name="finish" class="form-control" value="{{ date('Y-m-d') }}" required>
-                                    </div>
+                                    </div> --}}
                                     {{-- <div class="form-group">
                                         <select name="user_id" class="form-control select2">
                                             <option value="">Todos los cajeros</option>

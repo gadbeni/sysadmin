@@ -14,6 +14,7 @@ use App\Models\ChecksPayment;
 use App\Models\Cashier;
 use App\Models\CashiersPayment;
 use App\Models\VaultsClosure;
+use App\Models\VaultsDetail;
 use App\Models\Spreadsheet;
 use App\Models\Direccion;
 use App\Models\Contract;
@@ -926,15 +927,15 @@ class ReportsController extends Controller
     }
 
     public function cashier_vaults_list(Request $request){
-        $closure = VaultsClosure::with(['details', 'user'])
-                        ->whereDate('created_at', '>=', date('Y-m-d', strtotime($request->start)))
-                        ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->finish)))
-                        ->whereRaw($request->user_id ? 'user_id = '.$request->user_id : 1)->get();
-        // dd($closure);
+        $details = VaultsDetail::with(['cash', 'user'])
+                        ->whereDate('created_at', '<=', date('Y-m-d', strtotime($request->date)))
+                        ->where('status', 'aprobado')->where('deleted_at', NULL)
+                        ->get();
+        // dd($details);
         if($request->print){
-            return view('reports.cashiers.vaults-print', compact('closure'));
+            return view('reports.cashiers.vaults-print', compact('details'));
         }else{
-            return view('reports.cashiers.vaults-list', compact('closure'));
+            return view('reports.cashiers.vaults-list', compact('details'));
         }
     }
 

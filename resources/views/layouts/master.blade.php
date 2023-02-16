@@ -72,7 +72,7 @@
                     <a href="{{ url('') }}">
                         <img src="{{ asset('images/icon-alt.png') }}" alt="GADBENI" class="img-fluid" width="220px">
                     </a>
-                    <p>Sistema integral de administración del Gobierno Autónomo Departamental del Beni.</p>
+                    <p>Con la bendicion de Dios saldremos Adelante...!!!.</p>
                 </div>
 
                 <div class="col-lg-3 col-md-6 footer-links">
@@ -211,7 +211,7 @@
         {{-- Socket.io --}}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
-            const socket = io("{{ env('APP_URL') }}"+":3001");
+            const socket = io("{{ env('APP_URL_SOCKET') }}:{{ env('APP_PORT_SOCKET') }}");
         </script>
         <style>
         #odometer{

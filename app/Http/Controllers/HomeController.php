@@ -50,10 +50,11 @@ class HomeController extends Controller
                 'family' => $request->family,
                 'ci_nit' => $request->ci_nit,
                 'phone' => $request->phone,
-                'address' => $request->address
+                'address' => $request->address,
+                'location' => $request->location
             ]);
             try {
-                Http::get('https://whatsapp-api.beni.gob.bo/?number=591'.$request->phone.'&message=Muchas gracias por contribuir en el desarrollo del Departamento del Beni con tu registro nos ayudará a tomar decisiones en beneficio del departamento.');
+                Http::get('https://whatsapp-api.beni.gob.bo/?number=591'.$request->phone.'&message=Muchas gracias '.$request->full_name.', por contribuir en el desarrollo del Departamento del Beni con tu registro nos ayudará a tomar decisiones en beneficio del departamento.');
             } catch (\Throwable $th) {
                 //throw $th;
             }
