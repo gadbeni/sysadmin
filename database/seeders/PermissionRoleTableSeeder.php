@@ -430,12 +430,14 @@ class PermissionRoleTableSeeder extends Seeder
         // Roles de dirección de finanzas
         $role = Role::where('name', 'direccion_finanzas_director')->firstOrFail();
         $permissions = Permission::whereRaw("table_name = 'admin' or
+                                            table_name = 'person_externals' or
                                             table_name = 'memos_types' or
                                             table_name = 'memos'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'direccion_finanzas_tecnico')->firstOrFail();
         $permissions = Permission::whereRaw("table_name = 'admin' or
+                                            table_name = 'person_externals' or
                                             table_name = 'memos_types' or
                                             table_name = 'memos'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());

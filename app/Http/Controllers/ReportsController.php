@@ -932,8 +932,9 @@ class ReportsController extends Controller
                         ->where('status', 'aprobado')->where('deleted_at', NULL)
                         ->get();
         // dd($details);
+        $date = $request->date;
         if($request->print){
-            return view('reports.cashiers.vaults-print', compact('details'));
+            return view('reports.cashiers.vaults-print', compact('details', 'date'));
         }else{
             return view('reports.cashiers.vaults-list', compact('details'));
         }

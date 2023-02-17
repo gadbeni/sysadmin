@@ -1,8 +1,8 @@
 
 <div class="col-md-12 text-right">
-    {{-- @if (count($details))
+    @if (count($details))
         <button type="button" onclick="report_print()" class="btn btn-danger"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
-    @endif --}}
+    @endif
 </div>
 <div class="col-md-12">
     <div class="panel panel-bordered">
