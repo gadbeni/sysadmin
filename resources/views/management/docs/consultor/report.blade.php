@@ -38,14 +38,14 @@
                         <td>
                             @forelse ($contract->workers as $item)
                                 @if (isset($item->person))
-                                    <b>A:</b> {{ $item->person->first_name }} {{ $item->person->last_name }}<br>
+                                    {{ $item->person->first_name }} {{ $item->person->last_name }}<br>
                                     @if ($item->alternate_job->count() > 0)
                                         <b>{{ Str::upper($item->alternate_job->last()->name) }}</b> <br> <br>
                                     @else
                                         <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b> <br> <br>
                                     @endif
                                 @else
-                                    <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
+                                    {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
                                     <b>{{ $item->Cargo }}</b> <br> <br>
                                 @endif
                                 <br> <br>
@@ -83,7 +83,7 @@
                     El objeto del presente informe, es la evaluación y recomendación de adjudicación o declaratoria desierta del Proceso de Contratación, en la modalidad contratación menor consultoría, <b>GAD-BENI/MC N° {{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}”</b>. <br> <br>
                     <b>1. ANTECEDENTES</b> <br>
                     El Gobierno Autónomo Departamental del Beni, a través de la/el {{ $signature ? $signature->direccion_administrativa->nombre : 'Secretaría de Administración y Finanzas' }}, cuenta con diferentes programas y para la ejecución de los mismos, mediante Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}, de fecha {{ $signature ? $signature->designation_date ? date('d', strtotime($signature->designation_date)).' de '.$months[intval(date('m', strtotime($signature->designation_date)))].' de '.date('Y', strtotime($signature->designation_date)) : setting('firma-autorizada.designation-date') : setting('firma-autorizada.designation-date') }}, el Gobernador del Departamento del Beni en el marco de sus funciones, designa como Responsable del Proceso de Contratación al {{ $signature ? $signature->name : setting('firma-autorizada.name') }}, {{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}, en el marco del Decreto Supremo N° 0181 de fecha 28 de junio de 2009. <br> <br>
-                    La {{ Str::upper($contract->unidad_administrativa->NOMBRE) }}, mediante solicitud de fecha {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }}, requiere la contratación de un Consultor Individual de Línea, para el cargo de {{ Str::upper($contract->cargo->Descripcion) }}, con cargo al {{ Str::upper($contract->program->class) }}: “{{ Str::upper($contract->program->name) }}”, para tal efecto adjunta al requerimiento los Términos de Referencia, Certificación Presupuestaria. <br> <br>
+                    La/El {{ Str::upper($contract->unidad_administrativa->nombre) }}, mediante solicitud de fecha {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }}, requiere la contratación de un Consultor Individual de Línea, para el cargo de {{ Str::upper($contract->cargo->Descripcion) }}, con cargo al {{ Str::upper($contract->program->class) }}: “{{ Str::upper($contract->program->name) }}”, para tal efecto adjunta al requerimiento los Términos de Referencia, Certificación Presupuestaria. <br> <br>
                     <b>2. EVALUACIÓN</b> <br>
                     La evaluación de la documentación presentada por {{ $contract->person->gender == 'masculino' ? 'el' : 'la' }} postulante <b>{{ $contract->person->first_name }} {{ $contract->person->last_name }}</b>, para el Proceso de Contratación <b>“GAD-BENI/MC N° {{ $code }}”</b> para la prestación de servicios de un <b>CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}</b>, se detalla en el siguiente cuadro: <br> <br>
                 </p>
@@ -99,7 +99,7 @@
 
                 <br>
                 <p>
-                    Por lo anteriormente expuesto y en cumplimiento a lo establecido en el D.S. N° 0181 Art. 38, Parágrafo III, Inciso e), <u><i>se recomienda</i></u> al {{ $signature ? $signature->name : setting('firma-autorizada.name') }} – {{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}, <b>adjudicar</b> el Proceso de Contratación <b>{{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}”</b>, bajo el siguiente detalle:
+                    Por lo anteriormente expuesto y en cumplimiento a lo establecido en el D.S. N° 0181 Art. 38, Parágrafo III, Inciso e), <u><i>se recomienda</i></u> al/a la {{ $signature ? $signature->name : setting('firma-autorizada.name') }} – {{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}, <b>adjudicar</b> el Proceso de Contratación <b>{{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}”</b>, bajo el siguiente detalle:
                 </p>
                 <br>
 

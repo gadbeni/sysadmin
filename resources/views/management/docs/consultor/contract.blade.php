@@ -48,12 +48,12 @@
         </ul>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA TERCERA</strong></span><strong>. - (OBJETO Y CAUSA)</strong></p>
         <p>El objeto y causa del presente contrato es contratar los servicios de un consultor Individual de L&iacute;nea en el cargo de <strong>&ldquo;{{ Str::upper($contract->cargo->Descripcion) }}&rdquo;</strong> para dar apoyo a la/el <strong>{{ Str::upper($contract->unidad_administrativa->nombre) }}</strong><strong> </strong>dependiente de la <strong>{{ Str::upper($contract->direccion_administrativa->nombre) }}.</strong></p>
-        
+        <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA CUARTA</strong></span><strong>. - (OBLIGACIONES {{ $contract->person->gender == 'masculino' ? 'DEL CONSULTOR' : 'DE LA CONSULTORA' }}) </strong></p>
+        <p><strong>LA CONSULTORA</strong><strong> </strong>se compromete y obliga a efectuar la prestaci&oacute;n de {{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}, objeto del presente contrato de acuerdo a las especificaciones t&eacute;cnicas, caracter&iacute;sticas, cantidades, plazo y lugar se&ntilde;alado en los T&eacute;rminos de Referencia, condiciones generales de su propuesta que forma parte del presente documento, as&iacute; mismo deber&aacute; registrarse en el Reloj Biom&eacute;trico a objeto de llevar el respectivo control de asistencia, conforme a los t&eacute;rminos y condiciones de este contrato entre otros, los siguiente:</p>
+
         <div class="saltopagina"></div>
         <div class="pt"></div>
 
-        <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA CUARTA</strong></span><strong>. - (OBLIGACIONES {{ $contract->person->gender == 'masculino' ? 'DEL CONSULTOR' : 'DE LA CONSULTORA' }}) </strong></p>
-        <p><strong>LA CONSULTORA</strong><strong> </strong>se compromete y obliga a efectuar la prestaci&oacute;n de {{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}, objeto del presente contrato de acuerdo a las especificaciones t&eacute;cnicas, caracter&iacute;sticas, cantidades, plazo y lugar se&ntilde;alado en los T&eacute;rminos de Referencia, condiciones generales de su propuesta que forma parte del presente documento, as&iacute; mismo deber&aacute; registrarse en el Reloj Biom&eacute;trico a objeto de llevar el respectivo control de asistencia, conforme a los t&eacute;rminos y condiciones de este contrato entre otros, los siguiente:</p>
         <p><strong>1. {{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, se compromete y obliga a realizar el marcado de entrada y salida en el reloj biom&eacute;trico, teniendo en cuenta y aceptando que, de no hacerlo, se proceder&aacute; a realizar descuentos por atrasos, de acuerdo a lo que se establece en los T&eacute;rminos de Referencia (TDR.), los mismos que forman parte indisoluble del presente contrato.</p>
         <p><strong>2. </strong><strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, se compromete y obliga a efectuar la prestaci&oacute;n del servicio, objeto del siguiente contrato en los plazos y lugar se&ntilde;alado en los t&eacute;rminos de referencia, TDR.</p>
         <p><strong>3.</strong> <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, prestara un informe mensual sobre el avance de las tareas en ejecuci&oacute;n o los t&eacute;rminos de referencia</p>
@@ -92,20 +92,16 @@
         </ul>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA SEXTA. -</strong></span><strong> (VIGENCIA Y </strong><strong>TIEMPO DE PRESTACI&Oacute;N DEL SERVICIO</strong><strong>) </strong></p>
         <p>El contrato, entrar&aacute; en vigencia desde la suscripci&oacute;n, por ambas partes, hasta que las mismas hayan dado cumplimento a todas las cl&aacute;usulas contenidas en el presente contrato y el tiempo de la prestaci&oacute;n del servicio, se extender&aacute; desde el <strong>{{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} al {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->start)) }}.</strong></p>
-        
-        <div class="saltopagina"></div>
-        <div class="pt"></div>
-        
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA SEPTIMA</strong></span><strong>. - (LUGAR DE PRESTACI&Oacute;N DE SERVICIOS). </strong></p>
         <p><strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong> realizar&aacute; la <strong>CONSULTOR&Iacute;A</strong>, objeto del presente contrato en las oficinas de la/el <strong>{{ Str::upper($contract->unidad_administrativa->nombre) }} </strong>dependiente de la/el <strong>{{ Str::upper($contract->direccion_administrativa->nombre) }}. </strong>{{--ubicada en el edificio central del GAD-BENI frente de la plaza principal.--}}</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA OCTAVA</strong></span><strong>. - (DEL MONTO Y FORMA DE PAGO)</strong></p>
-
         @include('management.docs.consultor.partials.payment_details', ['contract' => $contract])
-
-        {{-- {!! $contract->details_report !!} --}}
-
         <p>Para efectos del pago de sus haberes mensuales, <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, deber&aacute; de presentar Informe de Actividades mensuales, el cual deber&aacute; de estar debidamente aprobado por su inmediato superior.</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA NOVENA</strong></span><strong>.- (PASAJES Y VIATICOS)</strong></p>
+        
+        <div class="saltopagina"></div>
+        <div class="pt"></div>
+
         <p>Los gastos por pasajes, vi&aacute;ticos que se requieran para el desarrollo de las actividades {{ $contract->person->gender == 'masculino' ? 'del consultor' : 'de la consultora' }} en las provincias y/o capitales de Bolivia, ser&aacute;n proporcionados por el Gobierno Aut&oacute;nomo Departamental del Beni.</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA</strong></span><strong>. - (PAGO DE AFP.) </strong></p>
         <p>Correr&aacute; por cuenta del <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong> el pago de la su AFP y al momento de solicitar la cancelaci&oacute;n de sus haberes mensuales deber&aacute; adjuntar el formulario mediante el cual se evidencie la cancelaci&oacute;n del mismo.</p>
@@ -119,10 +115,6 @@
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA CUARTA</strong></span><strong>. - (CONFIDENCIALIDAD) </strong></p>
         <p>Los materiales producidos por <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>,<strong> </strong>as&iacute; como la informaci&oacute;n a la que esta tuviere acceso, durante o despu&eacute;s de la ejecuci&oacute;n del presente contrato tendr&aacute; car&aacute;cter confidencial, quedando expresamente prohibida su divulgaci&oacute;n a terceros, excepto a LA ENTIDAD, a menos que cuente con un pronunciamiento escrito por parte de <strong>LA ENTIDAD </strong>en sentido contrario.</p>
         <p>As&iacute; mismo <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong> reconoce que <strong>LA ENTIDAD </strong>es el &uacute;nico propietario de los productos y documentos producidos por <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong><strong>, </strong>producto del presente Contrato.</p>
-
-        <div class="saltopagina"></div>
-        <div class="pt"></div>
-
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA QUINTA</strong></span><strong>. - (EXONERACI&Oacute;N A LA ENTIDAD DE RESPONSABILIDADES POR DA&Ntilde;OS A TERCEROS) </strong></p>
         <p><strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong> se obliga a tomar todas las previsiones que pudiesen surgir por da&ntilde;o a terceros, exonerando de estas obligaciones a <strong>LA ENTIDAD. </strong></p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA SEXTA</strong></span><strong>. - (EXTINCI&Oacute;N DEL CONTRATO) </strong></p>
@@ -134,6 +126,10 @@
         <p>a) Por incumplimiento en la realizaci&oacute;n de la <strong>CONSULTOR&Iacute;A </strong>en el plazo establecido.</p>
         <p>b) Por disoluci&oacute;n<strong> {{ $contract->person->gender == 'masculino' ? 'DEL CONSULTOR' : 'DE LA CONSULTORA' }}</strong>.</p>
         <p>c) Por falta de cumplimiento a los TDR.</p>
+        
+        <div class="saltopagina"></div>
+        <div class="pt"></div>
+        
         <p><strong>2.2 A requerimiento del</strong><strong> {{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong><strong>, por causales atribuibles a LA ENTIDAD: </strong></p>
         <p>a) Si apart&aacute;ndose de los t&eacute;rminos del Contrato, <strong>LA ENTIDAD </strong>pretende efectuar modificaciones a las especificaciones T&eacute;cnicas.</p>
         <p>b) Por incumplimiento injustificado en los pagos contra entregas parciales, por m&aacute;s de noventa (90) d&iacute;as calendario computados a partir de la fecha de entrega de los productos establecidos en los T&eacute;rminos de Referencia.</p>
@@ -144,10 +140,6 @@
         <p>Cuando se efect&uacute;e la Resoluci&oacute;n del Contrato se proceder&aacute; a una liquidaci&oacute;n de saldos deudores y acreedores de ambas partes, efectu&aacute;ndose los pagos a que hubiere lugar, conforme la evaluaci&oacute;n del grado de cumplimiento de los t&eacute;rminos de referencia.</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA SEPTIMA</strong></span><strong>. - (SOLUCI&Oacute;N DE CONTROVERSIAS) </strong></p>
         <p>En caso surgir dudas sobre los derechos y obligaciones de las partes durante la ejecuci&oacute;n del presente contrato, las partes acudir&aacute;n a los t&eacute;rminos y condiciones del contrato, T&eacute;rminos de Referencia, propuesta adjudicada, sometidas a la Jurisdicci&oacute;n Coactiva Fiscal.</p>
-        
-        <div class="saltopagina"></div>
-        <div class="pt"></div>
-        
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA OCTAVA</strong></span><strong>. - (EL VINCULO). - </strong>Por la Naturaleza de la relaci&oacute;n contractual eventual y espec&iacute;fica queda establecido que <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong> no recibir&aacute; beneficio adicional alguno por parte de <strong>LA ENTIDAD.</strong></p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA D&Eacute;CIMA NOVENA</strong></span><strong>. - (CONSENTIMIENTO) </strong></p>
         <p>En se&ntilde;al de conformidad y para su fiel y estricto cumplimiento, firmamos el presente Contrato en cuatro ejemplares de un mismo tenor y validez el <strong>{{ $signature ? $signature->name : setting('firma-autorizada.name') }}</strong>, {{ $signature ? $signature->job : setting('firma-autorizada.job') }}, en representaci&oacute;n legal de <strong>LA ENTIDAD</strong>, y <strong>{{ $contract->person->gender == 'masculino' ? 'el señor' : 'la señora' }} {{ $contract->person->first_name }} {{ $contract->person->last_name }}</strong>, como <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>.</p>
@@ -160,10 +152,7 @@
             </select>
             <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
         </p>
-        
-        <br>
-
-        <table width="100%" style="text-align: center; margin: 150px 0px;">
+        <table width="100%" style="text-align: center; margin: 100px 0px;">
             <tr>
                 <td style="width: 50%">
                     ....................................................... <br>
@@ -185,7 +174,7 @@
     <style>
         .content {
             padding: 50px 34px;
-            font-size: 15px;
+            font-size: 14px;
         }
         .text-center{
             text-align: center;
