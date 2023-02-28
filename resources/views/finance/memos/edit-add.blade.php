@@ -57,8 +57,8 @@
                                     <input type="hidden" name="destiny_alternate_job">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="code">Preventivo</label>
-                                    <input type="text" name="code" class="form-control" value="{{ isset($memo) ? $memo->code : old('code') }}" required>
+                                    <label for="number">Preventivo</label>
+                                    <input type="text" name="number" class="form-control" value="{{ isset($memo) ? $memo->number : old('number') }}" required>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="da_sigep">DA (SIGEP)</label>

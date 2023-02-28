@@ -38,7 +38,7 @@
             </div>
             <br><br>
             <p>
-                Previa revisión y certificación de presupuesto mediante comprobante preventivo número: <b>{{ $memo->code }}</b> D.A. <b>{{ $memo->da_sigep }}</b> FTE: <b>{{ $memo->source }}</b> sirvase <b>realizar la/el {{ $memo->type }} de Recursos Económicos la suma de Bs.- {{ Str::upper(NumerosEnLetras::convertir(number_format($memo->amount, 2, '.', ''), 'Bolivianos', true)) }}</b> a la orden de, 
+                Previa revisión y certificación de presupuesto mediante comprobante preventivo número: <b>{{ $memo->number }}</b> D.A. <b>{{ $memo->da_sigep }}</b> FTE: <b>{{ $memo->source }}</b> sirvase <b>realizar la/el {{ $memo->type }} de Recursos Económicos la suma de Bs.- {{ Str::upper(NumerosEnLetras::convertir(number_format($memo->amount, 2, '.', ''), 'Bolivianos', true)) }}</b> a la orden de, 
                 @if ($memo->person_external->number_acount)
                     <b>{{ $memo->person_external->number_acount }}</b>, 
                 @endif
