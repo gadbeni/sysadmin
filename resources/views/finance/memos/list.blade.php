@@ -4,7 +4,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Número</th>
+                    <th>Código</th>
                     <th>De</th>
                     <th>Para</th>
                     <th>Tipo</th>
@@ -21,7 +21,7 @@
                 @forelse ($data as $item)
                     <tr>
                         <td>{{ $cont }}</td>
-                        <td>{{ str_pad($item->number, 9, "0", STR_PAD_LEFT) }}</td>
+                        <td>{{ str_pad($item->code, 9, "0", STR_PAD_LEFT) }}</td>
                         <td>
                             {{ $item->origin->person->first_name }} {{ $item->origin->person->last_name }} <br>
                             <small><b>{{ Str::upper($item->origin_alternate_job ?? $item->origin->cargo ? $item->origin->cargo->descripcion : $item->origin->job->name) }}</b></small>

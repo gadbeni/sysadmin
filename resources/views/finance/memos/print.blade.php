@@ -48,7 +48,7 @@
                 @else
                     ; 
                 @endif
-                Por concepto de {!! $memo->concept !!}{!! $memo->person_external->imputation ? ', según imputación presupuestaria <b>'.$memo->person_external->imputation.'</b>.' : '.' !!} Se adjunta dicha documentación de acuerdo a ley.
+                Por concepto de {!! $memo->concept !!}{!! $memo->imputation ? ', según imputación presupuestaria <b>'.$memo->imputation.'</b>.' : '.' !!} Se adjunta dicha documentación de acuerdo a ley.
             </p>
             <br>
             <p>

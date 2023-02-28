@@ -18,7 +18,7 @@
                     <div class="panel panel-bordered">
                         <div class="panel-body">
                             <div class="row">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-12">
                                     <label for="person_external_type_id ">Tipo</label>
                                     <select name="person_external_type_id " class="form-control select2" required>
                                         <option value="">-- Seleccione el tipo --</option>

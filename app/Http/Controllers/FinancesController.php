@@ -19,7 +19,7 @@ class FinancesController extends Controller
 
     public function person_external_store(Request $request){
         try {
-            PersonExternal::create([
+            $person_external = PersonExternal::create([
                 'person_external_type_id' => $request->person_external_type_id,
                 'person_id' => $request->person_id,
                 'full_name' => $request->full_name,
@@ -29,9 +29,17 @@ class FinancesController extends Controller
                 'address' => $request->address,
                 'email' => $request->email,
             ]);
+
+            if($request->ajax){
+                return response()->json($person_external);
+            }
+
             return redirect()->route('voyager.person-externals.index')->with(['message' => 'Registro guardado exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             // throw $th;
+            if($request->ajax){
+                return response()->json(['error' => 1]);
+            }
             return redirect()->route('voyager.person-externals.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
@@ -43,7 +51,7 @@ class FinancesController extends Controller
     public function memos_types_store(Request $request){
         // dd($request->all());
         try {
-            MemosType::create([
+            $memos_type = MemosType::create([
                 'memos_types_group_id' => $request->memos_types_group_id,
                 'origin_id' => $request->origin_id,
                 'destiny_id' => $request->destiny_id,
@@ -52,10 +60,17 @@ class FinancesController extends Controller
                 'status' => $request->status ? 1 : 0
             ]);
 
+            if($request->ajax){
+                return response()->json($memos_type);
+            }
+
             return redirect()->route('voyager.memos-types.index')->with(['message' => 'Registro guardado exitosamente.', 'alert-type' => 'success']);
 
         } catch (\Throwable $th) {
             //throw $th;
+            if($request->ajax){
+                return response()->json(['error' => 1]);
+            }
             return redirect()->route('voyager.memos-types.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }

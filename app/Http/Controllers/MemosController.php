@@ -9,6 +9,7 @@ use Carbon\Carbon;
 
 // Models
 use App\Models\Memo;
+use App\Models\Contract;
 
 class MemosController extends Controller
 {
@@ -37,7 +38,10 @@ class MemosController extends Controller
     public function create()
     {
         $this->custom_authorize('add_memos');
-        return view('finance.memos.edit-add');
+        $contracts = Contract::with(['alternate_job' => function($q){
+                            $q->where('status', 1)->where('deleted_at', NULL);
+                        }])->where('status', 'firmado')->where('deleted_at', NULL)->get();
+        return view('finance.memos.edit-add', compact('contracts'));
     }
 
     /**
@@ -47,6 +51,7 @@ class MemosController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
+        // dd($request->all());
         try {
             $last_memo = Memo::orderBy('id', 'DESC')->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)->first();
             Memo::create([
@@ -70,7 +75,7 @@ class MemosController extends Controller
             ]);
             return redirect()->route('memos.index')->with(['message' => 'Memorándum guardado exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
-            // dd($th);
+            dd($th);
             return redirect()->route('memos.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
