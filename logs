@@ -1,15 +1,4 @@
-agregar campo location en tabla person_externals
-
-Migraciones
-    
-Seeders
-    
-Paquetes
-
-Comandos
-
-Otros
-
+- Eliminar tablas memos_types y memos
 
 NOTA:
 - generar código de adenda

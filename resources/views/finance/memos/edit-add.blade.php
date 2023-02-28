@@ -127,8 +127,12 @@
             $('#select-memos_type_id').change(function(){
                 let item = $('#select-memos_type_id option:selected').data('item');
                 if(item){
+                    $('#select-origin_id').val(item.origin_id).trigger('change');
+                    $('#select-destiny_id').val(item.destiny_id).trigger('change');
                     $('#textarea-concept').val(item.concept);
                 }else{
+                    $('#select-origin_id').val('').trigger('change');
+                    $('#select-destiny_id').val('').trigger('change');
                     $('#textarea-concept').val('');
                 }
             });

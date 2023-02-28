@@ -48,9 +48,10 @@ class MemosController extends Controller
      */
     public function store(Request $request){
         try {
-            $last_memo = Memo::orderBy('id', 'DESC')->first();
+            $last_memo = Memo::orderBy('id', 'DESC')->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)->first();
             Memo::create([
                 'user_id' => Auth::user()->id,
+                'direccion_administrativa_id' => Auth::user()->direccion_administrativa_id,
                 'origin_id' => $request->origin_id,
                 'origin_alternate_job' => $request->origin_alternate_job,
                 'destiny_id' => $request->destiny_id,
@@ -58,8 +59,7 @@ class MemosController extends Controller
                 'memos_type_id' => $request->memos_type_id,
                 'person_external_id' => $request->person_external_id,
                 'type' => $request->type,
-                'number' => ($last_memo ? explode('/', $last_memo->number)[0] +1 : 1).'/'.date('Y', strtotime($request->date)),
-                'code' => $request->code,
+                'code' => ($last_memo ? explode('/', $last_memo->code)[0] +1 : 1).'/'.date('Y', strtotime($request->date)),
                 'da_sigep' => $request->da_sigep,
                 'source' => $request->source,
                 'amount' => $request->amount,
@@ -125,7 +125,6 @@ class MemosController extends Controller
                 'memos_type_id' => $request->memos_type_id,
                 'person_external_id' => $request->person_external_id,
                 'type' => $request->type,
-                'code' => $request->code,
                 'da_sigep' => $request->da_sigep,
                 'source' => $request->source,
                 'amount' => $request->amount,

@@ -2,7 +2,7 @@
 
 @php
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-    $code = str_pad($memo->number, 9, "0", STR_PAD_LEFT);
+    $code = str_pad($memo->code, 9, "0", STR_PAD_LEFT);
 @endphp
 
 @section('page_title', 'Memorámdum '.$code)
@@ -20,7 +20,7 @@
         <div class="page-title">
             <h2>
                 <span style="color: #009A2F">MEMORANDUM</span> <br>
-                <small>S.D.A.F./D.F. N° {{ $code }}</small>
+                <small>{{ $memo->direccion ? $memo->direccion->sigla : 'S.D.A.F./D.F.' }} N° {{ $code }}</small>
             </h2>
         </div>
         <div class="page-body">

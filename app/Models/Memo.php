@@ -11,7 +11,7 @@ class Memo extends Model
     use HasFactory, SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $fillable = [
-        'user_id', 'origin_id', 'origin_alternate_job', 'destiny_id', 'destiny_alternate_job', 'memos_type_id', 'person_external_id', 'number', 'type', 'code', 'da_sigep', 'source', 'amount', 'concept', 'imputation', 'date'
+        'user_id', 'direccion_administrativa_id', 'origin_id', 'origin_alternate_job', 'destiny_id', 'destiny_alternate_job', 'memos_type_id', 'person_external_id', 'type', 'code', 'da_sigep', 'source', 'amount', 'concept', 'imputation', 'date'
     ];
 
     public function origin(){
@@ -28,5 +28,9 @@ class Memo extends Model
 
     public function person_external(){
         return $this->belongsTo(PersonExternal::class, 'person_external_id');
+    }
+
+    public function direccion(){
+        return $this->belongsTo(Direccion::class, 'direccion_administrativa_id');
     }
 }

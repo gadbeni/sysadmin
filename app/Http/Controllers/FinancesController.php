@@ -9,6 +9,7 @@ use Carbon\Carbon;
 
 // Models
 use App\Models\PersonExternal;
+use App\Models\MemosType;
 
 class FinancesController extends Controller
 {
@@ -32,6 +33,59 @@ class FinancesController extends Controller
         } catch (\Throwable $th) {
             // throw $th;
             return redirect()->route('voyager.person-externals.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function memos_types_create(){
+        return view('finance.memos_types.edit-add');
+    }
+
+    public function memos_types_store(Request $request){
+        // dd($request->all());
+        try {
+            MemosType::create([
+                'memos_types_group_id' => $request->memos_types_group_id,
+                'origin_id' => $request->origin_id,
+                'destiny_id' => $request->destiny_id,
+                'description' => $request->description,
+                'concept' => $request->concept,
+                'status' => $request->status ? 1 : 0
+            ]);
+
+            return redirect()->route('voyager.memos-types.index')->with(['message' => 'Registro guardado exitosamente.', 'alert-type' => 'success']);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('voyager.memos-types.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+        }
+    }
+
+    public function memos_types_show($id){
+        $data = MemosType::find($id);
+        return view('finance.memos_types.read', compact('data'));
+    }
+
+    public function memos_types_edit($id){
+        $type = MemosType::find($id);
+        return view('finance.memos_types.edit-add', compact('type'));
+    }
+
+    public function memos_types_update($id, Request $request){
+        try {
+            MemosType::where('id', $id)->update([
+                'memos_types_group_id' => $request->memos_types_group_id,
+                'origin_id' => $request->origin_id,
+                'destiny_id' => $request->destiny_id,
+                'description' => $request->description,
+                'concept' => $request->concept,
+                'status' => $request->status ? 1 : 0
+            ]);
+
+            return redirect()->route('voyager.memos-types.index')->with(['message' => 'Registro editado exitosamente.', 'alert-type' => 'success']);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('voyager.memos-types.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
     }
 }

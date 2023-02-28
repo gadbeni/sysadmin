@@ -61,10 +61,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('inbox/{id}/archivar', [TcInboxController::class, 'derivacion_archivar'])->name('inbox.archivar');
     Route::post('inbox/store/derivacion', [TcInboxController::class, 'store_derivacion'])->name('inbox.derivacion');
     Route::post('inbox/store/file', [TcInboxController::class, 'store_file']);
-
-
     // Route::get('inbox/{id}', [TcInboxController::class, 'derivacion_show'])->name('bandeja.show');
-
 
     Route::resource('outbox', TcOutboxController::class);
     Route::get('outbox/ajax/list', [TcOutboxController::class, 'list']);
@@ -79,21 +76,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('outbox/delete/derivacion/file', [TcOutboxController::class, 'delete_derivacion_file'])->name('delete.outbox.file');
     Route::post('outbox/store/derivacion', [TcOutboxController::class, 'store_derivacion'])->name('outbox.derivacion');
 
-
-
-
-
-
     Route::get('mamore/getpeoplederivacion',[TcController::class, 'getPeoplesDerivacion'])->name('getpeoplederivacion');
     Route::get('cite/{id?}/{cite?}',[TcController::class,'getCite'])->name('cite.get');
-
-
-
-
-    // ______________________________FIN_________________________________
-
-
-
 
     Route::get('people', [PeopleController::class, 'index'])->name('voyager.people.index');
     Route::get('people/ajax/list/{search?}', [PeopleController::class, 'list']);
@@ -249,6 +233,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     // * Personas externas
     Route::get('person-externals/create', [FinancesController::class, 'person_external_create'])->name('voyager.person-externals.create');
     Route::post('person-externals/store', [FinancesController::class, 'person_external_store'])->name('voyager.person-externals.store');
+
+    // * Memo types
+    Route::get('memos-types/create', [FinancesController::class, 'memos_types_create'])->name('voyager.memos-types.create');
+    Route::post('memos-types/store', [FinancesController::class, 'memos_types_store'])->name('voyager.memos-types.store');
+    Route::get('memos-types/{id}', [FinancesController::class, 'memos_types_show'])->name('voyager.memos-types.show');
+    Route::get('memos-types/{id}/edit', [FinancesController::class, 'memos_types_edit'])->name('voyager.memos-types.edit');
+    Route::post('memos-types/{id}/update', [FinancesController::class, 'memos_types_update'])->name('voyager.memos-types.update');
 
     // * Memos
     Route::resource('memos', MemosController::class);

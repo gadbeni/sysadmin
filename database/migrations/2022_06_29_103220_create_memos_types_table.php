@@ -16,9 +16,10 @@ class CreateMemosTypesTable extends Migration
         Schema::create('memos_types', function (Blueprint $table) {
             $table->id();
             $table->foreignId('memos_types_group_id')->nullable()->constrained('memos_types_groups');
+            $table->foreignId('origin_id')->nullable()->constrained('contracts');
+            $table->foreignId('destiny_id')->nullable()->constrained('contracts');
             $table->text('description')->nullable();
             $table->text('concept')->nullable();
-            $table->text('subject')->nullable();
             $table->smallInteger('status')->nullable()->default(1);
             $table->timestamps();
             $table->softDeletes();

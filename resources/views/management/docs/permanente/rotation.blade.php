@@ -25,12 +25,7 @@
             <div class="page-head" style="width: 100%">
                 <div class="border-right">
                     <p style="position:absolute; bottom: 10px">
-                        <select id="location-id">
-                            @foreach (App\Models\City::where('states_id', 1)->where('deleted_at', NULL)->get() as $item)
-                            <option @if($item->name == $contract->direccion_administrativa->city->name) selected @endif value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>
-                            @endforeach
-                        </select>
-                        <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
+                        <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($rotation->date)) }} de {{ $months[intval(date('m', strtotime($rotation->date)))] }} de {{ date('Y', strtotime($rotation->date)) }}
                     </p>
                 </div>
                 <div class="border-left">

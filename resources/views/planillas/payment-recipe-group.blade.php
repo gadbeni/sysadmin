@@ -135,10 +135,10 @@
                 <tr>
                     <td>
                         <br>
-                        <b>APORTE LABORAL AFP:</b> {{ number_format($item->labor_total, 2, ',', '.') }} <br>
+                        <b>APORTE LABORAL AFP:</b> {{ number_format($item->labor_total + ($item->paymentschedule->procedure_type_id == 2 ? $item->common_risk : 0 ), 2, ',', '.') }} <br>
                         <b>RC IVA:</b> {{ number_format($item->rc_iva_amount, 2, ',', '.') }} <br>
                         <b>MULTAS:</b> {{ number_format($item->faults_amount, 2, ',', '.') }} <br>
-                        <b>TOTAL DESCUENTOS:</b> {{ number_format($item->labor_total + $item->rc_iva_amount + $item->faults_amount, 2, ',', '.') }} <br>
+                        <b>TOTAL DESCUENTOS:</b> {{ number_format($item->labor_total  + ($item->paymentschedule->procedure_type_id == 2 ? $item->common_risk : 0 ) + $item->rc_iva_amount + $item->faults_amount, 2, ',', '.') }} <br>
                         <br>
                     </td>
                 </tr>

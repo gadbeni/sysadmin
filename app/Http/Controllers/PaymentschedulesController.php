@@ -212,8 +212,8 @@ class PaymentschedulesController extends Controller
             $faults_amount = json_decode($request->faults_amount);
             $liquid_payable = json_decode($request->liquid_payable);
             
-            $contract = Contract::find($contract_id[$i]);
             for ($i=0; $i < count($contract_id); $i++) {
+                $contract = Contract::find($contract_id[$i]);
                 PaymentschedulesDetail::create([
                     'paymentschedule_id' => $paymentschedule->id,
                     'contract_id' => $contract_id[$i],

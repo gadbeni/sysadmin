@@ -16,6 +16,7 @@ class CreateMemosTable extends Migration
         Schema::create('memos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->foreignId('direccion_administrativa_id')->nullable()->constrained('direcciones');
             $table->foreignId('origin_id')->nullable()->constrained('contracts');
             $table->string('origin_alternate_job')->nullable();
             $table->foreignId('destiny_id')->nullable()->constrained('contracts');

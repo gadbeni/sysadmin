@@ -128,10 +128,10 @@
             <tr>
                 <td>
                     <br>
-                    <b>APORTE LABORAL AFP:</b> {{ number_format($planilla ? $planilla->Total_Aportes_Afp : $payment->paymentschedulesdetail->labor_total, 2, ',', '.') }} <br>
+                    <b>APORTE LABORAL AFP:</b> {{ number_format($planilla ? $planilla->Total_Aportes_Afp : $payment->paymentschedulesdetail->labor_total + ($payment->procedure_type_id == 2 ? $payment->paymentschedulesdetail->common_risk : 0 ), 2, ',', '.') }} <br>
                     <b>RC IVA:</b> {{ number_format($planilla ? $planilla->RC_IVA : $payment->paymentschedulesdetail->rc_iva_amount, 2, ',', '.') }} <br>
                     <b>MULTAS:</b> {{ number_format($planilla ? $planilla->FsMultas : $payment->paymentschedulesdetail->faults_amount, 2, ',', '.') }} <br>
-                    <b>TOTAL DESCUENTOS:</b> {{ number_format($planilla ? $planilla->Total_Descuento : $payment->paymentschedulesdetail->labor_total + $payment->paymentschedulesdetail->faults_amount + $payment->paymentschedulesdetail->rc_iva_amount, 2, ',', '.') }} <br>
+                    <b>TOTAL DESCUENTOS:</b> {{ number_format($planilla ? $planilla->Total_Descuento : $payment->paymentschedulesdetail->labor_total + ($payment->procedure_type_id == 2 ? $payment->paymentschedulesdetail->common_risk : 0 ) + $payment->paymentschedulesdetail->faults_amount + $payment->paymentschedulesdetail->rc_iva_amount, 2, ',', '.') }} <br>
                     <br>
                 </td>
             </tr>

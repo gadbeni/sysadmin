@@ -3729,7 +3729,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required"}}',
-                'order' => 5,
+                'order' => 9,
             ),
             232 => 
             array (
@@ -3745,7 +3745,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{"validation":{"rule":"required"}}',
-                'order' => 6,
+                'order' => 10,
             ),
             233 => 
             array (
@@ -3761,7 +3761,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"display":{"width":6},"on":"Activo","off":"Inactivo","checked":true}',
-                'order' => 7,
+                'order' => 11,
             ),
             234 => 
             array (
@@ -3777,7 +3777,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 8,
+                'order' => 12,
             ),
             235 => 
             array (
@@ -3793,7 +3793,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 9,
+                'order' => 13,
             ),
             236 => 
             array (
@@ -3809,7 +3809,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 10,
+                'order' => 14,
             ),
             237 => 
             array (
@@ -4881,7 +4881,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required"}}',
-                'order' => 4,
+                'order' => 8,
             ),
             304 => 
             array (
@@ -5320,7 +5320,7 @@ class DataRowsTableSeeder extends Seeder
                 'id' => 382,
                 'data_type_id' => 17,
                 'field' => 'designation_date_alt',
-                'type' => 'text',
+                'type' => 'date',
                 'display_name' => 'Fecha de designación RPA',
                 'required' => 0,
                 'browse' => 1,
@@ -5330,6 +5330,70 @@ class DataRowsTableSeeder extends Seeder
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
                 'order' => 10,
+            ),
+            332 => 
+            array (
+                'id' => 383,
+                'data_type_id' => 26,
+                'field' => 'origin_id',
+                'type' => 'text',
+                'display_name' => 'Origin Id',
+                'required' => 0,
+                'browse' => 0,
+                'read' => 0,
+                'edit' => 0,
+                'add' => 0,
+                'delete' => 0,
+                'details' => '{}',
+                'order' => 4,
+            ),
+            333 => 
+            array (
+                'id' => 384,
+                'data_type_id' => 26,
+                'field' => 'origin_alternate_job',
+                'type' => 'text',
+                'display_name' => 'De',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{}',
+                'order' => 5,
+            ),
+            334 => 
+            array (
+                'id' => 385,
+                'data_type_id' => 26,
+                'field' => 'destiny_id',
+                'type' => 'text',
+                'display_name' => 'Destiny Id',
+                'required' => 0,
+                'browse' => 0,
+                'read' => 0,
+                'edit' => 0,
+                'add' => 0,
+                'delete' => 0,
+                'details' => '{}',
+                'order' => 6,
+            ),
+            335 => 
+            array (
+                'id' => 386,
+                'data_type_id' => 26,
+                'field' => 'destiny_alternate_job',
+                'type' => 'text',
+                'display_name' => 'A',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{}',
+                'order' => 7,
             ),
         ));
         
