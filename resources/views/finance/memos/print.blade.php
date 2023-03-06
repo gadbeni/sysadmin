@@ -40,9 +40,9 @@
             <p>
                 Previa revisión y certificación de presupuesto mediante comprobante preventivo número: <b>{{ $memo->number }}</b> D.A. <b>{{ $memo->da_sigep }}</b> FTE: <b>{{ $memo->source }}</b> sirvase <b>realizar la/el {{ $memo->type }} de Recursos Económicos la suma de Bs.- {{ Str::upper(NumerosEnLetras::convertir(number_format($memo->amount, 2, '.', ''), 'Bolivianos', true)) }}</b> a la orden de, 
                 @if ($memo->person_external->number_acount)
-                    <b>{{ $memo->person_external->number_acount }}</b>, 
+                    CTA. CTE. <b>{{ $memo->person_external->number_acount }}</b>, a nombre de 
                 @endif
-                a nombre de <b>{{ $memo->person_external->full_name }}</b> 
+                 <b>{{ $memo->person_external->full_name }}</b> 
                 @if ($memo->person_external->ci_nit)
                     <b>con C.I. {{ $memo->person_external->ci_nit }}</b>; 
                 @else

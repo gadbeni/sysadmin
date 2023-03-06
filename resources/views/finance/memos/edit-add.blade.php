@@ -69,7 +69,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="da_sigep">DA (SIGEP)</label>
-                                    <input type="number" name="da_sigep" class="form-control" value="{{ isset($memo) ? $memo->da_sigep : old('da_sigep') }}" required>
+                                    <input type="text" name="da_sigep" class="form-control" value="{{ isset($memo) ? $memo->da_sigep : old('da_sigep') }}" required>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="source">Fuente</label>
@@ -228,7 +228,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="ci_nit">CI/NIT</label>
-                                <input type="text" name="ci_nit" class="form-control" placeholder="CI/NIT" required>
+                                <input type="text" name="ci_nit" class="form-control" placeholder="CI/NIT">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="number_acount">N&deg; de cuenta</label>

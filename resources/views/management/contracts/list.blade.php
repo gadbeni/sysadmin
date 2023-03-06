@@ -143,7 +143,10 @@
                                     @if ($item->status == 'concluido' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('print_finish_contracts'))
                                     <li><a title="Imprimir memorándum de agradecimiento" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-finished']) }}" target="_blank">Imprimir memorándum</a></li>
                                     @endif
-
+                                    {{-- si está concluido y es permanente --}}
+                                    @if ($item->status == 'firmado' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('transfer_contracts'))
+                                    <li><a href="#" class="btn-transfer" data-toggle="modal" data-target="#transfer-modal" data-id="{{ $item->id }}" title="Crear transferencia" >Transferir</a></li>
+                                    @endif
                                     @if (auth()->user()->hasPermission('add_addendum_contracts') && $item->status == 'concluido' && count($contracts) == 0 && $item->procedure_type_id == 2 && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
                                     <li><a class="btn-addendum" title="Crear adenda" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' href="#">Crear adenda</a></li>
                                     @endif
@@ -160,7 +163,6 @@
                                     @endif
                                 </ul>
                             </div>
-
                             {{-- Botón de impresión --}}
                             @if ($item->cargo_id || $item->job_id)
                                 <div class="btn-group">
@@ -170,11 +172,14 @@
                                     <ul class="dropdown-menu" role="menu">
                                         @switch($item->procedure_type_id)
                                             @case(1)
-                                            <li><a title="Designación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum']) }}" target="_blank">Designación</a></li>
+                                                <li><a title="Designación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum']) }}" target="_blank">Designación</a></li>
                                                 @if ($item->ratifications->count() > 0 && auth()->user()->hasPermission('ratificate_contracts'))
                                                 <li><a title="Ratificación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-ratificacion']) }}" target="_blank">Ratificación</a></li>
                                                 @endif
                                                 <li><a title="Reasignación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-reasigancion']) }}" target="_blank">Reasignación</a></li>
+                                                @if ($item->transfers->count() > 0)
+                                                <li><a title="Transferecnia" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.transfer']) }}" target="_blank">Transferencia</a></li>
+                                                @endif
                                                 @break
                                             @case(2)
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.autorization']) }}" target="_blank">Autorización</a></li>
@@ -362,6 +367,57 @@
     </div>
 </form>
 
+{{-- change status modal --}}
+<form action="{{ route('contracts.transfer.store') }}" id="form-transfer" class="form-submit" method="POST">
+    @csrf
+    <div class="modal modal-primary fade" tabindex="-1" id="transfer-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="voyager-check"></i> Registrar transferencia</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="contract_id">
+                    <div class="form-group">
+                        <label for="job_id">Item</label>
+                        <select name="job_id" id="select-job_id" class="form-control" required>
+                            <option value="">--Seleccionar Item--</option>
+                            @php
+                                $jobs = App\Models\Job::with(['direccion_administrativa.programs' => function($q){
+                                        $q->where('year', date('Y'));
+                                    }])->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
+                                    ->where('status', 1)->where('deleted_at', NULL)->get();
+                            @endphp
+                            @foreach ($jobs as $item)
+                            <option value="{{ $item->id }}" data-item='@json($item)'>ITEM {{ $item->item }} : {{ $item->name }} - Bs.{{ $item->salary }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="program_id">Programa/Proyecto</label>
+                        <select name="program_id" id="select-program_id" class="form-control" required>
+                            <option value="">--Seleccionar Programa/Proyecto--</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Fecha de transferencia</label>
+                        <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="observations">Observaciones</label>
+                        <textarea name="observations" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" class="btn btn-dark" value="Aceptar">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 {{-- Addendum create modal --}}
 <form action="{{ route('contracts.addendum.store') }}" id="form-addendum" class="form-submit" method="POST">
     @csrf
@@ -511,12 +567,19 @@
         max-height: 250px !important;
         overflow-y: auto;
     }
+    .select2-container {
+        width: 100% !important;
+        padding: 0;
+    }
 </style>
 
 <script>
     moment.locale('es');
     var page = "{{ request('page') }}";
     $(document).ready(function(){
+
+        $('#select-job_id').select2();
+        $('#select-program_id').select2();
 
         $.extend({selector: '.richTextBox'}, {})
         tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
@@ -530,11 +593,26 @@
             }
         });
 
+        $('#select-job_id').change(function(){
+            let item = $('#select-job_id option:selected').data('item');
+
+            $('#select-program_id').html(`<option value="">--Seleccionar Programa/Proyecto--</option>`);
+            item.direccion_administrativa.programs.map(program => {
+                $('#select-program_id').append(`<option value="${program.id}">${program.name}</option>`);
+            });
+        });
+
+        $('.btn-transfer').click(function(){
+            let id = $(this).data('id');
+            $('#form-transfer input[name="contract_id"]').val(id);
+        });
+
         $('.form-submit').submit(function(e){
             $('#status-modal').modal('hide');
             $('#addendum-modal').modal('hide');
             $('#addendum-status-modal').modal('hide');
             $('#ratificate-modal').modal('hide');
+            $('#transfer-modal').modal('hide');
             e.preventDefault();
             $('#div-results').loading({message: 'Cargando...'});
             $.post($(this).attr('action'), $(this).serialize(), function(res){

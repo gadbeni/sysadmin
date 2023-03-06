@@ -441,137 +441,169 @@
 
         {{-- Vista de recursos humanos --}}
         @if (Auth::user()->role_id == 1 || (Auth::user()->role_id >= 9 && Auth::user()->role_id <= 12) || Auth::user()->role_id == 23 || Auth::user()->role_id == 30)
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-bordered">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h2>Hola, {{ Auth::user()->name }}</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-bordered">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2>Hola, {{ Auth::user()->name }}</h2>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-bordered" style="border-left: 5px solid #52BE80">
-                    <div class="panel-body" style="height: 100px;padding: 15px 20px">
-                        <div class="col-md-9">
-                            @php
-                                $contracts_active = App\Models\Contract::where('deleted_at', NULL)->where('status', 'firmado')->whereRaw('start <= "'.date('Y-m-d').'" and (finish >= "'.date('Y-m-d').'" or finish is null)')->count();
-                            @endphp
-                            <h5>Contratos activos</h5>
-                            <h2>{{ $contracts_active }}</h2>
-                        </div>
-                        <div class="col-md-3 text-right">
-                            <i class="icon voyager-news" style="color: #52BE80"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-bordered" style="border-left: 5px solid #E67E22">
-                    <div class="panel-body" style="height: 100px;padding: 15px 20px">
-                        <div class="col-md-9">
-                            <h5>Contratos en proceso</h5>
-                            <h2>{{ App\Models\Contract::where('deleted_at', NULL)->where('status', 'elaborado')->count() }}</h2>
-                        </div>
-                        <div class="col-md-3 text-right">
-                            <i class="icon voyager-calendar" style="color: #E67E22"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-bordered" style="border-left: 5px solid #3498DB">
-                    <div class="panel-body" style="height: 100px;padding: 15px 20px">
-                        <div class="col-md-9">
-                            <h5>Inamovilidades</h5>
-                            <h2>{{ App\Models\PersonIrremovability::where('deleted_at', NULL)->whereRaw('start <= "'.date('Y-m-d').'" and (finish >= "'.date('Y-m-d').'" or finish is null)')->count() }}</h2>
-                        </div>
-                        <div class="col-md-3 text-right">
-                            <i class="icon voyager-certificate" style="color: #3498DB"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="panel panel-bordered" style="border-left: 5px solid #E74C3C">
-                    <div class="panel-body" style="height: 100px;padding: 15px 20px">
-                        <div class="col-md-9">
-                            @php
-                                $jobs = App\Models\Job::whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
-                                            ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
-                                            ->where('deleted_at', NULL)->count();
-                            @endphp
-                            <h5>Cargos acéfalos</h5>
-                            <h2>{{ $jobs }}</h2>
-                        </div>
-                        <div class="col-md-3 text-right">
-                            <i class="icon voyager-book" style="color: #E74C3C"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="panel">
-                    <div class="panel-body">
-                        <h4>Cumpleaños</h4>
-                        @php
-                            $birthdays = App\Models\Person::whereHas('contracts', function($q){
-                                                $q->where('status', 'firmado');
-                                            })
-                                            ->where('birthday', 'like', '%'.date('m-d').'%')
-                                            ->where('deleted_at', NULL)->get()
-                        @endphp
-                        <div class="list-group">
-                            @forelse ($birthdays as $item)
+                <div class="col-md-3">
+                    <div class="panel panel-bordered" style="border-left: 5px solid #52BE80">
+                        <div class="panel-body" style="height: 100px;padding: 15px 20px">
+                            <div class="col-md-9">
                                 @php
-                                    $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-                                    $now = \Carbon\Carbon::now();
-                                    $birthday = new \Carbon\Carbon($item->birthday);
-                                    $age = $birthday->diffInYears($now);
-
-                                    $image = asset('images/default.jpg');
-                                    if($item->image){
-                                        $image = asset('storage/'.str_replace('.', '-cropped.', $item->image));
-                                    }
+                                    $contracts_active = App\Models\Contract::where('deleted_at', NULL)->where('status', 'firmado')->whereRaw('start <= "'.date('Y-m-d').'" and (finish >= "'.date('Y-m-d').'" or finish is null)')->count();
                                 @endphp
-                                <a href="{{ url('admin/people/'.$item->id) }}" class="list-group-item" style="cursor: pointer">
-                                    <div style="display: flex; flex-direction: row">
-                                        <div style="margin-right: 10px">
-                                            <img src="{{ $image }}" alt="{{ $item->first_name }} {{ $item->last_name }}" style="width: 50px; height: 50px; border-radius: 25px">
+                                <h5>Contratos activos</h5>
+                                <h2>{{ $contracts_active }}</h2>
+                            </div>
+                            <div class="col-md-3 text-right">
+                                <i class="icon voyager-news" style="color: #52BE80"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panel-bordered" style="border-left: 5px solid #E67E22">
+                        <div class="panel-body" style="height: 100px;padding: 15px 20px">
+                            <div class="col-md-9">
+                                <h5>Contratos en proceso</h5>
+                                <h2>{{ App\Models\Contract::where('deleted_at', NULL)->where('status', 'elaborado')->count() }}</h2>
+                            </div>
+                            <div class="col-md-3 text-right">
+                                <i class="icon voyager-calendar" style="color: #E67E22"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panel-bordered" style="border-left: 5px solid #3498DB">
+                        <div class="panel-body" style="height: 100px;padding: 15px 20px">
+                            <div class="col-md-9">
+                                <h5>Inamovilidades</h5>
+                                <h2>{{ App\Models\PersonIrremovability::where('deleted_at', NULL)->whereRaw('start <= "'.date('Y-m-d').'" and (finish >= "'.date('Y-m-d').'" or finish is null)')->count() }}</h2>
+                            </div>
+                            <div class="col-md-3 text-right">
+                                <i class="icon voyager-certificate" style="color: #3498DB"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panel-bordered" style="border-left: 5px solid #E74C3C">
+                        <div class="panel-body" style="height: 100px;padding: 15px 20px">
+                            <div class="col-md-9">
+                                @php
+                                    $jobs = App\Models\Job::whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
+                                                ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
+                                                ->where('deleted_at', NULL)->count();
+                                @endphp
+                                <h5>Cargos acéfalos</h5>
+                                <h2>{{ $jobs }}</h2>
+                            </div>
+                            <div class="col-md-3 text-right">
+                                <i class="icon voyager-book" style="color: #E74C3C"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <h4>Cumpleaños</h4>
+                            @php
+                                $birthdays = App\Models\Person::whereHas('contracts', function($q){
+                                                    $q->where('status', 'firmado');
+                                                })
+                                                ->whereMonth('birthday', date('m'))->whereDay('birthday', date('d'))
+                                                ->where('deleted_at', NULL)->get()
+                            @endphp
+                            <div class="list-group">
+                                @forelse ($birthdays as $item)
+                                    @php
+                                        $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+                                        $now = \Carbon\Carbon::now();
+                                        $birthday = new \Carbon\Carbon($item->birthday);
+                                        $age = $birthday->diffInYears($now);
+
+                                        $image = asset('images/default.jpg');
+                                        if($item->image){
+                                            $image = asset('storage/'.str_replace('.', '-cropped.', $item->image));
+                                        }
+                                    @endphp
+                                    
+                                    <div class="list-group-item" style="display: flex; justify-content: space-between">
+                                        <div style="display: flex; flex-direction: row;">
+                                            <div style="margin-right: 10px">
+                                                <img src="{{ $image }}" alt="{{ $item->first_name }} {{ $item->last_name }}" style="width: 50px; height: 50px; border-radius: 25px">
+                                            </div>
+                                            <div>
+                                                <p>
+                                                    <a href="{{ url('admin/people/'.$item->id) }}" style="cursor: pointer">
+                                                        {{ $item->first_name }} {{ $item->last_name }}<br>
+                                                        <b>{{ $age }} años</b>
+                                                    </a>
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p>
-                                                {{ $item->first_name }} {{ $item->last_name }}<br>
-                                                <b>{{ $age }} años</b>
-                                            </p>
-                                        </div>
+                                        @if(env('APP_SERVER_WHATSAPP'))
+                                            <div>
+                                                <button title="Enviar felicitación" class="btn btn-success btn-send-message" data-toggle="modal" data-target="#send-message-modal" data-phone="{{ $item->phone }}" @if(!$item->phone) disabled @endif > <i class="fa fa-paper-plane"></i></button>
+                                            </div>
+                                        @endif
                                     </div>
-                                </a>
-                            @empty
-                                <p class="text-muted text-center">Ninguno</p>
-                            @endforelse
+                                @empty
+                                    <p class="text-muted text-center">Ninguno</p>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel">
+                        <div class="panel-body" style="height: 250px">
+                            <canvas id="bar-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel">
+                        <div class="panel-body" style="height: 250px">
+                            <canvas id="doughnut-chart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="panel">
-                    <div class="panel-body" style="height: 250px">
-                        <canvas id="bar-chart"></canvas>
+
+            <form action="{{ route('send.whatsapp') }}" id="form-submit-message" method="post">
+                @csrf
+                <div class="modal fade" tabindex="-1" id="send-message-modal" role="dialog">
+                    <div class="modal-dialog modal-success">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title"><i class="fa fa-paper-plane"></i> Enviar mensaje de felicitación</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <textarea id="textarea-message" name="message" class="form-control" rows="5">Hace unos años, una persona muy especial vino al mundo para hacerlo un lugar mejor. ¡Feliz cumpleaños! Que disfrutes de este día con ilusión y mucha alegría. Y que cumplas muchos más años de vida! Son los sinceros deseos de GADBENI❤️</textarea>
+                                </div>
+                                <input type="hidden" name="phone" id="input-phone-number">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" id="btn-submit-message" class="btn btn-success"> <i class="fa fa-paper-plane"></i> Enviar</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="panel">
-                    <div class="panel-body" style="height: 250px">
-                        <canvas id="doughnut-chart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </form>
         @endif
     </div>
 @stop
@@ -635,4 +667,27 @@
             </script>
         @endif
     @endif
+
+    <script>
+        
+        $('.btn-send-message').click(function(){
+
+            $('#input-phone-number').val($(this).data('phone'));
+        });
+
+        $('#form-submit-message').submit(function(e){
+            $('#btn-submit-message').attr('disabled', 'disabled');
+            e.preventDefault();
+            $.post($('#form-submit-message').attr('action'), $('#form-submit-message').serialize(), function(res){
+                $('#btn-submit-message').removeAttr('disabled');
+                if (res.success) {
+                    $('#send-message-modal').modal('hide');
+                    toastr.success('Felicitación enviada');
+                } else {
+                    toastr.error('Ocurrió un error');
+                }
+            })
+        });
+
+    </script>
 @stop

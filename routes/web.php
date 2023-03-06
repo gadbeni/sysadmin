@@ -224,6 +224,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('contracts/addendum/store', [ContractsController::class, 'contracts_addendum_store'])->name('contracts.addendum.store');
     Route::post('contracts/addendum/status', [ContractsController::class, 'contracts_addendum_status'])->name('contracts.addendum.status');
     Route::post('contracts/addendum/update', [ContractsController::class, 'contracts_addendum_update'])->name('contracts.addendum.update');
+    Route::post('contracts/transfer/store', [ContractsController::class, 'contracts_transfer_store'])->name('contracts.transfer.store');
     Route::get('contracts/direccion-administrativa/{id}', [ContractsController::class, 'contracts_direccion_administrativa']);
     Route::get('contracts/{id}/print/{document}', [ContractsController::class, 'print'])->name('contracts.print');
     
@@ -320,6 +321,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     Route::get('imports', [ImportsController::class, 'imports_index'])->name('imports.index');
     Route::post('imports/store', [ImportsController::class, 'imports_store'])->name('imports.store');
+
+    // Enviar mensaje de whatsapp
+    Route::post('send-whatsapp', [HomeController::class, 'send_message'])->name('send.whatsapp');
 });
 
 // Clear cache

@@ -5,7 +5,7 @@
 @section('page_header')
     <h1 class="page-title">
         <i class="voyager-people"></i>
-        Añadir Beneficiarios
+        Añadir Beneficiario
     </h1>
 @stop
 
@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="ci_nit">CI/NIT</label>
-                                    <input type="text" name="ci_nit" class="form-control" placeholder="CI/NIT" required>
+                                    <input type="text" name="ci_nit" class="form-control" placeholder="CI/NIT">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="number_acount">N&deg; de cuenta</label>

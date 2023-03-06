@@ -23,4 +23,8 @@ class Direccion extends Model
     public function city(){
         return $this->belongsTo(City::class, 'city_id');
     }
+
+    public function programs(){
+        return $this->hasMany(Program::class, 'direccion_administrativa_id');
+    }
 }

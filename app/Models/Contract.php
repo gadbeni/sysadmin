@@ -108,4 +108,8 @@ class Contract extends Model
     public function ratifications(){
         return $this->hasMany(ContractRatification::class);
     }
+
+    public function transfers(){
+        return $this->hasMany(ContractsTransfer::class, 'contract_id');
+    }
 }

@@ -114,6 +114,7 @@ class PermissionsTableSeeder extends Seeder
             'print_finish_contracts',
             'add_addendum_contracts',
             'edit_addendum_contracts',
+            'transfer_contracts',
         ];
 
         foreach ($keys as $key) {

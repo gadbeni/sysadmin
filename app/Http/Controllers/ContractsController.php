@@ -22,6 +22,7 @@ use App\Models\PaymentschedulesDetail;
 use App\Models\ContractsFinished;
 use App\Models\Addendum;
 use App\Models\ContractRatification;
+use App\Models\ContractsTransfer;
 
 class ContractsController extends Controller
 {
@@ -49,7 +50,7 @@ class ContractsController extends Controller
     public function list($search = null){
         $this->custom_authorize('browse_contracts');
         $paginate = request('paginate') ?? 10;
-        $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa.tipo', 'type'])
+        $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa.tipo', 'type', 'transfers'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
                     ->where(function($query) use ($search){
                         if($search){
@@ -121,7 +122,7 @@ class ContractsController extends Controller
         $jobs = Job::with('direccion_administrativa')
                     ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
-                    ->where('deleted_at', NULL)->get();
+                    ->where('status', 1)->where('deleted_at', NULL)->get();
         return view('management.contracts.edit-add', compact('procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'contracts', 'programs', 'cargos', 'jobs'));
     }
 
@@ -473,6 +474,56 @@ class ContractsController extends Controller
         }
     }
 
+    public function contracts_transfer_store(Request $request){
+        DB::beginTransaction();
+        try {
+
+            $contract = Contract::find($request->contract_id);
+
+            // Crear contrato
+            $d_a = Direccion::find(Job::find($request->job_id)->direccion_administrativa_id);
+            $count_contract = Contract::whereYear('start', date('Y', strtotime($request->date)))
+                        ->where('procedure_type_id', 1)
+                        ->where('direccion_administrativa_id', $d_a->id)
+                        ->count();
+            
+            $code = ($d_a ? $d_a->sigla.'-' : '').str_pad($count_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->date));
+            $new_contratc = Contract::create([
+                'user_id' => Auth::user()->id,
+                'person_id' => $contract->person_id,
+                'procedure_type_id' => 1,
+                'program_id' => $request->program_id,
+                'job_id' => $request->job_id,
+                'direccion_administrativa_id' => $d_a->id,
+                'code' => $code,
+                'start' => $request->date,
+                'finish' => $contract->finish,
+                'details_work' => $contract->details_work,
+                'table_report' => $contract->table_report,
+            ]);
+
+            // Actualizar el contrato previo
+            $contract->finish = date("Y-m-d", strtotime("-1 day", strtotime($request->date)));
+            $contract->status = 'concluido';
+            $contract->update();
+
+            // Crear registro de transferencia
+            ContractsTransfer::create([
+                'user_id' => Auth::user()->id,
+                'contract_id' => $new_contratc->id,
+                'previus_contract_id' => $request->contract_id,
+                'date' => $request->date,
+                'observations' => $request->contract_id,
+            ]);
+            DB::commit();
+            return response()->json(['message' => 'Transferencia registrada exitosamente.']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            // dd($th);
+            return response()->json(['error' => 'Ocurrió un error.']);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -528,7 +579,7 @@ class ContractsController extends Controller
     // ================================
     
     public function print($id, $document){
-        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature.person', 'signature.job', 'signature.cargo', 'addendums.signature'])->where('id', $id)->first();
+        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature.person', 'signature.job', 'signature.cargo', 'addendums.signature', 'transfers'])->where('id', $id)->first();
         // Si no tiene comisión evaluadora del sistema actual buscar en el antiguo sistema
         if($contract->workers_memo_alt != null){
             $contract->workers = Contract::with(['person', 'job', 'cargo', 'alternate_job' => function($q){

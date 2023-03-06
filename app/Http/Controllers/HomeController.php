@@ -64,4 +64,16 @@ class HomeController extends Controller
             return response()->json(['error' => 1, 'message' => 'Ocurrió un error en el servidor']);
         }
     }
+
+    public function send_message(Request $request){
+        try {
+            if (env('APP_SERVER_WHATSAPP')) {
+                Http::get(env('APP_SERVER_WHATSAPP').'?number=591'.$request->phone.'&message='.$request->message);
+            }
+            return response()->json(['success' => 1, 'url' => env('APP_SERVER_WHATSAPP').'?number=591'.$request->phone.'&message='.$request->message]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['error' => 1]);
+        }
+    }
 }

@@ -26,7 +26,9 @@ class MemosController extends Controller
 
     public function list(){
         $paginate = request('paginate') ?? 10;
-        $data = Memo::where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
+        $data = Memo::where('deleted_at', NULL)
+                    ->whereRaw(Auth::user()->role_id == 1 ? 1 : "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id)
+                    ->orderBy('id', 'DESC')->paginate($paginate);
         return view('finance.memos.list', compact('data'));
     }
 
