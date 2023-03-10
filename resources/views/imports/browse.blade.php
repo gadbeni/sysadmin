@@ -28,6 +28,7 @@
                                         <option value="">--Seleccione el tipo de archivo--</option>
                                         <option value="funcionamiento">Personal de funcionamiento</option>
                                         <option value="bono antiguedad">Bono antigüedad</option>
+                                        <option value="estructura permanente">Estructura permanente</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">

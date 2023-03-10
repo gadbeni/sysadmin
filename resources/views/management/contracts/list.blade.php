@@ -384,20 +384,12 @@
                         <select name="job_id" id="select-job_id" class="form-control" required>
                             <option value="">--Seleccionar Item--</option>
                             @php
-                                $jobs = App\Models\Job::with(['direccion_administrativa.programs' => function($q){
-                                        $q->where('year', date('Y'));
-                                    }])->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
+                                $jobs = App\Models\Job::whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
                                     ->where('status', 1)->where('deleted_at', NULL)->get();
                             @endphp
                             @foreach ($jobs as $item)
                             <option value="{{ $item->id }}" data-item='@json($item)'>ITEM {{ $item->item }} : {{ $item->name }} - Bs.{{ $item->salary }}</option>
                             @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="program_id">Programa/Proyecto</label>
-                        <select name="program_id" id="select-program_id" class="form-control" required>
-                            <option value="">--Seleccionar Programa/Proyecto--</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -579,7 +571,6 @@
     $(document).ready(function(){
 
         $('#select-job_id').select2();
-        $('#select-program_id').select2();
 
         $.extend({selector: '.richTextBox'}, {})
         tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
@@ -591,15 +582,6 @@
                 page = link.split('=')[1];
                 list(page);
             }
-        });
-
-        $('#select-job_id').change(function(){
-            let item = $('#select-job_id option:selected').data('item');
-
-            $('#select-program_id').html(`<option value="">--Seleccionar Programa/Proyecto--</option>`);
-            item.direccion_administrativa.programs.map(program => {
-                $('#select-program_id').append(`<option value="${program.id}">${program.name}</option>`);
-            });
         });
 
         $('.btn-transfer').click(function(){

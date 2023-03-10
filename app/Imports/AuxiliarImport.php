@@ -11,6 +11,7 @@ use App\Models\SeniorityBonusPerson;
 use App\Models\Person;
 use App\Models\Contract;
 use App\Models\Direccion;
+use App\Models\Job;
 
 class AuxiliarImport implements ToModel
 {
@@ -78,6 +79,18 @@ class AuxiliarImport implements ToModel
                     'user_id' => Auth::user()->id,
                     'code' => $row[12],
                     'start' => $start
+                ]);
+            }
+        }
+
+        if($this->type == 'estructura permanente'){
+            if($row[0] > 0 ){
+                return new SeniorityBonusPerson([
+                    'item' => $row[0],
+                    'level' => $row[1],
+                    'name' => $row[2],
+                    'direccion_administrativa_id' => $row[3],
+                    'salary' => $row[4]
                 ]);
             }
         }

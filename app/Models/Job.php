@@ -10,6 +10,9 @@ class Job extends Model
 {
     use HasFactory, SoftDeletes;
     protected $dates = ['deleted_at'];
+    protected $fillable = [
+        'item', 'level', 'name', 'dependence', 'direccion_administrativa_id', 'salary', 'status'
+    ];
 
     public function direccion_administrativa(){
         return $this->belongsTo(Direccion::class, 'direccion_administrativa_id');

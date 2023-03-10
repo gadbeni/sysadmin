@@ -27,7 +27,7 @@
                                         <select name="procedure_type_id" class="form-control select2">
                                             <option selected value="">Todos los tipos de contratos</option>
                                             @foreach (App\Models\ProcedureType::where('deleted_at', NULL)
-                                                        ->whereRaw(Auth::user()->role_id == 16 ? 'id = 2' : 1)->get() as $item)
+                                                        ->whereRaw(Auth::user()->role_id == 16 || Auth::user()->role_id == 25 ? 'id = 2' : 1)->get() as $item)
                                                 <option value="{{ $item->id }}">{{ $item->name }}</option>
                                             @endforeach
                                         </select>

@@ -218,7 +218,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     // *Contratos
     Route::resource('contracts', ContractsController::class);
     // Route::post('contracts/{contract}/destroy', [ContractsController::class, 'destroy'])->name('contracts.destroy');
-    Route::get('contracts/ajax/list/{search?}', [ContractsController::class, 'list']);
+    Route::get('contracts/ajax/list', [ContractsController::class, 'list']);
     Route::post('contracts/status', [ContractsController::class, 'contracts_status'])->name('contracts.status');
     Route::post('contracts/ratificate', [ContractsController::class, 'contracts_ratificate'])->name('contracts.ratificate');
     Route::post('contracts/addendum/store', [ContractsController::class, 'contracts_addendum_store'])->name('contracts.addendum.store');

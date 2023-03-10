@@ -300,7 +300,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'approve_paymentschedules' or
                                             `key` = 'print_paymentschedules' or
                                             `key` = 'browse_paymentschedules-files' or
-                                            `key` = 'add_paymentschedules-files'")->get();
+                                            `key` = 'add_paymentschedules-files' or 
+                                            `key` = 'browse_reportscontractscontracts' or")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_tecnico_planillas')->firstOrFail();

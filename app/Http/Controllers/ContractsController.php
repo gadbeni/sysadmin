@@ -47,8 +47,12 @@ class ContractsController extends Controller
         return view('management.contracts.browse');
     }
 
-    public function list($search = null){
+    public function list(){
         $this->custom_authorize('browse_contracts');
+        $search = request('search') ?? null;
+        $procedure_type_id = request('procedure_type_id') ?? null;
+        $user_id = request('user_id') ?? null;
+        $direccion_administrativa_id = request('direccion_administrativa_id') ?? null;
         $paginate = request('paginate') ?? 10;
         $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa.tipo', 'type', 'transfers'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
@@ -63,15 +67,30 @@ class ContractsController extends Controller
                             ->OrwhereHas('person', function($query) use($search){
                                 $query->whereRaw("(first_name like '%$search%' or last_name like '%$search%' or ci like '%$search%' or phone like '%$search%' or CONCAT(first_name, ' ', last_name) like '%$search%')");
                             })
-                            ->OrWhereHas('user', function($query) use($search){
-                                $query->whereRaw("name like '%$search%'");
-                            })
+                            // ->OrWhereHas('user', function($query) use($search){
+                            //     $query->whereRaw("name like '%$search%'");
+                            // })
                             ->OrWhereHas('direccion_administrativa', function($query) use($search){
                                 $query->whereRaw($search ? 'nombre like "%'.$search.'%"' : 1);
                             })
                             ->OrWhereRaw($search ? "id = '$search'" : 1)
                             ->OrWhereRaw($search ? "code like '%$search%'" : 1)
                             ->OrWhereRaw($search ? "status like '%$search%'" : 1);
+                        }
+                    })
+                    ->where(function($query) use ($procedure_type_id){
+                        if($procedure_type_id){
+                            $query->whereRaw("procedure_type_id = $procedure_type_id");
+                        }
+                    })
+                    ->where(function($query) use ($direccion_administrativa_id){
+                        if($direccion_administrativa_id){
+                            $query->whereRaw("direccion_administrativa_id = $direccion_administrativa_id");
+                        }
+                    })
+                    ->where(function($query) use ($user_id){
+                        if($user_id){
+                            $query->whereRaw("user_id = $user_id");
                         }
                     })
                     ->whereRaw(Auth::user()->role_id == 25 || (Auth::user()->role_id >= 16 & Auth::user()->role_id <= 18) ? 'procedure_type_id = 2' : 1)
@@ -486,13 +505,18 @@ class ContractsController extends Controller
                         ->where('procedure_type_id', 1)
                         ->where('direccion_administrativa_id', $d_a->id)
                         ->count();
+
+            $program = Program::where('procedure_type_id', 1)->where('year', date('Y'))->where('deleted_at', NULL)->first();
+            if(!$program){
+                return response()->json(['message' => 'No existe un programa para la planilla permanente']);
+            }
             
             $code = ($d_a ? $d_a->sigla.'-' : '').str_pad($count_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->date));
             $new_contratc = Contract::create([
                 'user_id' => Auth::user()->id,
                 'person_id' => $contract->person_id,
                 'procedure_type_id' => 1,
-                'program_id' => $request->program_id,
+                'program_id' => $program->id,
                 'job_id' => $request->job_id,
                 'direccion_administrativa_id' => $d_a->id,
                 'code' => $code,
