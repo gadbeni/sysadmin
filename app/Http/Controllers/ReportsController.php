@@ -818,8 +818,8 @@ class ReportsController extends Controller
         $title = '';
         if($type_report == '#form-ministerio'){
             $data = PaymentschedulesDetail::with('contract')
-            ->whereHas('paymentschedule', function($q) use($procedure_type_id){
-                $q->where('procedure_type_id', $procedure_type_id)->where('deleted_at', NULL);
+            ->whereHas('paymentschedule', function($q) use($request){
+                $q->where('procedure_type_id', $request->procedure_type_id)->where('period_id', $request->period_id)->where('deleted_at', NULL);
             })->where('deleted_at', NULL)->get();
             $title = 'ministerio de trabajo '.date('d-m-Y H:i:s');
         }elseif($type_report == '#form-afp'){

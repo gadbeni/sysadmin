@@ -50,7 +50,11 @@ class PaymentschedulesController extends Controller
         return view('paymentschedules.browse');
     }
 
-    public function list($search = null){
+    public function list(){
+        $search = request('search') ?? null;
+        $procedure_type_id = request('procedure_type_id') ?? null;
+        $user_id = request('user_id') ?? null;
+        $direccion_administrativa_id = request('direccion_administrativa_id') ?? null;
         $paginate = request('paginate') ?? 10;
         $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details' => function($query){
                         $query->where('deleted_at', NULL);
@@ -78,6 +82,21 @@ class PaymentschedulesController extends Controller
                             ->OrWhereRaw($search ? "id = '".intval($search)."'" : 1)
                             ->OrWhereRaw($search ? 'centralize_code like "%'.ltrim($search, "0").'%"' : 1)
                             ->OrWhereRaw($search ? "status like '%".$search."%'" : 1);
+                        }
+                    })
+                    ->where(function($query) use ($procedure_type_id){
+                        if($procedure_type_id){
+                            $query->whereRaw("procedure_type_id = $procedure_type_id");
+                        }
+                    })
+                    ->where(function($query) use ($direccion_administrativa_id){
+                        if($direccion_administrativa_id){
+                            $query->whereRaw("direccion_administrativa_id = $direccion_administrativa_id");
+                        }
+                    })
+                    ->where(function($query) use ($user_id){
+                        if($user_id){
+                            $query->whereRaw("user_id = $user_id");
                         }
                     })
                     ->orderBy('id', 'DESC')->paginate($paginate);

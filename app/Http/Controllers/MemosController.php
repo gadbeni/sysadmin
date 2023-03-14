@@ -26,8 +26,22 @@ class MemosController extends Controller
 
     public function list(){
         $paginate = request('paginate') ?? 10;
+        $search = request('search') ?? null;
         $data = Memo::where('deleted_at', NULL)
-                    ->whereRaw(Auth::user()->role_id == 1 ? 1 : "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id)
+                    ->where(function($query) use ($search){
+                        if($search){
+                            $query->OrwhereHas('person_external', function($query) use($search){
+                                $query->whereRaw("(full_name like '%$search%' or ci_nit like '%$search%')");
+                            })
+                            ->OrWhereRaw("id = '$search'")
+                            ->OrWhereRaw("code like '%$search%'")
+                            ->OrWhereRaw("number like '%$search%'")
+                            ->OrWhereRaw("amount like '%$search%'")
+                            ->OrWhereRaw("concept like '%$search%'")
+                            ->OrWhereRaw("imputation like '%$search%'")
+                            ->OrWhereRaw("date like '%$search%'");
+                        }
+                    })
                     ->orderBy('id', 'DESC')->paginate($paginate);
         return view('finance.memos.list', compact('data'));
     }

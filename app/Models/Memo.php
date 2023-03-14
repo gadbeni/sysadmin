@@ -33,4 +33,8 @@ class Memo extends Model
     public function direccion(){
         return $this->belongsTo(Direccion::class, 'direccion_administrativa_id');
     }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

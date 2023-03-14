@@ -136,7 +136,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     // Planillas de pagos
     Route::resource('paymentschedules', PaymentschedulesController::class);
-    Route::get('paymentschedules/ajax/list/{search?}', [PaymentschedulesController::class, 'list']);
+    Route::get('paymentschedules/ajax/list', [PaymentschedulesController::class, 'list']);
     Route::post('paymentschedules/update/status', [PaymentschedulesController::class, 'update_status'])->name('paymentschedules.update.status');
     Route::post('paymentschedules/update/centralize', [PaymentschedulesController::class, 'update_centralize'])->name('paymentschedules.update.centralize');
     Route::post('paymentschedules/cancel', [PaymentschedulesController::class, 'cancel'])->name('paymentschedules.cancel');

@@ -84,8 +84,8 @@ class AuxiliarImport implements ToModel
         }
 
         if($this->type == 'estructura permanente'){
-            if($row[0] > 0 ){
-                return new SeniorityBonusPerson([
+            if($row[0]){
+                return new Job([
                     'item' => $row[0],
                     'level' => $row[1],
                     'name' => $row[2],

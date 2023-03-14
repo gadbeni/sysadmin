@@ -3,7 +3,7 @@
         <table id="dataTable" class="table table-bordered table-hover">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>N&deg;</th>
                     <th>Código</th>
                     <th>De</th>
                     <th>Para</th>
@@ -11,6 +11,7 @@
                     <th>Orden</th>
                     <th>Monto</th>
                     <th>Fecha</th>
+                    <th>Registrado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -31,8 +32,10 @@
                             <small><b>{{ Str::upper($item->destiny_alternate_job ?? $item->destiny->cargo ? $item->destiny->cargo->descripcion : $item->destiny->job->name) }}</b></small>
                         </td>
                         <td>
-                            {{ $item->memos_type->description }} <br>
-                            <small><b>{{ $item->type }}</b></small>
+                            <span data-toggle="popover" data-placement="top" data-trigger="hover" title="Glosa" data-content="{{ $item->concept }}" style="cursor: pointer">
+                                {{ $item->memos_type->description }} <br>
+                                <small><b>{{ $item->type }}</b></small>
+                            </span>
                         </td>
                         <td>
                             {{ $item->person_external->full_name }} <br>
@@ -45,6 +48,11 @@
                         </td>
                         <td>{{ number_format($item->amount, 2, ',', '.') }}</td>
                         <td>{{ date('d/m/Y', strtotime($item->date)) }}</td>
+                        <td>
+                            {{ $item->user ? $item->user->name : '' }} <br>
+                            {{ date('d/m/Y H:i', strtotime($item->created_at)) }} <br>
+                            <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
+                        </td>
                         <td class="no-sort no-click bread-actions text-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
@@ -70,7 +78,7 @@
                     @endphp
                 @empty
                     <tr class="odd">
-                        <td valign="top" colspan="9" class="dataTables_empty">No hay datos disponibles en la tabla</td>
+                        <td valign="top" colspan="10" class="dataTables_empty">No hay datos disponibles en la tabla</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -94,6 +102,7 @@
 <script>
     var page = "{{ request('page') }}";
     $(document).ready(function(){
+        $('[data-toggle="popover"]').popover();
         $('.page-link').click(function(e){
             e.preventDefault();
             let link = $(this).attr('href');
@@ -102,6 +111,5 @@
                 list(page);
             }
         });
-
     });
 </script>
