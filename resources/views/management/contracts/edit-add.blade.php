@@ -64,9 +64,13 @@
                                     <label for="finish">Fin de contrato</label>
                                     <input type="date" name="finish" id="input-finish" value="{{ isset($contract) ? $contract->finish : '' }}" class="form-control">
                                 </div>
-                                <div class="form-group col-md-12">
+                                <div class="form-group col-md-6">
                                     <label for="requested_by">Persona o unidad solicitante (Opcional)</label>
                                     <input type="text" name="requested_by" value="{{ isset($contract) ? $contract->requested_by : '' }}" class="form-control">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="signature_id">Firma autorizada</label>
+                                    <select name="signature_id" id="select-signature_id" class="form-control select2" required></select>
                                 </div>
                             </div>
                         </div>
@@ -174,15 +178,15 @@
                         <div class="panel-heading"><h6 class="panel-title">Datos de memorandum</h6></div>
                         <div class="panel-body">
                             <div class="row">
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <label for="date_statement">Fecha de declaración jurada</label>
                                     <input type="date" name="date_statement" value="{{ isset($contract) ? $contract->date_statement : '' }}" class="form-control">
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <label for="date_memo">Fecha de memorandum</label>
                                     <input type="date" name="date_memo" value="{{ isset($contract) ? $contract->date_memo : '' }}" class="form-control">
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <label for="date_memo_res">Fecha de respuesta de memorandum</label>
                                     <input type="date" name="date_memo_res" value="{{ isset($contract) ? $contract->date_memo_res : '' }}" class="form-control">
                                 </div>
@@ -193,19 +197,6 @@
                                         <option value="{{ $item->id }}">{{ $item->person->first_name }} {{ $item->person->last_name }} - {{ $item->cargo_id ? $item->cargo->Descripcion : $item->job->name }}</option>                                                
                                         @endforeach
                                     </select>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="signature_id">Firma autorizada <i class="voyager-question" data-toggle="tooltip" title="En caso de que alguien más deba firmar el contrato"></i></label>
-                                    <select name="signature_id" id="select-signature_id" class="form-control select2">
-                                        <option value="">--Seleccione la firma autorizada--</option>
-                                        @foreach ($contracts->sortBy('person.last_name') as $item)
-                                        <option value="{{ $item->id }}">{{ $item->person->first_name }} {{ $item->person->last_name }} - {{ $item->cargo_id ? $item->cargo->Descripcion : $item->job->name }}</option>                                                
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="signature_code">Resolución administrativa <i class="voyager-question" data-toggle="tooltip" title="Si agrega una firma autorizada debe ingresar el código de resolución administrativa"></i></label>
-                                    <input type="text" name="signature_code" value="{{ isset($contract) ? $contract->signature_code : '' }}" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -386,16 +377,6 @@
             $.extend(additionalConfig, {})
             tinymce.init(window.voyagerTinyMCE.getConfig(additionalConfig));
             
-            @isset($contract)
-                let workers_memo = '{!! $contract->workers_memo_alt !!}' ? JSON.parse('{!! $contract->workers_memo_alt !!}') : [];
-                $('#select-workers_memo').val(workers_memo);
-                $('.div-{{ $contract->procedure_type_id }}').fadeIn('fast');
-                setTimeout(() => {
-                    $('#select-procedure_type_id').val("{{ $contract->procedure_type_id }}").trigger('change');
-                    $('#select-cargo_id').val("{{ $contract->job_id ?? $contract->cargo_id }}").trigger('change');
-                    $('#select-signature_id').val("{{ $contract->signature_id }}").trigger('change');
-                }, 0);
-            @endisset
             $('#select-workers_memo').select2();
 
             $('#select-direccion_administrativa_id').change(function(){
@@ -411,6 +392,14 @@
                         $('#select-program_id').append(`<option value="${item.id}">${item.name} - ${item.programatic_category}</option>`);
                     }
                 });
+
+                let signatures = $('#select-direccion_administrativa_id option:selected').data('signatures');
+                $('#select-signature_id').html('');
+                if(signatures){
+                    signatures.map(item => {
+                        $('#select-signature_id').append(`<option value="${item.id}">${item.designation} ${item.name} - ${item.job}</option>`);
+                    });
+                }
             });
 
             $('#select-procedure_type_id').change(function(){
@@ -438,7 +427,7 @@
                     });
 
                     jobs.map(item => {
-                        $('#select-cargo_id').append(`<option value="${item.id}">Item ${item.item} - ${item.name}</option>`);
+                        $('#select-cargo_id').append(`<option value="${item.id}" data-signatures='${JSON.stringify(item.direccion_administrativa.signatures)}'>Item ${item.item} - ${item.name}</option>`);
                     });
                 }else{
                     $('#select-direccion_administrativa_id').attr('disabled', false);
@@ -449,7 +438,7 @@
                     $('#input-finish').attr('required', true);
                     $('#select-direccion_administrativa_id').html(`<option value="">Selecciona la dirección administrativa</option>`);
                     direccion_administrativas.map(item => {
-                        $('#select-direccion_administrativa_id').append(`<option value="${item.id}">${item.nombre}</option>`);
+                        $('#select-direccion_administrativa_id').append(`<option value="${item.id}" data-signatures='${JSON.stringify(item.signatures)}'>${item.nombre}</option>`);
                     });
 
                     setTimeout(() => {
@@ -476,6 +465,27 @@
                     });
                 }
             });
+
+            $('#select-cargo_id').change(function(){
+                let signatures = $('#select-cargo_id option:selected').data('signatures');
+                $('#select-signature_id').html('');
+                if(signatures){
+                    signatures.map(item => {
+                        $('#select-signature_id').append(`<option value="${item.id}">${item.designation} ${item.name} - ${item.job}</option>`);
+                    });
+                }
+            });
+
+            @isset($contract)
+                let workers_memo = '{!! $contract->workers_memo_alt !!}' ? JSON.parse('{!! $contract->workers_memo_alt !!}') : [];
+                $('#select-workers_memo').val(workers_memo);
+                $('.div-{{ $contract->procedure_type_id }}').fadeIn('fast');
+                setTimeout(() => {
+                    $('#select-procedure_type_id').val("{{ $contract->procedure_type_id }}").trigger('change');
+                    $('#select-cargo_id').val("{{ $contract->job_id ?? $contract->cargo_id }}").trigger('change');
+                    $('#select-signature_id').val("{{ $contract->signature_id }}").trigger('change');
+                }, 0);
+            @endisset
         });
     </script>
 @stop

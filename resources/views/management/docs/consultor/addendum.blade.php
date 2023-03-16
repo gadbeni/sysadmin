@@ -95,7 +95,7 @@
                 <option @if($item->name == $contract->direccion_administrativa->city->name) selected @endif value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>
                 @endforeach
             </select>
-            <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
+            <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($addendums->first()->start)) }} de {{ $months[intval(date('m', strtotime($addendums->first()->start)))] }} de {{ date('Y', strtotime($addendums->first()->start)) }}
         </p>
 
         <br>

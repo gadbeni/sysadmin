@@ -42,6 +42,32 @@ class ReportsController extends Controller
         $this->middleware('auth');
     }
     
+    public function humans_resources_people_index(){
+        $this->custom_authorize('browse_reportshumans-resourcespeople');
+        return view('reports.rr_hh.people-browse');
+    }
+
+    public function humans_resources_people_list(Request $request){
+        $afp_id = $request->afp_id;
+        $afp_status = $request->afp_status;
+        $contract_active = $request->contract_active;
+        $people = Person::whereRaw($afp_id ? "afp = $afp_id" : 1)
+                            ->whereRaw("afp_status = $afp_status")
+                            ->where(function($query) use ($contract_active){
+                                if($contract_active){
+                                    $query->OrwhereHas('contracts', function($query){
+                                        $query->where("status", "firmado");
+                                    });
+                                }
+                            })
+                            ->where('deleted_at', NULL)->get();
+        if($request->type == 'excel'){
+            return view('reports.rr_hh.contraloria-print', compact('funcionarios', 'periodo', 'afp'));
+        }else{
+            return view('reports.rr_hh.people-list', compact('people'));
+        }
+    }
+
     public function humans_resources_contraloria_index(){
         return view('reports.rr_hh.contraloria-browse');
     }

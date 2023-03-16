@@ -7,6 +7,7 @@
         @php
             $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
             $code = $contract->code;
+            $signature = $contract->signature;
             if(!in_array($contract->direccion_administrativa_id, [5, 13, 48, 55]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4])){
                 $signature = null;   
             }
@@ -90,7 +91,7 @@
             <div style="margin-top: 80px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
                     {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
-                    <b>{{ setting('firma-autorizada.job-alt') }}</b> <br>
+                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b> <br>
                 </p>
             </div>
 

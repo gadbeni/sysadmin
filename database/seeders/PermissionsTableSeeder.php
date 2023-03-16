@@ -186,6 +186,7 @@ class PermissionsTableSeeder extends Seeder
 
         // Reports RRHH
         $keys = [
+            'browse_reportshumans-resourcespeople',
             'browse_reportshumans-resourcescontraloria',
             'browse_reportshumans-resourcesaniversarios',
             'browse_reportshumans-resourcesjobs',

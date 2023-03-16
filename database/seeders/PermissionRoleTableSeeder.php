@@ -301,7 +301,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'print_paymentschedules' or
                                             `key` = 'browse_paymentschedules-files' or
                                             `key` = 'add_paymentschedules-files' or 
-                                            `key` = 'browse_reportscontractscontracts' or")->get();
+                                            `key` = 'browse_reportscontractscontracts'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_tecnico_planillas')->firstOrFail();
@@ -442,6 +442,23 @@ class PermissionRoleTableSeeder extends Seeder
                                             table_name = 'person_externals' or
                                             table_name = 'memos_types' or
                                             table_name = 'memos'")->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        // Roles de tesorería
+        $role = Role::where('name', 'tesoreria_jefe_unidad')->firstOrFail();
+        $permissions = Permission::whereRaw("table_name = 'admin' or
+                                            `key` = 'browse_paymentschedules' or
+                                            `key` = 'read_paymentschedules' or
+                                            `key` = 'enable_paymentschedules' or
+                                            `key` = 'close_paymentschedules'")->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        $role = Role::where('name', 'tesoreria_tecnico')->firstOrFail();
+        $permissions = Permission::whereRaw("table_name = 'admin' or
+                                            `key` = 'browse_paymentschedules' or
+                                            `key` = 'read_paymentschedules' or
+                                            `key` = 'enable_paymentschedules' or
+                                            `key` = 'close_paymentschedules'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
     }
 }

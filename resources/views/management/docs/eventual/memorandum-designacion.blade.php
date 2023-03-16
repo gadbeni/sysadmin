@@ -5,6 +5,7 @@
 @php
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
     $code = $contract->code;
+    $signature = $contract->signature;
 @endphp
 
 @section('qr_code')
@@ -35,13 +36,8 @@
                 </div>
                 <div class="border-left">
                     <b>DE:</b>
-                    @if ($signature)
-                        {{ Str::upper($signature->name) }} <br>
-                        <b>{{ Str::upper($signature->job) }}</b>
-                    @else
-                        {{ Str::upper(setting('firma-autorizada.name')) }} <br>
-                        <b>{{ Str::upper(setting('firma-autorizada.job')) }}</b>
-                    @endif
+                    {{ Str::upper($signature ? $signature->name : setting('firma-autorizada.name')) }} <br>
+                    <b>{{ Str::upper($signature ? $signature->job : setting('firma-autorizada.job')) }}</b>
                     <br> <br> <br>
                     <b>A:</b> {{ Str::upper($contract->person->first_name.' '.$contract->person->last_name) }} <br>
                     <b>CI: {{ $contract->person->ci }}</b> <br> <br>

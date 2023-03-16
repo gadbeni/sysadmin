@@ -193,4 +193,17 @@ class PeopleController extends Controller
             return redirect()->route('voyager.people.show', $people)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
+
+    public function afp_status($id, Request $request){
+        try {
+            Person::where('id', $id)->update([
+                'afp_status' => $request->afp_status ? 1 : 0,
+                'retired' => $request->retired ? 1 : 0
+            ]);
+            return response()->json(['success' => 'Estado de AFP actualizado']);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['error' => 'Ocurrió un error en el servidor']);
+        }
+    }
 }

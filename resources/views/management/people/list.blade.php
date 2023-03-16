@@ -65,6 +65,9 @@
                                 @if (auth()->user()->hasPermission('add_irremovability_people'))
                                 <li><a href="#" class="btn-irremovability" data-url="{{ route('people.irremovability.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-irremovability" >Inamovilidad</a></li>
                                 @endif
+                                @if (auth()->user()->hasPermission('edit_people'))
+                                <li><a href="#" class="btn-afp-options" data-item="{{ $item }}" data-url="{{ route('people.afp_status.update', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-options-afp" >Opciones de AFP</a></li>
+                                @endif
                             </ul>
                         </div>
 
@@ -138,5 +141,13 @@
             $('#irremovability-form').attr('action', url);
         });
 
+        $('.btn-afp-options').click(function(e){
+            e.preventDefault();
+            let url = $(this).data('url');
+            let item = $(this).data('item');
+            $('#checkbox-afp_status').bootstrapToggle(item.afp_status ? 'on' : 'off');
+            $('#checkbox-retired').bootstrapToggle(item.retired ? 'on' : 'off');
+            $('#options-afp-form').attr('action', url);
+        });
     });
 </script>

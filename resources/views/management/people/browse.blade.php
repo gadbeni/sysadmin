@@ -119,7 +119,7 @@
     </form>
 
     {{-- Modal rotation --}}
-    <form lass="form-submit" id="irremovability-form" action="#" method="post">
+    <form class="form-submit" id="irremovability-form" action="#" method="post">
         @csrf
         <div class="modal modal-primary fade" tabindex="-1" id="modal-irremovability" role="dialog">
             <div class="modal-dialog">
@@ -160,6 +160,35 @@
         </div>
     </form>
 
+    {{-- Modal rotation --}}
+    <form id="options-afp-form" action="#" method="post">
+        @csrf
+        <div class="modal modal-primary fade" tabindex="-1" id="modal-options-afp" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-params"></i> Opciones de AFP</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group col-md-6">
+                            <label>Aporte a la AFP</label> <br>
+                            <input type="checkbox" name="afp_status" id="checkbox-afp_status" class="toggleswitch" data-on="Sí" data-off="No">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Jubilado</label> <br>
+                            <input type="checkbox" name="retired" id="checkbox-retired" class="toggleswitch" data-on="Sí" data-off="No">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark btn-submit" value="Guardar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
     {{-- Modal add file --}}
     @include('management.people.partials.modal-add-file')
 @stop
@@ -174,6 +203,8 @@
         var countPage = 10, order = 'id', typeOrder = 'desc';
         $(document).ready(() => {
             list();
+
+            $('.toggleswitch').bootstrapToggle();
             
             $('#input-search').on('keyup', function(e){
                 if(e.keyCode == 13) {
@@ -189,6 +220,21 @@
             $('.form-submit').submit(function(){
                 $('.btn-submit').val('Guardando...');
                 $('.btn-submit').attr('disabled', 'disabled');
+            });
+
+            $('#options-afp-form').submit(function(e){
+                $('#options-afp-form .btn-submit').attr('disabled', 'disabled');
+                e.preventDefault();
+                $.post($('#options-afp-form').attr('action'), $('#options-afp-form').serialize(), function(res){
+                    if(res.success){
+                        toastr.success(res.success, 'Bien hecho');
+                        $('#modal-options-afp').modal('hide');
+                    }else{
+                        toastr.error(res.error, 'Error');
+                    }
+                    list();
+                    $('#options-afp-form .btn-submit').removeAttr('disabled');
+                })
             });
         });
 

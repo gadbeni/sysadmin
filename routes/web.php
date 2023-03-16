@@ -90,6 +90,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::delete('people/{people}/rotation/{id}', [PeopleController::class, 'rotation_delete'])->name('people.rotation.delete');
     Route::post('people/{id}/irremovability', [PeopleController::class, 'irremovability_store'])->name('people.irremovability.store');
     Route::delete('people/{people}/irremovability/{id}', [PeopleController::class, 'irremovability_delete'])->name('people.irremovability.delete');
+    Route::post('people/{id}/afp_status', [PeopleController::class, 'afp_status'])->name('people.afp_status.update');
 
     Route::post('cashiers/store', [CashiersController::class, 'store'])->name('cashiers.store');
     Route::delete('cashiers/destroy/{id}', [CashiersController::class, 'destroy'])->name('voyager.cashiers.destroy');
@@ -250,6 +251,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     // Reportes
 
     // *Recursos humanos
+    Route::get('reports/humans-resources/people', [ReportsController::class, 'humans_resources_people_index'])->name('reports.humans_resources.people.index');
+    Route::post('reports/humans-resources/people/list', [ReportsController::class, 'humans_resources_people_list'])->name('reports.humans_resources.people.list');
     Route::get('reports/humans-resources/contraloria', [ReportsController::class, 'humans_resources_contraloria_index'])->name('reports.humans_resources.contraloria');
     Route::post('reports/humans-resources/contraloria/list', [ReportsController::class, 'humans_resources_contraloria_list'])->name('reports.humans_resources.contraloria.list');
     Route::get('reports/humans-resources/aniversarios', [ReportsController::class, 'humans_resources_aniversarios_index'])->name('reports.humans_resources.aniversarios');

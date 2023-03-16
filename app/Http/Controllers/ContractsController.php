@@ -129,7 +129,9 @@ class ContractsController extends Controller
         $people = Person::where('deleted_at', NULL)
                     ->whereRaw("id not in (select person_id from contracts where status <> 'concluido' and deleted_at is null)")
                     ->get();
-        $direccion_administrativas = Direccion::whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1)->get();
+        $direccion_administrativas = Direccion::with(['signatures' => function($q){
+                                        $q->where('status', 1)->where('deleted_at', NULL);
+                                    }])->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1)->get();
         $unidad_administrativas = Unidad::get();
         // $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $contracts = Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get();
@@ -138,7 +140,9 @@ class ContractsController extends Controller
             $q->where('Estado', 1);
         }])->where('estado', 1)->get();
         // dd($cargos);
-        $jobs = Job::with('direccion_administrativa')
+        $jobs = Job::with(['direccion_administrativa.signatures' => function($q){
+                        $q->where('status', 1)->where('deleted_at', NULL);
+                    }])
                     ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->where('status', 1)->where('deleted_at', NULL)->get();
@@ -200,7 +204,6 @@ class ContractsController extends Controller
                 'procedure_type_id' => $request->procedure_type_id,
                 'user_id' => Auth::user()->id,
                 'signature_id' => $request->signature_id,
-                'signature_code' => $request->signature_code,
                 'code' => $code,
                 'details_work' => $request->details_work,
                 'requested_by' => $request->requested_by,
@@ -265,7 +268,9 @@ class ContractsController extends Controller
         $procedure_type = ProcedureType::where('deleted_at', NULL)->where('id', $contract->procedure_type_id)->get();
 
         $people = Person::where('id', $contract->person->id)->where('deleted_at', NULL)->get();
-        $direccion_administrativas = Direccion::whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1)->get();
+        $direccion_administrativas = Direccion::with(['signatures' => function($q){
+                                        $q->where('status', 1)->where('deleted_at', NULL);
+                                    }])->whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1)->get();
         $unidad_administrativas = Unidad::get();
         // $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
         $contracts = Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get();
@@ -274,7 +279,9 @@ class ContractsController extends Controller
                         $q->where('Estado', 1);
                     }])->where('estado', 1)->get();
         
-        $jobs = Job::with('direccion_administrativa')
+        $jobs = Job::with(['direccion_administrativa.signatures' => function($q){
+                        $q->where('status', 1)->where('deleted_at', NULL);
+                    }])
                     ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null) or id = ".($contract->job_id ?? 0))
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->where('deleted_at', NULL)->get();
@@ -318,7 +325,6 @@ class ContractsController extends Controller
                 'direccion_administrativa_id' => $direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'signature_id' => $request->signature_id,
-                'signature_code' => $request->signature_code,
                 'code' => $code,
                 'details_work' => $request->details_work,
                 'requested_by' => $request->requested_by,
@@ -603,7 +609,7 @@ class ContractsController extends Controller
     // ================================
     
     public function print($id, $document){
-        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature.person', 'signature.job', 'signature.cargo', 'addendums.signature', 'transfers'])->where('id', $id)->first();
+        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature', 'addendums.signature', 'transfers'])->where('id', $id)->first();
         // Si no tiene comisión evaluadora del sistema actual buscar en el antiguo sistema
         if($contract->workers_memo_alt != null){
             $contract->workers = Contract::with(['person', 'job', 'cargo', 'alternate_job' => function($q){
@@ -613,10 +619,7 @@ class ContractsController extends Controller
         }else{
             $contract->workers = $contract->workers_memo != null && $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
         }
-    
-        $signature = Signature::where('direccion_administrativa_id', $contract->direccion_administrativa_id)->where('status', 1)->where('deleted_at', NULL)->first();
-        
-        return view('management.docs.'.$document, compact('contract', 'signature'));
+        return view('management.docs.'.$document, compact('contract'));
     }
 
     // **** Métodos funcionales ****

@@ -27,4 +27,8 @@ class Direccion extends Model
     public function programs(){
         return $this->hasMany(Program::class, 'direccion_administrativa_id');
     }
+
+    public function signatures(){
+        return $this->hasMany(Signature::class, 'direccion_administrativa_id');
+    }
 }

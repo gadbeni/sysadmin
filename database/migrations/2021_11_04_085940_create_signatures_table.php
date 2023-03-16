@@ -19,11 +19,9 @@ class CreateSignaturesTable extends Migration
             $table->string('name')->nullable();
             $table->string('ci')->nullable();
             $table->string('job')->nullable();
+            $table->string('designation_type')->nullable();
             $table->string('designation')->nullable();
             $table->date('designation_date')->nullable();
-            $table->string('job_alt')->nullable();
-            $table->string('designation_alt')->nullable();
-            $table->date('designation_date_alt')->nullable();
             $table->string('status')->nullable()->default(1);
             $table->timestamps();
             $table->softDeletes();
