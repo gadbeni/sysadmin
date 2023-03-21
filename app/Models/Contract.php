@@ -42,6 +42,9 @@ class Contract extends Model
         'certification_poa',
         'certification_pac',
         'date_presentation',
+        'name_job_alt',
+        'work_location',
+        'documents_contract',
         'status',
     ];
 
@@ -89,7 +92,7 @@ class Contract extends Model
     }
 
     public function signature(){
-        return $this->belongsTo(Contract::class, 'signature_id', 'id');
+        return $this->belongsTo(Signature::class, 'signature_id', 'id');
     }
 
     public function paymentschedules_details(){

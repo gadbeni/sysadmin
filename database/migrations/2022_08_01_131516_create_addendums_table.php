@@ -17,6 +17,7 @@ class CreateAddendumsTable extends Migration
             $table->id();
             $table->foreignId('contract_id')->nullable()->constrained('contracts');
             $table->foreignId('signature_id')->nullable()->constrained('signatures');
+            $table->string('code')->nullable();
             $table->date('start')->nullable();
             $table->date('finish')->nullable();
             $table->text('details_payments')->nullable();

@@ -6,15 +6,6 @@
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
     $code = $contract->code;
     $signature = $contract->signature;
-    if(
-        $contract->direccion_administrativa->direcciones_tipo_id != 3 &&
-        $contract->direccion_administrativa->direcciones_tipo_id != 4 &&
-        $contract->direccion_administrativa_id != 5 &&
-        $contract->direccion_administrativa_id != 48 &&
-        $contract->direccion_administrativa_id != 53
-    ){
-        $signature = null;
-    }
 @endphp
 
 @section('qr_code')

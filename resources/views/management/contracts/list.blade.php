@@ -189,8 +189,11 @@
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.report']) }}" target="_blank">Informe</a></li>
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.adjudication']) }}" target="_blank">Nota de adjudicación</a></li>
                                                 <li class="divider"></li>
+                                                @if ($item->direccion_administrativa_id == 5)
+                                                <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.contract-sedeges']) }}" target="_blank">Contrato</a></li>
+                                                @else
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.contract']) }}" target="_blank">Contrato</a></li>
-                                                
+                                                @endif
                                                 {{-- Si hay una adenda firmada --}}
                                                 @if (count($addendums) > 0)
                                                     @if ($addendums->first()->status == 'firmado')

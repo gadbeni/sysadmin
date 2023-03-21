@@ -1,4 +1,5 @@
 @php
+    $cardinals = array('', 'primera', 'segunda', 'tercera', 'cuarta', 'quinta', 'sexta', 'septima', 'octava', 'novena', 'decima', 'decima primera', 'decima segunda');
     $salary = 0;
     if ($contract->cargo){
         $salary = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;

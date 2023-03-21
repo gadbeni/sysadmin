@@ -70,7 +70,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="signature_id">Firma autorizada</label>
-                                    <select name="signature_id" id="select-signature_id" class="form-control select2" required></select>
+                                    <select name="signature_id" id="select-signature_id" class="form-control select2"></select>
                                 </div>
                             </div>
                         </div>
@@ -190,7 +190,7 @@
                                     <label for="date_memo_res">Fecha de respuesta de memorandum</label>
                                     <input type="date" name="date_memo_res" value="{{ isset($contract) ? $contract->date_memo_res : '' }}" class="form-control">
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <label for="workers_memo">Comisión de contratación</label>
                                     <select name="workers_memo[]" id="select-workers_memo" class="form-control" multiple>
                                         @foreach ($contracts->sortBy('person.last_name') as $item)
@@ -221,6 +221,33 @@
                                 <div class="form-group col-md-4">
                                     <label for="date_presentation">Fecha de Presentación de documentos</label>
                                     <input type="date" name="date_presentation" value="{{ isset($contract) ? $contract->date_presentation : '' }}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row div-hidden div-sedeges">
+                <div class="col-md-12">
+                    <div class="panel panel-bordered">
+                        <div class="panel-heading"><h6 class="panel-title">Datos de contratos SEDEGES</h6></div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <input type="text" class="form-control" name="name_job_alt" value="{{ isset($contract) ? $contract->name_job_alt : '' }}" placeholder="Denominación de cargo">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <input type="text" class="form-control" name="work_location" value="{{ isset($contract) ? $contract->work_location : '' }}" placeholder="Lugar de prestación de servicio">
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <textarea class="form-control richTextBox" name="documents_contract">
+                                        {{
+                                            isset($contract) ?
+                                            $contract->documents_contract ?? '<ol style="color: #000000; font-family: Arial, sans-serif; font-size: 15px; text-align: justify;" type="a"><li><p>Declaraci&oacute;n Jurada de No Doble Percepci&oacute;n.</p></li><li><p>T&eacute;rminos de Referencia.</p></li><li><p>Informe de Evaluaci&oacute;n y Recomendaci&oacute;n del proceso de contrataci&oacute;n N&deg; 123.</p></li><li><p>Certificaci&oacute;n Presupuestaria (Preventivo N&deg; 123)</p></li><li><p>Certificaci&oacute;n Poa N&deg; 123.</p></li><li><p>Declaraci&oacute;n Jurada de No Incompatibilidad Legal.</p></li><li><p>Fotocopia de C&eacute;dula de Identidad.</p></li><li><p>Certificaci&oacute;n de Programaci&oacute;n Operativa Anual (P.O.A.)</p></li><li><p>Curriculum Vitae</p></li><li><p>Certificado de Antecedentes Penales (REJAP)</p></li><li><p>Certificado de No Violencia (Ley 1153)</p></li><li><p>Certificado de Inscripci&oacute;n NIT</p></li><li><p>Certificaci&oacute;n de No Adeudo (AFP)</p></li><li><p>Certificado del RUPE N&deg; 123.( cuando corresponda).</p></li></ol>' :
+                                            '<ol style="color: #000000; font-family: Arial, sans-serif; font-size: 15px; text-align: justify;" type="a"><li><p>Declaraci&oacute;n Jurada de No Doble Percepci&oacute;n.</p></li><li><p>T&eacute;rminos de Referencia.</p></li><li><p>Informe de Evaluaci&oacute;n y Recomendaci&oacute;n del proceso de contrataci&oacute;n N&deg; 123.</p></li><li><p>Certificaci&oacute;n Presupuestaria (Preventivo N&deg; 123)</p></li><li><p>Certificaci&oacute;n Poa N&deg; 123.</p></li><li><p>Declaraci&oacute;n Jurada de No Incompatibilidad Legal.</p></li><li><p>Fotocopia de C&eacute;dula de Identidad.</p></li><li><p>Certificaci&oacute;n de Programaci&oacute;n Operativa Anual (P.O.A.)</p></li><li><p>Curriculum Vitae</p></li><li><p>Certificado de Antecedentes Penales (REJAP)</p></li><li><p>Certificado de No Violencia (Ley 1153)</p></li><li><p>Certificado de Inscripci&oacute;n NIT</p></li><li><p>Certificaci&oacute;n de No Adeudo (AFP)</p></li><li><p>Certificado del RUPE N&deg; 123.( cuando corresponda).</p></li></ol>'
+                                        }}
+                                    </textarea>
                                 </div>
                             </div>
                         </div>
@@ -328,15 +355,6 @@
                                         }}
                                     </textarea>
                                 </div>
-                                {{-- <div class="form-group col-md-6">
-                                    <textarea class="form-control richTextBox" name="details_report">
-                                        {{
-                                            isset($contract) ?
-                                            $contract->details_report :
-                                            '<p><span style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">El monto total a cancelar ser&aacute; de </span><strong style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">Bs.- 11.550,00 (Once mil quinientos cincuenta 00/100 Bolivianos)</strong><span style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">, mismos que ser&aacute;n cancelados en cuatro (04) cuotas mensuales: la primera correspondiente a nueve (09) d&iacute;as del mes de septiembre por&nbsp;</span><strong style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">Bs.- 1.200.00</strong><span style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">&nbsp;(Un mil doscientos 00/100 bolivianos), la segunda, tercera y cuarta cuota correspondiente a los meses de octubre, noviembre y diciembre por un monto mensual de&nbsp;</span><strong style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">Bs.- 4.000.00</strong><span style="color: #000000; font-family: Arial, sans-serif; text-align: justify;">&nbsp;(cuatro mil 00/100 bolivianos).</span></p>'
-                                        }}
-                                    </textarea>
-                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -399,6 +417,12 @@
                     signatures.map(item => {
                         $('#select-signature_id').append(`<option value="${item.id}">${item.designation} ${item.name} - ${item.job}</option>`);
                     });
+                }
+
+                if($('#select-direccion_administrativa_id').val() == 5){
+                    $('.div-sedeges').fadeIn();
+                }else{
+                    $('.div-sedeges').fadeOut();
                 }
             });
 
@@ -468,8 +492,8 @@
 
             $('#select-cargo_id').change(function(){
                 let signatures = $('#select-cargo_id option:selected').data('signatures');
-                $('#select-signature_id').html('');
                 if(signatures){
+                    $('#select-signature_id').html('');
                     signatures.map(item => {
                         $('#select-signature_id').append(`<option value="${item.id}">${item.designation} ${item.name} - ${item.job}</option>`);
                     });

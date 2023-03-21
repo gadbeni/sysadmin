@@ -122,11 +122,6 @@
                 list();
             });
 
-            $('#select-paginate').change(function(){
-                countPage = $(this).val();
-                list();
-            });
-
             $('#select-procedure_type_id').change(function(){
                 procedure_type_id = $('#select-procedure_type_id option:selected').val();
                 list();

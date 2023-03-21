@@ -46,7 +46,13 @@ class PeopleController extends Controller
                             ->OrWhereRaw($search ? "phone like '%$search%'" : 1);
                         }
                     })
-                    ->whereRaw(Auth::user()->direccion_administrativa_id ? "user_id = ".Auth::user()->id : 1)
+                    ->where(function($query){
+                        if(Auth::user()->direccion_administrativa_id){
+                            $query->OrwhereHas('contracts', function($query){
+                                $query->whereRaw("direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id);
+                            });
+                        }
+                    })
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')->paginate($paginate);
         return view('management.people.list', compact('data'));
     }

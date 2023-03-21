@@ -224,6 +224,9 @@ class ContractsController extends Controller
                 'certification_poa' => $request->certification_poa,
                 'certification_pac' => $request->certification_pac,
                 'date_presentation' => $request->date_presentation,
+                'name_job_alt' => $request->name_job_alt,
+                'work_location' => $request->work_location,
+                'documents_contract' => $request->documents_contract,
                 'status' => 'elaborado',
             ]);
 
@@ -345,6 +348,9 @@ class ContractsController extends Controller
                 'certification_poa' => $request->certification_poa,
                 'certification_pac' => $request->certification_pac,
                 'date_presentation' => $request->date_presentation,
+                'name_job_alt' => $request->name_job_alt,
+                'work_location' => $request->work_location,
+                'documents_contract' => $request->documents_contract,
             ]);
 
             return redirect()->route('contracts.index')->with(['message' => 'Contrato editado exitosamente', 'alert-type' => 'success']);
@@ -436,10 +442,11 @@ class ContractsController extends Controller
         // dd($request->all());
         DB::beginTransaction();
         try {
-
+            $count_addendum = Addendum::whereYear('start', date('Y'))->count() +1;
             Addendum::create([
                 'contract_id' => $request->id,
                 'signature_id' => $request->signature_id ?? NULL,
+                'code' => str_pad($count_addendum.'/'.date('Y', strtotime($request->start)), 8, "0", STR_PAD_LEFT),
                 'start' => $request->start,
                 'finish' => $request->finish,
                 'details_payments' => $request->details_payments

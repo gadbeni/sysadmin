@@ -99,9 +99,11 @@
     <div id="watermark">
         <img src="{{ asset('images/icon.png') }}" /> 
     </div>
+    @if (setting('auxiliares.edit-docs'))
     <div id="options" style="position: fixed; bottom: 10px; right: 20px">
         <button type="button" onclick="javascript:document.designMode = 'on'; document.getElementById('options').style.display = 'none'">Editar</button>
     </div>
+    @endif
 
     @yield('content')
 
