@@ -244,8 +244,8 @@
                                     <textarea class="form-control richTextBox" name="documents_contract">
                                         {{
                                             isset($contract) ?
-                                            $contract->documents_contract ?? '<ol style="color: #000000; font-family: Arial, sans-serif; font-size: 15px; text-align: justify;" type="a"><li><p>Declaraci&oacute;n Jurada de No Doble Percepci&oacute;n.</p></li><li><p>T&eacute;rminos de Referencia.</p></li><li><p>Informe de Evaluaci&oacute;n y Recomendaci&oacute;n del proceso de contrataci&oacute;n N&deg; 123.</p></li><li><p>Certificaci&oacute;n Presupuestaria (Preventivo N&deg; 123)</p></li><li><p>Certificaci&oacute;n Poa N&deg; 123.</p></li><li><p>Declaraci&oacute;n Jurada de No Incompatibilidad Legal.</p></li><li><p>Fotocopia de C&eacute;dula de Identidad.</p></li><li><p>Certificaci&oacute;n de Programaci&oacute;n Operativa Anual (P.O.A.)</p></li><li><p>Curriculum Vitae</p></li><li><p>Certificado de Antecedentes Penales (REJAP)</p></li><li><p>Certificado de No Violencia (Ley 1153)</p></li><li><p>Certificado de Inscripci&oacute;n NIT</p></li><li><p>Certificaci&oacute;n de No Adeudo (AFP)</p></li><li><p>Certificado del RUPE N&deg; 123.( cuando corresponda).</p></li></ol>' :
-                                            '<ol style="color: #000000; font-family: Arial, sans-serif; font-size: 15px; text-align: justify;" type="a"><li><p>Declaraci&oacute;n Jurada de No Doble Percepci&oacute;n.</p></li><li><p>T&eacute;rminos de Referencia.</p></li><li><p>Informe de Evaluaci&oacute;n y Recomendaci&oacute;n del proceso de contrataci&oacute;n N&deg; 123.</p></li><li><p>Certificaci&oacute;n Presupuestaria (Preventivo N&deg; 123)</p></li><li><p>Certificaci&oacute;n Poa N&deg; 123.</p></li><li><p>Declaraci&oacute;n Jurada de No Incompatibilidad Legal.</p></li><li><p>Fotocopia de C&eacute;dula de Identidad.</p></li><li><p>Certificaci&oacute;n de Programaci&oacute;n Operativa Anual (P.O.A.)</p></li><li><p>Curriculum Vitae</p></li><li><p>Certificado de Antecedentes Penales (REJAP)</p></li><li><p>Certificado de No Violencia (Ley 1153)</p></li><li><p>Certificado de Inscripci&oacute;n NIT</p></li><li><p>Certificaci&oacute;n de No Adeudo (AFP)</p></li><li><p>Certificado del RUPE N&deg; 123.( cuando corresponda).</p></li></ol>'
+                                            $contract->documents_contract ?? '<ol type="a"><li><p>Declaraci&oacute;n Jurada de No Doble Percepci&oacute;n.</p></li><li><p>T&eacute;rminos de Referencia.</p></li><li><p>Informe de Evaluaci&oacute;n y Recomendaci&oacute;n del proceso de contrataci&oacute;n N&deg; 123.</p></li><li><p>Certificaci&oacute;n Presupuestaria (Preventivo N&deg; 123)</p></li><li><p>Certificaci&oacute;n Poa N&deg; 123.</p></li><li><p>Declaraci&oacute;n Jurada de No Incompatibilidad Legal.</p></li><li><p>Fotocopia de C&eacute;dula de Identidad.</p></li><li><p>Certificaci&oacute;n de Programaci&oacute;n Operativa Anual (P.O.A.)</p></li><li><p>Curriculum Vitae</p></li><li><p>Certificado de Antecedentes Penales (REJAP)</p></li><li><p>Certificado de No Violencia (Ley 1153)</p></li><li><p>Certificado de Inscripci&oacute;n NIT</p></li><li><p>Certificaci&oacute;n de No Adeudo (AFP)</p></li><li><p>Certificado del RUPE N&deg; 123.( cuando corresponda).</p></li></ol>' :
+                                            '<ol type="a"><li><p>Declaraci&oacute;n Jurada de No Doble Percepci&oacute;n.</p></li><li><p>T&eacute;rminos de Referencia.</p></li><li><p>Informe de Evaluaci&oacute;n y Recomendaci&oacute;n del proceso de contrataci&oacute;n N&deg; 123.</p></li><li><p>Certificaci&oacute;n Presupuestaria (Preventivo N&deg; 123)</p></li><li><p>Certificaci&oacute;n Poa N&deg; 123.</p></li><li><p>Declaraci&oacute;n Jurada de No Incompatibilidad Legal.</p></li><li><p>Fotocopia de C&eacute;dula de Identidad.</p></li><li><p>Certificaci&oacute;n de Programaci&oacute;n Operativa Anual (P.O.A.)</p></li><li><p>Curriculum Vitae</p></li><li><p>Certificado de Antecedentes Penales (REJAP)</p></li><li><p>Certificado de No Violencia (Ley 1153)</p></li><li><p>Certificado de Inscripci&oacute;n NIT</p></li><li><p>Certificaci&oacute;n de No Adeudo (AFP)</p></li><li><p>Certificado del RUPE N&deg; 123.( cuando corresponda).</p></li></ol>'
                                         }}
                                     </textarea>
                                 </div>
@@ -412,7 +412,7 @@
                 });
 
                 let signatures = $('#select-direccion_administrativa_id option:selected').data('signatures');
-                $('#select-signature_id').html('');
+                $('#select-signature_id').html('<option value="">--Seleccione firma autorizada--</option>');
                 if(signatures){
                     signatures.map(item => {
                         $('#select-signature_id').append(`<option value="${item.id}">${item.designation} ${item.name} - ${item.job}</option>`);
@@ -493,7 +493,7 @@
             $('#select-cargo_id').change(function(){
                 let signatures = $('#select-cargo_id option:selected').data('signatures');
                 if(signatures){
-                    $('#select-signature_id').html('');
+                    $('#select-signature_id').html('<option value="">--Seleccione firma autorizada--</option>');
                     signatures.map(item => {
                         $('#select-signature_id').append(`<option value="${item.id}">${item.designation} ${item.name} - ${item.job}</option>`);
                     });

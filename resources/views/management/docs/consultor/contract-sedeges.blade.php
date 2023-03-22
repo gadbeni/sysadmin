@@ -253,6 +253,9 @@
         .saltopagina{
             display: none;
         }
+        ol p{
+            margin: 10px
+        }
         @media print{
             .content {
                 font-size: 12px;

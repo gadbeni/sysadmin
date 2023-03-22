@@ -5360,7 +5360,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"options":{"Decreto Departamental":"Decreto Departamental","Decreto de Gobernaci\\u00f3n":"Decreto de Gobernaci\\u00f3n","Decreto de Designaci\\u00f3n":"Decreto de Designaci\\u00f3n"},"display":{"width":6}}',
+                'details' => '{"options":{"Decreto Departamental":"Decreto Departamental","Decreto de Gobernaci\\u00f3n":"Decreto de Gobernaci\\u00f3n","Decreto de Designaci\\u00f3n":"Decreto de Designaci\\u00f3n","Resoluci\\u00f3n de Gobernaci\\u00f3n":"Resoluci\\u00f3n de Gobernaci\\u00f3n"},"display":{"width":6}}',
                 'order' => 6,
             ),
         ));

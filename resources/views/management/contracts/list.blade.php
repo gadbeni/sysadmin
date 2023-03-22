@@ -176,7 +176,7 @@
                                                 @if ($item->ratifications->count() > 0 && auth()->user()->hasPermission('ratificate_contracts'))
                                                 <li><a title="Ratificación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-ratificacion']) }}" target="_blank">Ratificación</a></li>
                                                 @endif
-                                                <li><a title="Reasignación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-reasigancion']) }}" target="_blank">Reasignación</a></li>
+                                                <li><a title="Reasignación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-reasigancion-alt']) }}" target="_blank">Reasignación</a></li>
                                                 @if ($item->transfers->count() > 0)
                                                 <li><a title="Transferecnia" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.transfer']) }}" target="_blank">Transferencia</a></li>
                                                 @endif
