@@ -1,7 +1,4 @@
-- eliminar signature_id de tabla contratos
-- ejecutar migraciones
 - ejecutar seeders de bread y permisos
 
 NOTA:
-- generar código de adenda
 - anular adenda

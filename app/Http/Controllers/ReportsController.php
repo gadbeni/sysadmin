@@ -186,7 +186,7 @@ class ReportsController extends Controller
                         ->where('procedure_type_id', $procedure_type_id)->where('deleted_at', NULL);
                     }, 'contract.person'])
                     ->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id = ".$request->direccion_administrativa_id : 1)
-                    ->where('deleted_at', NULL)->get();
+                    ->where('status', 1)->where('deleted_at', NULL)->get();
         }else{
             // $jobs = Contract::with(['direccion_administrativa', 'person', 'cargo'])
             //             ->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id = ".$request->direccion_administrativa_id : 1)

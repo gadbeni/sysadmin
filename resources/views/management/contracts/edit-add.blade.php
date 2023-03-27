@@ -507,8 +507,10 @@
                 setTimeout(() => {
                     $('#select-procedure_type_id').val("{{ $contract->procedure_type_id }}").trigger('change');
                     $('#select-cargo_id').val("{{ $contract->job_id ?? $contract->cargo_id }}").trigger('change');
-                    $('#select-signature_id').val("{{ $contract->signature_id }}").trigger('change');
                 }, 0);
+                setTimeout(() => {
+                    $('#select-signature_id').val("{{ $contract->signature_id }}").trigger('change');
+                }, 500);
             @endisset
         });
     </script>

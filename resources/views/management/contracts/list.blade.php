@@ -136,7 +136,7 @@
                                     @if ($item->status == 'firmado' && auth()->user()->hasPermission('ratificate_contracts'))
                                     <li><a href="#" title="Ratificar" data-toggle="modal" data-target="#ratificate-modal" onclick="ratificateContract({{ $item->id }})">Ratificar</a></li>
                                     @endif
-                                    @if ($item->status == 'firmado' && auth()->user()->role_id == 1)
+                                    @if ($item->status == 'firmado' && auth()->user()->hasPermission('finish_contracts'))
                                     <li><a href="#" title="Finalizar" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}')">Finalizar</a></li>
                                     @endif
                                     {{-- si está concluido y es permanente --}}

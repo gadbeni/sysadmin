@@ -7,7 +7,7 @@
     $code = $contract->code;
     $signature = null;
 
-    $last_contract = App\Models\Contract::where('procedure_type_id', 1)->where('deleted_at', NULL)->where('status', 'concluido')->orderBy('start', 'DESC')->first();
+    $last_contract = App\Models\Contract::where('procedure_type_id', 1)->where('person_id', $contract->person_id)->where('deleted_at', NULL)->where('status', 'concluido')->orderBy('start', 'DESC')->first();
 @endphp
 
 @section('qr_code')

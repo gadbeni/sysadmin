@@ -277,10 +277,21 @@ class SettingsTableSeeder extends Seeder
                 'id' => 24,
                 'key' => 'auxiliares.edit-docs',
                 'display_name' => 'Editar documentos',
-                'value' => '',
+                'value' => '0',
                 'details' => NULL,
                 'type' => 'checkbox',
                 'order' => 19,
+                'group' => 'Auxiliares',
+            ),
+            24 => 
+            array (
+                'id' => 25,
+                'key' => 'auxiliares.finish_contract_condition',
+                'display_name' => 'Condición de anulación de contratos',
+                'value' => '1',
+                'details' => NULL,
+                'type' => 'checkbox',
+                'order' => 20,
                 'group' => 'Auxiliares',
             ),
         ));

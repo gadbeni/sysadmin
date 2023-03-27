@@ -371,7 +371,7 @@ class ContractsController extends Controller
                             $q->whereRaw('name = "'.date('Ym', strtotime($request->finish)).'"')->where('status', '<>', 'anulada')->where('deleted_at', NULL);
                         })
                         ->where('deleted_at', NULL)->first();
-            if($payment && $request->finish){
+            if($payment && $request->finish && setting('auxiliares.finish_contract_condition')){
                 return response()->json(['error' => 'El contrato pertenece a una planilla en proceso de pago.']);
             }
 
