@@ -595,6 +595,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2023-02-02 10:42:32',
                 'updated_at' => '2023-02-02 11:05:47',
             ),
+            32 => 
+            array (
+                'id' => 41,
+                'name' => 'suggestions',
+                'slug' => 'suggestions',
+                'display_name_singular' => 'Sugerencia',
+                'display_name_plural' => 'Sugerencias',
+                'icon' => 'voyager-logbook',
+                'model_name' => 'App\\Models\\Suggestion',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2023-03-27 14:27:20',
+                'updated_at' => '2023-03-27 15:39:52',
+            ),
         ));
         
         

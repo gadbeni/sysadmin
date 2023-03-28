@@ -23,7 +23,7 @@
                                 <form name="form_search" id="form-search" action="{{ route('reports.contracts.contracts.list') }}" method="post">
                                     @csrf
                                     <input type="hidden" name="type">
-                                    <div class="form-group">
+                                    <div class="form-group col-md-12">
                                         <select name="procedure_type_id" class="form-control select2">
                                             <option selected value="">Todos los tipos de contratos</option>
                                             @foreach (App\Models\ProcedureType::where('deleted_at', NULL)
@@ -32,7 +32,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group col-md-12">
                                         <select name="status" class="form-control select2">
                                             <option value="">Todos</option>
                                             <option value="elaborado">Elaborados</option>
@@ -41,7 +41,7 @@
                                             <option value="concluido">Concluido</option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group col-md-12">
                                         <select name="direcciones_tipo_id" id="select-direcciones_tipo_id" class="form-control select2">
                                             @if (!Auth::user()->direccion_administrativa_id)
                                             <option value="">Todos los tipos de DA</option>
@@ -55,7 +55,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group col-md-12">
                                         <select name="direccion_administrativa_id[]" id="select-direccion_administrativa_id" class="form-control select2" multiple @if(Auth::user()->direccion_administrativa_id) required @endif>
                                             @if (!Auth::user()->direccion_administrativa_id)
                                             <option value="">Todas las direcciones administrativas</option>
@@ -65,7 +65,27 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="text-right">
+                                    <div class="form-group col-md-6">
+                                        <input type="number" name="year" class="form-control" placeholder="Año">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <select name="month" class="form-control select2">
+                                            <option value="">--Todos los meses--</option>
+                                            <option value="01">Enero</option>
+                                            <option value="02">Febrero</option>
+                                            <option value="03">Marzo</option>
+                                            <option value="04">Abril</option>
+                                            <option value="05">Mayo</option>
+                                            <option value="06">Junio</option>
+                                            <option value="07">Julio</option>
+                                            <option value="08">Agosto</option>
+                                            <option value="09">Septiembre</option>
+                                            <option value="10">Octubre</option>
+                                            <option value="11">Noviembre</option>
+                                            <option value="12">Diciembre</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12 text-right">
                                         <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
                                     </div>
                                     <br>
@@ -99,7 +119,7 @@
                 $('#select-direcciones_tipo_id').change(function(){
                     let direcciones = $('#select-direcciones_tipo_id option:selected').data('direcciones');
                     if (direcciones) {
-                        $('#select-direccion_administrativa_id').html(`<option value="">Todas(os)</option>`)
+                        $('#select-direccion_administrativa_id').empty()
                         direcciones.map(item => {
                             $('#select-direccion_administrativa_id').append(`<option value="${item.id}">${item.nombre}</option>`)
                         })

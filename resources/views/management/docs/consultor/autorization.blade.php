@@ -26,7 +26,7 @@
                     <td width="30px">1.</td>
                     <td width="270px">Objeto de la contratación:</td>
                     <td style="border: 1px solid black; padding: 5px">
-                        <b>CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }} {{ ($contract->name_job_alt ? ' - '.$contract->name_job_alt : '') }}</b>
+                        <b>CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }} {{ ($contract->name_job_alt ? ' - '.$contract->name_job_alt : '') }} {{ ($contract->work_location  ? ' PARA LA/EL '.$contract->work_location  : '') }}</b>
                     </td>
                 </tr>
                 <tr>

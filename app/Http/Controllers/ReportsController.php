@@ -111,11 +111,21 @@ class ReportsController extends Controller
     }
 
     public function contracts_contracts_list(Request $request){
-        // dd($request->all());
         $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'unidad_administrativa', 'type'])
                         ->whereRaw($request->procedure_type_id ? "procedure_type_id = ".$request->procedure_type_id : 1)
                         ->whereRaw($request->status ? "status = '".$request->status."'" : 1)
+                        ->whereHas('direccion_administrativa', function($q) use($request){
+                            $q->whereRaw($request->direcciones_tipo_id ? "direcciones_tipo_id = ".$request->direcciones_tipo_id : 1);
+                        })
                         ->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id in ".str_replace(array('[', ']'), array('(', ')'), json_encode($request->direccion_administrativa_id)) : 1)
+                        ->where(function($query) use ($request){
+                            if($request->status == 'firmado'){
+                                $query->whereRaw($request->year ? "YEAR(start) = ".$request->year : 1)->whereRaw($request->month ? "MONTH(start) = ".intval($request->month) : 1);
+                            }
+                            if($request->status == 'concluido'){
+                                $query->whereRaw($request->year ? "YEAR(finish) = ".$request->year : 1)->whereRaw($request->month ? "MONTH(finish) = ".intval($request->month) : 1);
+                            }
+                        })
                         ->where('deleted_at', NULL)->get();
         if($request->type == 'print'){
             return view('reports.contracts.contracts-print', compact('contracts'));

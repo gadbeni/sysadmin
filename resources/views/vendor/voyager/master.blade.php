@@ -58,65 +58,93 @@
 
 <body class="voyager @if(isset($dataType) && isset($dataType->slug)){{ $dataType->slug }}@endif">
 
-<div id="voyager-loader">
-    <?php $admin_loader_img = Voyager::setting('admin.loader', ''); ?>
-    @if($admin_loader_img == '')
-        <img src="{{ asset('images/loading.png') }}" alt="Voyager Loader">
-    @else
-        <img src="{{ Voyager::image($admin_loader_img) }}" alt="Voyager Loader">
-    @endif
-</div>
+    <div id="voyager-loader">
+        <?php $admin_loader_img = Voyager::setting('admin.loader', ''); ?>
+        @if($admin_loader_img == '')
+            <img src="{{ asset('images/loading.png') }}" alt="Voyager Loader">
+        @else
+            <img src="{{ Voyager::image($admin_loader_img) }}" alt="Voyager Loader">
+        @endif
+    </div>
 
-<?php
-if (\Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'http://') || \Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'https://')) {
-    $user_avatar = Auth::user()->avatar;
-} else {
-    $user_avatar = Voyager::image(Auth::user()->avatar);
-}
-?>
+    <?php
+    if (\Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'http://') || \Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'https://')) {
+        $user_avatar = Auth::user()->avatar;
+    } else {
+        $user_avatar = Voyager::image(Auth::user()->avatar);
+    }
+    ?>
 
-<div class="app-container">
-    <div class="fadetoblack visible-xs"></div>
-    <div class="row content-container">
-        @include('voyager::dashboard.navbar')
-        @include('voyager::dashboard.sidebar')
-        <script>
-            (function(){
-                    var appContainer = document.querySelector('.app-container'),
-                        sidebar = appContainer.querySelector('.side-menu'),
-                        navbar = appContainer.querySelector('nav.navbar.navbar-top'),
-                        loader = document.getElementById('voyager-loader'),
-                        hamburgerMenu = document.querySelector('.hamburger'),
-                        sidebarTransition = sidebar.style.transition,
-                        navbarTransition = navbar.style.transition,
-                        containerTransition = appContainer.style.transition;
+    <div class="app-container">
+        <div class="fadetoblack visible-xs"></div>
+        <div class="row content-container">
+            @include('voyager::dashboard.navbar')
+            @include('voyager::dashboard.sidebar')
+            <script>
+                (function(){
+                        var appContainer = document.querySelector('.app-container'),
+                            sidebar = appContainer.querySelector('.side-menu'),
+                            navbar = appContainer.querySelector('nav.navbar.navbar-top'),
+                            loader = document.getElementById('voyager-loader'),
+                            hamburgerMenu = document.querySelector('.hamburger'),
+                            sidebarTransition = sidebar.style.transition,
+                            navbarTransition = navbar.style.transition,
+                            containerTransition = appContainer.style.transition;
 
-                    sidebar.style.WebkitTransition = sidebar.style.MozTransition = sidebar.style.transition =
-                    appContainer.style.WebkitTransition = appContainer.style.MozTransition = appContainer.style.transition =
-                    navbar.style.WebkitTransition = navbar.style.MozTransition = navbar.style.transition = 'none';
+                        sidebar.style.WebkitTransition = sidebar.style.MozTransition = sidebar.style.transition =
+                        appContainer.style.WebkitTransition = appContainer.style.MozTransition = appContainer.style.transition =
+                        navbar.style.WebkitTransition = navbar.style.MozTransition = navbar.style.transition = 'none';
 
-                    if (window.innerWidth > 768 && window.localStorage && window.localStorage['voyager.stickySidebar'] == 'true') {
-                        appContainer.className += ' expanded no-animation';
-                        loader.style.left = (sidebar.clientWidth/2)+'px';
-                        hamburgerMenu.className += ' is-active no-animation';
-                    }
+                        if (window.innerWidth > 768 && window.localStorage && window.localStorage['voyager.stickySidebar'] == 'true') {
+                            appContainer.className += ' expanded no-animation';
+                            loader.style.left = (sidebar.clientWidth/2)+'px';
+                            hamburgerMenu.className += ' is-active no-animation';
+                        }
 
-                   navbar.style.WebkitTransition = navbar.style.MozTransition = navbar.style.transition = navbarTransition;
-                   sidebar.style.WebkitTransition = sidebar.style.MozTransition = sidebar.style.transition = sidebarTransition;
-                   appContainer.style.WebkitTransition = appContainer.style.MozTransition = appContainer.style.transition = containerTransition;
-            })();
-        </script>
-        <!-- Main Content -->
-        <div class="container-fluid">
-            <div class="side-body padding-top">
-                @yield('page_header')
-                <div id="voyager-notifications"></div>
-                @yield('content')
+                    navbar.style.WebkitTransition = navbar.style.MozTransition = navbar.style.transition = navbarTransition;
+                    sidebar.style.WebkitTransition = sidebar.style.MozTransition = sidebar.style.transition = sidebarTransition;
+                    appContainer.style.WebkitTransition = appContainer.style.MozTransition = appContainer.style.transition = containerTransition;
+                })();
+            </script>
+            <!-- Main Content -->
+            <div class="container-fluid">
+                <div class="side-body padding-top">
+                    @yield('page_header')
+                    <div id="voyager-notifications"></div>
+                    @yield('content')
+                </div>
             </div>
         </div>
     </div>
-</div>
-@include('voyager::partials.app-footer')
+    @include('voyager::partials.app-footer')
+
+    <div style="position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 30px; background-color: {{ env('APP_COLOR', '#ccc') }}; text-align: center">
+        <button data-toggle="modal" data-target="#suggestion-modal" class="btn btn-link" style="margin-top: 10px" title="Hacer sugerencia"><i class="fa fa-commenting fa-2x"></i></button>
+    </div>
+
+    {{-- Sugerencias modal --}}
+    <form action="#" id="form-suggestion" class="form-submit" method="POST">
+        @csrf
+        <div class="modal fade" tabindex="-1" id="suggestion-modal" role="dialog">
+            <div class="modal-dialog modal-success">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="fa fa-paper-plane"></i> Enviar sugerencias</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <textarea name="observations" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-submit"><i class="fa fa-paper-plane"></i> Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 
     {{-- Single delete modal --}}
     <div class="modal modal-danger fade" tabindex="-1" id="delete-modal" role="dialog">

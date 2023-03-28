@@ -71,7 +71,7 @@
                     <tr>
                         <td>GAD - BENI / MC N° {{ $code }}</td>
                         <td>CONTRATACIÓN MENOR</td>
-                        <td>CONTRATACION DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }}</td>
+                        <td>CONTRATACION DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }} {{ ($contract->name_job_alt ? ' - '.$contract->name_job_alt : '') }} {{ ($contract->work_location  ? ' PARA LA/EL '.$contract->work_location  : '') }}</td>
                         <td>{{ Str::upper($contract->program->name) }}</td>
                     </tr>
                 </tbody>
