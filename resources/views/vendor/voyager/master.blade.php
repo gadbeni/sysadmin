@@ -118,15 +118,16 @@
     </div>
     @include('voyager::partials.app-footer')
 
-    <div style="position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 30px; background-color: {{ env('APP_COLOR', '#ccc') }}; text-align: center">
+    {{-- Sugerencias button --}}
+    <div style="position: fixed; bottom: 10px; right: 10px; width: 60px; height: 60px; border-radius: 30px; background-color: {{ env('APP_COLOR', '#ccc') }}; text-align: center">
         <button data-toggle="modal" data-target="#suggestion-modal" class="btn btn-link" style="margin-top: 10px" title="Hacer sugerencia"><i class="fa fa-commenting fa-2x"></i></button>
     </div>
 
     {{-- Sugerencias modal --}}
-    <form action="#" id="form-suggestion" class="form-submit" method="POST">
+    <form action="{{ route('send.suggestion') }}" id="form-suggestion" class="form-submit" method="POST">
         @csrf
         <div class="modal fade" tabindex="-1" id="suggestion-modal" role="dialog">
-            <div class="modal-dialog modal-success">
+            <div class="modal-dialog modal-success modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
@@ -134,7 +135,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <textarea name="observations" class="form-control" rows="3"></textarea>
+                            <textarea name="details" class="richTextBox" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -172,6 +173,28 @@
     <script type="text/javascript" src="{{ voyager_asset('js/app.js') }}"></script>
 
     <script>
+        $(document).ready(function(){
+            $.extend({selector: '.richTextBox'}, {})
+            tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
+
+            $('#form-suggestion').submit(function(e){
+                $('.btn-submit').attr('disabled', 'disabled');
+                $('.btn-submit').html('<i class="fa fa-paper-plane"></i> Enviando');
+                e.preventDefault();
+                $.post($(this).attr('action'), $(this).serialize(), function(res){
+                    if(res.success){
+                        toastr.success('Sugerencia enviada, gracias', 'Bien hecho');
+                    }else{
+                        toastr.error('Ocurrió un error', 'Error');
+                    }
+
+                    $('#suggestion-modal').modal('hide');
+                    $('.btn-submit').removeAttr('disabled');
+                    $('.btn-submit').html('<i class="fa fa-paper-plane"></i> Enviar');
+                });
+            });
+        });
+
         @if(Session::has('alerts'))
             let alerts = {!! json_encode(Session::get('alerts')) !!};
             helpers.displayAlerts(alerts, toastr);

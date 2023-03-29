@@ -379,6 +379,9 @@ class ContractsController extends Controller
             $contract = Contract::findOrFail($request->id);
             $contract->status = $request->status;
             if ($request->finish) {
+                if ($contract->start >= $request->finish) {
+                    return response()->json(['error' => 'Error al definir la fecha de finalización.']);
+                }
                 $contract->finish = $request->finish;
             }
 
@@ -511,6 +514,10 @@ class ContractsController extends Controller
         try {
 
             $contract = Contract::find($request->contract_id);
+
+            if ($contract->start >= $request->date) {
+                return response()->json(['error' => 'Error al definir la fecha de trasferencia.']);
+            }
 
             // Crear contrato
             $d_a = Direccion::find(Job::find($request->job_id)->direccion_administrativa_id);

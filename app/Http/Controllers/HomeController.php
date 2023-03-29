@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Aguinaldo;
-use App\Models\PaymentschedulesDetail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 // Models
+use App\Models\Aguinaldo;
+use App\Models\PaymentschedulesDetail;
 use App\Models\PersonExternal;
+use App\Models\Suggestion;
 
 class HomeController extends Controller
 {
@@ -71,6 +73,19 @@ class HomeController extends Controller
                 Http::get(env('APP_SERVER_WHATSAPP').'?number=591'.$request->phone.'&message='.$request->message);
             }
             return response()->json(['success' => 1, 'url' => env('APP_SERVER_WHATSAPP').'?number=591'.$request->phone.'&message='.$request->message]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['error' => 1]);
+        }
+    }
+
+    public function send_suggestion(Request $request){
+        try {
+            Suggestion::create([
+                'user_id' => Auth::user()->id,
+                'details' => $request->details
+            ]);
+            return response()->json(['success' => 1]);
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json(['error' => 1]);

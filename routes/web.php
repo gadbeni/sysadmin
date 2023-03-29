@@ -50,6 +50,10 @@ Route::get('policies', function(){
 Route::get('register', [HomeController::class, 'register_person'])->name('home.register.person');
 Route::post('register/store', [HomeController::class, 'register_person_store'])->name('home.register.person.store');
 
+// Enviar mensaje de whatsapp
+Route::post('send-whatsapp', [HomeController::class, 'send_message'])->name('send.whatsapp');
+Route::post('send-suggestion', [HomeController::class, 'send_suggestion'])->name('send.suggestion');
+
 
 Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Voyager::routes();
@@ -325,8 +329,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('imports', [ImportsController::class, 'imports_index'])->name('imports.index');
     Route::post('imports/store', [ImportsController::class, 'imports_store'])->name('imports.store');
 
-    // Enviar mensaje de whatsapp
-    Route::post('send-whatsapp', [HomeController::class, 'send_message'])->name('send.whatsapp');
 });
 
 // Clear cache

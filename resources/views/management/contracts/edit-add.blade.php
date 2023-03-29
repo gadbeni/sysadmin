@@ -389,13 +389,11 @@
             var additionalConfig = {
                 selector: '.richTextBox',
             }
-
-            $('#select-procedure_type_id').select2();
-
             $.extend(additionalConfig, {})
             tinymce.init(window.voyagerTinyMCE.getConfig(additionalConfig));
             
             $('#select-workers_memo').select2();
+            $('#select-procedure_type_id').select2();
 
             $('#select-direccion_administrativa_id').change(function(){
                 $('#select-unidad_administrativa_id').html(`<option value="">Seleccione una unidad administrativa</option>`);
