@@ -185,12 +185,13 @@ class ContractsController extends Controller
                 return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso.', 'alert-type' => 'warning']);
             }
 
-            $count_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
-                        ->where('procedure_type_id', $request->procedure_type_id)
-                        ->where('direccion_administrativa_id', $direccion_administrativa_id)
-                        ->count();
+            $last_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
+                                ->where('procedure_type_id', $request->procedure_type_id)
+                                ->where('direccion_administrativa_id', $direccion_administrativa_id)
+                                ->orderBy('id', 'DESC')->first();
+            $number_contract = $last_contract ? explode('/', explode('-', $last_contract->code)[1])[0] +1 : 1;
             $d_a = Direccion::find($direccion_administrativa_id);
-            $code = ($d_a ? $d_a->sigla.'-' : '').str_pad($count_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
+            $code = $d_a->sigla.'-'.str_pad($number_contract, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
 
             $contract = Contract::create([
                 'person_id' => $request->person_id,
@@ -308,12 +309,13 @@ class ContractsController extends Controller
             $contract = Contract::find($id);
             // Si se cambia el año de inicio o la dirección administrativa se debe actualizar el código de contrato
             if(date('Y', strtotime($contract->start)) != date('Y', strtotime($request->start)) || $contract->direccion_administrativa_id != $direccion_administrativa_id){
-                $count_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
-                        ->where('procedure_type_id', $request->procedure_type_id)
-                        ->where('direccion_administrativa_id', $direccion_administrativa_id)
-                        ->count();
+                $last_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
+                                    ->where('procedure_type_id', $request->procedure_type_id)
+                                    ->where('direccion_administrativa_id', $direccion_administrativa_id)
+                                    ->orderBy('id', 'DESC')->first();
+                $number_contract = $last_contract ? explode('/', explode('-', $last_contract->code)[1])[0] +1 : 1;
                 $d_a = Direccion::find($direccion_administrativa_id);
-                $code = ($d_a ? $d_a->sigla.'-' : '').str_pad($count_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
+                $code = $d_a->sigla.'-'.str_pad($number_contract, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
             }else{
                 $code = $contract->code;
             }
@@ -521,17 +523,18 @@ class ContractsController extends Controller
 
             // Crear contrato
             $d_a = Direccion::find(Job::find($request->job_id)->direccion_administrativa_id);
-            $count_contract = Contract::whereYear('start', date('Y', strtotime($request->date)))
-                        ->where('procedure_type_id', 1)
-                        ->where('direccion_administrativa_id', $d_a->id)
-                        ->count();
+            $last_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
+                                    ->where('procedure_type_id', $request->procedure_type_id)
+                                    ->where('direccion_administrativa_id', $direccion_administrativa_id)
+                                    ->orderBy('id', 'DESC')->first();
+            $number_contract = $last_contract ? explode('/', explode('-', $last_contract->code)[1])[0] +1 : 1;
 
             $program = Program::where('procedure_type_id', 1)->where('year', date('Y'))->where('deleted_at', NULL)->first();
             if(!$program){
                 return response()->json(['message' => 'No existe un programa para la planilla permanente']);
             }
             
-            $code = ($d_a ? $d_a->sigla.'-' : '').str_pad($count_contract +1, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->date));
+            $code = $d_a->sigla.'-'.str_pad($number_contract, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
             $new_contratc = Contract::create([
                 'user_id' => Auth::user()->id,
                 'person_id' => $contract->person_id,

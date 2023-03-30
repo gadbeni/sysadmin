@@ -611,7 +611,25 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2023-03-27 14:27:20',
-                'updated_at' => '2023-03-27 15:39:52',
+                'updated_at' => '2023-03-29 16:02:47',
+            ),
+            33 => 
+            array (
+                'id' => 42,
+                'name' => 'jobs',
+                'slug' => 'jobs',
+                'display_name_singular' => 'Cargo',
+                'display_name_plural' => 'Cargos',
+                'icon' => 'voyager-list',
+                'model_name' => 'App\\Models\\Job',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null}',
+                'created_at' => '2023-03-29 16:13:49',
+                'updated_at' => '2023-03-29 16:13:49',
             ),
         ));
         
