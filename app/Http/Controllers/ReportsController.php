@@ -122,8 +122,12 @@ class ReportsController extends Controller
                             if($request->status == 'firmado'){
                                 $query->whereRaw($request->year ? "YEAR(start) = ".$request->year : 1)->whereRaw($request->month ? "MONTH(start) = ".intval($request->month) : 1);
                             }
-                            if($request->status == 'concluido'){
+                            elseif($request->status == 'concluido'){
                                 $query->whereRaw($request->year ? "YEAR(finish) = ".$request->year : 1)->whereRaw($request->month ? "MONTH(finish) = ".intval($request->month) : 1);
+                            }else{
+                                $query->OrWhereHas('paymentschedules_details.paymentschedule.period', function($q) use($request){
+                                    $q->whereRaw("name = '".$request->year.$request->month."'");
+                                });
                             }
                         })
                         ->where('deleted_at', NULL)->get();

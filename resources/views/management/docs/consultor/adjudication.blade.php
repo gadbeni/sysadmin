@@ -20,13 +20,13 @@
                     @endforeach
                 </select>
                 <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->date_note)) }} de {{ $months[intval(date('m', strtotime($contract->date_note)))] }} de {{ date('Y', strtotime($contract->date_note)) }} <br>
-                <b>INV/CI/GAD BENI/MCD N° {{ $code }}</b>
+                <b>NA/GAD-BENI/{{ $code }}</b>
             </p>
             <br>
             <p style="text-align: left">
                 {{ $contract->person->gender == 'masculino' ? 'Señor' : 'Señora' }}: <br>
                 {{ $contract->person->first_name }} {{ $contract->person->last_name }} <br>
-                {!! $contract->person->phone ? 'Cel. '.$contract->person->phone.'<br>' : '' !!}
+                CI: {{ $contract->person->ci }} - {!! $contract->person->phone ? 'Cel. '.$contract->person->phone.'<br>' : '' !!}
                 Presente .–
             </p>
         </div>
@@ -56,7 +56,7 @@
             @endphp
             <p>
                 De mi consideración: <br> <br>
-                En el marco del D.S. 0181 del 28 de junio de 2009  y sus decretos modificatorios, comunico a usted que una vez concluido el proceso de Evaluación a su postulación y conformidad a los Términos de Referencia, en base a la recomendación por el Responsable de Evaluación, se ha resuelto <b>ADJUDICAR</b> a su persona para que preste los servicios de Consultor en Línea del Proceso <b>GAD-BENI/MC N° {{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }} {{ ($contract->name_job_alt ? ' - '.$contract->name_job_alt : '') }} {{ ($contract->work_location  ? ' PARA LA/EL '.$contract->work_location  : '') }}”</b>, con cargo al {{ Str::upper($contract->program->class) }}: <b>“{{ Str::upper($contract->program->name) }}”</b>. por  un plazo de {{ $periodo }}, de acuerdo al siguiente detalle: <br>
+                En el marco del D.S. 0181 del 28 de junio de 2009  y sus decretos modificatorios, comunico a usted que una vez concluido el proceso de Evaluación a su postulación y conformidad a los Términos de Referencia, en base a la recomendación por el Responsable de Evaluación, se ha resuelto <b>ADJUDICAR</b> a su persona para que preste los servicios de Consultor en Línea del Proceso <b>GAD-BENI/{{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }} {{ ($contract->name_job_alt ? ' - '.$contract->name_job_alt : '') }} {{ ($contract->work_location  ? ' PARA LA/EL '.$contract->work_location  : '') }}”</b>, con cargo al {{ Str::upper($contract->program->class) }}: <b>“{{ Str::upper($contract->program->name) }}”</b>. por  un plazo de {{ $periodo }}, de acuerdo al siguiente detalle: <br>
             </p>
 
             <table align="center">
@@ -82,18 +82,18 @@
             </table>
 
             <p>
-                Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la/el {{ $signature ? $signature->direccion_administrativa->nombre : 'Unidad de Contrataciones de Bienes y Servicios dependiente de la Secretaría Departamental Administrativa' }}, ubicada en {{ $signature ? $signature->direccion_administrativa->direccion : 'Edificio de Gobernación en Acera Sud de la Plaza Mariscal José Ballivián' }}, con un plazo no mayor a 48 horas a partir la fecha, debiendo presentar la siguiente documentación:
+                Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la Unidad Jurídica de la/el {{ $signature ? $signature->direccion_administrativa->nombre : 'Unidad de Contrataciones de Bienes y Servicios dependiente de la Secretaría Departamental Administrativa' }}, ubicada en {{ $signature ? $signature->direccion_administrativa->direccion : 'Edificio de Gobernación en Acera Sud de la Plaza Mariscal José Ballivián' }}, con un plazo no mayor a 48 horas a partir la fecha, debiendo presentar la siguiente documentación:
             </p>
 
             <table align="center">
                 <tr>
                     <td style="width: 500px;">
                         <table>
-                            @if ($contract->certification_pac)
+                            @if ($contract->certification_pac != "" && $contract->certification_pac != "N/C")
                             <tr>
                                 <td>&#10003;</td>
                                 <td>Certificado RUPE</td>
-                            </tr>    
+                            </tr>
                             @endif
                             <tr>
                                 <td>&#10003;</td>
@@ -119,10 +119,10 @@
                                 <td>&#10003;</td>
                                 <td>Certificado de Antecedentes Penales - REJAP (Emitido por la Magistratura)</td>
                             </tr>
-                            <tr>
+                            {{-- <tr>
                                 <td>&#10003;</td>
                                 <td>Libreta de Servicio Militar (para varones)</td>
-                            </tr>
+                            </tr> --}}
                         </table>
                     </td>
                 </tr>

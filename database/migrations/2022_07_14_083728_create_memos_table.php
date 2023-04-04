@@ -23,7 +23,7 @@ class CreateMemosTable extends Migration
             $table->string('destiny_alternate_job')->nullable();
             $table->foreignId('memos_type_id')->nullable()->constrained('memos_types');
             $table->foreignId('person_external_id')->nullable()->constrained('person_externals');
-            $table->string('number')->nullable();
+            $table->text('number')->nullable();
             $table->string('type')->nullable();
             $table->string('code')->nullable();
             $table->string('da_sigep')->nullable();

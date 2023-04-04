@@ -18,7 +18,7 @@
                     </div>
                     {{-- El administrador puede cerrar una planilla y cambiar el estado a pagado a los funcionarios que la incluyen --}}
                     {{-- @if (Auth::user()->role_id == 1) --}}
-                    <label class="checkbox-inline"><input type="checkbox" name="pay_all" value="1">Pagar todos los funcionarios que se incluyen esta planilla</label>
+                    <label class="checkbox-inline"><input type="checkbox" name="pay_all" value="1" checked>Pagar todos los funcionarios que se incluyen esta planilla</label>
                     {{-- @endif --}}
                 </div>
                 <div class="modal-footer">

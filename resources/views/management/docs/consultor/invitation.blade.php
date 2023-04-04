@@ -20,18 +20,18 @@
                     @endforeach
                 </select>
                 <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }} <br>
-                <b>INV/CI/GAD BENI/MCD N° {{ $code }}</b>
+                <b>INV/GAD-BENI/{{ $code }}</b>
             </p>
             <br>
             <p style="text-align: left">
                 {{ $contract->person->gender == 'masculino' ? 'Señor' : 'Señora' }}: <br>
                 {{ $contract->person->first_name }} {{ $contract->person->last_name }} <br>
-                {!! $contract->person->phone ? 'Cel. '.$contract->person->phone.'<br>' : '' !!}
+                CI: {{ $contract->person->ci }} - {!! $contract->person->phone ? 'Cel. '.$contract->person->phone.'<br>' : '' !!}
                 Presente.-
             </p>
         </div>
         <div class="page-title">
-            <h3><u>REF.: INVITACIÓN A PRESENTAR PROPUESTA - PROCESO DE CONTRATACIÓN GAD-BENI/MC N° {{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }} {{ ($contract->name_job_alt ? ' - '.$contract->name_job_alt : '') }} {{ ($contract->work_location  ? ' PARA LA/EL '.$contract->work_location  : '') }}”</u></h3>
+            <h3><u>REF.: INVITACIÓN A PRESENTAR PROPUESTA - PROCESO DE CONTRATACIÓN GAD-BENI/{{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }} {{ ($contract->name_job_alt ? ' - '.$contract->name_job_alt : '') }} {{ ($contract->work_location  ? ' PARA LA/EL '.$contract->work_location  : '') }}”</u></h3>
         </div>
         <div class="page-body">
             @php

@@ -33,7 +33,7 @@
                     <td>2.</td>
                     <td>Código interno del proceso de contratación:</td>
                     <td style="border: 1px solid black; padding: 5px">
-                        <b>GAD-BENI/MCD N&deg; {{ $code }}</b>
+                        <b>GAD-BENI/{{ $code }}</b>
                     </td>
                 </tr>
                 <tr>
@@ -97,7 +97,10 @@
                     @endforeach
                 </select>
                 <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->date_autorization)) }} de {{ $months[intval(date('m', strtotime($contract->date_autorization)))] }} de {{ date('Y', strtotime($contract->date_autorization)) }} <br>
-                <small><i>Cc/arch.</i></small>
+                <small>
+                    <i>Cc/arch.</i> <br>
+                    {{ Auth::user()->name }}
+                </small>
             </p>
         </div>
     </div>
