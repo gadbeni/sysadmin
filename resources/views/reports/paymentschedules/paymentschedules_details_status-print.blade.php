@@ -73,7 +73,7 @@
                 <thead>
                     <tr>
                         <th>N&deg;</th>
-                        <th>Código</th>
+                        <th>Planilla</th>
                         <th>Dirección administrativa</th>
                         <th>Unidad administrativa</th>
                         <th>Código</th>

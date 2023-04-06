@@ -1,7 +1,8 @@
 
 <div class="col-md-12 text-right">
     @if (count($payments))
-        <button type="button" onclick="report_print()" class="btn btn-danger"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+        <button type="button" onclick="report_print('pdf')" class="btn btn-danger"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+        <button type="button" onclick="report_print('excel')" class="btn btn-success"><i class="glyphicon glyphicon-download"></i> Excel</button>
     @endif
 </div>
 @php
@@ -60,7 +61,7 @@
                     <thead>
                         <tr>
                             <th>N&deg;</th>
-                            <th>Código</th>
+                            <th>Planilla</th>
                             <th>Dirección administrativa</th>
                             <th>Unidad administrativa</th>
                             <th>Código</th>

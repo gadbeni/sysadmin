@@ -435,11 +435,10 @@
                     $('#select-direccion_administrativa_id').empty();
                     $('#select-unidad_administrativa_id').empty();
                     $('#select-program_id').empty();
-                    // $('#select-program_id').attr('disabled', true);
-                    // $('#select-program_id').attr('required', false);
                     $('#select-direccion_administrativa_id').attr('disabled', true);
                     $('#select-direccion_administrativa_id').attr('required', false);
                     $('#select-unidad_administrativa_id').attr('disabled', true);
+                    $('#select-unidad_administrativa_id').attr('required', false);
                     $('#input-finish').attr('required', false);
                     
                     programs.map(item => {
@@ -455,8 +454,7 @@
                     $('#select-direccion_administrativa_id').attr('disabled', false);
                     $('#select-direccion_administrativa_id').attr('required', true);
                     $('#select-unidad_administrativa_id').attr('disabled', false);
-                    $('#select-program_id').attr('disabled', false);
-                    $('#select-program_id').attr('required', true);
+                    $('#select-unidad_administrativa_id').attr('required', true);
                     $('#input-finish').attr('required', true);
                     $('#select-direccion_administrativa_id').html(`<option value="">Selecciona la dirección administrativa</option>`);
                     direccion_administrativas.map(item => {

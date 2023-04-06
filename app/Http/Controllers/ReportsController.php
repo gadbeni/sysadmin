@@ -34,6 +34,7 @@ use App\Exports\AFPExport;
 use App\Exports\ContractsExport;
 use App\Exports\ProgramsExport;
 use App\Exports\BonusExport;
+use App\Exports\PaymentschedulesDetailsExport;
 
 class ReportsController extends Controller
 {
@@ -152,16 +153,21 @@ class ReportsController extends Controller
                         ->whereHas('paymentschedule', function($q) use ($request){
                             $q->where('period_id', $request->period_id)->where('deleted_at', NULL);
                         })
+                        ->whereHas('paymentschedule.direccion_administrativa', function($q) use ($request){
+                            $q->whereRaw($request->direcciones_tipo_id ? "direcciones_tipo_id = ".$request->direcciones_tipo_id : 1);
+                        })
                         ->whereHas('paymentschedule', function($q) use ($request){
-                            $q->whereRaw($request->direccion_administrativa_id ? 'direccion_administrativa_id = '.$request->direccion_administrativa_id : 1);
+                            $q->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id in ".str_replace(array('[', ']'), array('(', ')'), json_encode($request->direccion_administrativa_id)) : 1);
                         })
                         ->whereHas('contract', function($q) use ($request){
                             $q->whereRaw($request->procedure_type_id ? 'procedure_type_id = '.$request->procedure_type_id : 1);
                         })
                         ->where('status', '<>', 'anulado')->where('deleted_at', NULL)->get();
-        if($request->print){
+        if($request->type == 'pdf'){
             return view('reports.paymentschedules.paymentschedules_details_status-print', compact('payments', 'period', 'grouped'));
-        }else{
+        }elseif($request->type == 'excel')
+            return Excel::download(new PaymentschedulesDetailsExport($payments, $grouped), 'Pagos '.$period->name.'.xlsx');
+        else{
             return view('reports.paymentschedules.paymentschedules_details_status-list', compact('payments', 'grouped'));
         }
     }

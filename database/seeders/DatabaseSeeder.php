@@ -42,5 +42,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(PermissionRoleTableSeeder::class);
         // $this->call(MemosTypesGroupsTableSeeder::class);
         $this->call(AfpsTableSeeder::class);
+        $this->call(AssetsCategoriesTableSeeder::class);
     }
 }

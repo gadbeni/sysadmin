@@ -2,7 +2,7 @@
 <div class="col-md-12 text-right">
     @if (count($contracts))
         <button type="button" onclick="report_export('print')" class="btn btn-danger"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
-        <button type="button" onclick="report_export('excel')" class="btn btn-success"><i class="glyphicon glyphicon-excel"></i> Excel</button>
+        <button type="button" onclick="report_export('excel')" class="btn btn-success"><i class="glyphicon glyphicon-download"></i> Excel</button>
     @endif
 </div>
 @php
@@ -44,14 +44,14 @@
                         @php
                             $salary = 0;
                             $total = 0;
+                            if ($item->cargo) {
+                                $salary = $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo;
+                            }
+                            if($item->job){
+                                $salary = $item->job->salary;
+                            }
                             if($item->start && $item->finish){
                                 $contract_duration = contract_duration_calculate($item->start, $item->finish);
-                                if ($item->cargo) {
-                                    $salary = $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo;
-                                }
-                                if($item->job){
-                                    $salary = $item->job->salary;
-                                }
                                 $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
                             }
                         @endphp
@@ -86,7 +86,7 @@
                             <td>{{ number_format($salary, 2, ',', '.') }}</td>
                             <td>{{ date('d/m/Y', strtotime($item->start)) }}</td>
                             <td>{{ $item->finish ? date('d/m/Y', strtotime($item->finish)) : '' }}</td>
-                            <td>{{ number_format($total, 2, ',', '.') }}</td>
+                            <td>{{ $total ? number_format($total, 2, ',', '.') : 'No definido' }}</td>
                             <td>{{ $item->program ? $item->program->name : 'No definido' }}</td>
                             <td>{{ $item->program ? $item->program->programatic_category : 'No definida' }}</td>
                             <td>{{ $item->status }}</td>

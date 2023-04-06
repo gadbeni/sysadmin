@@ -20,6 +20,7 @@ class CreateJobsTable extends Migration
             $table->string('name')->nullable();
             $table->string('dependence')->nullable();
             $table->integer('direccion_administrativa_id')->nullable();
+            $table->foreignId('unidad_administrativa_id')->nullable()->constrained('direcciones');
             $table->decimal('salary', 10, 2)->nullable();
             $table->smallInteger('status')->nullable()->default(1);
             $table->timestamps();

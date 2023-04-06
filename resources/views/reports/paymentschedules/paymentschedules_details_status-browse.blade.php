@@ -22,9 +22,23 @@
                             <div class="col-md-4" style="margin-top: 30px">
                                 <form name="form_search" id="form-search" action="{{ route('reports.paymentschedules.details.status.list') }}" method="post">
                                     @csrf
-                                    <input type="hidden" name="print">
+                                    <input type="hidden" name="type">
                                     <div class="form-group">
-                                        <select name="direccion_administrativa_id" class="form-control select2">
+                                        <select name="direcciones_tipo_id" id="select-direcciones_tipo_id" class="form-control select2">
+                                            @if (!Auth::user()->direccion_administrativa_id)
+                                            <option value="">Todos los tipos de DA</option>
+                                            @endif
+                                            @foreach (App\Models\DireccionesTipo::with(['direcciones_administrativas' => function($q){
+                                                            $q->whereRaw("estado = 1 and deleted_at is null");
+                                                        }])->whereHas('direcciones_administrativas', function($q){
+                                                            $q->whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1);
+                                                        })->where('estado', 1)->where('deleted_at', NULL)->get() as $item)
+                                            <option value="{{ $item->id }}" data-direcciones='@json($item->direcciones_administrativas)'>{{ $item->nombre }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="direccion_administrativa_id[]" id="select-direccion_administrativa_id" class="form-control select2" multiple @if(Auth::user()->direccion_administrativa_id) required @endif>
                                             @if (!Auth::user()->direccion_administrativa_id)
                                             <option value="">Todas las direcciones administrativas</option>
                                             @endif
@@ -44,7 +58,7 @@
                                     <div class="form-group">
                                         <select name="period_id" class="form-control select2" required>
                                             <option selected value="">Seleccione el periodo</option>
-                                            @foreach (App\Models\Period::where('deleted_at', NULL)->get() as $item)
+                                            @foreach (App\Models\Period::where('deleted_at', NULL)->orderBy('name', 'DESC')->get() as $item)
                                                 <option value="{{ $item->id }}">{{ $item->name }}</option>
                                             @endforeach
                                         </select>
@@ -83,6 +97,17 @@
         <script>
             $(document).ready(function() {
 
+                $('#select-direcciones_tipo_id').change(function(){
+                    let direcciones = $('#select-direcciones_tipo_id option:selected').data('direcciones');
+                    if (direcciones) {
+                        $('#select-direccion_administrativa_id').empty()
+                        direcciones.map(item => {
+                            $('#select-direccion_administrativa_id').append(`<option value="${item.id}">${item.nombre}</option>`)
+                        })
+                    }
+                    
+                });
+
                 $('#form-search').on('submit', function(e){
                     e.preventDefault();
                     $('#div-results').empty();
@@ -102,12 +127,12 @@
                 });
             });
 
-            function report_print(){
+            function report_print(type){
                 $('#form-search').attr('target', '_blank');
-                $('#form-search input[name="print"]').val(1);
+                $('#form-search input[name="type"]').val(type);
                 window.form_search.submit();
                 $('#form-search').removeAttr('target');
-                $('#form-search input[name="print"]').val('');
+                $('#form-search input[name="type"]').val('');
             }
         </script>
     @stop
