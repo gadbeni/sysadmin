@@ -45,6 +45,7 @@
                     <th>Tipo</th>
                     <th>Nombre completo</th>
                     <th>CI</th>
+                    <th>Inicio</th>
                     <th>Cargo</th>
                     <th>Nivel</th>
                     <th>Sueldo</th>
@@ -61,6 +62,7 @@
                     <td>{{ $item->contract->type->name }}</td>
                     <td>{{ $item->contract->person->last_name }} {{ $item->contract->person->first_name }}</td>
                     <td>{{ $item->contract->person->ci }}</td>
+                    <td>{{ date('d/m/Y', strtotime($item->contract->start)) }}</td>
                     <td>{{ $item->job }}</td>
                     <td>{{ $item->job_level }}</td>
                     <td>{{ number_format($item->salary, 2, ',', '.') }}</td>

@@ -58,7 +58,7 @@
                                     <div class="form-group">
                                         <select name="period_id" class="form-control select2" required>
                                             <option selected value="">Seleccione el periodo</option>
-                                            @foreach (App\Models\Period::where('deleted_at', NULL)->orderBy('name', 'DESC')->get() as $item)
+                                            @foreach (App\Models\Period::where('deleted_at', NULL)->where('status', 1)->orderBy('name', 'DESC')->get() as $item)
                                                 <option value="{{ $item->id }}">{{ $item->name }}</option>
                                             @endforeach
                                         </select>

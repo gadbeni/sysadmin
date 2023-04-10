@@ -68,14 +68,11 @@
                             <th>Tipo</th>
                             <th>Nombre completo</th>
                             <th>CI</th>
+                            <th>Inicio</th>
                             <th>Cargo</th>
                             <th>Nivel</th>
                             <th>Sueldo</th>
                             <th>LÍquido pagable</th>
-                            {{-- <th>Inicio</th>
-                            <th>Fin</th>
-                            <th>Programa</th>
-                            <th>Cat. prog.</th> --}}
                             <th>Estado</th>
                         </tr>
                     </thead>
@@ -97,6 +94,7 @@
                             <td>{{ $item->contract->type->name }}</td>
                             <td>{{ $item->contract->person->last_name }} {{ $item->contract->person->first_name }}</td>
                             <td>{{ $item->contract->person->ci }}</td>
+                            <td>{{ date('d/m/Y', strtotime($item->contract->start)) }}</td>
                             <td>{{ $item->job }}</td>
                             <td>{{ $item->job_level }}</td>
                             <td>
@@ -123,12 +121,12 @@
                         @endphp
                         @empty
                             <tr class="odd">
-                                <td valign="top" colspan="12" class="text-center">No hay datos disponibles en la tabla</td>
+                                <td valign="top" colspan="14" class="text-center">No hay datos disponibles en la tabla</td>
                             </tr>
                         @endforelse
 
                         <tr>
-                            <td colspan="10" class="text-right">Total</td>
+                            <td colspan="11" class="text-right">Total</td>
                             <td>{{ number_format($salary_total, 2, ',', '.') }}</td>
                             <td>{{ number_format($payable_total, 2, ',', '.') }}</td>
                             <td>{{ number_format($payment_total, 2, ',', '.') }}</td>

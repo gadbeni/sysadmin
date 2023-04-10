@@ -5,7 +5,7 @@
     @endif
 </div>
 @php
-    $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    $months = ['', 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sept', 'oct', 'nov', 'dic'];
 @endphp
 <div class="col-md-12">
     <div class="panel panel-bordered">
@@ -14,11 +14,11 @@
                 <table id="dataTable" class="table table-bordered">
                     <thead>
                         <tr>
-                            <th colspan="15"><h3>ALTAS</h3></th>
+                            <th colspan="14"><h3>ALTAS</h3></th>
                         </tr>
                         <tr>
-                            <th>ITEM</th>
-                            <th>NIVEL</th>
+                            <th>N&deg;</th>
+                            {{-- <th>NIVEL</th> --}}
                             <th>APELLIDOS Y NOMBRES / CARGO</th>
                             <th>CÉDULA DE IDENTIDAD</th>
                             <th>EXP</th>
@@ -39,29 +39,53 @@
                             $cont = 1;
                         @endphp
                         @forelse ($funcionarios_ingreso as $item)
+                            @php
+                                $paymentschedules = $item->paymentschedules_details->first();
+                            @endphp
                             <tr>
                                 <td>{{ $cont }}</td>
-                                <td>{{ $item->Nivel }}</td>
-                                <td>{{ $item->Apaterno }} {{ $item->Amaterno }} {{ $item->Pnombre }} <br> <small>{{ $item->Cargo }}</small></td>
-                                <td>{{ $item->CedulaIdentidad }}</td>
-                                <td>{{ $item->Expedido }}</td>
-                                <td>{{ $item->Num_Nua }}</td>
-                                <td>{{ $item->Afp == 1 ? 'Futuro' : 'Previsión' }}</td>
+                                {{-- <td>{{ $item->Nivel }}</td> --}}
+                                <td>
+                                    {{ $item->person->last_name }} {{ $item->person->first_name }} <br>
+                                    <small>
+                                        @if ($item->cargo)
+                                            {{ $item->cargo->Descripcion }}
+                                        @elseif ($item->job)
+                                            {{ $item->job->name }}
+                                        @else
+                                            No definido
+                                        @endif    
+                                    </small>
+                                </td>
+                                <td>{{ $item->person->ci }}</td>
+                                <td></td>
+                                <td>{{ $item->person->nua_cua }}</td>
+                                <td>{{ $item->person->afp_type ? $item->person->afp_type->name : 'No defeinida' }}</td>
                                 <td>I</td>
-                                <td>{{ date('d', strtotime($item->Fecha_Ingreso)).'/'.$months[intval(date('m', strtotime($item->Fecha_Ingreso)))].'/'.date('Y', strtotime($item->Fecha_Ingreso)) }}</td>
+                                <td>{{ date('d', strtotime($item->start)).'/'.$months[intval(date('m', strtotime($item->start)))].'/'.date('Y', strtotime($item->start)) }}</td>
                                 <td>{{ $item->Dias_Trabajado }}</td>
-                                <td>{{ number_format($item->Sueldo_Mensual, 2, ',', '.') }}</td>
-                                <td>{{ number_format($item->Sueldo_Parcial, 2, ',', '.') }}</td>
-                                <td>{{ $item->Porcentaje }}</td>
-                                <td>{{ number_format($item->Bono_Antiguedad, 2, ',', '.') }}</td>
-                                <td>{{ number_format($item->Total_Ganado, 2, ',', '.') }}</td>
+                                <td>
+                                    @php
+                                        $salary = 0;
+                                        if ($item->cargo){
+                                            $salary = $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo;
+                                        }elseif ($item->job){
+                                            $salary = $item->job->salary;
+                                        }
+                                    @endphp
+                                    {{ number_format($salary, 2, ',', '.') }}
+                                </td>
+                                <td>{{ number_format($paymentschedules->partial_salary, 2, ',', '.') }}</td>
+                                <td>{{ number_format($paymentschedules->seniority_bonus_percentage, 0, ',', '.') }}</td>
+                                <td>{{ number_format($paymentschedules->seniority_bonus_amount, 2, ',', '.') }}</td>
+                                <td>{{ number_format($paymentschedules->partial_salary + $paymentschedules->seniority_bonus_amount, 2, ',', '.') }}</td>
                             </tr>
                             @php
                                 $cont++;
                             @endphp
                         @empty
                             <tr>
-                                <td colspan="15"><h4 class="text-center">No hay resultados</h4></td>
+                                <td colspan="14"><h4 class="text-center">No hay resultados</h4></td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -79,11 +103,11 @@
                 <table id="dataTable" class="table table-bordered">
                     <thead>
                         <tr>
-                            <th colspan="15"><h3>BAJAS</h3></th>
+                            <th colspan="14"><h3>BAJAS</h3></th>
                         </tr>
                         <tr>
-                            <th>ITEM</th>
-                            <th>NIVEL</th>
+                            <th>N&deg;</th>
+                            {{-- <th>NIVEL</th> --}}
                             <th>APELLIDOS Y NOMBRES / CARGO</th>
                             <th>CÉDULA DE IDENTIDAD</th>
                             <th>EXP</th>
@@ -104,29 +128,55 @@
                             $cont = 1;
                         @endphp
                         @forelse ($funcionarios_egreso as $item)
+                            @php
+                                $paymentschedules = $item->paymentschedules_details->first();
+                            @endphp
                             <tr>
-                                <td>{{ $cont }}</td>
-                                <td>{{ $item->Nivel }}</td>
-                                <td>{{ $item->Apaterno }} {{ $item->Amaterno }} {{ $item->Pnombre }} <br> <small>{{ $item->Cargo }}</small></td>
-                                <td>{{ $item->CedulaIdentidad }}</td>
-                                <td>{{ $item->Expedido }}</td>
-                                <td>{{ $item->Num_Nua }}</td>
-                                <td>{{ $item->Afp == 1 ? 'Futuro' : 'Previsión' }}</td>
-                                <td>E</td>
-                                <td>{{ date('d', strtotime($item->Fecha_Conclusion)).'/'.$months[intval(date('m', strtotime($item->Fecha_Conclusion)))].'/'.date('Y', strtotime($item->Fecha_Conclusion)) }}</td>
-                                <td>{{ $item->Dias_Trabajado }}</td>
-                                <td>{{ number_format($item->Sueldo_Mensual, 2, ',', '.') }}</td>
-                                <td>{{ number_format($item->Sueldo_Parcial, 2, ',', '.') }}</td>
-                                <td>{{ $item->Porcentaje }}</td>
-                                <td>{{ number_format($item->Bono_Antiguedad, 2, ',', '.') }}</td>
-                                <td>{{ number_format($item->Total_Ganado, 2, ',', '.') }}</td>
+                                <tr>
+                                    <td>{{ $cont }}</td>
+                                    {{-- <td>{{ $item->Nivel }}</td> --}}
+                                    <td>
+                                        {{ $item->person->last_name }} {{ $item->person->first_name }} <br>
+                                        <small>
+                                            @if ($item->cargo)
+                                                {{ $item->cargo->Descripcion }}
+                                            @elseif ($item->job)
+                                                {{ $item->job->name }}
+                                            @else
+                                                No definido
+                                            @endif    
+                                        </small>
+                                    </td>
+                                    <td>{{ $item->person->ci }}</td>
+                                    <td></td>
+                                    <td>{{ $item->person->nua_cua }}</td>
+                                    <td>{{ $item->person->afp_type ? $item->person->afp_type->name : 'No defeinida' }}</td>
+                                    <td>I</td>
+                                    <td>{{ date('d', strtotime($item->start)).'/'.$months[intval(date('m', strtotime($item->start)))].'/'.date('Y', strtotime($item->start)) }}</td>
+                                    <td>{{ $item->Dias_Trabajado }}</td>
+                                    <td>
+                                        @php
+                                            $salary = 0;
+                                            if ($item->cargo){
+                                                $salary = $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo;
+                                            }elseif ($item->job){
+                                                $salary = $item->job->salary;
+                                            }
+                                        @endphp
+                                        {{ number_format($salary, 2, ',', '.') }}
+                                    </td>
+                                    <td>{{ number_format($paymentschedules->partial_salary, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($paymentschedules->seniority_bonus_percentage, 0, ',', '.') }}</td>
+                                    <td>{{ number_format($paymentschedules->seniority_bonus_amount, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($paymentschedules->partial_salary + $paymentschedules->seniority_bonus_amount, 2, ',', '.') }}</td>
+                                </tr>
                             </tr>
                             @php
                                 $cont++;
                             @endphp
                         @empty
                             <tr>
-                                <td colspan="15"><h4 class="text-center">No hay resultados</h4></td>
+                                <td colspan="14"><h4 class="text-center">No hay resultados</h4></td>
                             </tr>
                         @endforelse
                     </tbody>

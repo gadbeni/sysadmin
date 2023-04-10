@@ -24,7 +24,7 @@
                                     @csrf
                                     <input type="hidden" name="print">
                                     <div class="form-group">
-                                        <select name="t_planilla" class="form-control select2" required>
+                                        <select name="procedure_type_id" class="form-control select2" required>
                                             <option selected value="">Todas las planillas</option>
                                             <option value="1">Funcionamiento</option>
                                             <option value="2">Inversión</option>

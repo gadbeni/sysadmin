@@ -641,32 +641,48 @@ class ReportsController extends Controller
     public function social_security_contracts_list (Request $request){
         $year = $request->year;
         $month = $request->month;
-        $funcionarios_ingreso = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                            ->join('contratos as c', 'c.idContribuyente', 'p.CedulaIdentidad')
-                            ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
-                            ->whereRaw($request->t_planilla ? 'p.Tplanilla = '.$request->t_planilla : 1)
-                            ->whereYear('c.Fecha_Inicio', $request->year)
-                            ->whereMonth('c.Fecha_Inicio', $request->month)
-                            ->where('p.Anio', $request->year)
-                            ->where('p.Mes', $request->month)
-                            ->whereRaw('(p.idGda=1 or p.idGda=2)')
-                            ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'c.Fecha_Inicio')
-                            ->orderBy('p.Apaterno')
-                            ->get();
+        // $funcionarios_ingreso = DB::connection('mysqlgobe')->table('planillahaberes as p')
+        //                     ->join('contratos as c', 'c.idContribuyente', 'p.CedulaIdentidad')
+        //                     ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
+        //                     ->whereRaw($request->t_planilla ? 'p.Tplanilla = '.$request->t_planilla : 1)
+        //                     ->whereYear('c.Fecha_Inicio', $request->year)
+        //                     ->whereMonth('c.Fecha_Inicio', $request->month)
+        //                     ->where('p.Anio', $request->year)
+        //                     ->where('p.Mes', $request->month)
+        //                     ->whereRaw('(p.idGda=1 or p.idGda=2)')
+        //                     ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'c.Fecha_Inicio')
+        //                     ->orderBy('p.Apaterno')
+        //                     ->get();
 
-        $funcionarios_egreso = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                            ->join('contratos as c', 'c.idContribuyente', 'p.CedulaIdentidad')
-                            ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
-                            ->whereRaw($request->t_planilla ? 'p.Tplanilla = '.$request->t_planilla : 1)
-                            ->whereYear('c.Fecha_Conclusion', $request->year)
-                            ->whereMonth('c.Fecha_Conclusion', $request->month)
-                            ->where('p.Anio', $request->year)
-                            ->where('p.Mes', $request->month)
-                            ->whereRaw('(p.idGda=1 or p.idGda=2)')
-                            ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'c.Fecha_Conclusion')
-                            ->orderBy('p.Apaterno')
-                            ->get();
-        
+        // $funcionarios_egreso = DB::connection('mysqlgobe')->table('planillahaberes as p')
+        //                     ->join('contratos as c', 'c.idContribuyente', 'p.CedulaIdentidad')
+        //                     ->join('tplanilla as tp', 'tp.id', 'p.Tplanilla')
+        //                     ->whereRaw($request->t_planilla ? 'p.Tplanilla = '.$request->t_planilla : 1)
+        //                     ->whereYear('c.Fecha_Conclusion', $request->year)
+        //                     ->whereMonth('c.Fecha_Conclusion', $request->month)
+        //                     ->where('p.Anio', $request->year)
+        //                     ->where('p.Mes', $request->month)
+        //                     ->whereRaw('(p.idGda=1 or p.idGda=2)')
+        //                     ->select('p.*', 'p.ITEM as item', 'tp.Nombre as tipo_planilla', 'c.Fecha_Conclusion')
+        //                     ->orderBy('p.Apaterno')
+        //                     ->get();
+
+        // dd($request->year.str_pad($request->month, 2, "0", STR_PAD_LEFT));
+        $funcionarios_ingreso = Contract::with(['paymentschedules_details' => function($q){
+                                        $q->where('deleted_at', NULL);
+                                    }])
+                                    ->whereHas('paymentschedules_details.paymentschedule.period', function($q) use($request){
+                                        $q->whereRaw("name = '".$request->year.str_pad($request->month, 2, "0", STR_PAD_LEFT)."'");
+                                    })
+                                    ->whereRaw("CONCAT(YEAR(start),MONTH(start)) = '".$request->year.$request->month."'")
+                                    ->where('procedure_type_id', $request->procedure_type_id)->where('deleted_at', NULL)->get();
+        $funcionarios_egreso = Contract::with(['paymentschedules_details' => function($q){
+                                        $q->where('deleted_at', NULL);
+                                    }])
+                                    ->whereHas('paymentschedules_details.paymentschedule.period', function($q) use($request){
+                                        $q->whereRaw("name = '".$request->year.str_pad($request->month, 2, "0", STR_PAD_LEFT)."'");
+                                    })->whereRaw("CONCAT(YEAR(finish),MONTH(finish)) = '".$request->year.$request->month."'")
+                                    ->where('procedure_type_id', $request->procedure_type_id)->where('deleted_at', NULL)->get();
         if($request->print){
             return view('reports.rr_hh.contracts-history-print', compact('funcionarios_ingreso', 'funcionarios_egreso', 'year', 'month'));
         }else{
