@@ -151,7 +151,7 @@
                                     <td></td>
                                     <td>{{ $item->person->nua_cua }}</td>
                                     <td>{{ $item->person->afp_type ? $item->person->afp_type->name : 'No defeinida' }}</td>
-                                    <td>I</td>
+                                    <td>R</td>
                                     <td>{{ date('d', strtotime($item->start)).'/'.$months[intval(date('m', strtotime($item->start)))].'/'.date('Y', strtotime($item->start)) }}</td>
                                     <td>{{ $item->Dias_Trabajado }}</td>
                                     <td>

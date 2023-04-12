@@ -66,11 +66,11 @@
                                         </select>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <input type="number" name="year" class="form-control" placeholder="Año" required>
+                                        <input type="number" name="year" class="form-control" placeholder="Año">
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <select name="month" class="form-control select2" required>
-                                            {{-- <option value="">--Todos los meses--</option> --}}
+                                        <select name="month" class="form-control select2">
+                                            <option value="">--Todos los meses--</option>
                                             <option value="01">Enero</option>
                                             <option value="02">Febrero</option>
                                             <option value="03">Marzo</option>

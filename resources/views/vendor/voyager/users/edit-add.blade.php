@@ -87,7 +87,7 @@
                                 </div>
                             @endcan
 
-                            <div class="form-group">
+                            <div class="form-group" @if(Auth::user()->role_id != 1) style="display: none" @endif>
                                 <label for="direccion_administrativa_id">Dirección Administrativa</label>
                                 <select name="direccion_administrativa_id" class="form-control select2">
                                     <option value="">No definida</option>

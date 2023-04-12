@@ -120,15 +120,28 @@ class ReportsController extends Controller
                         })
                         ->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id in ".str_replace(array('[', ']'), array('(', ')'), json_encode($request->direccion_administrativa_id)) : 1)
                         ->where(function($query) use ($request){
-                            if($request->status == 'firmado'){
+                            if($request->status == 'elaborado' || $request->status == 'enviado'){
+                                $query->where('status', $request->status);
+                            }
+                            elseif($request->status == 'firmado'){
                                 $query->whereRaw($request->year ? "YEAR(start) = ".$request->year : 1)->whereRaw($request->month ? "MONTH(start) = ".intval($request->month) : 1);
                             }
                             elseif($request->status == 'concluido'){
                                 $query->whereRaw($request->year ? "YEAR(finish) = ".$request->year : 1)->whereRaw($request->month ? "MONTH(finish) = ".intval($request->month) : 1);
                             }else{
-                                $query->OrWhereHas('paymentschedules_details.paymentschedule.period', function($q) use($request){
-                                    $q->whereRaw("name = '".$request->year.$request->month."'");
-                                });
+                                if($request->year && $request->month){
+                                    $query->OrWhereHas('paymentschedules_details.paymentschedule.period', function($q) use($request){
+                                        $q->whereRaw("name = '".$request->year.$request->month."'");
+                                    });
+                                }elseif($request->year){
+                                    $query->OrWhereHas('paymentschedules_details.paymentschedule.period', function($q) use($request){
+                                        $q->whereRaw("name like '".$request->year."%'");
+                                    });
+                                }elseif($request->month){
+                                    $query->OrWhereHas('paymentschedules_details.paymentschedule.period', function($q) use($request){
+                                        $q->whereRaw("name like '%".$request->month."'");
+                                    });
+                                }
                             }
                         })
                         ->where('deleted_at', NULL)->get();
