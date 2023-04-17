@@ -9,9 +9,9 @@
                     <td><b>Dirección administrativa</b></td>
                     <td><b>Periodo</b></td>
                     <td><b>Planilla</b></td>
-                    <td colspan="2"><b>Total ganado</b></td>
-                    <td colspan="3"><b>Total aportes</b></td>
-                    <td colspan="2"><b>N&deg; de personas</b></td>
+                    <td colspan="3"><b>Total ganado</b></td>
+                    <td colspan="4"><b>Total aportes</b></td>
+                    <td colspan="3"><b>N&deg; de personas</b></td>
                 </tr>
                 <tr>
                     <td rowspan="2">
@@ -41,22 +41,28 @@
                     </td>
                     <td><b>Futuro</b></td>
                     <td><b>Previsión</b></td>
+                    <td><b>Gestora</b></td>
                     <td><b>Futuro</b></td>
                     <td><b>Previsión</b></td>
+                    <td><b>Gestora</b></td>
                     <td><b>Salud</b></td>
                     <td><b>Futuro</b></td>
                     <td><b>Previsión</b></td>
+                    <td><b>Gestora</b></td>
                 </tr>
                     <td>
                         @if (count($paymentschedules) > 0)
                             @php
                                 $total_ganado_futuro = 0;
                                 $total_ganado_prevision = 0;
+                                $total_ganado_gestora = 0;
                                 $total_aporte_futuro = 0;
                                 $total_aporte_prevision = 0;
+                                $total_aporte_gestora = 0;
                                 $total_aporte_cc = 0;
                                 $total_personas_futuro = 0;
                                 $total_personas_prevision = 0;
+                                $total_personas_gestora = 0;
 
                                 $check_payment_afp = collect();
                                 $check_payment_cc = collect();
@@ -66,14 +72,16 @@
                                 foreach($paymentschedules as $paymentschedule){
                                     $total_ganado_futuro += $paymentschedule->details->where('afp', 1)->sum('partial_salary') + $paymentschedule->details->where('afp', 1)->sum('seniority_bonus_amount');
                                     $total_ganado_prevision += $paymentschedule->details->where('afp', 2)->sum('partial_salary') + $paymentschedule->details->where('afp', 2)->sum('seniority_bonus_amount');
+                                    $total_ganado_gestora += $paymentschedule->details->where('afp', 3)->sum('partial_salary') + $paymentschedule->details->where('afp', 3)->sum('seniority_bonus_amount');
                                     $total_aporte_futuro += $paymentschedule->details->where('afp', 1)->sum('common_risk') + $paymentschedule->details->where('afp', 1)->sum('solidary_employer') + $paymentschedule->details->where('afp', 1)->sum('housing_employer') + $paymentschedule->details->where('afp', 1)->sum('labor_total');
                                     $total_aporte_prevision += $paymentschedule->details->where('afp', 2)->sum('common_risk') + $paymentschedule->details->where('afp', 2)->sum('solidary_employer') + $paymentschedule->details->where('afp', 2)->sum('housing_employer') + $paymentschedule->details->where('afp', 2)->sum('labor_total');
+                                    $total_aporte_gestora += $paymentschedule->details->where('afp', 3)->sum('common_risk') + $paymentschedule->details->where('afp', 3)->sum('solidary_employer') + $paymentschedule->details->where('afp', 3)->sum('housing_employer') + $paymentschedule->details->where('afp', 3)->sum('labor_total');
                                     $total_aporte_cc += ($paymentschedule->details->sum('partial_salary') + $paymentschedule->details->sum('seniority_bonus_amount')) *0.1;
                                     $total_personas_futuro += $paymentschedule->details->where('afp', 1)->count();
                                     $total_personas_prevision += $paymentschedule->details->where('afp', 2)->count();
+                                    $total_personas_gestora += $paymentschedule->details->where('afp', 3)->count();
 
                                     // Pagos de cheques afp
-                                    // dd($paymentschedule->check_payments);
                                     foreach ($paymentschedule->check_payments as $check_payment){
                                         if(strpos(strtolower($check_payment->beneficiary->type->name), 'salud') === false && ($check_payment->afp == $afp || !$afp)){
                                             $check_payment_afp->push([
@@ -128,6 +136,13 @@
                     </td>
                     <td>
                         @if (count($paymentschedules) > 0)
+                            {{ number_format($total_ganado_gestora, 2, ',', '.') }}
+                        @else
+                            0.00
+                        @endif
+                    </td>
+                    <td>
+                        @if (count($paymentschedules) > 0)
                             {{ number_format($total_aporte_futuro, 2, ',', '.') }}
                         @else
                             {{ $planilla->where('afp', 1)->first() ? number_format($planilla->where('afp', 1)->first()->total_ganado, 2, ',', '.') : '0.00' }}
@@ -138,6 +153,13 @@
                             {{ number_format($total_aporte_prevision, 2, ',', '.') }}
                         @else
                             {{ $planilla->where('afp', 2)->first() ? number_format($planilla->where('afp', 2)->first()->total_ganado, 2, ',', '.') : '0.00' }}
+                        @endif
+                    </td>
+                    <td>
+                        @if (count($paymentschedules) > 0)
+                            {{ number_format($total_aporte_gestora, 2, ',', '.') }}
+                        @else
+                            0.00
                         @endif
                     </td>
                     <td>
@@ -159,6 +181,13 @@
                             {{ $total_personas_prevision }}
                         @else
                             {{ $planilla->where('afp', 2)->first() ? $planilla->where('afp', 2)->first()->n_personas : 0 }}
+                        @endif
+                    </td>
+                    <td>
+                        @if (count($paymentschedules) > 0)
+                            {{ $total_personas_gestora }}
+                        @else
+                            0.00
                         @endif
                     </td>
                 </tr>

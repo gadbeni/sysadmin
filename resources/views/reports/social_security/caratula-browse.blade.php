@@ -21,7 +21,7 @@
                                     <input type="text" name="planilla" class="form-control" required>
                                 </div>
                                 <div class="form-group col-md-12">
-                                    <select name="afp" class="form-control">
+                                    <select name="afp" class="form-control select2">
                                         <option value="">Todas las AFP</option>
                                         @foreach (App\Models\Afp::where('status', 1)->where('deleted_at', NULL)->get() as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>

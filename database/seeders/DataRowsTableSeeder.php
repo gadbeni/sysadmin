@@ -3472,7 +3472,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
+                'details' => '{"validation":{"rule":"required"},"display":{"width":6}}',
                 'order' => 7,
             ),
             216 => 

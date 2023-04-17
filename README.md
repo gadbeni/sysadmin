@@ -1,8 +1,6 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+<p align="center"><a href="https://beni.gob.bo" target="_blank"><img src="https://raw.githubusercontent.com/gadbeni-dev/sysadmin/master/public/images/icon-alt.png?token=GHSAT0AAAAAACBKHXC3FFPBXBERM6VUBITGZBWYM3Q" width="400"></a></p>
 
-<!-- <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/agustinmejia/farmacia/master/public/img/icon.png" width="150"></a></p> -->
-
-# Laravel template  with Voyager
+# Sistema Integral de Administración GADBENI
 
 ## Instalación
 ```
@@ -13,8 +11,8 @@ php artisan sysadmin:install
 
 ## Colaboradores
 
-<a href="https://github.com/gadbeni/sysadmin/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=gadbeni/sysadmin" />
+<a href="https://github.com/gadbeni-dev/sysadmin/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=gadbeni-dev/sysadmin" />
 </a>
 
 <!-- Made with [contrib.rocks](https://contrib.rocks). -->

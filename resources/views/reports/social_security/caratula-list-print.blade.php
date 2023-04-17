@@ -8,11 +8,11 @@
         <tr>
             <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="120px"></td>
             <td style="text-align: right">
-                <h3 style="margin-bottom: 0px; margin-top: 5px">
-                    CARÁTULA DE PLANILLA N&deg; {{ count($paymentschedules) > 0 ? str_pad($paymentschedules[0]->id, 6, "0", STR_PAD_LEFT).($paymentschedules[0]->aditional ? '-A' : '') : $planilla_id }}<br>
+                <h2 style="margin-bottom: 0px; margin-top: 5px">
+                    CARÁTULA DE PLANILLA N&deg; {{ $planilla_id }}<br>
                     <small>DIRECCIÓN DE BIENESTAR LABORAL Y PREVISIÓN SOCIAL</small> <br>
-                    <small style="font-size: 11px; font-weight: 100">Impreso por: {{ Auth::user()->name }} <br> {{ date('d/M/Y H:i:s') }}</small>
-                </h3>
+                    <small style="font-size: 11px; font-weight: 100">Impreso por: {{ Auth::user()->name }} <br> {{ date('d/m/Y H:i') }}</small>
+                </h2>
             </td>
         </tr>
         <tr>
@@ -27,18 +27,18 @@
             <td><b>Dirección administrativa</b></td>
             <td><b>Periodo</b></td>
             <td><b>Planilla</b></td>
-            <td colspan="2"><b>Total ganado</b></td>
-            <td colspan="3"><b>Total aportes</b></td>
-            <td colspan="2"><b>N&deg; de personas</b></td>
+            <td colspan="3"><b>Total ganado</b></td>
+            <td colspan="4"><b>Total aportes</b></td>
+            <td colspan="3"><b>N&deg; de personas</b></td>
         </tr>
         <tr>
             <td rowspan="2">
                 @if (count($paymentschedules) > 0)
                     @if (str_contains(strtolower($planilla_id), '-c'))
-                    Administración Central
-                @else
-                    {{ $paymentschedules[0]->direccion_administrativa->nombre }}
-                @endif
+                        Administración Central
+                    @else
+                        {{ $paymentschedules[0]->direccion_administrativa->nombre }}
+                    @endif
                 @else
                     {{ count($planilla) > 0 ? $planilla[0]->direccion_administrativa : '' }}
                 @endif
@@ -59,22 +59,28 @@
             </td>
             <td><b>Futuro</b></td>
             <td><b>Previsión</b></td>
+            <td><b>Gestora</b></td>
             <td><b>Futuro</b></td>
             <td><b>Previsión</b></td>
+            <td><b>Gestora</b></td>
             <td><b>Salud</b></td>
             <td><b>Futuro</b></td>
             <td><b>Previsión</b></td>
+            <td><b>Gestora</b></td>
         </tr>
             <td>
                 @if (count($paymentschedules) > 0)
                     @php
                         $total_ganado_futuro = 0;
                         $total_ganado_prevision = 0;
+                        $total_ganado_gestora = 0;
                         $total_aporte_futuro = 0;
                         $total_aporte_prevision = 0;
+                        $total_aporte_gestora = 0;
                         $total_aporte_cc = 0;
                         $total_personas_futuro = 0;
                         $total_personas_prevision = 0;
+                        $total_personas_gestora = 0;
 
                         $check_payment_afp = collect();
                         $check_payment_cc = collect();
@@ -84,11 +90,14 @@
                         foreach($paymentschedules as $paymentschedule){
                             $total_ganado_futuro += $paymentschedule->details->where('afp', 1)->sum('partial_salary') + $paymentschedule->details->where('afp', 1)->sum('seniority_bonus_amount');
                             $total_ganado_prevision += $paymentschedule->details->where('afp', 2)->sum('partial_salary') + $paymentschedule->details->where('afp', 2)->sum('seniority_bonus_amount');
+                            $total_ganado_gestora += $paymentschedule->details->where('afp', 3)->sum('partial_salary') + $paymentschedule->details->where('afp', 3)->sum('seniority_bonus_amount');
                             $total_aporte_futuro += $paymentschedule->details->where('afp', 1)->sum('common_risk') + $paymentschedule->details->where('afp', 1)->sum('solidary_employer') + $paymentschedule->details->where('afp', 1)->sum('housing_employer') + $paymentschedule->details->where('afp', 1)->sum('labor_total');
                             $total_aporte_prevision += $paymentschedule->details->where('afp', 2)->sum('common_risk') + $paymentschedule->details->where('afp', 2)->sum('solidary_employer') + $paymentschedule->details->where('afp', 2)->sum('housing_employer') + $paymentschedule->details->where('afp', 2)->sum('labor_total');
+                            $total_aporte_gestora += $paymentschedule->details->where('afp', 3)->sum('common_risk') + $paymentschedule->details->where('afp', 3)->sum('solidary_employer') + $paymentschedule->details->where('afp', 3)->sum('housing_employer') + $paymentschedule->details->where('afp', 3)->sum('labor_total');
                             $total_aporte_cc += ($paymentschedule->details->sum('partial_salary') + $paymentschedule->details->sum('seniority_bonus_amount')) *0.1;
                             $total_personas_futuro += $paymentschedule->details->where('afp', 1)->count();
                             $total_personas_prevision += $paymentschedule->details->where('afp', 2)->count();
+                            $total_personas_gestora += $paymentschedule->details->where('afp', 3)->count();
 
                             // Pagos de cheques afp
                             foreach ($paymentschedule->check_payments as $check_payment){
@@ -145,6 +154,13 @@
             </td>
             <td>
                 @if (count($paymentschedules) > 0)
+                    {{ number_format($total_ganado_gestora, 2, ',', '.') }}
+                @else
+                    0.00
+                @endif
+            </td>
+            <td>
+                @if (count($paymentschedules) > 0)
                     {{ number_format($total_aporte_futuro, 2, ',', '.') }}
                 @else
                     {{ $planilla->where('afp', 1)->first() ? number_format($planilla->where('afp', 1)->first()->total_ganado, 2, ',', '.') : '0.00' }}
@@ -155,6 +171,13 @@
                     {{ number_format($total_aporte_prevision, 2, ',', '.') }}
                 @else
                     {{ $planilla->where('afp', 2)->first() ? number_format($planilla->where('afp', 2)->first()->total_ganado, 2, ',', '.') : '0.00' }}
+                @endif
+            </td>
+            <td>
+                @if (count($paymentschedules) > 0)
+                    {{ number_format($total_aporte_gestora, 2, ',', '.') }}
+                @else
+                    0.00
                 @endif
             </td>
             <td>
@@ -178,6 +201,13 @@
                     {{ $planilla->where('afp', 2)->first() ? $planilla->where('afp', 2)->first()->n_personas : 0 }}
                 @endif
             </td>
+            <td>
+                @if (count($paymentschedules) > 0)
+                    {{ $total_personas_gestora }}
+                @else
+                    0.00
+                @endif
+            </td>
         </tr>
     </table>
 
@@ -196,16 +226,21 @@
             $cont = 0;
         @endphp
         @if (count($paymentschedules) > 0)
-            @forelse ($check_payment_afp->unique() as $item)
-                @php
-                    $cont++;
-                @endphp
-                <tr>
-                    <td>{{ $cont }}</td>
-                    <td>{{ $item['number'] }}</td>
-                    <td>{{ number_format($item['amount'], 2, ',', '.') }}</td>
-                    <td>{{ $item['beneficiary'] }}</td>
-                </tr>
+            @php
+                $check_payment_afp = $check_payment_afp->groupBy('number');
+            @endphp
+            @forelse ($check_payment_afp as $check_payment)
+                @foreach ($check_payment->groupBy('beneficiary') as $item)
+                    @php
+                        $cont++;
+                    @endphp
+                    <tr>
+                        <td>{{ $cont }}</td>
+                        <td>{{ $item[0]['number'] }}</td>
+                        <td>{{ number_format($item->sum('amount'), 2, ',', '.') }}</td>
+                        <td>{{ $item[0]['beneficiary'] }}</td>
+                    </tr>
+                @endforeach
             @empty
                 <tr>
                     <td colspan="4">No hay resultados</td>
@@ -304,16 +339,21 @@
             $cont = 0;
         @endphp
         @if (count($paymentschedules) > 0)
-            @forelse ($check_payment_cc->unique() as $item)
-                @php
-                    $cont++;
-                @endphp
-                <tr>
-                    <td>{{ $cont }}</td>
-                    <td>{{ $item['number'] }}</td>
-                    <td>{{ number_format($item['amount'], 2, ',', '.') }}</td>
-                    <td>{{ $item['beneficiary'] }}</td>
-                </tr>
+            @php
+                $check_payment_cc = $check_payment_cc->groupBy('number');
+            @endphp
+            @forelse ($check_payment_cc as $check_payment)
+                @foreach ($check_payment->groupBy('beneficiary') as $item)
+                    @php
+                        $cont++;
+                    @endphp
+                    <tr>
+                        <td>{{ $cont }}</td>
+                        <td>{{ $item[0]['number'] }}</td>
+                        <td>{{ number_format($item->sum('amount'), 2, ',', '.') }}</td>
+                        <td>{{ $item[0]['beneficiary'] }}</td>
+                    </tr>
+                @endforeach
             @empty
                 <tr>
                     <td colspan="4">No hay resultados</td>
@@ -417,6 +457,15 @@
     <style>
         body{
             font-size: 11px
+        }
+        th{
+            font-size: 8px !important
+        }
+        td{
+            font-size: 9px !important
+        }
+        table, th, td {
+            border-collapse: collapse;
         }
     </style>
 @endsection
