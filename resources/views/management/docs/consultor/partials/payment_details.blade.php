@@ -103,17 +103,11 @@
                 @endphp
             @endwhile
         @endif
+    @else
+        , la segunda
     @endif
 
     @if ($meses_intermedias_cuotas)
-        @if ($meses_intermedias_cuotas == 1)
-            , la segunda
-        @else
-            , la
-            @for ($i = 2; $i <= $meses_intermedias_cuotas; $i++)
-                {{ $cardinals[$i] }}, 
-            @endfor
-        @endif
         correspondiente {{ $meses_intermedias_cuotas == 1 ? ' al mes ' : ' a los meses ' }} de 
         @php
             $cont = 1;

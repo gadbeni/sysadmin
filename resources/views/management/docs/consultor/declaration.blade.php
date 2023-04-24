@@ -27,7 +27,7 @@
             <p style="text-align: left">
                 Señor: <br>
                 {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
-                <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b> <br>
+                <b>{{ $signature ? $signature->job : 'Responsable de Proceso de Contratación de Apoyo Nacional a la Producción y Empleo - RPA' }}</b> <br>
                 Presente.–
             </p>
         </div>

@@ -52,7 +52,7 @@
             <div style="margin-top: 120px">
                 <p style="text-align: center; width: 100%; font-size: 12px">
                     {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
-                    <b>{{ $signature ? $signature->job : setting('firma-autorizada.job-alt') }}</b>
+                    <b>{{ $signature ? $signature->job : 'Responsable de Proceso de Contratación de Apoyo Nacional a la Producción y Empleo - RPA' }}</b>
                 </p>
             </div>
         </div>
