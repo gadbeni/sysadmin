@@ -158,8 +158,8 @@
                                         $seniority_bonus_percentage = 0;
                                         $seniority_bonus_amount = 0;
 
-                                        // Si el tipo de planilla es de personal funcionamiento se calcula el bono antigüedad
-                                        if($procedure_type_id == 1){
+                                        // Si el tipo de planilla es de personal funcionamiento o eventual se calcula el bono antigüedad
+                                        if($procedure_type_id == 1 || $procedure_type_id == 5){
                                             if(count($item->person->seniority_bonus) > 0){
                                                 if(date('Ym', strtotime($item->person->seniority_bonus->first()->start)) <= $period->name){
                                                     $seniority_bonus_percentage = $item->person->seniority_bonus->first()->type->percentage;

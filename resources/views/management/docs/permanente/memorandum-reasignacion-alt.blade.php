@@ -6,6 +6,8 @@
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
     $code = $contract->code;
     $signature = null;
+
+    $previus_job = App\Models\ContractsJob::where('contract_id', $contract->id)->where('deleted_at', NULL)->orderBy('id', 'DESC')->first();
 @endphp
 
 @section('qr_code')
@@ -31,7 +33,7 @@
                             <option @if($item->name == $contract->direccion_administrativa->city->name) selected @endif value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>
                             @endforeach
                         </select>
-                        <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}
+                        <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($previus_job->date)) }} de {{ $months[intval(date('m', strtotime($previus_job->date)))] }} de {{ date('Y', strtotime($previus_job->date)) }}
                     </p>
                 </div>
                 <div class="border-left">
@@ -44,14 +46,15 @@
             <br>
             <p style="text-align: center"><u><b>REASIGNACIÓN DE CARGO</b></u></p>
             <p>
-                Mediante el presente comunico a Usted que, a partir de la fecha, es {{ $contract->person->gender == 'masculino' ? 'designado' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->job->name) }}</b>, bajo la dependincia de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b> con el nivel salarial <b>{{ $contract->job->level }}</b> de <b>PERSONAL PERMANENTE</b>.
+                Mediante la presente, habiéndose designado mediante Memorándum <b>GAD-BENI DRRHH N° {{ $contract->code }}</b> que le fue asignado el {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}, para que desempeñe el cargo de <b>{{ Str::upper($previus_job->previus_name) }}</b>, con el Ítem N&deg; {{ $contract->job->item }} y nivel salarial {{ $contract->job->level }} de la escala salarial.
             </p>
             <p>
-                De acuerdo a normas vigentes deberá recibir bajo inventario del Responsable de Registro y Control de Bienes Públicos los activos que serán asignados a su persona.
+                Que en cumplimiento a la escala <b>APROBADA</b> mediante <b>RESOLUCION DE ASAMBLEA N° 131/2022-2023 del 28 de febrero del 2023</b>,  Comunico a usted que a partir del {{ date('d', strtotime($previus_job->date)) }} de {{ $months[intval(date('m', strtotime($previus_job->date)))] }} de {{ date('Y', strtotime($previus_job->date)) }} ha sido designado como <b>{{ Str::upper($contract->job->name) }}</b>, con el Ítem N&deg; {{ $contract->job->item }} y nivel salarial {{ $contract->job->level }} de nuestra escala salarial en vigencia, y con el haber mensual de <b>Bs. {{ NumerosEnLetras::convertir($contract->job->salary, 'Bolivianos', true) }}</b>, bajo dependencia de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b>.
             </p>
             <p>
-                Deseándole éxito en sus funciones y responsabilidades que devengan de la prestación de sus servicios, de conformidad del art. 28 de la ley Nº 1178 y esperando contar con su valioso aporte y participación en el logro de los objetivos del <b>Gobierno Autónomo Departamental del Beni</b>, saludo a usted.
+                Asimismo, en cumplimiento a normativa R/CE/17 se le recuerda que debe realizar la correspondiente actualización de su cargo al momento de realizar la actualización de su declaración jurada de bienes y rentas, en el mes de su cumpleaños, cuya copia deberá ser presentada a la Dirección Departamental de Recursos Humanos del Gobierno Departamental del Beni.
             </p>
+            <p>Sin otro particular motivo, saludo a usted atentamente.</p>
         </div>
     </div>
 @endsection

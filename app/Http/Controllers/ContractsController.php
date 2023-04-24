@@ -54,7 +54,7 @@ class ContractsController extends Controller
         $user_id = request('user_id') ?? null;
         $direccion_administrativa_id = request('direccion_administrativa_id') ?? null;
         $paginate = request('paginate') ?? 10;
-        $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa.tipo', 'type', 'transfers'])
+        $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa.tipo', 'type', 'transfers', 'jobs'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
                     ->where(function($query) use ($search){
                         if($search){

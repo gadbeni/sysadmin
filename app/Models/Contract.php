@@ -112,6 +112,10 @@ class Contract extends Model
     }
 
     public function transfers(){
-        return $this->hasMany(ContractsTransfer::class, 'contract_id');
+        return $this->hasMany(ContractsTransfer::class);
+    }
+
+    public function jobs(){
+        return $this->hasMany(ContractsJob::class);
     }
 }

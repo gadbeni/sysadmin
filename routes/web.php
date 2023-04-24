@@ -25,6 +25,7 @@ use App\Http\Controllers\MemosTypesController;
 use App\Http\Controllers\TcInboxController;
 use App\Http\Controllers\TcOutboxController;
 use App\Http\Controllers\TcController;
+use App\Http\Controllers\SeniorityBonusPeopleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -233,6 +234,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('contracts/direccion-administrativa/{id}', [ContractsController::class, 'contracts_direccion_administrativa']);
     Route::get('contracts/{id}/print/{document}', [ContractsController::class, 'print'])->name('contracts.print');
     
+    // Bonos antigüedad
+    Route::get('seniority-bonus-people', [SeniorityBonusPeopleController::class, 'index'])->name('voyager.seniority-bonus-people.index');
 
     // Finanzas
 

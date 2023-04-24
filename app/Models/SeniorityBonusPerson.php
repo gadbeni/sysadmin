@@ -18,4 +18,12 @@ class SeniorityBonusPerson extends Model
     public function type(){
         return $this->belongsTo(SeniorityBonusType::class, 'seniority_bonus_type_id');
     }
+
+    public function person(){
+        return $this->belongsTo(Person::class, 'person_id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

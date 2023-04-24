@@ -105,7 +105,7 @@
                     @endphp
                     <b>AFP: </b> {{ $afp_type->name }} <br>
                     <b>NUA/CUA: </b> {{ $planilla ? $planilla->Num_Nua : $payment->paymentschedulesdetail->contract->person->nua_cua }} <br>
-                    <b>MODALIDAD DE CONTRATACIÓN: </b> {{ Str::upper($planilla ? $planilla->tipo_planilla : $payment->paymentschedulesdetail->paymentschedule->procedure_type->name) }}
+                    {{-- <b>MODALIDAD DE CONTRATACIÓN: </b> {{ Str::upper($planilla ? $planilla->tipo_planilla : $payment->paymentschedulesdetail->paymentschedule->procedure_type->name) }} --}}
                 </td>
                 <td valign="top">
                     <b>PERIODO: </b> {{ $months[intval($planilla ? $planilla->Mes : $month)] }} de {{ $planilla ? $planilla->Anio : $year }} <br>

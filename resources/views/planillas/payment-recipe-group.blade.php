@@ -112,7 +112,7 @@
                         <b>CARGO: </b> {{ $item->contract->cargo ? $item->contract->cargo->Descripcion : $item->contract->job->name }} <br>
                         <b>AFP: </b> {{ $item->afp_type->name }} <br>
                         <b>NUA/CUA: </b> {{ $item->contract->person->nua_cua }} <br>
-                        <b>MODALIDAD DE CONTRATACIÓN: </b> {{ Str::upper($item->paymentschedule->procedure_type->name) }}
+                        {{-- <b>MODALIDAD DE CONTRATACIÓN: </b> {{ Str::upper($item->paymentschedule->procedure_type->name) }} --}}
                     </td>
                     <td valign="top">
                         <b>PERIODO: </b> {{ $months[intval($month)] }} de {{ $year }} <br>
