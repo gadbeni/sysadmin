@@ -14,8 +14,8 @@
                             </h1>
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
-                            @if(auth()->user()->hasPermission('add_paymentschedules'))
-                                <a href="{{ route('paymentschedules.create') }}" class="btn btn-success">
+                            @if(auth()->user()->hasPermission('add_seniority_bonus_people'))
+                                <a href="{{ route('voyager.seniority-bonus-people.create') }}" class="btn btn-success">
                                     <i class="voyager-plus"></i> <span>Crear</span>
                                 </a>
                             @endif

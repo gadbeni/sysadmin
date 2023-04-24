@@ -50,6 +50,11 @@ if (! function_exists('contract_duration_calculate')) {
         //     $count_days--;
         // }
 
+        if($count_days >= 30){
+            $count_months++;
+            $count_days -= 30;
+        }
+
         return json_decode(json_encode(['months' => $count_months, 'days' => $count_days]));
     }
 }

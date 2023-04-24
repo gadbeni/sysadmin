@@ -12,10 +12,14 @@ class Addendum extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'contract_id', 'code', 'signature_id', 'start', 'finish', 'details_payments', 'observations', 'status'
+        'contract_id', 'code', 'signature_id', 'applicant_id', 'nci_date', 'nci_code', 'certification_date', 'certification_code', 'start', 'finish', 'observations', 'status'
     ];
 
     public function signature(){
         return $this->belongsTo(Signature::class, 'signature_id');
+    }
+
+    public function applicant(){
+        return $this->belongsTo(Contract::class, 'applicant_id');
     }
 }

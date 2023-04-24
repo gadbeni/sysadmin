@@ -131,7 +131,7 @@
             <div>
                 <p><b>3. MONTO Y FORMA DE PAGO</b></p>
 
-                @include('management.docs.consultor.partials.payment_details', ['contract' => $contract])
+                @include('management.docs.consultor.partials.payment_details', ['contract' => $contract, 'contract_start' => $contract->start, 'contract_finish' => $contract->finish])
 
                 {{-- {!! $contract->details_report !!} --}}
 

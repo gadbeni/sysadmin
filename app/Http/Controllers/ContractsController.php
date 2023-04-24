@@ -454,7 +454,11 @@ class ContractsController extends Controller
                 'code' => str_pad($count_addendum.'/'.date('Y', strtotime($request->start)), 8, "0", STR_PAD_LEFT),
                 'start' => $request->start,
                 'finish' => $request->finish,
-                'details_payments' => $request->details_payments
+                'applicant_id' => $request->applicant_id,
+                'nci_date' => $request->nci_date,
+                'nci_code' => $request->nci_code,
+                'certification_date' => $request->certification_date,
+                'certification_code' => $request->certification_code
             ]);
 
             DB::commit();
@@ -494,7 +498,6 @@ class ContractsController extends Controller
             $addendum = Addendum::find($request->id);
             $addendum->signature_id = $request->signature_id ?? NULL;
             $addendum->finish = $request->finish;
-            $addendum->details_payments = $request->details_payments;
             $addendum->status = $request->finish >= date('Y-m-d') ? 'elaborado' : 'concluido';
             $addendum->update();
 

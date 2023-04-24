@@ -7,10 +7,10 @@
         $salary = $contract->job->salary;
     }
 
-    $contract_duration = contract_duration_calculate($contract->start, $contract->finish);
+    $contract_duration = contract_duration_calculate($contract_start, $contract_finish);
     $amount_total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
-    $start = Carbon\Carbon::createFromFormat('Y-m-d', $contract->start);
-    $finish = Carbon\Carbon::createFromFormat('Y-m-d', $contract->finish);
+    $start = Carbon\Carbon::createFromFormat('Y-m-d', $contract_start);
+    $finish = Carbon\Carbon::createFromFormat('Y-m-d', $contract_finish);
     $dias_primera_cuota = 0;
     $meses_intermedias_cuotas = 0;
     $dias_ultima_cuota = 0;
@@ -71,14 +71,12 @@
     if($dias_ultima_cuota){
         $cantidad_cuotas++;
     }
-
-    // dd($contract->start, $contract->finish, $dias_primera_cuota, $meses_intermedias_cuotas, $dias_ultima_cuota);
 @endphp
 
 <p>
     El monto total a cancelar será de Bs.- <b>{{ NumerosEnLetras::convertir(number_format($amount_total, 2, '.', ''), 'Bolivianos', true) }}</b>, mismo que serán cancelados en {{ Str::lower(NumerosEnLetras::convertir($cantidad_cuotas)) }} ({{ $cantidad_cuotas }}) cuotas mensuales: 
     @if ($dias_primera_cuota)
-        la primera correspondiente a {{ Str::lower(NumerosEnLetras::convertir($dias_primera_cuota)) }} ({{ $dias_primera_cuota }}) días del mes de {{ $months[intval(date('m', strtotime($contract->start)))] }} por <b>Bs.- {{ NumerosEnLetras::convertir(number_format(($salary /30) *$dias_primera_cuota, 2, '.', ''), 'Bolivianos', true) }}</b>
+        la primera correspondiente a {{ Str::lower(NumerosEnLetras::convertir($dias_primera_cuota)) }} ({{ $dias_primera_cuota }}) días del mes de {{ $months[intval(date('m', strtotime($contract_start)))] }} por <b>Bs.- {{ NumerosEnLetras::convertir(number_format(($salary /30) *$dias_primera_cuota, 2, '.', ''), 'Bolivianos', true) }}</b>
     @endif
 
     @php
@@ -87,7 +85,7 @@
 
     @if ($meses_intermedias_cuotas > 1)
         @if (!$dias_primera_cuota && $meses_intermedias_cuotas)
-            , la 
+            la 
             @while ($cont <= $meses_intermedias_cuotas)
                 {{ $cardinals[$cont].($cont == $meses_intermedias_cuotas ? '' : ($cont == $meses_intermedias_cuotas -1 ? ' y ' : ', ')) }} 
                 @php
@@ -111,7 +109,7 @@
         correspondiente {{ $meses_intermedias_cuotas == 1 ? ' al mes ' : ' a los meses ' }} de 
         @php
             $cont = 1;
-            $start = Carbon\Carbon::createFromFormat('Y-m-d', $contract->start);
+            $start = Carbon\Carbon::createFromFormat('Y-m-d', $contract_start);
             if($dias_primera_cuota){
                 $mes_inicio = intval($start->addMonths(1)->format('m'));
             }else{
@@ -129,7 +127,7 @@
     @endif
 
     @if ($dias_ultima_cuota)
-        , la {{ $cardinals[$cantidad_cuotas] }} correspondiente a {{ Str::lower(NumerosEnLetras::convertir($dias_ultima_cuota)) }} ({{ $dias_ultima_cuota }}) días del mes de {{ $months[intval(date('m', strtotime($contract->finish)))] }} por <b>Bs.- {{ NumerosEnLetras::convertir(number_format(($salary /30) *$dias_ultima_cuota, 2, '.', ''), 'Bolivianos', true) }}</b>
+        , la {{ $cardinals[$cantidad_cuotas] }} correspondiente a {{ Str::lower(NumerosEnLetras::convertir($dias_ultima_cuota)) }} ({{ $dias_ultima_cuota }}) días del mes de {{ $months[intval(date('m', strtotime($contract_finish)))] }} por <b>Bs.- {{ NumerosEnLetras::convertir(number_format(($salary /30) *$dias_ultima_cuota, 2, '.', ''), 'Bolivianos', true) }}</b>
     @endif
     .
 </p>

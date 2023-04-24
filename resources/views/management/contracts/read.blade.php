@@ -424,9 +424,6 @@
                                 <input type="date" name="finish" class="form-control" required>
                             </div>
                             <div class="form-group col-md-12">
-                                <textarea class="form-control richTextBox" name="details_payments"></textarea>
-                            </div>
-                            <div class="form-group col-md-12">
                                 <label for="signature_id">Firma autorizada</label>
                                 <select name="signature_id" class="form-control select2">
                                     <option value="">Secretario(a) de Administración y Finanzas</option>
@@ -466,7 +463,6 @@
                 $('#form-addendum input[name="id"]').val(item.id);
                 $('#form-addendum input[name="start"]').val(item.start);
                 $('#form-addendum input[name="finish"]').val(item.finish);
-                $('.richTextBox').val(item.details_payments);
                 $.extend({selector: '.richTextBox'}, {})
                 tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
                 $('#form-addendum select[name="signature_id"]').val(item.signature_id).trigger('change');

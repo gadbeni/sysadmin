@@ -147,12 +147,12 @@
                                     @if ($item->status == 'firmado' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('transfer_contracts'))
                                     <li><a href="#" class="btn-transfer" data-toggle="modal" data-target="#transfer-modal" data-id="{{ $item->id }}" title="Crear transferencia" >Transferir</a></li>
                                     @endif
-                                    @if (auth()->user()->hasPermission('add_addendum_contracts') && $item->status == 'concluido' && count($contracts) == 0 && $item->procedure_type_id == 2 && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
+                                    @if (auth()->user()->hasPermission('add_addendum_contracts') && $item->status == 'concluido' && count($contracts) == 0 && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5) && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
                                     <li><a class="btn-addendum" title="Crear adenda" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' href="#">Crear adenda</a></li>
                                     @endif
 
                                     @if (count($addendums) > 0)
-                                        @if ($item->status == 'concluido' && $addendums->first()->status == 'elaborado' && $item->procedure_type_id == 2)
+                                        @if ($item->status == 'concluido' && $addendums->first()->status == 'elaborado' && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5))
                                         <li><a class="btn-addendum-status" title="Firmar adenda" data-toggle="modal" data-target="#addendum-status-modal" data-id="{{ $addendums->first()->id }}" href="#">Firmar adenda</a></li>
                                         @endif
                                     @endif
@@ -216,6 +216,13 @@
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract']) }}" target="_blank">Contrato</a></li>
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.contract-inamovible']) }}" target="_blank">Contrato inamovible</a></li>
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.memorandum-designacion']) }}" target="_blank">Memorandum</a></li>
+                                                @endif
+
+                                                {{-- Si hay una adenda firmada --}}
+                                                @if (count($addendums) > 0)
+                                                    @if ($addendums->first()->status == 'firmado')
+                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.addendum']).(count($addendums) == 1 ? '?type=first' : '') }}" target="_blank">Adenda</a></li>
+                                                    @endif
                                                 @endif
 
                                                 @break
@@ -438,9 +445,29 @@
                             <input type="date" name="finish" class="form-control" required>
                         </div>
                         <div class="form-group col-md-12">
-                            <textarea class="form-control richTextBox" name="details_payments">
-                                <p><strong><em>MONTO. - </em></strong><em>El monto total del presente contrato modificatorio ser&aacute; por la suma de </em><strong><em>Bs.- </em></strong><strong><em>13.500,00</em></strong><strong><em>.-</em></strong><em> (</em><em>Trece Mil Quinientos 00</em><em>/100 Bolivianos), el pago de esta consultor&iacute;a ser&aacute; de la siguiente manera: En </em><em>cuatro</em><em> (</em><em>04</em><em>) cuotas mensuales, la primera cuota correspondiente a </em><em>12 d&iacute;as</em><em> del mes de </em><em>julio</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>1.800,00.</em></strong><strong><em>- </em></strong><em>(</em><em>Un Mil Ochocientos 00</em><em>/100 Bolivianos), la segunda </em><em>y tercer</em><em> cuota correspondiente a </em><em>los meses de agosto y septiembre</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>4.500,00</em></strong><em>.-(Cuatro Mil Quinientos 00</em><em>/100 Bolivianos), la </em><em>cuarta</em><em> y &uacute;ltima cuota correspondiente a </em><em>18 d&iacute;as</em><em> del mes de </em><em>octubre</em><em> por un monto de </em><strong><em>Bs. </em></strong><strong><em>2.700,00</em></strong><em>.- (Dos Mil Setecientos 00</em><em>/100 Bolivianos). La cancelaci&oacute;n del servicio prestado se realizar&aacute; previa presentaci&oacute;n y aprobaci&oacute;n de informe de actividades de acuerdo a T&eacute;rminos de Referencia, aprobado por el Secretario Departamental de </em><em>Desarrollo Productivo y Econom&iacute;a Plural</em><em> del GAD-BENI.</em></p>
-                            </textarea>
+                            <label for="applicant_id">Solicitante</label>
+                            <select name="applicant_id" id="select-applicant_id" class="form-control">
+                                <option value="">--Seleccione una opción--</option>
+                                @foreach (App\Models\Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get() as $item)
+                                <option value="{{ $item->id }}">{{ $item->person->first_name }} {{ $item->person->last_name }} - {{ $item->cargo_id ? $item->cargo->Descripcion : $item->job->name }}</option>                                                
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="nci_code">NCI</label>
+                            <input type="text" name="nci_code" class="form-control" >
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="nci_date">Fecha de NCI</label>
+                            <input type="date" name="nci_date" class="form-control" >
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="finish">Certificación presupuestaria</label>
+                            <input type="text" name="certification_code" class="form-control" >
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="finish">Fecha de certificación presupuestaria</label>
+                            <input type="date" name="certification_date" class="form-control" >
                         </div>
                         <div class="form-group col-md-12">
                             <label for="signature_id">Firma autorizada</label>
@@ -480,8 +507,6 @@
                     <div class="col-md-12">
                         <p><b>Duración</b></p>
                         <p id="label-date-addendum"></p>
-                        <p><b>Forma de pago</b></p>
-                        <p id="label-details_payments-addendum"></p>
                         <p id="label-status-addendum"></p>
                     </div>
                 </div>
@@ -577,6 +602,7 @@
     $(document).ready(function(){
 
         $('#select-job_id').select2();
+        $('#select-applicant_id').select2();
 
         $.extend({selector: '.richTextBox'}, {})
         tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
@@ -618,6 +644,7 @@
         $('.btn-addendum').click(function(){
             let item = $(this).data('item');
             let date = moment(item.finish, "YYYY-MM-DD").add(1, 'days');
+            console.log(date.format("YYYY-MM-DD"))
             $('#form-addendum input[name="id"]').val(item.id);
             $('#form-addendum input[name="start"]').val(date.format("YYYY-MM-DD"));
             $('#form-addendum input[name="finish"]').attr('min', date.format("YYYY-MM-DD"));
@@ -627,7 +654,6 @@
         $('.label-addendum').click(function(){
             let item = $(this).data('item');
             $('#label-date-addendum').html(`Inicio desde el ${moment(item.start).format('DD [de] MMMM [de] YYYY')} hasta el ${moment(item.finish).format('DD [de] MMMM [de] YYYY')}.`);
-            $('#label-details_payments-addendum').html(`${item.details_payments}`);
             let style, label;
             if (item.status == 'elaborado') {
                 style = 'dark';
