@@ -328,25 +328,6 @@
             $('#form-transfer input[name="contract_id"]').val(id);
         });
 
-        $('.form-submit').submit(function(e){
-            $('#status-modal').modal('hide');
-            $('#addendum-modal').modal('hide');
-            $('#addendum-status-modal').modal('hide');
-            $('#ratificate-modal').modal('hide');
-            $('#transfer-modal').modal('hide');
-            e.preventDefault();
-            $('#div-results').loading({message: 'Cargando...'});
-            $.post($(this).attr('action'), $(this).serialize(), function(res){
-                if(res.message){
-                    toastr.success(res.message);
-                    list(page);
-                }else{
-                    toastr.error(res.error);
-                    $('#div-results').loading('toggle');
-                }
-            });
-        });
-
         // Crear adenda
         $('.btn-addendum').click(function(){
             let item = $(this).data('item');
@@ -392,51 +373,6 @@
         $('.btn-addendum-status').click(function(){
             let id = $(this).data('id');
             $('#addendum-status-form input[name="id"]').val(id);
-        });
-
-        $('#form-finish').submit(function(e){
-            $('#finish-modal').modal('hide');
-            e.preventDefault();
-            $('#div-results').loading({message: 'Cargando...'});
-            $.post($(this).attr('action'), $(this).serialize(), function(res){
-                if(res.message){
-                    toastr.success(res.message);
-                    list(page);
-                }else{
-                    toastr.error(res.error);
-                    $('#div-results').loading('toggle');
-                }
-            });
-        });
-
-        $('#downgrade-form').submit(function(e){
-            $('#downgrade-modal').modal('hide');
-            e.preventDefault();
-            $('#div-results').loading({message: 'Cargando...'});
-            $.post($(this).attr('action'), $(this).serialize(), function(res){
-                if(res.message){
-                    toastr.success(res.message);
-                    list(page);
-                }else{
-                    toastr.error(res.error);
-                    $('#div-results').loading('toggle');
-                }
-            });
-        });
-
-        $('#delete_form_alt').submit(function(e){
-            $('#delete-modal-alt').modal('hide');
-            e.preventDefault();
-            $('#div-results').loading({message: 'Cargando...'});
-            $.post($(this).attr('action'), $(this).serialize(), function(res){
-                if(res.message){
-                    toastr.success(res.message);
-                    list(page);
-                }else{
-                    toastr.error(res.error);
-                    $('#div-results').loading('toggle');
-                }
-            });
         });
     });
 </script>
