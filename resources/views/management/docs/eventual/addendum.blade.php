@@ -15,6 +15,8 @@
 
     // Solo en caso de adendas firma el director de finanzas
     $signature = $addendums->first()->signature;
+
+    $finish_contract_date = date('Y-m-d', strtotime($addendums->first()->start.' -1 days'));
 @endphp
 
 @section('content')
@@ -30,7 +32,7 @@
                 <tr>
                     <td style="width: 30px">1.1</td>
                     <td style="text-align: justify">
-                        En fecha <b>{{ date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)) }}</b> el <b>GAD BENI</b> y {{ $contract->person->gender == 'masculino' ? 'el Señor' : 'la Señora' }} <strong> {{ $contract->person->first_name }} {{ $contract->person->last_name }}</strong>, suscriben un Contrato de Prestación de Servicio de Personal Eventual, consignado con el contrato <b>CONTRATO DE PERSONAL EVENTUAL N&deg; {{ $code }}</b> para el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b>, con una vigencia desde el <b>{{ date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)) }}</b> al <b>{{ date('d', strtotime($contract->finish)).' de '.$months[intval(date('m', strtotime($contract->finish)))].' de '.date('Y', strtotime($contract->finish)) }}</b>.
+                        En fecha <b>{{ date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)) }}</b> el <b>GAD BENI</b> y {{ $contract->person->gender == 'masculino' ? 'el Señor' : 'la Señora' }} <strong> {{ $contract->person->first_name }} {{ $contract->person->last_name }}</strong>, suscriben un Contrato de Prestación de Servicio de Personal Eventual, consignado con el contrato <b>CONTRATO DE PERSONAL EVENTUAL N&deg; {{ $code }}</b> para el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b>, con una vigencia desde el <b>{{ date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)) }}</b> al <b>{{ date('d', strtotime($finish_contract_date)).' de '.$months[intval(date('m', strtotime($finish_contract_date)))].' de '.date('Y', strtotime($finish_contract_date)) }}</b>.
                     </td>
                 </tr>
                 <tr>
@@ -71,9 +73,6 @@
         <p><b><i>*Dice:</i></b></p>
         <p style="margin-left: 50px"><b><i>CLAUSULA OCTAVA. - (DURACIÓN Y CARÁCTER DEFINIDO):</i></b></p>
         <p style="margin-left: 50px">
-            @php
-                $finish_contract_date = date('Y-m-d', strtotime($addendums->first()->start.' -1 days'));
-            @endphp
             <i>
                 En el marco legal citado en antecedentes, el presente contrato tendrá calidad de CONTRATO DE PERSONAL EVENTUAL, computable a partir del <b>{{ date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)) }}</b> al <b>{{ date('d', strtotime($finish_contract_date)).' de '.$months[intval(date('m', strtotime($finish_contract_date)))].' de '.date('Y', strtotime($finish_contract_date)) }}</b>.
             </i>
