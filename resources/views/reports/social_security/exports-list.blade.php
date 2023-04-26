@@ -256,7 +256,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    @else
+                    @elseif($afp == 2)
                         <table id="dataTable" class="table table-bordered">
                             <thead>
                                 <tr>
@@ -370,6 +370,109 @@
                                             @endphp
                                             <td class="text-right">{{ $type }}</td>
                                             <td></td>
+                                            @php
+                                                $cont++;
+                                            @endphp
+                                        </tr> 
+                                    @endforeach
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @elseif($afp == 3)
+                        <table id="dataTable" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>N&deg;</th>
+                                    <th>TIPO DOCUMENTO (I/E)</th>
+                                    <th>N&deg; DE DOCUMENTO</th>
+                                    <th>COMPLEMENTO CI</th>
+                                    <th>CUA</th>
+                                    <th>APELLIDO PATERNO</th>
+                                    <th>APELLIDO MATERNO</th>
+                                    <th>APELLIDO DE CASADA</th>
+                                    <th>PRIMER NOMBRE</th>
+                                    <th>SEGUNDO NOMBRE</th>
+                                    <th>TIPO DE NOVEDAD (I/R/L/S)</th>
+                                    <th>FECHA DE NOVEDAD</th>
+                                    <th>DÍAS COTIZADOS</th>
+                                    <th>TIPO DE ASEGURADO (MINERO-M,ESTACIONAL-E,CONSULTOR DE LÍNEA-CL)</th>
+                                    <th>TOTAL GANADO</th>
+                                    <th>COTIZACIÓN ADICIONAL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $cont = 1;
+                                    if($group_by == 1){
+                                        $data = $data->details->groupBy('contract.program_id');
+                                        $data = $data->map(function($item, $key){
+                                            $program = \App\Models\Program::find($key);
+                                            return [
+                                                'id' => $program->id,
+                                                'programatic_category' => $program->programatic_category,
+                                                'name' => $program->name,
+                                                'direccion_administrativa' =>$program->direccion_administrativa->nombre,
+                                                'details' => $item
+                                            ];
+                                        });
+                                        $data = $data->sortBy('order');
+                                    }elseif($group_by == 2){
+                                        $data = $data->details->groupBy('paymentschedule.direccion_administrativa_id');
+                                        $data = $data->map(function($item, $key){
+                                            $da = \App\Models\Direccion::where('id', $key)->first();
+                                            return [
+                                                'id' => $da->id,
+                                                'name' => $da->nombre,
+                                                'order' => $da->orden,
+                                                'details' => $item
+                                            ];
+                                        });
+                                        $data = $data->sortBy('order');
+                                    }else{
+                                        $data = ['' => $data->details];
+                                    }
+                                    // dd($data);
+                                @endphp
+                                @foreach ($data as $value)
+                                    @if ($group_by)
+                                        <tr>
+                                            <td colspan="23"><b>{{ $value['name'] }}</b></td>
+                                        </tr>
+                                    @endif
+                                    @foreach($value['details']->groupBy('contract.person.ci') as $item)
+                                        <tr>
+                                            <td>{{ $cont }}</td>
+                                            <td>I</td>
+                                            <td>{{ $item[0]->contract->person->ci }}</td>
+                                            <td>{{ count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '' }}</td>
+                                            <td>{{ $item[0]->contract->person->nua_cua }}</td>
+                                            <td>{{ explode(' ', $item[0]->contract->person->last_name)[0] }}</td>
+                                            <td>{{ count(explode(' ', $item[0]->contract->person->last_name)) > 1 ? explode(' ', $item[0]->contract->person->last_name)[1] : '' }}</td>
+                                            <td></td>
+                                            <td>{{ explode(' ', $item[0]->contract->person->first_name)[0] }}</td>
+                                            <td>{{ count(explode(' ', $item[0]->contract->person->first_name)) > 1 ? explode(' ', $item[0]->contract->person->first_name)[1] : '' }}</td>
+                                            @php
+                                                $novelty = '';
+                                                $novelty_date = '';
+                                                if(date('Ym', strtotime($item[0]->contract->start)) == $item[0]->paymentschedule->period->name){
+                                                    $novelty = 'I';
+                                                    $novelty_date = date('Ymd', strtotime($item[0]->contract->start));
+                                                }
+                                                if(date('Ym', strtotime($item[0]->contract->finish)) == $item[0]->paymentschedule->period->name){
+                                                    $novelty = 'R';
+                                                    $novelty_date = date('Ymd', strtotime($item[0]->contract->finish));
+                                                }
+                                            @endphp
+                                            <td>{{ $novelty }}</td>
+                                            <td>{{ $novelty_date }}</td>
+                                            @php
+                                                $worked_days = $item->sum('worked_days');
+                                                $total_amount = $item->sum('partial_salary') + $item->sum('seniority_bonus_amount');
+                                            @endphp
+                                            <td class="text-right">{{ $worked_days }}</td>
+                                            <td class="text-right">D</td>
+                                            <td class="text-right">{{ number_format($total_amount, 2, ',', '.') }}</td>
+                                            <td>0,00</td>
                                             @php
                                                 $cont++;
                                             @endphp

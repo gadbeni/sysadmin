@@ -96,7 +96,7 @@
                     <input type="hidden" name="id">
                     <input type="hidden" name="redirect" value="1">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <input type="submit" class="btn btn-danger delete-confirm" value="Cancelar">
+                    <input type="submit" class="btn btn-danger delete-confirm" value="Eliminar">
                 </div>
             </div>
         </div>

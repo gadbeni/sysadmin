@@ -41,8 +41,9 @@
                                         <th>ID</th>
                                         <th>Periodo</th>
                                         <th>Persona</th>
+                                        <th>Planilla</th>
                                         <th>Inicio</th>
-                                        <th>Observaciones</th>
+                                        {{-- <th>Observaciones</th> --}}
                                         <th>Estado</th>
                                         <th>Registrado</th>
                                         <th>Acciones</th>
@@ -55,13 +56,16 @@
                                             <td>{{ $item->type->description }}</td>
                                             <td>
                                                 {{ $item->person->first_name }} {{ $item->person->last_name }} <br>
+                                                <small><b>{{ $item->person->ci }}</b></small> <br>
+                                            </td>
+                                            <td>
                                                 @php
                                                     $contract = $item->person->contracts->count() > 0 ? $item->person->contracts[0] : null
                                                 @endphp
-                                                <small><b>{{ $contract ? $contract->type->name : 'Sin contrato vigente' }}</b></small>
+                                                {{ $contract ? $contract->type->name : 'Sin contrato vigente' }}
                                             </td>
                                             <td>{{ date('d/m/Y', strtotime($item->start)) }}</td>
-                                            <td>{{ $item->observations }}</td>
+                                            {{-- <td>{{ $item->observations }}</td> --}}
                                             <td>
                                                 <label class="badge badge-{{ $item->status ? 'success' : 'danger' }}">{{ $item->status ? 'Activo' : 'Inactivo' }}</label>
                                             </td>

@@ -103,7 +103,7 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
                     $cont++;
                 }
             }
-        }else{
+        }elseif($this->type == 2){
 
             if($this->group_by == 1){
                 $data = $this->data->details->groupBy('contract.program_id');
@@ -169,21 +169,89 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
                     }
 
                     array_push($datos, [
-                        'B' => 'CI',
-                        'C' => $item[0]->contract->person->ci,
-                        'D' => count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '',
-                        'E' => $item[0]->contract->person->nua_cua,
-                        'F' => explode(' ', $item[0]->contract->person->last_name)[0],
-                        'G' => count(explode(' ', $item[0]->contract->person->last_name)) > 1 ? explode(' ', $item[0]->contract->person->last_name)[1] : '',
-                        'H' => '',
-                        'I' => explode(' ', $item[0]->contract->person->first_name)[0],
-                        'J' => count(explode(' ', $item[0]->contract->person->first_name)) > 1 ? explode(' ', $item[0]->contract->person->first_name)[1] : '',
-                        'K' => $novelty,
-                        'L' => $novelty_date ? $novelty_date : '',
-                        'M' => $worked_days,
+                        'A' => 'CI',
+                        'B' => $item[0]->contract->person->ci,
+                        'C' => count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '',
+                        'D' => $item[0]->contract->person->nua_cua,
+                        'E' => explode(' ', $item[0]->contract->person->last_name)[0],
+                        'F' => count(explode(' ', $item[0]->contract->person->last_name)) > 1 ? explode(' ', $item[0]->contract->person->last_name)[1] : '',
+                        'G' => '',
+                        'H' => explode(' ', $item[0]->contract->person->first_name)[0],
+                        'I' => count(explode(' ', $item[0]->contract->person->first_name)) > 1 ? explode(' ', $item[0]->contract->person->first_name)[1] : '',
+                        'J' => $novelty,
+                        'K' => $novelty_date ? $novelty_date : '',
+                        'L' => $worked_days,
+                        'M' => $total_amount,
+                        'N' => $type,
+                        'O' => '',
+                    ]);
+                    $cont++;
+                }
+            }
+        }elseif($this->type == 3){
+
+            if($this->group_by == 1){
+                $data = $this->data->details->groupBy('contract.program_id');
+                $data = $data->map(function($item, $key){
+                    $program = \App\Models\Program::find($key);
+                    return [
+                        'id' => $program->id,
+                        'programatic_category' => $program->programatic_category,
+                        'name' => $program->name,
+                        'direccion_administrativa' =>$program->direccion_administrativa->nombre,
+                        'details' => $item
+                    ];
+                });
+                $data = $data->sortBy('order');
+            }elseif($this->group_by == 2){
+                $data = $this->data->details->groupBy('paymentschedule.direccion_administrativa_id');
+                $data = $data->map(function($item, $key){
+                    $da = \App\Models\Direccion::where('id', $key)->first();
+                    return [
+                        'id' => $da->id,
+                        'name' => $da->nombre,
+                        'order' => $da->orden,
+                        'details' => $item
+                    ];
+                });
+                $data = $data->sortBy('order');
+            }else{
+                $data = ['' => $this->data->details];
+            }
+
+            foreach ($data as $value){
+                foreach($value['details']->groupBy('contract.person.ci') as $item){
+
+                // foreach($this->data->groupBy('contract.person.ci') as $item){
+                    $novelty = '';
+                    $novelty_date = '';
+                    if(date('Ym', strtotime($item[0]->contract->start)) == $item[0]->paymentschedule->period->name){
+                        $novelty = 'I';
+                        $novelty_date = date('dmY', strtotime($item[0]->contract->start));
+                    }
+                    if(date('Ym', strtotime($item[0]->contract->finish)) == $item[0]->paymentschedule->period->name){
+                        $novelty = 'R';
+                        $novelty_date = date('dmY', strtotime($item[0]->contract->finish));
+                    }
+                    $worked_days = $item->sum('worked_days');
+                    $total_amount = $item->sum('partial_salary') + $item->sum('seniority_bonus_amount');
+
+                    array_push($datos, [
+                        'A' => 'CI',
+                        'B' => $item[0]->contract->person->ci,
+                        'C' => count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '',
+                        'D' => $item[0]->contract->person->nua_cua,
+                        'E' => explode(' ', $item[0]->contract->person->last_name)[0],
+                        'F' => count(explode(' ', $item[0]->contract->person->last_name)) > 1 ? explode(' ', $item[0]->contract->person->last_name)[1] : '',
+                        'G' => '',
+                        'H' => explode(' ', $item[0]->contract->person->first_name)[0],
+                        'I' => count(explode(' ', $item[0]->contract->person->first_name)) > 1 ? explode(' ', $item[0]->contract->person->first_name)[1] : '',
+                        'J' => $novelty,
+                        'K' => $novelty_date ? $novelty_date : '',
+                        'L' => $worked_days,
+                        'M' => 'D',
                         'N' => $total_amount,
-                        'O' => $type,
-                        'P' => '',
+                        'O' => 0,
                     ]);
                     $cont++;
                 }
@@ -220,7 +288,7 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
                 'Total Ganado Bs. Fondo Social',
                 'Total Ganado Bs.(minero)'
             ];
-        }else{
+        }elseif($this->type == 2){
             return [
                 'Tipo Doc',
                 'Numero Documento',
@@ -237,6 +305,24 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
                 'Total Ganado',
                 'Tipo Cotizante',
                 'Tipo Asegurado'
+            ];
+        }elseif($this->type == 3){
+            return [
+                'Tipo Doc',
+                'Numero Documento',
+                'Alfa Numero',
+                'NUA/CUA',
+                'Ap. Paterno',
+                'Ap. Materno',
+                'Ap. Casada',
+                'Primer Nombre',
+                'Seg. Nombre',
+                'Novedad',
+                'Fecha Novedad',
+                'Dias',
+                'Tipo Asegurado',
+                'Total Ganado',
+                'Cotización Adicional'
             ];
         }
     }
