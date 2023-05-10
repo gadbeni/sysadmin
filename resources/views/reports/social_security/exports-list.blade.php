@@ -10,94 +10,243 @@
         <div class="panel-body">
             <div class="table-responsive">
                 @if ($type_report == '#form-ministerio')
-                    <table id="dataTable" class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>N&deg;</th>
-                                <th>CÓDIGO DE ENTIDAD</th>
-                                <th>TIPO DE PLANILLA</th>
-                                <th>FUENTE</th>
-                                <th>ORGANISMO</th>
-                                <th>GESTION</th>
-                                <th>MES</th>
-                                <th>CARNET DE  IDENTIDAD</th>
-                                <th>NUMERO COMPLEMENTARIO</th>
-                                <th>EXPEDIDO</th>
-                                <th>NOMBRE 1</th>
-                                <th>NOMBRE 2</th>
-                                <th>APELLIDO 1</th>
-                                <th>APELLIDO 2</th>
-                                <th>APELLIDO 3</th>
-                                <th>FECHA DE NACIMIENTO</th>
-                                <th>FECHA DE INGRESO</th>
-                                <th>SEXO</th>
-                                <th>ITEM</th>
-                                <th>CARGO</th>
-                                <th>TIPO EMPLEADO</th>
-                                <th>GRADO DE FORMACIÓN</th>
-                                <th>DÍAS TRABAJADOS</th>
-                                <th>BÁSICO (Bs.)</th>
-                                <th>BONO ANTIGÜEDAD (Bs.)</th>
-                                <th>OTROS INGRESOS (Bs.)</th>
-                                <th>TOTAL GANADO (Bs.)</th>
-                                <th>APORTE AL SEGURO SOCIAL OBLIGATORIO A LARGO PLAZO (SSO) BS.</th>
-                                <th>OTROS DESCUENTOS (Bs.)</th>
-                                <th>APORTE SOLIDARIO DEL ASEGURADO 0.5%  (Bs.)</th>
-                                <th>APORTE PATRONAL SOLIDARIO  3% (Bs.)</th>
-                                <th>LIQUIDO PAGABLE (Bs.)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $cont = 1;
-                            @endphp
-                            @foreach($data as $item)
-                                @php
-                                // dd($item);
-                                    $period = \App\Models\Period::findOrFail($item->paymentschedule->period_id);
-                                    $year = Str::substr($period->name, 0, 4);
-                                    $month = Str::substr($period->name, 4, 2);
-                                @endphp
+                    @if ($tipo_ministerio == 1)
+                        <table id="dataTable" class="table table-bordered">
+                            <thead>
                                 <tr>
-                                    <td>{{ $cont }}</td>
-                                    <td>908</td>
-                                    <td>PAGO DE HABERES</td>
-                                    <td>20 RECESP</td>
-                                    <td>220 REG</td>
-                                    <td>{{ $year }}</td>
-                                    <td>{{ $month }}</td>
-                                    <td>{{ explode('-', $item->contract->person->ci)[0] }}</td>
-                                    <td>{{ count(explode('-', $item->contract->person->ci)) > 1 ? explode('-', $item->contract->person->ci)[1] : '' }}</td>
-                                    <td>OTRO</td>
-                                    <td>{{ explode(' ', $item->contract->person->first_name)[0] }}</td>
-                                    <td>{{ count(explode(' ', $item->contract->person->first_name)) > 1 ? explode(' ', $item->contract->person->first_name)[1] : '' }}</td>
-                                    <td>{{ explode(' ', $item->contract->person->last_name)[0] }}</td>
-                                    <td>{{ count(explode(' ', $item->contract->person->last_name)) > 1 ? explode(' ', $item->contract->person->last_name)[1] : '' }}</td>
-                                    <td></td>
-                                    <td>{{ date('d/m/Y', strtotime($item->contract->person->birthday)) }}</td>
-                                    <td>{{ date('d/m/Y', strtotime($item->contract->start)) }}</td>
-                                    <td>{{ $item->contract->person->gender == 'masculino' ? 'M' : 'F' }}</td>
-                                    <td>{{ $item->contract->job_id ?? '' }}</td>
-                                    <td>{{ $item->job }}</td>
-                                    <td>{{ Str::upper($item->contract->type->name) }}</td>
-                                    <td>NO EXISTE INFORMACION</td>
-                                    <td>{{ $item->worked_days }}</td>
-                                    <td>{{ number_format($item->salary, 2, ',', '') }}</td>
-                                    <td>{{ number_format($item->seniority_bonus_amount, 2, ',', '') }}</td>
-                                    <td>0</td>
-                                    <td>{{ number_format($item->partial_salary, 2, ',', '') }}</td>
-                                    <td>{{ number_format($item->solidary + $item->common_risk + $item->retirement, 2, ',', '') }}</td>
-                                    <td>{{ number_format($item->faults_amount, 2, ',', '') }}</td>
-                                    <td>{{ number_format($item->solidary, 2, ',', '') }}</td>
-                                    <td>{{ number_format($item->solidary_employer, 2, ',', '') }}</td>
-                                    <td>{{ number_format($item->liquid_payable, 2, ',', '') }}</td>
+                                    <th>N&deg;</th>
+                                    <th>TIPO DE DOCUMENTO DE IDENTIDAD</th>
+                                    <th>NUMERO DOCUMENTO DE IDENTIDAD</th>
+                                    <th>LUGAR DE EXPEDICION</th>
+                                    <th>FECHA DE NACIMIENTO</th>
+                                    <th>APELLIDO PATERNO</th>
+                                    <th>APELLIDO MATERNO</th>
+                                    <th>NOMBRES</th>
+                                    <th>PAIS DE NACIONALIDAD</th>
+                                    <th>SEXO</th>
+                                    <th>JUBILADO</th>
+                                    <th>¿APORTA A LA AFP?</th>
+                                    <th>¿PERSONA CON DISCAPACIDAD?</th>
+                                    <th>TUTOR DE PERSONA CON DISCAPACIDAD</th>
+                                    <th>FECHA DE INSGRESO</th>
+                                    <th>FECHA DE RETIRO</th>
+                                    <th>MOTIVO DE RETIRO</th>
+                                    <th>CAJA DE SALUD</th>
+                                    <th>AFP</th>
+                                    <th>NUA/CUA</th>
+                                    <th>SUCURSAL O UBICACION ADICIONAL</th>
+                                    <th>CLASIFICACION LABORAL</th>
+                                    <th>CARGO</th>
+                                    <th>MODALIDAD DE CONTRATO</th>
+                                    <th>TIPO DE CONTRATO</th>
+                                    <th>DIAS PAGADOS</th>
+                                    <th>HORAS PAGADAS</th>
+                                    <th>HABER BASICO</th>
+                                    <th>BONO DE ANTIGUEDAD</th>
+                                    <th>HORAS EXTARS</th>
+                                    <th>MONTO HORAS EXTRAS</th>
+                                    <th>HORAS RECARGO NOCTURNO</th>
+                                    <th>MONTO HORAS EXTARS NOCTURNAS</th>
+                                    <th>HORAS EXTRAS DOMINICALES</th>
+                                    <th>MONTO HORAS EXTRAS DOMINICALES</th>
+                                    <th>DOMINGOS TRABAJADOS</th>
+                                    <th>MONTO DOMINGOS TRABAJADOS</th>
+                                    <th>NRO. DOMINICALES</th>
+                                    <th>SALARIO DOMINICAL</th>
+                                    <th>BRONO PRODUCCION</th>
+                                    <th>SUBSIDIO FRONTERA</th>
+                                    <th>OTROS BONOS Y PAGOS</th>
+                                    <th>RC-IVA</th>
+                                    <th>APORTE CAJA DE SALUD</th>
+                                    <th>APORTE AFP</th>
+                                    <th>OTROS DESCUENTOS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $cont = 1;
+                                @endphp
+                                @foreach($data as $item)
                                     @php
-                                        $cont++;
+                                        $period = \App\Models\Period::findOrFail($item->paymentschedule->period_id);
+                                        $year = Str::substr($period->name, 0, 4);
+                                        $month = Str::substr($period->name, 4, 2);
                                     @endphp
-                                </tr> 
-                            @endforeach
-                        </tbody>
-                    </table>
+                                    <tr>
+                                        <td>{{ $cont }}</td>
+                                        <td>CI</td>
+                                        <td>{{ $item->contract->person->ci }}</td>
+                                        <td></td>
+                                        <td>{{ date('d/m/Y', strtotime($item->contract->person->birthday)) }}</td>
+                                        <td>{{ explode(' ', $item->contract->person->last_name)[0] }}</td>
+                                        <td>{{ count(explode(' ', $item->contract->person->last_name)) > 1 ? explode(' ', $item->contract->person->last_name)[1] : '' }}</td>
+                                        <td>{{ $item->contract->person->first_name }}</td>
+                                        <td>{{ $item->contract->person->city ? $item->contract->person->city->state->country->name : 'No definida' }}</td>
+                                        <td>{{ $item->contract->person->gender == 'masculino' ? 'M' : 'F' }}</td>
+                                        <td>{{ $item->contract->person->retired }}</td>
+                                        <td>{{ $item->contract->person->afp_status }}</td>
+                                        @php
+                                            $irremovability = $item->contract->person->irremovabilities->count() ? $item->contract->person->irremovabilities[0] : NULL;
+                                        @endphp
+                                        <td>
+                                            @if ($irremovability)
+                                                {{ $irremovability->irremovability_type_id == 4 ? 1 : 0  }}
+                                            @else
+                                                0
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($irremovability)
+                                                {{ $irremovability->irremovability_type_id == 5 ? 1 : 0  }}
+                                            @else
+                                                0
+                                            @endif
+                                        </td>
+                                        <td>{{ date('d/m/Y', strtotime($item->contract->start)) }}</td>
+                                        <td>{{ date('Ym', strtotime($item->contract->finish)) == $year.$month ? date('d/m/Y', strtotime($item->contract->finish)) : '' }}</td>
+                                        <td>2</td>
+                                        <td>{{ $item->contract->person->cc == 1 ? 6 : 2 }}</td>
+                                        <td>
+                                            @if ($item->contract->person->afp == 1)
+                                                2
+                                            @elseif ($item->contract->person->afp == 2)
+                                                1
+                                            @else
+                                                3
+                                            @endif
+                                        </td>
+                                        <td>{{ $item->contract->person->nua_cua }}</td>
+                                        <td></td>
+                                        <td>1</td>
+                                        <td>
+                                            @if ($item->contract->cargo)
+                                                {{ $item->contract->cargo->Descripcion }}
+                                            @elseif ($item->contract->job)
+                                                {{ $item->contract->job->name }}
+                                            @else
+                                                No definido
+                                            @endif
+                                        </td>
+                                        <td>{{ $item->contract->procedure_type_id }}</td>
+                                        <td>1</td>
+                                        <td>{{ $item->worked_days }}</td>
+                                        <td>8</td>
+                                        <td>{{ number_format($item->salary, 2, '.', '') }}</td>
+                                        <td>{{ number_format($item->seniority_bonus_amount, 2, '.', '') }}</td>
+                                        <td>0</td>
+                                        <td>0.00</td>
+                                        <td>0</td>
+                                        <td>0.00</td>
+                                        <td>0</td>
+                                        <td>0.00</td>
+                                        <td>0</td>
+                                        <td>0.00</td>
+                                        <td>0</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>{{ number_format($item->rc_iva_amount, 2, '.', '') }}</td>
+                                        <td>{{ number_format($item->health, 2, '.', '') }}</td>
+                                        <td>{{ number_format($item->solidary + $item->common_risk + $item->retirement, 2, '.', '') }}</td>
+                                        <td>{{ number_format($item->faults_amount, 2, ',', '') }}</td>
+                                        @php
+                                            $cont++;
+                                        @endphp
+                                    </tr> 
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        <table id="dataTable" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>N&deg;</th>
+                                    <th>CÓDIGO DE ENTIDAD</th>
+                                    <th>TIPO DE PLANILLA</th>
+                                    <th>FUENTE</th>
+                                    <th>ORGANISMO</th>
+                                    <th>GESTION</th>
+                                    <th>MES</th>
+                                    <th>CARNET DE  IDENTIDAD</th>
+                                    <th>NUMERO COMPLEMENTARIO</th>
+                                    <th>EXPEDIDO</th>
+                                    <th>NOMBRE 1</th>
+                                    <th>NOMBRE 2</th>
+                                    <th>APELLIDO 1</th>
+                                    <th>APELLIDO 2</th>
+                                    <th>APELLIDO 3</th>
+                                    <th>FECHA DE NACIMIENTO</th>
+                                    <th>FECHA DE INGRESO</th>
+                                    <th>SEXO</th>
+                                    <th>ITEM</th>
+                                    <th>CARGO</th>
+                                    <th>TIPO EMPLEADO</th>
+                                    <th>GRADO DE FORMACIÓN</th>
+                                    <th>DÍAS TRABAJADOS</th>
+                                    <th>BÁSICO (Bs.)</th>
+                                    <th>BONO ANTIGÜEDAD (Bs.)</th>
+                                    <th>OTROS INGRESOS (Bs.)</th>
+                                    <th>TOTAL GANADO (Bs.)</th>
+                                    <th>APORTE AL SEGURO SOCIAL OBLIGATORIO A LARGO PLAZO (SSO) BS.</th>
+                                    <th>OTROS DESCUENTOS (Bs.)</th>
+                                    <th>APORTE SOLIDARIO DEL ASEGURADO 0.5%  (Bs.)</th>
+                                    <th>APORTE PATRONAL SOLIDARIO  3% (Bs.)</th>
+                                    <th>LIQUIDO PAGABLE (Bs.)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $cont = 1;
+                                @endphp
+                                @foreach($data as $item)
+                                    @php
+                                    // dd($item);
+                                        $period = \App\Models\Period::findOrFail($item->paymentschedule->period_id);
+                                        $year = Str::substr($period->name, 0, 4);
+                                        $month = Str::substr($period->name, 4, 2);
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $cont }}</td>
+                                        <td>908</td>
+                                        <td>PAGO DE HABERES</td>
+                                        <td>20 RECESP</td>
+                                        <td>220 REG</td>
+                                        <td>{{ $year }}</td>
+                                        <td>{{ $month }}</td>
+                                        <td>{{ explode('-', $item->contract->person->ci)[0] }}</td>
+                                        <td>{{ count(explode('-', $item->contract->person->ci)) > 1 ? explode('-', $item->contract->person->ci)[1] : '' }}</td>
+                                        <td>OTRO</td>
+                                        <td>{{ explode(' ', $item->contract->person->first_name)[0] }}</td>
+                                        <td>{{ count(explode(' ', $item->contract->person->first_name)) > 1 ? explode(' ', $item->contract->person->first_name)[1] : '' }}</td>
+                                        <td>{{ explode(' ', $item->contract->person->last_name)[0] }}</td>
+                                        <td>{{ count(explode(' ', $item->contract->person->last_name)) > 1 ? explode(' ', $item->contract->person->last_name)[1] : '' }}</td>
+                                        <td></td>
+                                        <td>{{ date('d/m/Y', strtotime($item->contract->person->birthday)) }}</td>
+                                        <td>{{ date('d/m/Y', strtotime($item->contract->start)) }}</td>
+                                        <td>{{ $item->contract->person->gender == 'masculino' ? 'M' : 'F' }}</td>
+                                        <td>{{ $item->contract->job_id ?? '' }}</td>
+                                        <td>{{ $item->job }}</td>
+                                        <td>{{ Str::upper($item->contract->type->name) }}</td>
+                                        <td>NO EXISTE INFORMACION</td>
+                                        <td>{{ $item->worked_days }}</td>
+                                        <td>{{ number_format($item->salary, 2, ',', '') }}</td>
+                                        <td>{{ number_format($item->seniority_bonus_amount, 2, ',', '') }}</td>
+                                        <td>0</td>
+                                        <td>{{ number_format($item->partial_salary, 2, ',', '') }}</td>
+                                        <td>{{ number_format($item->solidary + $item->common_risk + $item->retirement, 2, ',', '') }}</td>
+                                        <td>{{ number_format($item->faults_amount, 2, ',', '') }}</td>
+                                        <td>{{ number_format($item->solidary, 2, ',', '') }}</td>
+                                        <td>{{ number_format($item->solidary_employer, 2, ',', '') }}</td>
+                                        <td>{{ number_format($item->liquid_payable, 2, ',', '') }}</td>
+                                        @php
+                                            $cont++;
+                                        @endphp
+                                    </tr> 
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                 @endif
                 
                 @if ($type_report == '#form-afp')

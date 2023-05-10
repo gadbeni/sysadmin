@@ -16,7 +16,7 @@
                             </div>
                             <div class="col-md-4" style="margin-top: 30px">
                                 <div class="col-md-12 text-right" style="margin-bottom: 20px">
-                                    <label class="radio-inline"><input type="radio" class="radio-type" name="option" value="1" data-target="#form-ministerio" checked>Ministerio de trabajo</label>
+                                    <label class="radio-inline"><input type="radio" class="radio-type" name="option" value="1" data-target="#form-ministerio" checked>Ministerios</label>
                                     <label class="radio-inline"><input type="radio" class="radio-type" name="option" value="2" data-target="#form-afp">AFP's</label>
                                     {{-- <label class="radio-inline"><input type="radio" name="optradio">Option 3</label> --}}
                                 </div>
@@ -33,9 +33,15 @@
                                     </div>
                                     <div class="form-group">
                                         <select name="period_id" class="form-control select2" required>
-                                            @foreach (\App\Models\Period::all() as $item)
+                                            @foreach (\App\Models\Period::where('deleted_at', NULL)->where('status', 1)->orderBy('name', 'DESC')->get() as $item)
                                             <option value="{{ $item->id }}">{{ $item->name }}</option>
                                             @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="tipo_ministerio" class="form-control select2" required>
+                                            <option value="1">Ministerio de trabajo</option>
+                                            <option value="2">Ministerio de economía</option>
                                         </select>
                                     </div>
                                     <div class="text-right">

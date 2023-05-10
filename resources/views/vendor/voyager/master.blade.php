@@ -227,6 +227,12 @@
 
 
     <script>
+        $(document).ready(function(){
+            $('.form-submit').submit(function(){
+                $('.form-submit .btn-submit').attr('disabled', 'disabled');
+            });
+        });
+
         function delay(fn, ms) {
             let timer = 0
             return function(...args) {

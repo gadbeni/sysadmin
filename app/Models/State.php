@@ -12,6 +12,6 @@ class State extends Model
     protected $dates = ['deleted_at'];
 
     public function country(){
-        return $this->belongsTo(Country::class, 'country_id');
+        return $this->belongsTo(Country::class, 'country_id')->withTrashed();
     }
 }

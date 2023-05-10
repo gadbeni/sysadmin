@@ -120,37 +120,51 @@
     </form>
 
     {{-- Finish modal --}}
-    <form action="{{ route('contracts.status') }}" id="form-finish" method="POST">
+    <form class="form-submit" action="{{ route('contracts.status') }}" id="form-finish" method="POST">
         {{ csrf_field() }}
         <div class="modal fade" tabindex="-1" id="finish-modal" role="dialog">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title"><i class="voyager-calendar"></i> Desea dar el contrato como concluido?</h4>
+                        <h4 class="modal-title"><i class="voyager-calendar"></i> Resolución de contrato</h4>
                     </div>
                     <div class="modal-body">
                         <input type="hidden" name="id">
                         <input type="hidden" name="status" value="concluido">
                         <div class="form-group">
-                            <label for="">Fecha de conclusión</label>
+                            <label for="">Fecha de resolución</label>
                             <input type="date" name="finish" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label for="observations">Observaciones</label>
-                            <textarea name="observations" class="form-control" rows="4" required></textarea>
+                            <label for="technical_report">Informe técnico</label>
+                            <textarea name="technical_report" class="form-control" rows="4" required></textarea>
                         </div>
+                        <div class="form-group">
+                            <label for="nci">NCI</label>
+                            <textarea name="nci" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="legal_report">Informe legal</label>
+                            <textarea name="legal_report" class="form-control" rows="4" required></textarea>
+                        </div>
+                        {{-- <div class="form-group" @if(Auth::user()->role_id > 1) style="display: none" @endif>
+                            <div class="checkbox">
+                                <br>
+                                <label><input type="checkbox" name="create_resolution" checked> Generar resolución de contrato</label>
+                            </div>
+                        </div> --}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" class="btn btn-dark" value="Aceptar">
+                        <input type="submit" class="btn btn-dark btn-submit" value="Aceptar">
                     </div>
                 </div>
             </div>
         </div>
     </form>
 
-    {{-- Finish modal --}}
+    {{-- Ratificate modal --}}
     <form action="{{ route('contracts.ratificate') }}" id="form-ratificate" class="form-submit" method="POST">
         {{ csrf_field() }}
         <div class="modal fade" tabindex="-1" id="ratificate-modal" role="dialog">
@@ -512,7 +526,7 @@
             $('#form-status input[name="status"]').val(status);
         }
 
-        function finishContract(id, date) {
+        function finishContract(id, date, type) {
             $('#form-finish input[name="id"]').val(id);
             $('#form-finish input[name="finish"]').val(date);
             $('#form-finish input[name="finish"]').attr("max", date);

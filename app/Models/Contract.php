@@ -84,7 +84,7 @@ class Contract extends Model
     }
 
     public function finished(){
-        return $this->hasOne(ContractsFinished::class);
+        return $this->hasOne(ContractsFinished::class, 'contract_id');
     }
 
     public function rotations(){

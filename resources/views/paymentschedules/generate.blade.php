@@ -153,7 +153,7 @@
                                         $partial_salary = number_format(($salary/30) * $days_enabled_worker, 2, '.', '');
 
                                         // Calcular bono antigüedad
-                                        $minimum_salary = setting('planillas.minimum_salary') ?? 2164;
+                                        $minimum_salary = setting('planillas.minimum_salary') ?? 2250;
                                         $minimum_salary_quantity = 1;
                                         $seniority_bonus_percentage = 0;
                                         $seniority_bonus_amount = 0;

@@ -137,13 +137,9 @@
                                     <li><a href="#" title="Ratificar" data-toggle="modal" data-target="#ratificate-modal" onclick="ratificateContract({{ $item->id }})">Ratificar</a></li>
                                     @endif
                                     @if ($item->status == 'firmado' && auth()->user()->hasPermission('finish_contracts'))
-                                    <li><a href="#" title="Finalizar" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}')">Finalizar</a></li>
+                                    <li><a href="#" title="Resolución" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}', {{ $item->procedure_type_id }})">Resolución</a></li>
                                     @endif
-                                    {{-- si está concluido y es permanente --}}
-                                    @if ($item->status == 'concluido' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('print_finish_contracts'))
-                                    <li><a title="Imprimir memorándum de agradecimiento" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-finished']) }}" target="_blank">Imprimir memorándum</a></li>
-                                    @endif
-                                    {{-- si está concluido y es permanente --}}
+                                    {{-- si está firmado se puede transferir --}}
                                     @if ($item->status == 'firmado' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('transfer_contracts'))
                                     <li><a href="#" class="btn-transfer" data-toggle="modal" data-target="#transfer-modal" data-id="{{ $item->id }}" title="Crear transferencia" >Transferir</a></li>
                                     @endif
@@ -183,6 +179,9 @@
                                                 @if ($item->jobs->count() > 0)
                                                 <li><a title="Reasignación de denominación de cargo" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-reasignacion-alt']) }}" target="_blank">Reasignación de cargo</a></li>
                                                 @endif
+                                                @if ($item->status == 'concluido' && auth()->user()->hasPermission('print_finish_contracts'))
+                                                <li><a title="Memorándum de agradecimiento" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-finished']) }}" target="_blank">Memorándum</a></li>
+                                                @endif
                                                 @break
                                             @case(2)
                                                 <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.autorization']) }}" target="_blank">Autorización</a></li>
@@ -203,6 +202,9 @@
                                                     <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum']).(count($addendums) == 1 ? '?type=first' : '') }}" target="_blank">Adenda</a></li>
                                                     @endif
                                                 @endif
+                                                {{-- @if ($item->finished && $item->status == 'concluido' && auth()->user()->hasPermission('print_finish_contracts'))
+                                                <li><a title="Resolusión de contrato" href="{{ route('contracts.print', ['id' => $item->id, 'document' => '']) }}" target="_blank">Resolusión</a></li>
+                                                @endif --}}
 
                                                 @break
                                             @case(5)
@@ -223,6 +225,10 @@
                                                     @if ($addendums->first()->status == 'firmado')
                                                     <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.addendum']).(count($addendums) == 1 ? '?type=first' : '') }}" target="_blank">Adenda</a></li>
                                                     @endif
+                                                @endif
+
+                                                @if ($item->finished && $item->status == 'concluido' && auth()->user()->hasPermission('print_finish_contracts'))
+                                                <li><a title="Resolusión de contrato" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.']) }}" target="_blank">Resolusión</a></li>
                                                 @endif
 
                                                 @break

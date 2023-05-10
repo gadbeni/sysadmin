@@ -21,6 +21,7 @@ class CreatePersonAssetsTable extends Migration
             $table->string('status')->nullable();
             $table->date('date')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -54,7 +54,7 @@ class ContractsController extends Controller
         $user_id = request('user_id') ?? null;
         $direccion_administrativa_id = request('direccion_administrativa_id') ?? null;
         $paginate = request('paginate') ?? 10;
-        $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa.tipo', 'type', 'transfers', 'jobs'])
+        $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa.tipo', 'type', 'transfers', 'jobs', 'finished'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
                     ->where(function($query) use ($search){
                         if($search){
@@ -408,12 +408,19 @@ class ContractsController extends Controller
             ]);
 
             if($request->status == 'concluido'){
-                $last_contract = ContractsFinished::where('deleted_at', NULL)->where('code', '<>', NULL)->orderBy('id', 'DESC')->first();
-                $last_code = str_replace("A-", "", explode('/', $last_contract->code)[0]);
+                $last_contract = ContractsFinished::whereHas('contract', function($q) use($contract){
+                                        $q->where('direccion_administrativa_id', $contract->direccion_administrativa_id)
+                                        ->where('procedure_type_id', $contract->procedure_type_id);
+                                    })
+                                    ->where('deleted_at', NULL)->where('code', '<>', NULL)->orderBy('id', 'DESC')->first();
+                $last_code = $last_contract ? str_replace("A-", "", explode('/', $last_contract->code)[0]) : 0;
                 ContractsFinished::create([
                     'contract_id' => $request->id,
-                    'role_id' => Auth::user()->id,
+                    'user_id' => Auth::user()->id,
                     'code' => $contract->procedure_type_id == 1 ? 'A-'.str_pad($last_code +1, 3, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->finish)) : NULL,
+                    'technical_report' => $request->technical_report,
+                    'nci' => $request->nci,
+                    'legal_report' => $request->legal_report,
                     'observations' => $request->observations
                 ]);
             }
@@ -528,7 +535,7 @@ class ContractsController extends Controller
             $d_a = Direccion::find(Job::find($request->job_id)->direccion_administrativa_id);
             $last_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
                                     ->where('procedure_type_id', $request->procedure_type_id)
-                                    ->where('direccion_administrativa_id', $direccion_administrativa_id)
+                                    ->where('direccion_administrativa_id', $d_a->id)
                                     ->orderBy('id', 'DESC')->first();
             $number_contract = $last_contract ? explode('/', explode('-', $last_contract->code)[1])[0] +1 : 1;
 
@@ -569,7 +576,7 @@ class ContractsController extends Controller
             return response()->json(['message' => 'Transferencia registrada exitosamente.']);
         } catch (\Throwable $th) {
             DB::rollback();
-            // dd($th);
+            dd($th);
             return response()->json(['error' => 'Ocurrió un error.']);
         }
     }

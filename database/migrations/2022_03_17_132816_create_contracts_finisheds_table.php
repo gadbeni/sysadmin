@@ -16,10 +16,12 @@ class CreateContractsFinishedsTable extends Migration
         Schema::create('contracts_finisheds', function (Blueprint $table) {
             $table->id();
             $table->foreignId('contract_id')->nullable()->constrained('contracts');
-            $table->foreignId('role_id')->nullable()->constrained('users');
+            $table->foreignId('user_id')->nullable()->constrained('users');
             $table->string('code')->nullable();
+            $table->text('technical_report')->nullable();
+            $table->text('nci')->nullable();
+            $table->text('legal_report')->nullable();
             $table->text('observations')->nullable();
-            $table->string('status')->nullable()->default('elaborado');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -33,12 +33,10 @@
                                 <td>
                                     {{ $item->first_name }} {{ $item->last_name }}
                                     @php
-                                        $irremovability = $item->irremovabilities->where('start', '<=', date('Y-m-d'))->first();
+                                        $irremovability = $item->irremovabilities->count() ? $item->irremovabilities[0] : NULL;
                                     @endphp
                                     @if ($irremovability)
-                                        @if (!$irremovability->finish || $irremovability->finish >= date('Y-m-d'))
                                         <label class="label label-danger" title="{{ $irremovability->type->name }}">Inamovible</label>        
-                                        @endif
                                     @endif
                                     <br> <small>{{ $item->profession }}</small>
                                 </td>

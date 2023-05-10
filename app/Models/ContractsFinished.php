@@ -13,9 +13,11 @@ class ContractsFinished extends Model
 
     protected $fillable = [
         'contract_id',
-        'role_id',
+        'user_id',
         'code',
-        'observations',
-        'status',
+        'technical_report',
+        'nci',
+        'legal_report',
+        'observations'
     ];
 }

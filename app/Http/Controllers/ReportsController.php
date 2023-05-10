@@ -27,9 +27,11 @@ use App\Models\Cargo;
 use App\Models\Person;
 use App\Models\Program;
 use App\Models\BonusesDetail;
+use App\Models\Afp;
 
 // Exports
 use App\Exports\MinisterioTrabajoExport;
+use App\Exports\MinisterioEconomiaExport;
 use App\Exports\AFPExport;
 use App\Exports\ContractsExport;
 use App\Exports\ProgramsExport;
@@ -888,15 +890,18 @@ class ReportsController extends Controller
         $procedure_type_id = $request->procedure_type_id;
         $type_report = $request->type_report;
         $type_export = $request->type_export;
+        $tipo_ministerio = $request->tipo_ministerio;
         $afp = $request->afp;
         $group_by = $request->group_by;
         $title = '';
         if($type_report == '#form-ministerio'){
-            $data = PaymentschedulesDetail::with('contract')
+            $data = PaymentschedulesDetail::with(['contract.person.irremovabilities' => function($q){
+                $q->where('start', '<=', date('Y-m-d'))->whereRaw("(finish is NULL or finish >= '".date('Y-m-d')."')");
+            }])
             ->whereHas('paymentschedule', function($q) use($request){
                 $q->where('procedure_type_id', $request->procedure_type_id)->where('period_id', $request->period_id)->where('deleted_at', NULL);
             })->where('deleted_at', NULL)->get();
-            $title = 'ministerio de trabajo '.date('d-m-Y H:i:s');
+            $title = 'ministerio '.date('d-m-Y H:i:s');
         }elseif($type_report == '#form-afp'){
             $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract' => function($q){
                         $q->where('deleted_at', NULL)->orderBy('id', 'DESC');
@@ -927,13 +932,17 @@ class ReportsController extends Controller
         }
         if($type_export == 'excel'){
             if($type_report == '#form-ministerio'){
-                return Excel::download(new MinisterioTrabajoExport($data), 'Ministerios de trabajo '.date('d-m-Y H:i:s').".xlsx");
+                if($tipo_ministerio == 1){
+                    return Excel::download(new MinisterioTrabajoExport($data), 'Ministerios de trabajo '.date('d-m-Y H:i:s').".xlsx");
+                }else{
+                    return Excel::download(new MinisterioEconomiaExport($data), 'Ministerios de economía '.date('d-m-Y H:i:s').".xlsx");
+                }
             }elseif($type_report == '#form-afp'){
-                $title = ($afp == 1 ? 'AFP Futuro' : 'AFP Previsión').date('d-m-Y H:i:s');
+                $title = Afp::find($afp)->name.' '.date('d-m-Y H:i:s');
                 return Excel::download(new AfpExport($data, $afp, $group_by), "$title .xlsx");
             }
         }
-        return view('reports.social_security.exports-list', compact('data', 'type_report', 'afp', 'group_by'));
+        return view('reports.social_security.exports-list', compact('data', 'type_report', 'tipo_ministerio', 'afp', 'group_by'));
     }
 
     public function social_security_payrollpayments_index(){
