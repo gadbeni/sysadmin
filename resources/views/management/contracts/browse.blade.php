@@ -136,17 +136,21 @@
                             <label for="">Fecha de resolución</label>
                             <input type="date" name="finish" class="form-control" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group type-1">
+                            <label for="observations">Motivo</label>
+                            <textarea name="observations" class="form-control textarea-type-1" rows="4" placeholder="" required></textarea>
+                        </div>
+                        <div class="form-group type-2">
                             <label for="technical_report">Informe técnico</label>
-                            <textarea name="technical_report" class="form-control" rows="4" required></textarea>
+                            <textarea name="technical_report" class="form-control textarea-type-2" rows="4" placeholder="SByA Nº 001/2023 D.B. y A..- RR.HH., de 16 de maro de 2023 procede a la resolución de contrato emitido por..." required></textarea>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group type-2">
                             <label for="nci">NCI</label>
-                            <textarea name="nci" class="form-control" rows="4" required></textarea>
+                            <textarea name="nci" class="form-control textarea-type-2" rows="4" placeholder="I-DRRHH/AAA-93/2023 de 03 de abril de 2023, emitida por..." required></textarea>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group type-2">
                             <label for="legal_report">Informe legal</label>
-                            <textarea name="legal_report" class="form-control" rows="4" required></textarea>
+                            <textarea name="legal_report" class="form-control textarea-type-2" rows="4" placeholder="Nº 001/2023 de 05 de abril de 2023, la Abog..." required></textarea>
                         </div>
                         {{-- <div class="form-group" @if(Auth::user()->role_id > 1) style="display: none" @endif>
                             <div class="checkbox">
@@ -448,20 +452,6 @@
                 $('#addendum-status-modal').modal('hide');
                 $('#ratificate-modal').modal('hide');
                 $('#transfer-modal').modal('hide');
-                e.preventDefault();
-                $('#div-results').loading({message: 'Cargando...'});
-                $.post($(this).attr('action'), $(this).serialize(), function(res){
-                    if(res.message){
-                        toastr.success(res.message);
-                        list(page);
-                    }else{
-                        toastr.error(res.error);
-                        $('#div-results').loading('toggle');
-                    }
-                });
-            });
-
-            $('#form-finish').submit(function(e){
                 $('#finish-modal').modal('hide');
                 e.preventDefault();
                 $('#div-results').loading({message: 'Cargando...'});
@@ -530,6 +520,17 @@
             $('#form-finish input[name="id"]').val(id);
             $('#form-finish input[name="finish"]').val(date);
             $('#form-finish input[name="finish"]').attr("max", date);
+            if(type == 1){
+                $('#form-finish .type-1').fadeIn('fast');
+                $('#form-finish .type-2').fadeOut('fast');
+                $('#form-finish .textarea-type-1').attr('required', 'required');
+                $('#form-finish .textarea-type-2').removeAttr('required');
+            }else{
+                $('#form-finish .type-2').fadeIn('fast');
+                $('#form-finish .type-1').fadeOut('fast');
+                $('#form-finish .textarea-type-2').attr('required', 'required');
+                $('#form-finish .textarea-type-1').removeAttr('required');
+            }
         }
 
         function ratificateContract(id) {

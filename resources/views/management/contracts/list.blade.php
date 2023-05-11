@@ -136,15 +136,17 @@
                                     @if ($item->status == 'firmado' && auth()->user()->hasPermission('ratificate_contracts'))
                                     <li><a href="#" title="Ratificar" data-toggle="modal" data-target="#ratificate-modal" onclick="ratificateContract({{ $item->id }})">Ratificar</a></li>
                                     @endif
-                                    @if ($item->status == 'firmado' && auth()->user()->hasPermission('finish_contracts'))
-                                    <li><a href="#" title="Resolución" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}', {{ $item->procedure_type_id }})">Resolución</a></li>
-                                    @endif
                                     {{-- si está firmado se puede transferir --}}
                                     @if ($item->status == 'firmado' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('transfer_contracts'))
                                     <li><a href="#" class="btn-transfer" data-toggle="modal" data-target="#transfer-modal" data-id="{{ $item->id }}" title="Crear transferencia" >Transferir</a></li>
                                     @endif
+                                    {{-- Crear adenda --}}
                                     @if (auth()->user()->hasPermission('add_addendum_contracts') && $item->status == 'concluido' && count($contracts) == 0 && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5) && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
                                     <li><a class="btn-addendum" title="Crear adenda" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' href="#">Crear adenda</a></li>
+                                    @endif
+                                    {{-- Crear memo/resolución --}}
+                                    @if ($item->status == 'firmado' && auth()->user()->hasPermission('finish_contracts'))
+                                    <li><a href="#" title="{{ $item->procedure_type_id == 1 ? 'Memo de agradecimiento' : 'Resolución' }}" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}', {{ $item->procedure_type_id }})">{{ $item->procedure_type_id == 1 ? 'Agradecimiento' : 'Resolución' }}</a></li>
                                     @endif
 
                                     @if (count($addendums) > 0)

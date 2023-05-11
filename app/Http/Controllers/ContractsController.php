@@ -429,7 +429,7 @@ class ContractsController extends Controller
             return response()->json(['message' => 'Cambio realizo exitosamente.']);
         } catch (\Throwable $th) {
             DB::rollback();
-            dd($th);
+            // dd($th);
             return response()->json(['error' => 'Ocurrió un error.']);
         }
     }

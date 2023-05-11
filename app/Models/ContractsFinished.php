@@ -20,4 +20,8 @@ class ContractsFinished extends Model
         'legal_report',
         'observations'
     ];
+
+    public function contract(){
+        return $this->belongsTo(Contract::class, 'contract_id');
+    }
 }
