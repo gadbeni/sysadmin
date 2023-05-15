@@ -15,9 +15,11 @@ class ContractsFinished extends Model
         'contract_id',
         'user_id',
         'code',
+        'previus_date',
         'technical_report',
         'nci',
         'legal_report',
+        'details',
         'observations'
     ];
 

@@ -138,19 +138,23 @@
                         </div>
                         <div class="form-group type-1">
                             <label for="observations">Motivo</label>
-                            <textarea name="observations" class="form-control textarea-type-1" rows="4" placeholder="" required></textarea>
+                            <textarea name="observations" class="form-control textarea-type-1" rows="5" placeholder="" required></textarea>
                         </div>
                         <div class="form-group type-2">
                             <label for="technical_report">Informe técnico</label>
-                            <textarea name="technical_report" class="form-control textarea-type-2" rows="4" placeholder="SByA Nº 001/2023 D.B. y A..- RR.HH., de 16 de maro de 2023 procede a la resolución de contrato emitido por..." required></textarea>
+                            <textarea name="technical_report" class="form-control textarea-type-2" rows="5" placeholder="SByA Nº 001/2023 D.B. y A..- RR.HH., de 16 de maro de 2023 procede a la resolución de contrato emitido por..." required></textarea>
                         </div>
                         <div class="form-group type-2">
                             <label for="nci">NCI</label>
-                            <textarea name="nci" class="form-control textarea-type-2" rows="4" placeholder="I-DRRHH/AAA-93/2023 de 03 de abril de 2023, emitida por..." required></textarea>
+                            <textarea name="nci" class="form-control textarea-type-2" rows="5" placeholder="I-DRRHH/AAA-93/2023 de 03 de abril de 2023, emitida por..." required></textarea>
                         </div>
                         <div class="form-group type-2">
                             <label for="legal_report">Informe legal</label>
                             <textarea name="legal_report" class="form-control textarea-type-2" rows="4" placeholder="Nº 001/2023 de 05 de abril de 2023, la Abog..." required></textarea>
+                        </div>
+                        <div class="form-group type-2">
+                            <label for="details">Inciso mencionado</label>
+                            <textarea name="details" class="form-control textarea-type-2" rows="2" placeholder=". e)  Inasistencia injustificada de tres (3) días hábiles consecutivos o seis (6) días hábiles discontinuos en un (1) mes" required></textarea>
                         </div>
                         {{-- <div class="form-group" @if(Auth::user()->role_id > 1) style="display: none" @endif>
                             <div class="checkbox">
@@ -293,7 +297,7 @@
                                 <select name="signature_id" class="form-control select2">
                                     <option value="">Secretario(a) de Administración y Finanzas</option>
                                     @foreach (App\Models\Signature::where('status', 1)->where('deleted_at', NULL)->get() as $item)
-                                    <option @if($item->direccion_administrativa_id == Auth::user()->direccion_administrativa_id) selected @endif value="{{ $item->id }}">{{ $item->name }}</option>
+                                    <option @if($item->direccion_administrativa_id == Auth::user()->direccion_administrativa_id) selected @endif value="{{ $item->id }}">{{ $item->designation }} {{ $item->name }} - {{ $item->job }}</option>
                                     @endforeach
                                 </select>
                             </div>

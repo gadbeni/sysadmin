@@ -34,6 +34,7 @@
                     <th>Nombre(s)</th>
                     <th>Apellidos</th>
                     <th>CI</th>
+                    <th>Género</th>
                     <th>NUA/CUA</th>
                     <th>Cargo</th>
                     <th>Nivel</th>
@@ -75,6 +76,7 @@
                     <td>{{ $item->person->first_name }} </td>
                     <td>{{ $item->person->last_name }}</td>
                     <td>{{ $item->person->ci }}</td>
+                    <td>{{ $item->person->gender }}</td>
                     <td>{{ $item->person->nua_cua }}</td>
                     <td>
                         @if ($item->cargo)

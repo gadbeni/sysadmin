@@ -74,7 +74,7 @@
 @endphp
 
 <p>
-    El monto total a cancelar será de Bs.- <b>{{ NumerosEnLetras::convertir(number_format($amount_total, 2, '.', ''), 'Bolivianos', true) }}</b>, mismo que serán cancelados en {{ Str::lower(NumerosEnLetras::convertir($cantidad_cuotas)) }} ({{ $cantidad_cuotas }}) cuotas mensuales: 
+    {!! $subtitle ? '<b>1.1. MONTO.-</b> ' : '' !!} El monto total a cancelar será de Bs.- <b>{{ NumerosEnLetras::convertir(number_format($amount_total, 2, '.', ''), 'Bolivianos', true) }}</b>, mismo que serán cancelados en {{ Str::lower(NumerosEnLetras::convertir($cantidad_cuotas)) }} ({{ $cantidad_cuotas }}) cuotas mensuales: 
     @if ($dias_primera_cuota)
         la primera correspondiente a {{ Str::lower(NumerosEnLetras::convertir($dias_primera_cuota)) }} ({{ $dias_primera_cuota }}) días del mes de {{ $months[intval(date('m', strtotime($contract_start)))] }} por <b>Bs.- {{ NumerosEnLetras::convertir(number_format(($salary /30) *$dias_primera_cuota, 2, '.', ''), 'Bolivianos', true) }}</b>
     @endif

@@ -95,7 +95,7 @@
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA SEPTIMA</strong></span><strong>. - (LUGAR DE PRESTACI&Oacute;N DE SERVICIOS). </strong></p>
         <p><strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong> realizar&aacute; la <strong>CONSULTOR&Iacute;A</strong>, objeto del presente contrato en las oficinas de la/el <strong>{{ Str::upper($contract->unidad_administrativa->nombre) }} </strong>dependiente de la/el <strong>{{ Str::upper($contract->direccion_administrativa->nombre) }}. </strong>{{--ubicada en el edificio central del GAD-BENI frente de la plaza principal.--}}</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA OCTAVA</strong></span><strong>. - (DEL MONTO Y FORMA DE PAGO)</strong></p>
-        @include('management.docs.consultor.partials.payment_details', ['contract' => $contract, 'contract_start' => $contract->start, 'contract_finish' => $contract->finish])
+        @include('management.docs.consultor.partials.payment_details', ['subtitle' => '', 'contract' => $contract, 'contract_start' => $contract->start, 'contract_finish' => $contract->finish])
         <p>Para efectos del pago de sus haberes mensuales, <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, deber&aacute; de presentar Informe de Actividades mensuales, el cual deber&aacute; de estar debidamente aprobado por su inmediato superior.</p>
         <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA NOVENA</strong></span><strong>.- (PASAJES Y VIATICOS)</strong></p>
         

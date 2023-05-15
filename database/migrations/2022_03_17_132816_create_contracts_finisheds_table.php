@@ -18,9 +18,11 @@ class CreateContractsFinishedsTable extends Migration
             $table->foreignId('contract_id')->nullable()->constrained('contracts');
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->string('code')->nullable();
+            $table->date('previus_date')->nullable();
             $table->text('technical_report')->nullable();
             $table->text('nci')->nullable();
             $table->text('legal_report')->nullable();
+            $table->text('details')->nullable();
             $table->text('observations')->nullable();
             $table->timestamps();
             $table->softDeletes();

@@ -201,7 +201,11 @@
                                                 {{-- Si hay una adenda firmada --}}
                                                 @if (count($addendums) > 0)
                                                     @if ($addendums->first()->status == 'firmado')
-                                                    <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum']).(count($addendums) == 1 ? '?type=first' : '') }}" target="_blank">Adenda</a></li>
+                                                        @if ($item->direccion_administrativa_id == 5)
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum-sedeges']).(count($addendums) == 1 ? '?type=first' : '') }}" target="_blank">Adenda</a></li>
+                                                        @else
+                                                            <li><a href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'consultor.addendum']).(count($addendums) == 1 ? '?type=first' : '') }}" target="_blank">Adenda</a></li>
+                                                        @endif
                                                     @endif
                                                 @endif
                                                 {{-- @if ($item->finished && $item->status == 'concluido' && auth()->user()->hasPermission('print_finish_contracts'))
@@ -230,7 +234,7 @@
                                                 @endif
 
                                                 @if ($item->finished && $item->status == 'concluido' && auth()->user()->hasPermission('print_finish_contracts'))
-                                                <li><a title="Resolusión de contrato" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.']) }}" target="_blank">Resolusión</a></li>
+                                                <li><a title="Resolusión de contrato" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.resolution']) }}" target="_blank">Resolusión</a></li>
                                                 @endif
 
                                                 @break

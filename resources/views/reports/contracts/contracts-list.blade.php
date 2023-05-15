@@ -23,6 +23,7 @@
                             <th>Nombre(s)</th>
                             <th>Apellidos</th>
                             <th>CI</th>
+                            <th>Género</th>
                             <th>NUA/CUA</th>
                             <th>Cargo</th>
                             <th>Nivel</th>
@@ -64,6 +65,7 @@
                             <td>{{ $item->person->first_name }} </td>
                             <td>{{ $item->person->last_name }}</td>
                             <td>{{ $item->person->ci }}</td>
+                            <td>{{ $item->person->gender }}</td>
                             <td>{{ $item->person->nua_cua }}</td>
                             <td>
                                 @if ($item->cargo)
@@ -100,7 +102,7 @@
                         @endphp
                         @empty
                             <tr class="odd">
-                                <td valign="top" colspan="19" class="text-center">No hay datos disponibles en la tabla</td>
+                                <td valign="top" colspan="20" class="text-center">No hay datos disponibles en la tabla</td>
                             </tr>
                         @endforelse
                     </tbody>

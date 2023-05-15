@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 // Models
 use App\Models\Person;
@@ -233,7 +234,7 @@ class ContractsController extends Controller
 
             return redirect()->route('contracts.index')->with(['message' => 'Contrato guardado exitosamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
-            throw $th;
+            // throw $th;
             return redirect()->route('contracts.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
@@ -380,6 +381,7 @@ class ContractsController extends Controller
             // Si se finaliza el contrato
             $contract = Contract::findOrFail($request->id);
             $contract->status = $request->status;
+            $previus_date = $contract->finish;
             if ($request->finish) {
                 if ($contract->start >= $request->finish) {
                     return response()->json(['error' => 'Error al definir la fecha de finalización.']);
@@ -410,18 +412,21 @@ class ContractsController extends Controller
             if($request->status == 'concluido'){
                 $last_contract = ContractsFinished::whereHas('contract', function($q) use($contract){
                                         $q->where('direccion_administrativa_id', $contract->direccion_administrativa_id)
-                                        ->where('procedure_type_id', $contract->procedure_type_id);
+                                        ->where('procedure_type_id', $contract->procedure_type_id)
+                                        ->whereRaw('YEAR(finish) = "'.date('Y', strtotime($contract->finish)).'"');
                                     })
                                     ->where('deleted_at', NULL)->where('code', '<>', NULL)->orderBy('id', 'DESC')->first();
                 $last_code = $last_contract ? str_replace("A-", "", explode('/', $last_contract->code)[0]) : 0;
                 ContractsFinished::create([
                     'contract_id' => $request->id,
                     'user_id' => Auth::user()->id,
-                    'code' => $contract->procedure_type_id == 1 ? 'A-'.str_pad($last_code +1, 3, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->finish)) : NULL,
+                    'code' => 'A-'.str_pad($last_code +1, 3, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->finish)),
+                    'previus_date' => $previus_date,
                     'technical_report' => $request->technical_report,
                     'nci' => $request->nci,
                     'legal_report' => $request->legal_report,
-                    'observations' => $request->observations
+                    'observations' => $request->observations,
+                    'details' => $request->details
                 ]);
             }
 
@@ -646,6 +651,12 @@ class ContractsController extends Controller
         }else{
             $contract->workers = $contract->workers_memo != null && $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
         }
+
+        if($document == 'eventual.resolution' || $document == 'consultor.addendum-sedeges'){
+            $pdf = PDF::loadView('management.docs.'.$document, compact('contract'));
+            return $pdf->setPaper('legal')->stream();
+        }
+
         return view('management.docs.'.$document, compact('contract'));
     }
 

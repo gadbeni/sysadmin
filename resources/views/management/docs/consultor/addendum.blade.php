@@ -63,7 +63,7 @@
         <p><em>El presente {{ request('type') == 'first' ? 'Primer' : 'Segundo'  }} Contrato Modificatorio entrar&aacute; en vigencia desde </em><strong><em>{{ date('d', strtotime($addendums->first()->start)) }} de {{ $months[intval(date('m', strtotime($addendums->first()->start)))] }} al {{ date('d', strtotime($addendums->first()->finish)) }} de {{ $months[intval(date('m', strtotime($addendums->first()->finish)))] }} de {{ date('Y', strtotime($addendums->first()->finish)) }}.</em></strong></p>
         <p>
             <strong><em>MONTO. &ndash;</em></strong> 
-            @include('management.docs.consultor.partials.payment_details', ['contract' => $contract, 'contract_start' => $addendums->first()->start, 'contract_finish' => $addendums->first()->finish])
+            @include('management.docs.consultor.partials.payment_details', ['subtitle' => '', 'contract' => $contract, 'contract_start' => $addendums->first()->start, 'contract_finish' => $addendums->first()->finish])
             La cancelaci&oacute;n del servicio prestado se realizar&aacute; previa presentaci&oacute;n y aprobaci&oacute;n de informe de actividades de acuerdo a T&eacute;rminos de Referencia, aprobado por su inmediato superior.
         </p>
         
