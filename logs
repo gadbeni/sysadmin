@@ -1,4 +1,5 @@
 - ejecutar seeders de AssetsCategoriesTableSeeder
 
 NOTA:
-- anular adenda
+- anular resolucón de contrato
+- al anular contrato ver si el contrato no tiene planillas de ese mes o es mayor a 30 días y esa es su última planilla

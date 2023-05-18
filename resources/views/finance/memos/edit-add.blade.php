@@ -102,7 +102,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="person_external_id">A la orden de</label>
                                     <div class="input-group">
-                                        <select name="person_external_id" id="select-person_external_id" class="form-control select2" required>
+                                        <select name="person_external_id" id="select-person_external_id" class="form-control select2 select-person_external_id" required>
                                             <option value="">--Seleccione orden--</option>
                                             @foreach (App\Models\PersonExternal::where('deleted_at', NULL)->get() as $item)
                                             <option value="{{ $item->id }}">{{ $item->full_name }} - CI: {{ $item->ci_nit  }}</option>
@@ -112,6 +112,20 @@
                                             <button class="btn btn-success" data-toggle="modal" data-target="#add-external-person-modal" style="margin: 0px" type="button">
                                                 <i class="glyphicon glyphicon-plus"></i> Nuevo
                                             </button>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <a href="#more-options" class="btn btn-link" data-toggle="collapse"> <i class="fa fa-plus"></i> Agregar beneficiario</a>
+                                    </div>
+                                    <div id="more-options" class="collapse">
+                                        <div class="row">
+                                            <div class="form-group col-md-12">
+                                                <select name="memos_additional_people_id[]" id="select-memos_additional_people_id" class="form-control select2 select-person_external_id" multiple>
+                                                    @foreach (App\Models\PersonExternal::where('deleted_at', NULL)->get() as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->full_name }} - CI: {{ $item->ci_nit  }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -341,7 +355,7 @@
                         toastr.error('Ocurrió un error inesperado', 'Error');
                         return;    
                     }
-                    $('#select-person_external_id').append(`<option value="${res.id}">${res.full_name} - CI: ${res.ci_nit}</option>`);
+                    $('.select-person_external_id').append(`<option value="${res.id}">${res.full_name} - CI: ${res.ci_nit}</option>`);
                     $('#add-external-person-modal').modal('hide');
                     toastr.success('Beneficiario guardado exitosamente', 'Bien hecho');
 
@@ -353,11 +367,18 @@
             });
 
             @isset($memo)
-                $('#select-memos_type_id').val("{{ $memo->memos_type_id }}").trigger('change');
-                $('#select-origin_id').val("{{ $memo->origin_id }}").trigger('change');
-                $('#select-destiny_id').val("{{ $memo->destiny_id }}").trigger('change');
-                $('#select-type').val("{{ $memo->type }}").trigger('change');
-                $('#select-person_external_id').val("{{ $memo->person_external_id }}").trigger('change');
+                var memo = @json($memo);
+                $('#select-memos_type_id').val(memo.memos_type_id).trigger('change');
+                $('#select-origin_id').val(memo.origin_id).trigger('change');
+                $('#select-destiny_id').val(memo.destiny_id).trigger('change');
+                $('#select-type').val(memo.type).trigger('change');
+                $('#select-person_external_id').val(memo.person_external_id).trigger('change');
+
+                var additional_person = [];
+                console.log(memo)
+                memo.additional_person.map( data => additional_person.push(data.person_external.id));
+                console.log(additional_person)
+                $('#select-memos_additional_people_id').val(additional_person).trigger('change');
             @endisset
         });
     </script>

@@ -3,6 +3,7 @@
 @php
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
     $code = str_pad($memo->code, 9, "0", STR_PAD_LEFT);
+    // dd($memo->additional_person);
 @endphp
 
 @section('page_title', 'Memorámdum '.$code)
@@ -38,15 +39,42 @@
             </div>
             <br><br>
             <p>
-                Previa revisión y certificación de presupuesto mediante comprobante preventivo número: <b>{{ $memo->number }}</b> D.A. <b>{{ $memo->da_sigep }}</b> FTE: <b>{{ $memo->source }}</b> sirvase <b>realizar la/el {{ $memo->type }} de Recursos Económicos la suma de Bs.- {{ Str::upper(NumerosEnLetras::convertir(number_format($memo->amount, 2, '.', ''), 'Bolivianos', true)) }}</b> a la orden de, 
-                @if ($memo->person_external->number_acount)
-                    CTA. CTE. <b>{{ $memo->person_external->number_acount }}</b>, a nombre de 
-                @endif
-                 <b>{{ $memo->person_external->full_name }}</b> 
-                @if ($memo->person_external->ci_nit)
-                    <b>con C.I. {{ $memo->person_external->ci_nit }}</b>; 
+                Previa revisión y certificación de presupuesto mediante comprobante preventivo número: <b>{{ $memo->number }}</b> D.A. <b>{{ $memo->da_sigep }}</b> FTE: <b>{{ $memo->source }}</b> sirvase <b>realizar la/el {{ $memo->type }} de Recursos Económicos la suma de Bs.- {{ Str::upper(NumerosEnLetras::convertir(number_format($memo->amount, 2, '.', ''), 'Bolivianos', true)) }}</b> a la orden de
+                @if ($memo->additional_person->count())
+                    : <br>
+                    <ul>
+                        <li>
+                            @if ($memo->person_external->number_acount)
+                                CTA. CTE. <b>{{ $memo->person_external->number_acount }}</b>, a nombre de 
+                            @endif
+                            <b>{{ $memo->person_external->full_name }}</b> 
+                            @if ($memo->person_external->ci_nit)
+                                <b>con C.I. {{ $memo->person_external->ci_nit }}</b>.
+                            @endif
+                        </li>
+                        @foreach ($memo->additional_person as $additional_person)
+                        <li>
+                            @if ($additional_person->person_external->number_acount)
+                                CTA. CTE. <b>{{ $additional_person->person_external->number_acount }}</b>, a nombre de 
+                            @endif
+                            <b>{{ $additional_person->person_external->full_name }}</b> 
+                            @if ($additional_person->person_external->ci_nit)
+                                <b>con C.I. {{ $additional_person->person_external->ci_nit }}</b>.
+                            @endif
+                        </li>
+                        @endforeach
+                    </ul>
+
                 @else
-                    ; 
+                    @if ($memo->person_external->number_acount)
+                        CTA. CTE. <b>{{ $memo->person_external->number_acount }}</b>, a nombre de 
+                    @endif
+                    <b>{{ $memo->person_external->full_name }}</b> 
+                    @if ($memo->person_external->ci_nit)
+                        <b>con C.I. {{ $memo->person_external->ci_nit }}</b>; 
+                    @else
+                        ; 
+                    @endif
                 @endif
                 Por concepto de {!! $memo->concept !!}{!! $memo->imputation ? ', según imputación presupuestaria <b>'.$memo->imputation.'</b>.' : '.' !!} Se adjunta dicha documentación de acuerdo a ley.
             </p>

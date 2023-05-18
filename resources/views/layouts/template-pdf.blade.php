@@ -40,7 +40,7 @@
     </style>
 </head>
 <body>
-    <img id="logo" src="{{ asset('images/icon.png') }}" />
+    {{-- <img id="logo" src="{{ asset('images/icon.png') }}" /> --}}
     <div id="watermark">
         <img src="{{ asset('images/icon.png') }}" /> 
     </div>

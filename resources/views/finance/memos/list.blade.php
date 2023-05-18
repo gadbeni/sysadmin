@@ -40,10 +40,21 @@
                         <td>
                             {{ $item->person_external->full_name }} <br>
                             @if ($item->person_external->ci_nit)
-                            <small>CI: {{ $item->person_external->ci_nit }}</small> <br>
+                                <small>CI: {{ $item->person_external->ci_nit }}</small> <br>
                             @endif
                             @if ($item->person_external->number_acount)
-                            <small>{{ $item->person_external->number_acount }}</small>
+                                <small>{{ $item->person_external->number_acount }}</small>
+                            @endif
+                            @if ($item->additional_person->count())
+                                @foreach ($item->additional_person as $additional_person)
+                                    {{ $additional_person->person_external->full_name }} <br>
+                                    @if ($item->person_external->ci_nit)
+                                        <small>CI: {{ $additional_person->person_external->ci_nit }}</small> <br>
+                                    @endif
+                                    @if ($additional_person->person_external->number_acount)
+                                        <small>{{ $additional_person->person_external->number_acount }}</small>
+                                    @endif
+                                @endforeach
                             @endif
                         </td>
                         <td>{{ number_format($item->amount, 2, ',', '.') }}</td>

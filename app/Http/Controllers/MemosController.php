@@ -10,6 +10,7 @@ use Carbon\Carbon;
 // Models
 use App\Models\Memo;
 use App\Models\Contract;
+use App\Models\MemosAdditionalPerson;
 
 class MemosController extends Controller
 {
@@ -70,7 +71,7 @@ class MemosController extends Controller
         // dd($request->all());
         try {
             $last_memo = Memo::orderBy('id', 'DESC')->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)->first();
-            Memo::create([
+            $memo = Memo::create([
                 'user_id' => Auth::user()->id,
                 'direccion_administrativa_id' => Auth::user()->direccion_administrativa_id,
                 'origin_id' => $request->origin_id,
@@ -89,6 +90,16 @@ class MemosController extends Controller
                 'imputation' => $request->imputation,
                 'date' => $request->date
             ]);
+
+            if($request->memos_additional_people_id){
+                for ($i=0; $i < count($request->memos_additional_people_id); $i++) { 
+                    MemosAdditionalPerson::create([
+                        'memo_id' => $memo->id,
+                        'person_external_id' => $request->memos_additional_people_id[$i]
+                    ]);
+                }
+            }
+
             return redirect()->route('memos.index')->with(['message' => 'Memorándum guardado exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             dd($th);
@@ -125,7 +136,7 @@ class MemosController extends Controller
     public function edit($id)
     {
         $this->custom_authorize('edit_memos');
-        $memo = Memo::find($id);
+        $memo = Memo::with(['additional_person.person_external'])->where('id', $id)->first();
         return view('finance.memos.edit-add', compact('memo'));
     }
 

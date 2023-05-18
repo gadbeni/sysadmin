@@ -498,7 +498,7 @@
 
             @isset($contract)
                 let workers_memo = '{!! $contract->workers_memo_alt !!}' ? JSON.parse('{!! $contract->workers_memo_alt !!}') : [];
-                $('#select-workers_memo').val(workers_memo);
+                $('#select-workers_memo').val(workers_memo).trigger('change');
                 $('.div-{{ $contract->procedure_type_id }}').fadeIn('fast');
                 setTimeout(() => {
                     $('#select-procedure_type_id').val("{{ $contract->procedure_type_id }}").trigger('change');
