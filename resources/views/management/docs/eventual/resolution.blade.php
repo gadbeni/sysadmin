@@ -28,7 +28,7 @@
         {{-- <p style="text-align: right;">
             <span>{{ Str::upper($contract->direccion_administrativa->city ? $contract->direccion_administrativa->city->name : 'Santísima Trinidad') }}</span>, {{ date('d', strtotime($contract->finish)) }} de {{ Str::upper($months[intval(date('m', strtotime($contract->finish)))]) }} de {{ date('Y', strtotime($contract->finish)) }}
         </p> --}}
-        <table width="100%" style="text-align: center; margin-top: 60px;">
+        <table width="100%" style="text-align: center; margin-top: 50px;">
             <tr>
                 <td style="width: 50%">
                 </td>
@@ -45,7 +45,8 @@
 @section('css')
     <style>
         .content {
-            padding: 50px 34px;
+            padding-right: 34px; padding-left:34px;
+            padding-top: 50px;
             font-size: 12px;
         }
         .text-center{
