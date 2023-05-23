@@ -10,8 +10,7 @@
 
 @section('content')
     <div class="content" style="text-align: justify">
-	    <br><br>
-        <h2 class="text-center" style="font-size: 15px">RESOLUCIÓN DE CONTRATO N° {{ $contract->direccion_administrativa->sigla }} {{ $contract->finished->code }}, CONTRATO ADMINISTRATIVO DE PERSONAL EVENTUAL GAD-BENI {{ $code }}, SUSCRITO ENTRE EL GAD BENI Y {{ $contract->person->gender == 'masculino' ? 'EL SEÑOR' : 'LA SEÑORA' }} {{ Str::ucfirst($contract->person->first_name) }} {{ Str::ucfirst($contract->person->last_name) }}</h2>
+        <h2 class="page-head" style="font-size: 15px">RESOLUCIÓN DE CONTRATO N° {{ $contract->direccion_administrativa->sigla }} {{ $contract->finished->code }}, CONTRATO ADMINISTRATIVO DE PERSONAL EVENTUAL GAD-BENI {{ $code }}, SUSCRITO ENTRE EL GAD BENI Y {{ $contract->person->gender == 'masculino' ? 'EL SEÑOR' : 'LA SEÑORA' }} {{ Str::ucfirst($contract->person->first_name) }} {{ Str::ucfirst($contract->person->last_name) }}</h2>
         <p>Conste por el presente documento, la Resolución de CONTRATO ADMINISTRATIVO DE PERSONAL EVENTUAL GAD-BENI {{ $code }} suscrito en fecha {{ date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)) }}, Suscrito entre el Gobierno Autónomo Departamental del Beni y {{ $contract->person->gender == 'masculino' ? 'el señor' : 'la señora' }} {{ $contract->person->first_name }} {{ $contract->person->last_name }}, al tenor de las siguientes clausulas:</p>
         <p><b>CLAUSULA PRIMERA. - (ANTECEDENTES)</b> Recomendando se dirá que en fecha {{ date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))] }}, el Gobierno Autónomo Departamental del Beni, representada legalmente por el/la {{ $signature ? $signature->name : setting('firma-autorizada.name') }} designado mediante <b>{{ $signature ? $signature->designation_type : 'Resolución de Gobernación' }} N° {{ $signature ? $signature->designation : setting('firma-autorizada.designation') }}</b>,  de {{ $signature ? date('d', strtotime($signature->designation_date)).' de '.$months[intval(date('m', strtotime($signature->designation_date)))].' de '.date('Y', strtotime($signature->designation_date)) : setting('firma-autorizada.designation-date') }}, en su calidad de <b>{{ Str::ucfirst($signature ? $signature->job : setting('firma-autorizada.job')) }}</b>, Con Cedula de Identidad N° {{ $signature ? $signature->ci : setting('firma-autorizada.ci') }}, suscribió un contrato de prestación de servicios de personal eventual Con <b>{{ $contract->person->gender == 'masculino' ? 'el señor' : 'la señora' }} {{ $contract->person->first_name }} {{ $contract->person->last_name }}</b>, con cedula de identidad <b>N° {{ $contract->person->ci }}</b>,  con el objeto de que el Contratado desempeñe funciones como <b>{{ Str::upper($contract->cargo->Descripcion) }}</b> en dependencia de <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b>, Contratación realizada en el marco de la Ley 1178, las normas básicas de la administración de personal, Ley 2027, Ley 1493, Ley del presupuesto General del Estado, además de lo estipulado en el presente contrato, mismo que tiene una vigencia desde el {{ date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))] }} hasta el {{ date('d', strtotime($contract->finished->previus_date)).' de '.$months[intval(date('m', strtotime($contract->finished->previus_date)))].' de '.date('Y', strtotime($contract->finished->previus_date)) }}.</p>
         <p>Recomendando el <b>INFORME TECNICO</b> {{ $contract->finished->technical_report }}</p>
@@ -44,13 +43,13 @@
 
 @section('css')
     <style>
-        .content {
-            padding-right: 34px; padding-left:34px;
-            padding-top: 50px;
-            font-size: 12px;
-        }
-        .text-center{
+        .page-head {
             text-align: center;
+            padding-top: 80px;
+        }
+        .content {
+            padding: 0px 30px 0px 30px;
+            font-size: 12px;
         }
     </style>
 @endsection

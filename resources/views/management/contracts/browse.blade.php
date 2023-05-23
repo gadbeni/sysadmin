@@ -36,7 +36,7 @@
                         <div class="row">
                             <div class="col-sm-9">
                                 <div class="dataTables_length" id="dataTable_length">
-                                    <label>Mostrar <select id="select-paginate" class="form-control input-sm">
+                                    <label>Mostrar <select id="select-paginate" class="form-control input-sm select-filter">
                                         <option value="10">10</option>
                                         <option value="25">25</option>
                                         <option value="50">50</option>
@@ -53,27 +53,37 @@
                             <div class="col-sm-12">
                                 <div id="more-options" class="collapse">
                                     <div class="row">
-                                        <div class="form-group col-md-4">
+                                        <div class="form-group col-md-3">
                                             <label for="procedure_type_id">Tipo de contrato</label>
-                                            <select name="procedure_type_id" class="form-control select2" id="select-procedure_type_id">
+                                            <select name="procedure_type_id" class="form-control select2 select-filter" id="select-procedure_type_id">
                                                 <option value="">Todos</option>
                                                 <option value="1">Permanente</option>
                                                 <option value="5">Eventual</option>
                                                 <option value="2">Consultoría de línea</option>
                                             </select>
                                         </div>
-                                        <div class="form-group col-md-4">
+                                        <div class="form-group col-md-3">
                                             <label for="direccion_administrativa_id">Dirección administrativa</label>
-                                            <select name="direccion_administrativa_id" class="form-control select2" id="select-direccion_administrativa_id">
+                                            <select name="direccion_administrativa_id" class="form-control select2 select-filter" id="select-direccion_administrativa_id">
                                                 <option value="">Todas</option>
                                                 @foreach (App\Models\Direccion::where('estado', 1)->where('deleted_at', null)->get() as $item)
                                                 <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="form-group col-md-4">
+                                        <div class="form-group col-md-3">
+                                            <label for="status">Estado</label>
+                                            <select name="status" class="form-control select2 select-filter" id="select-status">
+                                                <option value="">Todos</option>
+                                                <option value="elaborado">Elaborado</option>
+                                                <option value="enviado">Enviado</option>
+                                                <option value="firmado">Firmado</option>
+                                                <option value="concluido">Concluido</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3">
                                             <label for="user_id">Registrado por</label>
-                                            <select name="user_id" class="form-control select2" id="select-user_id">
+                                            <select name="user_id" class="form-control select2 select-filter" id="select-user_id">
                                                 <option value="">Todos los usuarios</option>
                                                 @foreach (App\Models\User::where('deleted_at', null)->whereRaw("id in (select user_id from contracts where deleted_at is null)")->where('role_id', '>', Auth::user()->role_id == 1 ? 0 : 1)->get() as $item)
                                                 <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -261,13 +271,12 @@
                             <div class="form-group col-md-6">
                                 <label for="start">Inicio</label>
                                 <input type="date" name="start" class="form-control" readonly required>
-                                <span id="alert-weekend" class="text-danger" style="font-weight: bold !important">Fin de semana</span>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="finish">Fin</label>
                                 <input type="date" name="finish" class="form-control" required>
                             </div>
-                            <div class="form-group col-md-12 div-eventual">
+                            <div class="form-group col-md-12 div-eventual-consultor_sedeges">
                                 <label for="applicant_id">Solicitante</label>
                                 <select name="applicant_id" id="select-applicant_id" class="form-control">
                                     <option value="">--Seleccione una opción--</option>
@@ -276,6 +285,8 @@
                                     @endforeach
                                 </select>
                             </div>
+
+                            {{-- Eventual central --}}
                             <div class="form-group col-md-6 div-eventual">
                                 <label for="nci_code">NCI</label>
                                 <input type="text" name="nci_code" class="form-control" >
@@ -285,13 +296,25 @@
                                 <input type="date" name="nci_date" class="form-control" >
                             </div>
                             <div class="form-group col-md-6 div-eventual">
-                                <label for="finish">Certificación presupuestaria</label>
+                                <label for="certification_code">Certificación presupuestaria</label>
                                 <input type="text" name="certification_code" class="form-control" >
                             </div>
                             <div class="form-group col-md-6 div-eventual">
-                                <label for="finish">Fecha de certificación presupuestaria</label>
+                                <label for="certification_date">Fecha de certificación presupuestaria</label>
                                 <input type="date" name="certification_date" class="form-control" >
                             </div>
+
+                            {{-- Consultor SEDEGES --}}
+                            <div class="form-group col-md-6 div-consultor_sedeges">
+                                <label for="request_date">Fecha de solicitud</label>
+                                <input type="date" name="request_date" class="form-control" >
+                            </div>
+                            <div class="form-group col-md-6 div-consultor_sedeges">
+                                <label for="legal_report_date">Fecha de informe legal</label>
+                                <input type="date" name="legal_report_date" class="form-control" >
+                            </div>
+                            
+
                             <div class="form-group col-md-12">
                                 <label for="signature_id">Firma autorizada</label>
                                 <select name="signature_id" class="form-control select2">
@@ -300,6 +323,11 @@
                                     <option @if($item->direccion_administrativa_id == Auth::user()->direccion_administrativa_id) selected @endif value="{{ $item->id }}">{{ $item->designation }} {{ $item->name }} - {{ $item->job }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label for="signature_date">Fecha de suscripción de adenda</label>
+                                <input type="date" name="signature_date" class="form-control" required>
+                                <span id="alert-weekend" class="text-danger" style="font-weight: bold !important">Fin de semana</span>
                             </div>
                             <div class="form-group col-md-12 text-right" style="margin-bottom: 0px">
                                 <div class="checkbox">
@@ -419,6 +447,7 @@
         var countPage = 10, order = 'id', typeOrder = 'desc';
         var procedure_type_id = '';
         var direccion_administrativa_id = '';
+        var status = '';
         var user_id = '';
 
         $(document).ready(() => {
@@ -430,22 +459,11 @@
                 }
             });
 
-            $('#select-paginate').change(function(){
-                countPage = $(this).val();
-                list();
-            });
-
-            $('#select-procedure_type_id').change(function(){
+            $('.select-filter').change(function(){
+                countPage = $('#select-paginate option:selected').val();
                 procedure_type_id = $('#select-procedure_type_id option:selected').val();
-                list();
-            });
-
-            $('#select-direccion_administrativa_id').change(function(){
                 direccion_administrativa_id = $('#select-direccion_administrativa_id option:selected').val();
-                list();
-            });
-
-            $('#select-user_id').change(function(){
+                status = $('#select-status option:selected').val();
                 user_id = $('#select-user_id option:selected').val();
                 list();
             });
@@ -506,7 +524,7 @@
             let url = '{{ url("admin/contracts/ajax/list") }}';
             let search = $('#input-search').val() ? $('#input-search').val() : '';
             $.ajax({
-                url: `${url}?search=${search}&procedure_type_id=${procedure_type_id}&direccion_administrativa_id=${direccion_administrativa_id}&user_id=${user_id}&paginate=${countPage}&page=${page}`,
+                url: `${url}?search=${search}&procedure_type_id=${procedure_type_id}&direccion_administrativa_id=${direccion_administrativa_id}&user_id=${user_id}&status=${status}&paginate=${countPage}&page=${page}`,
                 type: 'get',
                 success: function(response){
                     $('#div-results').html(response);

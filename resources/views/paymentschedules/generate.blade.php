@@ -194,12 +194,12 @@
                                             $retirement = number_format($total_amout * 0.1, 2, '.', '');
                                             
                                             // Si es mayor a 57 y menos a 65 años y tiene su AFP inactiva no paga jubilación
-                                            if($age >= 58 && $age < 65 && $item->person->afp_status == 0){
+                                            if($age > 57 && $age < 65 && $item->person->afp_status == 0){
                                                 $retirement = 0;
                                             }
 
                                             // Si es mayor a 64 años y tiene su AFP activa no paga riesgo común
-                                            if($age >= 65 && $item->person->afp_status == 1){
+                                            if($age > 64 && $item->person->afp_status == 1){
                                                 $common_risk = 0;
                                             }
 

@@ -159,6 +159,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = "read_people" or
                                                 `key` = "add_irremovability_people" or
                                                 `key` = "browse_reportssocial-securitypayrollpayments" or
+                                                `key` = "browse_reportssocial-securitycontracts" or
                                                 `key` = "browse_contracts"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 

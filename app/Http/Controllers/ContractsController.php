@@ -52,6 +52,7 @@ class ContractsController extends Controller
         $this->custom_authorize('browse_contracts');
         $search = request('search') ?? null;
         $procedure_type_id = request('procedure_type_id') ?? null;
+        $status = request('status') ?? null;
         $user_id = request('user_id') ?? null;
         $direccion_administrativa_id = request('direccion_administrativa_id') ?? null;
         $paginate = request('paginate') ?? 10;
@@ -92,6 +93,11 @@ class ContractsController extends Controller
                     ->where(function($query) use ($user_id){
                         if($user_id){
                             $query->whereRaw("user_id = $user_id");
+                        }
+                    })
+                    ->where(function($query) use ($status){
+                        if($status){
+                            $query->whereRaw("status = '$status'");
                         }
                     })
                     ->whereRaw(Auth::user()->role_id == 25 || (Auth::user()->role_id >= 16 & Auth::user()->role_id <= 18) ? 'procedure_type_id = 2' : 1)
@@ -466,11 +472,14 @@ class ContractsController extends Controller
                 'code' => str_pad($count_addendum.'/'.date('Y', strtotime($request->start)), 8, "0", STR_PAD_LEFT),
                 'start' => $request->start,
                 'finish' => $request->finish,
+                'signature_date' => $request->signature_date,
                 'applicant_id' => $request->applicant_id,
                 'nci_date' => $request->nci_date,
                 'nci_code' => $request->nci_code,
                 'certification_date' => $request->certification_date,
-                'certification_code' => $request->certification_code
+                'certification_code' => $request->certification_code,
+                'request_date' => $request->request_date,
+                'legal_report_date' => $request->legal_report_date
             ]);
 
             DB::commit();

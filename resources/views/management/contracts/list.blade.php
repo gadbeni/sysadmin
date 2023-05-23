@@ -343,15 +343,32 @@
         // Crear adenda
         $('.btn-addendum').click(function(){
             let item = $(this).data('item');
+            console.log(item)
             let date = moment(item.finish, "YYYY-MM-DD").add(1, 'days');
             $('#form-addendum input[name="id"]').val(item.id);
             $('#form-addendum input[name="start"]').val(date.format("YYYY-MM-DD"));
+            $('#form-addendum input[name="signature_date"]').val(date.format("YYYY-MM-DD"));
             $('#form-addendum input[name="finish"]').attr('min', date.format("YYYY-MM-DD"));
 
+            // Si es eventual
             if(item.procedure_type_id == 5){
                 $('.div-eventual').fadeIn();
             }else{
                 $('.div-eventual').fadeOut();
+            }
+
+            // Si es eventual o es consultor del SEDEGES
+            if(item.procedure_type_id == 5 || (item.procedure_type_id == 2 && item.direccion_administrativa_id == 5)){
+                $('.div-eventual-consultor_sedeges').fadeIn();
+            }else{
+                $('.div-eventual-consultor_sedeges').fadeOut();
+            }
+
+            // Si es consultor del SEDEGES
+            if(item.procedure_type_id == 2 && item.direccion_administrativa_id == 5){
+                $('.div-consultor_sedeges').fadeIn();
+            }else{
+                $('.div-consultor_sedeges').fadeOut();
             }
 
             if(date.weekday() > 4){

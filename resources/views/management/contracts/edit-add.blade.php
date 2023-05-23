@@ -191,7 +191,7 @@
                                     <input type="date" name="date_memo_res" value="{{ isset($contract) ? $contract->date_memo_res : '' }}" class="form-control">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="workers_memo">Comisión de contratación</label>
+                                    <label for="workers_memo">Responsable(s) de evaluación</label>
                                     <select name="workers_memo[]" id="select-workers_memo" class="form-control" multiple>
                                         @foreach ($contracts->sortBy('person.last_name') as $item)
                                         <option value="{{ $item->id }}">{{ $item->person->first_name }} {{ $item->person->last_name }} - {{ $item->cargo_id ? $item->cargo->Descripcion : $item->job->name }}</option>                                                

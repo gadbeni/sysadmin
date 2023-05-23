@@ -12,7 +12,7 @@ class Addendum extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'contract_id', 'code', 'signature_id', 'applicant_id', 'nci_date', 'nci_code', 'certification_date', 'certification_code', 'start', 'finish', 'observations', 'status'
+        'contract_id', 'signature_id', 'applicant_id', 'code', 'nci_date', 'nci_code', 'certification_date', 'certification_code', 'start', 'finish', 'signature_date', 'request_date', 'legal_report_date', 'observations', 'status'
     ];
 
     public function signature(){

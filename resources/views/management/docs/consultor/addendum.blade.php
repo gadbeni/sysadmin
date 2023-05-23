@@ -1,4 +1,4 @@
-@extends('layouts.template-print-legal')
+@extends('layouts.template-logo-pdf')
 
 @section('page_title', 'Ampliación de Contrato')
 
@@ -20,9 +20,8 @@
 @section('content')
     <div class="content">
         <div class="page-head">
-            <p><strong>CONTRATO MODIFICATORIO DE CONSULTORIA INDIVIDUAL DE LINEA {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }} N&deg; {{ $addendums->first()->code }} RELACIONADO AL CONTRATO {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }}/GAD-BENI N&deg; {{ $code }} </strong></p>
+            <h3>CONTRATO MODIFICATORIO DE CONSULTORIA INDIVIDUAL DE LINEA {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }} N&deg; {{ $addendums->first()->code }} RELACIONADO AL CONTRATO {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }}/GAD-BENI N&deg; {{ $code }} </h3>
         </div>
-        <p>&nbsp;</p>
         <p>
             Conste por el presente Contrato Modificatorio de Consultor&iacute;a Individual de L&iacute;nea, que tiene como <strong>Contrato Principal {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }}/GAD-BENI N&deg; {{ $code }}</strong> el cual data del <strong>{{ date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)) }}</strong> hasta el <strong>{{ date('d', strtotime($addendums->last()->start.' -1 days')).' de '.$months[intval(date('m', strtotime($addendums->last()->start.' -1 days')))].' de '.date('Y', strtotime($addendums->last()->start.' -1 days')) }}</strong>@if (count($addendums) > 1), y un <strong>Primer Contrato Modificatorio N&deg; {{ str_pad($addendums->last()->id, 2, "0", STR_PAD_LEFT) }}/2022</strong> el cual data del <strong>{{ date('d', strtotime($addendums->last()->start)).' de '.$months[intval(date('m', strtotime($addendums->last()->start)))].' de '.date('Y', strtotime($addendums->last()->start)) }}</strong> hasta el <strong>{{ date('d', strtotime($addendums->last()->finish)).' de '.$months[intval(date('m', strtotime($addendums->last()->finish)))].' de '.date('Y', strtotime($addendums->last()->finish)) }}</strong>@endif.
         </p>
@@ -93,27 +92,17 @@
         <p>En se&ntilde;al de aceptaci&oacute;n y conformidad con todas y cada una de las cl&aacute;usulas establecidas en el presente <strong>CONTRATO</strong> <strong>MODIFICATORIO</strong>, firman las partes manifestando su entero consentimiento y conformidad con todas y cada una de las cl&aacute;usulas del presente documento oblig&aacute;ndose a su fiel y estricto cumplimiento, en cuya se&ntilde;al suscriben en cuatro ejemplares de un mismo tenor.&nbsp;</p>
         <p>Este documento, conforme a disposiciones legales de control fiscal vigente, ser&aacute; registrado ante la Contralor&iacute;a General del Estado.</p>
         <p>&nbsp;</p>
+
         <p style="text-align: right;">
-            <select id="location-id">
-                @foreach (App\Models\City::where('states_id', 1)->where('deleted_at', NULL)->get() as $item)
-                <option @if($item->name == $contract->direccion_administrativa->city->name) selected @endif value="{{ Str::upper($item->name) }}">{{ Str::upper($item->name) }}</option>
-                @endforeach
-            </select>
             @php
-                $fecha_firma = $addendums->first()->start;
-                if(date("N", strtotime($fecha_firma)) == 6){
-                    $fecha_firma = date('Y-m-d', strtotime($fecha_firma." +2 day"));
-                }
-                if(date("N", strtotime($fecha_firma)) == 7){
-                    $fecha_firma = date('Y-m-d', strtotime($fecha_firma." +1 day"));
-                }
+                $signature_date = $addendums->first()->signature_date ?? $addendums->first()->start;
             @endphp
-            <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($fecha_firma)) }} de {{ $months[intval(date('m', strtotime($fecha_firma)))] }} de {{ date('Y', strtotime($fecha_firma)) }}
+            <span>{{ Str::upper($contract->direccion_administrativa->city ? $contract->direccion_administrativa->city->name : 'Santísima Trinidad') }}</span>, {{ date('d', strtotime($signature_date)) }} de {{ Str::upper($months[intval(date('m', strtotime($signature_date)))]) }} de {{ date('Y', strtotime($signature_date)) }}
         </p>
 
         <br>
 
-        <table width="100%" style="text-align: center; margin: 100px 0px;">
+        <table width="100%" style="text-align: center; margin: 70px 0px;">
             <tr>
                 <td style="width: 50%">
                     ....................................................... <br>
@@ -134,23 +123,11 @@
     <style>
         .page-head {
             text-align: center;
-            padding-top: 50px;
+            padding-top: 30px;
         }
         .content {
-            padding: 0px 34px;
+            padding: 0px 30px 0px 30px;
             font-size: 12px;
-        }
-        .saltopagina{
-            display: none;
-        }
-        @media print{
-            .saltopagina{
-                display: block;
-                page-break-before: always;
-            }
-            .pt{
-                height: 90px;
-            }
         }
     </style>
 @endsection

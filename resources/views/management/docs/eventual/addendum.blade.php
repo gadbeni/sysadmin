@@ -1,4 +1,4 @@
-@extends('layouts.template-print-legal')
+@extends('layouts.template-logo-pdf')
 
 @section('page_title', 'Ampliación de contrato')
 
@@ -134,17 +134,10 @@
             padding: 0px 34px;
             font-size: 12px;
         }
-        .saltopagina{
-            display: none;
-        }
         table td{
             vertical-align: top
         }
         @media print{
-            .saltopagina{
-                display: block;
-                page-break-before: always;
-            }
             .pt{
                 height: 90px;
             }
