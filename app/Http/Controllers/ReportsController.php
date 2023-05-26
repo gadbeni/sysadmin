@@ -921,9 +921,16 @@ class ReportsController extends Controller
 
             // Si se elije una AFP, se filtran los contratos que correspondan a esa AFP
             if($afp){
+                // NOTA: En caso de que sea el periodo 202304 no se hace filtro de AFP (Orden de RRHH y Bienestar Laboral)
+                if($data){
+                    $se_filtra = $data->period_id == 16 ? false : true;
+                }
+
                 $details = collect();
                 foreach($data->details as $detail){
-                    if($detail->afp == $afp){
+                    if($detail->afp == $afp && $se_filtra){
+                        $details->push($detail);
+                    }elseif(!$se_filtra){
                         $details->push($detail);
                     }
                 }

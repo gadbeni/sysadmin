@@ -237,21 +237,22 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
                     $total_amount = $item->sum('partial_salary') + $item->sum('seniority_bonus_amount');
 
                     array_push($datos, [
-                        'A' => 'CI',
-                        'B' => $item[0]->contract->person->ci,
-                        'C' => count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '',
-                        'D' => $item[0]->contract->person->nua_cua,
-                        'E' => explode(' ', $item[0]->contract->person->last_name)[0],
-                        'F' => count(explode(' ', $item[0]->contract->person->last_name)) > 1 ? explode(' ', $item[0]->contract->person->last_name)[1] : '',
-                        'G' => '',
-                        'H' => explode(' ', $item[0]->contract->person->first_name)[0],
-                        'I' => count(explode(' ', $item[0]->contract->person->first_name)) > 1 ? explode(' ', $item[0]->contract->person->first_name)[1] : '',
-                        'J' => $novelty,
-                        'K' => $novelty_date ? $novelty_date : '',
-                        'L' => $worked_days,
-                        'M' => 'D',
-                        'N' => $total_amount,
-                        'O' => 0,
+                        'A' => $cont,
+                        'B' => 'CI',
+                        'C' => $item[0]->contract->person->ci,
+                        'D' => count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '',
+                        'E' => $item[0]->contract->person->nua_cua,
+                        'F' => explode(' ', $item[0]->contract->person->last_name)[0],
+                        'G' => count(explode(' ', $item[0]->contract->person->last_name)) > 1 ? explode(' ', $item[0]->contract->person->last_name)[1] : '',
+                        'H' => '',
+                        'I' => explode(' ', $item[0]->contract->person->first_name)[0],
+                        'J' => count(explode(' ', $item[0]->contract->person->first_name)) > 1 ? explode(' ', $item[0]->contract->person->first_name)[1] : '',
+                        'K' => $novelty,
+                        'L' => $novelty_date ? $novelty_date : '',
+                        'M' => $worked_days,
+                        'N' => 'D',
+                        'O' => $total_amount,
+                        'P' => "0.00",
                     ]);
                     $cont++;
                 }
@@ -308,6 +309,7 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
             ];
         }elseif($this->type == 3){
             return [
+                'No',
                 'Tipo Doc',
                 'Numero Documento',
                 'Alfa Numero',

@@ -292,6 +292,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'edit_contracts' or
                                             `key` = 'add_contracts' or
                                             `key` = 'upgrade_contracts' or
+                                            `key` = 'add_addendum_contracts' or
                                             `key` = 'browse_cities' or
                                             `key` = 'edit_cities' or
                                             `key` = 'add_cities' or

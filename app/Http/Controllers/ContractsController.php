@@ -547,8 +547,8 @@ class ContractsController extends Controller
 
             // Crear contrato
             $d_a = Direccion::find(Job::find($request->job_id)->direccion_administrativa_id);
-            $last_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
-                                    ->where('procedure_type_id', $request->procedure_type_id)
+            $last_contract = Contract::whereYear('start', date('Y', strtotime($request->date)))
+                                    ->where('procedure_type_id', $contract->procedure_type_id)
                                     ->where('direccion_administrativa_id', $d_a->id)
                                     ->orderBy('id', 'DESC')->first();
             $number_contract = $last_contract ? explode('/', explode('-', $last_contract->code)[1])[0] +1 : 1;
@@ -558,7 +558,7 @@ class ContractsController extends Controller
                 return response()->json(['message' => 'No existe un programa para la planilla permanente']);
             }
             
-            $code = $d_a->sigla.'-'.str_pad($number_contract, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
+            $code = $d_a->sigla.'-'.str_pad($number_contract, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->date));
             $new_contratc = Contract::create([
                 'user_id' => Auth::user()->id,
                 'person_id' => $contract->person_id,

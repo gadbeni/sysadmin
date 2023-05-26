@@ -141,7 +141,7 @@
                                     <li><a href="#" class="btn-transfer" data-toggle="modal" data-target="#transfer-modal" data-id="{{ $item->id }}" title="Crear transferencia" >Transferir</a></li>
                                     @endif
                                     {{-- Crear adenda --}}
-                                    @if (auth()->user()->hasPermission('add_addendum_contracts') && $item->status == 'concluido' && count($contracts) == 0 && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5) && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
+                                    @if (auth()->user()->hasPermission('add_addendum_contracts') && ($item->status == 'firmado' || $item->status == 'concluido') && count($contracts) == 0 && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5) && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
                                     <li><a class="btn-addendum" title="Crear adenda" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' href="#">Crear adenda</a></li>
                                     @endif
                                     {{-- Crear memo/resolución --}}
@@ -343,7 +343,6 @@
         // Crear adenda
         $('.btn-addendum').click(function(){
             let item = $(this).data('item');
-            console.log(item)
             let date = moment(item.finish, "YYYY-MM-DD").add(1, 'days');
             $('#form-addendum input[name="id"]').val(item.id);
             $('#form-addendum input[name="start"]').val(date.format("YYYY-MM-DD"));
