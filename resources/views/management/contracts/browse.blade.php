@@ -485,6 +485,9 @@
                         toastr.error(res.error);
                         $('#div-results').loading('toggle');
                     }
+
+                    $('.form-submit').trigger('reset');
+                    $('.btn-submit').removeAttr('disabled');
                 });
             });
 

@@ -465,7 +465,20 @@ class ContractsController extends Controller
         // dd($request->all());
         DB::beginTransaction();
         try {
-            $count_addendum = Addendum::whereYear('start', date('Y'))->count() +1;
+            // Solo para el SEDEGES
+            $contract = Contract::find($request->id);
+            if($contract->direccion_administrativa->direcciones_tipo_id == 5){
+                $count_addendum = Addendum::whereHas('contract', function($q) use($contract){
+                                    $q->where('direccion_administrativa_id', $contract->direccion_administrativa_id);
+                                })->whereYear('start', date('Y'))->count() +1;
+            }else{
+                $count_addendum = Addendum::whereHas('contract.direccion_administrativa', function($q) use($contract){
+                                    $q->where('direcciones_tipo_id', '<>', 5);
+                                })->whereYear('start', date('Y'))->count() +1;
+            }
+
+            // dd($count_addendum);
+            
             Addendum::create([
                 'contract_id' => $request->id,
                 'signature_id' => $request->signature_id ?? NULL,
