@@ -56,7 +56,10 @@
                 El Gobierno Autónomo Departamental del Beni - GAD-BENI, comunica a Usted que a partir de la fecha ha sido {{ $contract->person->gender == 'masculino' ? 'designado' : 'designada' }} para ejercer el cargo de <b>{{ Str::upper($contract->job->name) }}</b>, dependiente de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b>.
             </p>
             <p>
-                Su remuneración será cancelada con cargo a la partida {{ $contract->program->number }}, con un haber mensual de <b>Bs. {{ NumerosEnLetras::convertir($contract->job->salary, 'Bolivianos', true) }}</b>, en el item N&deg; {{ $contract->job->item }} con el nivel salarial <b>{{ $contract->job->level }}</b>, debiendo coordinar con la Dirección Administrativa Financiera para la asignación de activo fijos, manuales y reglamentos que rigen en la entidad.
+                @php
+                    $numeros_a_letras = new NumeroALetras();
+                @endphp
+                Su remuneración será cancelada con cargo a la partida {{ $contract->program->number }}, con un haber mensual de <b>Bs. {{ number_format($contract->job->salary, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice($contract->job->salary, 2, 'Bolivianos') }})</b>, en el item N&deg; {{ $contract->job->item }} con el nivel salarial <b>{{ $contract->job->level }}</b>, debiendo coordinar con la Dirección Administrativa Financiera para la asignación de activo fijos, manuales y reglamentos que rigen en la entidad.
             </p>
             <p>
                 Al desearle éxito en sus funciones, le hacemos conocer que los desarrollos de sus actividades se supeditaran al POAI, instructivos, circulares, memorándums, reglamentos específicos y manuales de procedimientos vigentes del <b>Gobierno Autónomo Departamental del Beni</b> (GAD-BENI), disposiciones con la función pública y otras funciones que fueran asignadas por su inmediato superior.

@@ -6,11 +6,12 @@
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
     $code = $contract->code;
     $signature = $contract->signature;
+    $sueldo = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
 @endphp
 
 @section('qr_code')
     <div id="qr_code">
-        {!! QrCode::size(80)->generate('Personal eventual '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' al '.date('d', strtotime($contract->finish)).' de '.$months[intval(date('m', strtotime($contract->finish)))].' de '.date('Y', strtotime($contract->finish)).' con un sueldo de '.number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.').' Bs.'); !!}
+        {!! QrCode::size(80)->generate('Personal eventual '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' al '.date('d', strtotime($contract->finish)).' de '.$months[intval(date('m', strtotime($contract->finish)))].' de '.date('Y', strtotime($contract->finish)).' con un sueldo de '.number_format($sueldo, 2, ',', '.').' Bs.'); !!}
     </div>
 @endsection
 
@@ -47,7 +48,10 @@
         <div class="pt"></div>
         
         <p><strong><span>CL&Aacute;USULA QUINTA. - (REMUNERACI&Oacute;N). </span></strong></p>
-        <p><span>Por las funciones a ser cumplidas durante la vigencia del presente Contrato, a<strong>l (a) CONTRATADO (A)</strong> se le asignar&aacute; el nivel <strong>{{ $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->NumNivel }}</strong>de nuestra Escala Salarial de Personal Eventual, vigente, percibiendo una remuneraci&oacute;n mensual de <strong>Bs. {{ NumerosEnLetras::convertir(number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 2, '.', ''), 'Bolivianos', true) }}</strong>. Fuera de la remuneraci&oacute;n acordada, <strong>no habr&aacute; lugar al pago de ning&uacute;n incremento u otro beneficio social adicional</strong>, conforme se tiene anotado en su Cl&aacute;usula Cuarta del presente Contrato.</span></p>
+        @php
+            $numeros_a_letras = new NumeroALetras();
+        @endphp
+        <p><span>Por las funciones a ser cumplidas durante la vigencia del presente Contrato, a<strong>l (a) CONTRATADO (A)</strong> se le asignar&aacute; el nivel <strong>{{ $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->NumNivel }}</strong>de nuestra Escala Salarial de Personal Eventual, vigente, percibiendo una remuneraci&oacute;n mensual de <strong>Bs. {{ number_format($sueldo, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice(number_format($sueldo, 2, '.', ''), 2, 'Bolivianos') }})</strong>. Fuera de la remuneraci&oacute;n acordada, <strong>no habr&aacute; lugar al pago de ning&uacute;n incremento u otro beneficio social adicional</strong>, conforme se tiene anotado en su Cl&aacute;usula Cuarta del presente Contrato.</span></p>
         
         <p><strong><span>CL&Aacute;USULA SEXTA. - (PLAZO Y VIGENCIA DE PRESTACI&Oacute;N DEL SERVICIO):</span></strong></p>
         <p><strong><span>{{ $contract->person->gender == 'masculino' ? 'EL CONTRATADO' : 'LA CONTRATADA' }}</span></strong><span> prestar&aacute; los servicios de forma eventual, comput&aacute;ndose la vigencia y el plazo a partir del d&iacute;a de la suscripci&oacute;n del presente Contrato hasta el <strong>{{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}</strong>, dejando en claro qu&eacute;, debido a la naturaleza administrativa y la eventualidad del servicio, no se aplicara la t&aacute;cita reconducci&oacute;n del Contrato al vencimiento del mismo, no siendo necesario la &nbsp;notificaci&oacute;n de culminaci&oacute;n del Contrato.</span></p>

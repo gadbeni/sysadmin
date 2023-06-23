@@ -39,18 +39,19 @@
                 $salary = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
                 $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
                 $periodo = '';
+                $numeros_a_letras = new NumeroALetras();
                 if($contract_duration->months > 0){
                     if($contract_duration->months == 1){
-                        $periodo .= NumerosEnLetras::convertir($contract_duration->months).' mes';
+                        $periodo .= Str::lower($numeros_a_letras->toWords($contract_duration->months)).' mes';
                     }else{
-                        $periodo .= NumerosEnLetras::convertir($contract_duration->months).' meses';
+                        $periodo .= Str::lower($numeros_a_letras->toWords($contract_duration->months)).' meses';
                     }
                 }
                 if($contract_duration->days > 0){
                     if($contract_duration->days == 1){
-                        $periodo .= ' y '.NumerosEnLetras::convertir($contract_duration->days).' día';
+                        $periodo .= ' y '.Str::lower($numeros_a_letras->toWords($contract_duration->days)).' día';
                     }else{
-                        $periodo .= ' y '.NumerosEnLetras::convertir($contract_duration->days).' días';
+                        $periodo .= ' y '.Str::lower($numeros_a_letras->toWords($contract_duration->days)).' días';
                     }
                 }
             @endphp

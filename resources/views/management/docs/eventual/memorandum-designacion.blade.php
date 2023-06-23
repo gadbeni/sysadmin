@@ -6,11 +6,12 @@
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
     $code = $contract->code;
     $signature = $contract->signature;
+    $sueldo = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
 @endphp
 
 @section('qr_code')
     <div id="qr_code">
-        {!! QrCode::size(80)->generate('Personal eventual '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)).' con un sueldo de '.number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.').' Bs.'); !!}
+        {!! QrCode::size(80)->generate('Personal eventual '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)).' con un sueldo de '.number_format($sueldo, 2, ',', '.').' Bs.'); !!}
     </div>
 @endsection
 
@@ -46,7 +47,7 @@
             <br>
             <p style="text-align: center"><u><b>DESIGNACIÓN</b></u></p>
             <p style="margin-top: 50px">
-                Mediante el presente comunico a usted que a partir del <b>{{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} hasta el {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}</b>, es designado para ejercer el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b> bajo la dependencia de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b>, con el nivel salarial <b>{{ $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->NumNivel }}</b> por el monto de <b>Bs. {{ number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 0, ',', '.') }}</b>, con cargo a la Partida Presupuestaria 12100; en cumplimiento a la Constitución Política del Estado, Ley 223 General para Personas con Discapacidad, Estatuto Funcionario Público Ley 2027 Art. 6, Ley 1178, la Ley 1413 del Presupuesto General del Estado de la gestión 2022, su respectivo Decreto Reglamentario y demás normas conexas.    
+                Mediante el presente comunico a usted que a partir del <b>{{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} hasta el {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}</b>, es designado para ejercer el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }}</b> bajo la dependencia de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b>, con el nivel salarial <b>{{ $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->NumNivel }}</b> por el monto de <b>Bs. {{ number_format($sueldo, 0, ',', '.') }}</b>, con cargo a la Partida Presupuestaria 12100; en cumplimiento a la Constitución Política del Estado, Ley 223 General para Personas con Discapacidad, Estatuto Funcionario Público Ley 2027 Art. 6, Ley 1178, la Ley 1413 del Presupuesto General del Estado de la gestión 2022, su respectivo Decreto Reglamentario y demás normas conexas.    
             </p>
             <p>
                 Quedando establecido que se debe formalizar la contratación conforme al Decreto Supremo N° 26115, artículo 18 parágrafo II inciso e) numeral 5, Decreto Supremo 27375 artículo 5.

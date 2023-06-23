@@ -21,7 +21,10 @@
         <p><b>CLAUSULA TERCERA. – NOTIFICACIÓN</b></p>
         <p>Notifíquese la presente Resolución del CONTRATO ADMINISTRATIVO DE PERSONAL EVENTUAL GAD-BENI {{ $code }} por alguno de los medios legales permitidos, en el marco de la Ley 2341 de Procedimientos Administrativos de 23 de abril de 2002 y las reglas generales establecidas en el articulo 82 de la Ley N° 439 de 19 de noviembre de 2013.</p>
         <p>La presente Resolución se encuentra al amparo de los artículos 519 y 569 del Código Civil Boliviano, es decir que el contrato tiene fuerza de Ley entre las partes contratantes. No pudiendo ser disuelto el contrato, sino por conocimiento mutuo o por las causas autorizadas por la Ley y la clausula Novena del contrato mencionado.</p>
-        <p>Es dado en la Ciudad de {{ Str::upper($contract->direccion_administrativa->city ? $contract->direccion_administrativa->city->name : 'Santísima Trinidad') }}, a los {{ NumerosEnLetras::convertir(date('d', strtotime($contract->finish))) }} días del mes de {{ $months[intval(date('m', strtotime($contract->finish)))] }} del año {{ NumerosEnLetras::convertir(date('Y', strtotime($contract->finish))) }}. </p>
+        @php
+            $numeros_a_letras = new NumeroALetras();
+        @endphp
+        <p>Es dado en la Ciudad de {{ Str::upper($contract->direccion_administrativa->city ? $contract->direccion_administrativa->city->name : 'Santísima Trinidad') }}, a los {{ Str::lower($numeros_a_letras->toWords(date('d', strtotime($contract->finish)))) }} días del mes de {{ Str::lower($months[intval(date('m', strtotime($contract->finish)))]) }} del año {{ $numeros_a_letras->toWords(date('Y', strtotime($contract->finish))) }}. </p>
 
         <br><br>
         {{-- <p style="text-align: right;">

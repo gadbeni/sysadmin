@@ -168,7 +168,10 @@
                         </tr>
                         <tr>
                             <td colspan="4" style="text-align: right">
-                                <h3 style="margin: 0px">Son: {{ $planilla ? $planilla->Literal : NumerosEnLetras::convertir(number_format($payment->paymentschedulesdetail->liquid_payable, 2, '.', ''), 'Bolivianos', true) }}</h3>
+                                @php
+                                    $numeros_a_letras = new NumeroALetras();
+                                @endphp
+                                <h3 style="margin: 0px">Son: {{ number_format($planilla ? $planilla->Literal : $payment->paymentschedulesdetail->liquid_payable, 2, ',', '.') }} ({{ $planilla ? $planilla->Literal : $numeros_a_letras->toInvoice(number_format($payment->paymentschedulesdetail->liquid_payable, 2, '.', ''), 2, 'Bolivianos') }})</h3>
                             </td>
                         </tr>
                     </table>

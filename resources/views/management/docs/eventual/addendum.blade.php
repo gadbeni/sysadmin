@@ -84,7 +84,10 @@
                 $duracion_adenda = contract_duration_calculate($addendums->first()->start, $addendums->first()->finish);
             @endphp
             <i>
-                En el presente contrato de personal eventual, se amplia por un tiempo de {{ $duracion_adenda->months }} ({{ NumerosEnLetras::convertir($duracion_adenda->months) }}) {{ $duracion_adenda->months > 1 ? 'meses' : 'mes' }} {{ $duracion_adenda->days > 0 ? ' y '.$duracion_adenda->days.' ('.NumerosEnLetras::convertir($duracion_adenda->days).') días' : '' }}, computables desde el <b>{{ date('d', strtotime($addendums->first()->start)).' de '.$months[intval(date('m', strtotime($addendums->first()->start)))].' de '.date('Y', strtotime($addendums->first()->start)) }}</b> al <b>{{ date('d', strtotime($addendums->first()->finish)).' de '.$months[intval(date('m', strtotime($addendums->first()->finish)))].' de '.date('Y', strtotime($addendums->first()->finish)) }}</b>, sin lugar a tacita reconducción.
+                @php
+                    $numeros_a_letras = new NumeroALetras();
+                @endphp
+                En el presente contrato de personal eventual, se amplia por un tiempo de {{ $duracion_adenda->months }} ({{ Str::lower($numeros_a_letras->toWords($duracion_adenda->months)) }}) {{ $duracion_adenda->months > 1 ? 'meses' : 'mes' }} {{ $duracion_adenda->days > 0 ? ' y '.$duracion_adenda->days.' ('.Str::lower($numeros_a_letras->toWords($duracion_adenda->days)).') días' : '' }}, computables desde el <b>{{ date('d', strtotime($addendums->first()->start)).' de '.$months[intval(date('m', strtotime($addendums->first()->start)))].' de '.date('Y', strtotime($addendums->first()->start)) }}</b> al <b>{{ date('d', strtotime($addendums->first()->finish)).' de '.$months[intval(date('m', strtotime($addendums->first()->finish)))].' de '.date('Y', strtotime($addendums->first()->finish)) }}</b>, sin lugar a tacita reconducción.
             </i>
         </p>
 

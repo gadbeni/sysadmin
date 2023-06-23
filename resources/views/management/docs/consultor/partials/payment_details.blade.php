@@ -71,12 +71,14 @@
     if($dias_ultima_cuota){
         $cantidad_cuotas++;
     }
+     
+    $numeros_a_letras = new NumeroALetras();
 @endphp
 
 <p>
-    {!! $subtitle ? '<b>1.1. MONTO.-</b> ' : '' !!} El monto total a cancelar será de Bs.- <b>{{ NumerosEnLetras::convertir(number_format($amount_total, 2, '.', ''), 'Bolivianos', true) }}</b>, mismo que serán cancelados en {{ Str::lower(NumerosEnLetras::convertir($cantidad_cuotas)) }} ({{ $cantidad_cuotas }}) cuotas mensuales: 
+    {!! $subtitle ? '<b>1.1. MONTO.-</b> ' : '' !!} El monto total a cancelar será de <b>Bs. {{ number_format($amount_total, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice(number_format($amount_total, 2, '.', ''), 2, 'Bolivianos') }})</b>, mismo que serán cancelados en {{ Str::lower($numeros_a_letras->toWords($cantidad_cuotas)) }} ({{ $cantidad_cuotas }}) cuotas mensuales: 
     @if ($dias_primera_cuota)
-        la primera correspondiente a {{ Str::lower(NumerosEnLetras::convertir($dias_primera_cuota)) }} ({{ $dias_primera_cuota }}) días del mes de {{ $months[intval(date('m', strtotime($contract_start)))] }} por <b>Bs.- {{ NumerosEnLetras::convertir(number_format(($salary /30) *$dias_primera_cuota, 2, '.', ''), 'Bolivianos', true) }}</b>
+        la primera correspondiente a {{ Str::lower($numeros_a_letras->toWords($dias_primera_cuota)) }} ({{ $dias_primera_cuota }}) días del mes de {{ $months[intval(date('m', strtotime($contract_start)))] }} por un monto de <b>Bs. {{ number_format(($salary /30) *$dias_primera_cuota, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice(number_format(($salary /30) *$dias_primera_cuota, 2, '.', ''), 2, 'Bolivianos') }})</b>
     @endif
 
     @php
@@ -123,11 +125,11 @@
                 $mes_inicio++;
             @endphp
         @endwhile
-        por un monto mensual de <b>Bs.- {{ NumerosEnLetras::convertir(number_format($salary, 2, '.', ''), 'Bolivianos', true) }}</b>
+        por un monto mensual de <b>Bs. {{ number_format($salary, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice(number_format($salary, 2, '.', ''), 2, 'Bolivianos') }})</b>
     @endif
 
     @if ($dias_ultima_cuota)
-        , la {{ $cardinals[$cantidad_cuotas] }} correspondiente a {{ Str::lower(NumerosEnLetras::convertir($dias_ultima_cuota)) }} ({{ $dias_ultima_cuota }}) días del mes de {{ $months[intval(date('m', strtotime($contract_finish)))] }} por <b>Bs.- {{ NumerosEnLetras::convertir(number_format(($salary /30) *$dias_ultima_cuota, 2, '.', ''), 'Bolivianos', true) }}</b>
+        , la {{ $cardinals[$cantidad_cuotas] }} correspondiente a {{ Str::lower($numeros_a_letras->toWords($dias_ultima_cuota)) }} ({{ $dias_ultima_cuota }}) días del mes de {{ $months[intval(date('m', strtotime($contract_finish)))] }} por un monto de <b>Bs. {{ number_format(($salary /30) *$dias_ultima_cuota, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice(number_format(($salary /30) *$dias_ultima_cuota, 2, '.', ''), 2, 'Bolivianos') }})</b>
     @endif
     .
 </p>

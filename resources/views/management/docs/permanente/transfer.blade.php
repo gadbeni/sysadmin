@@ -44,7 +44,10 @@
             <br>
             {{-- <br> --}}
             <p>
-                Conforme a las atribuciones conferidas y en aplicación del art. 31 del D.S. 26115 Normas Básicas del Sistema de Administración de Personal, comunico a usted que, a partir de la fecha, su persona ha sido transferido al Cargo de <b>{{ Str::upper($contract->job->name) }}</b>, con el Ítem Nº <b>{{ $contract->job->item }}</b>, con el nivel salarial Nº <b>{{ $contract->job->level }}</b>, con una remuneración mensual de <b>Bs. {{ NumerosEnLetras::convertir($contract->job->salary, 'Bolivianos', true) }}</b>, bajo la dependencia de <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b> y ésta a su vez del <b>GOBIERNO AUTÓNOMO DEPARTAMENTAL DEL BENI</b>.
+                @php
+                    $numeros_a_letras = new NumeroALetras();
+                @endphp
+                Conforme a las atribuciones conferidas y en aplicación del art. 31 del D.S. 26115 Normas Básicas del Sistema de Administración de Personal, comunico a usted que, a partir de la fecha, su persona ha sido transferido al Cargo de <b>{{ Str::upper($contract->job->name) }}</b>, con el Ítem Nº <b>{{ $contract->job->item }}</b>, con el nivel salarial Nº <b>{{ $contract->job->level }}</b>, con una remuneración mensual de <b>Bs. {{ number_format($contract->job->salary, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice($contract->job->salary, 2, 'Bolivianos') }})</b>, bajo la dependencia de <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b> y ésta a su vez del <b>GOBIERNO AUTÓNOMO DEPARTAMENTAL DEL BENI</b>.
             </p>
             <p>
                 Así mismo, hacerle conocer que la transferencia, no conlleva el traslado mobiliario. equipos y otros enseres del Área de Origen, se agradece a usted que toda la documentación referente a las funciones que ha venido desempeñando, pueda dejar al día y en completo orden.

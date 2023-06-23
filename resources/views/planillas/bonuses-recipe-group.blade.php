@@ -103,7 +103,10 @@
                 </tr>
                 <tr valign="bottom">
                     <td>
-                        <b>LÍQUIDO PAGABLE: </b> {{ NumerosEnLetras::convertir(number_format($total_amount, 2, '.', ''), 'Bolivianos', true) }}
+                        @php
+                            $numeros_a_letras = new NumeroALetras();
+                        @endphp
+                        <b>LÍQUIDO PAGABLE: </b>Bs. {{ number_format($total_amount, 2, '.', '') }} ({{ $numeros_a_letras->toInvoice(number_format($total_amount, 2, '.', ''), 2, 'Bolivianos') }})
                         <br> <br>
                     </td>
                     <td valign="bottom" style="text-align: center; height: 100px"><b><small>SELLO Y FIRMA</small></b></td>

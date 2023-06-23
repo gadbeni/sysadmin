@@ -6,11 +6,12 @@
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
     $code = $contract->code;
     $signature = $contract->signature;
+    $sueldo = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
 @endphp
 
 @section('qr_code')
     <div id="qr_code">
-        {!! QrCode::size(80)->generate('Personal eventual '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' al '.date('d', strtotime($contract->finish)).' de '.$months[intval(date('m', strtotime($contract->finish)))].' de '.date('Y', strtotime($contract->finish)).' con un sueldo de '.number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.').' Bs.'); !!}
+        {!! QrCode::size(80)->generate('Personal eventual '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' al '.date('d', strtotime($contract->finish)).' de '.$months[intval(date('m', strtotime($contract->finish)))].' de '.date('Y', strtotime($contract->finish)).' con un sueldo de '.number_format($sueldo, 2, ',', '.').' Bs.'); !!}
     </div>
 @endsection
 
@@ -113,7 +114,10 @@
         <p>&nbsp;</p>
         <p><strong>CL&Aacute;USULA SEXTA. - (Vigencia del Contrato): </strong>El presente contrato ser&aacute; computable a partir <strong>del {{ date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' al '.date('d', strtotime($contract->finish)).' de '.$months[intval(date('m', strtotime($contract->finish)))].' de '.date('Y', strtotime($contract->finish)) }}</strong>; debiendo evaluarse el rendimiento y la responsabilidad del/de la <strong>CONTRATADO (A) </strong>al cabo de cada gesti&oacute;n para efectos de evaluaci&oacute;n.</p>
         <p>&nbsp;</p>
-        <p><strong>CL&Aacute;USULA S&Eacute;PTIMA. - (De la Retribuci&oacute;n): </strong>Por la prestaci&oacute;n del <strong>SERVICIO </strong>contratado, el <strong>CONTRATANTE </strong>se obliga a cancelar a favor del/de la <strong>CONTRATADO (A), </strong>una retribuci&oacute;n econ&oacute;mica <strong>mensual de Bs. {{ NumerosEnLetras::convertir($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 'Bolivianos', true) }}, </strong>con cargo a la <strong>Partida Presupuestaria N&deg; 12100, </strong>previa presentaci&oacute;n de planilla por el Responsable del Proyecto y/o Programa y la Direcci&oacute;n o Secretar&iacute;a bajo la cual &eacute;ste se encuentre.</p>
+        @php
+            $numeros_a_letras = new NumeroALetras();
+        @endphp
+        <p><strong>CL&Aacute;USULA S&Eacute;PTIMA. - (De la Retribuci&oacute;n): </strong>Por la prestaci&oacute;n del <strong>SERVICIO </strong>contratado, el <strong>CONTRATANTE </strong>se obliga a cancelar a favor del/de la <strong>CONTRATADO (A), </strong>una retribuci&oacute;n econ&oacute;mica <strong>mensual de Bs. {{ number_format($sueldo, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice($sueldo, 2, 'Bolivianos') }}), </strong>con cargo a la <strong>Partida Presupuestaria N&deg; 12100, </strong>previa presentaci&oacute;n de planilla por el Responsable del Proyecto y/o Programa y la Direcci&oacute;n o Secretar&iacute;a bajo la cual &eacute;ste se encuentre.</p>
         <p>&nbsp;</p>
         <p>A partir del d&iacute;a diez (10) hasta el d&iacute;a quince (15) de cada mes, el/la <strong>CONTRATADO (A)</strong>, deber&aacute; presentar el formulario de descargo impositivo exigible de acuerdo a ley, correspondiendo &eacute;ste al Formulario N&deg; 110 conforme a la normativa vigente, caso contrario le ser&aacute; retenida la al&iacute;cuota parte que corresponda de acuerdo al R&eacute;gimen Complementario al Impuesto al Valor Agregado (RC-IVA) a los fines de pago de dicho gravamen tributario.</p>
         <p>&nbsp;</p>

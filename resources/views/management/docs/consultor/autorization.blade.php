@@ -73,7 +73,10 @@
                     <td>7.</td>
                     <td>Precio Referencial en Bs.:</td>
                     <td style="border: 1px solid black; padding: 5px">
-                        <b>Bs. {{ NumerosEnLetras::convertir(number_format($total, 2, '.', ''), 'Bolivianos', true) }}</b>
+                        @php
+                            $numeros_a_letras = new NumeroALetras();
+                        @endphp
+                        <b>{{ number_format($total, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice(number_format($total, 2, '.', ''), 2, 'Bolivianos') }})</b>
                     </td>
                 </tr>
             </table>

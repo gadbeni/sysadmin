@@ -36,11 +36,12 @@
         <div class="page-body">
             @php
                 $salary = $contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo;
+                $numeros_a_letras = new NumeroALetras();
             @endphp
             <p>
                 De mi consideración: <br>
                 El Gobierno Autónomo Departamental del Beni, a través de la Secretaria Departamental de Administración y Finanzas, requiere contratar los servicios de un Consultor Individual de línea para el cargo de <b>{{ Str::upper($contract->cargo->Descripcion) }} {{ ($contract->name_job_alt ? ' - '.$contract->name_job_alt : '') }} {{ ($contract->work_location  ? ' PARA LA/EL '.$contract->work_location  : '') }}</b> cargado al {{ Str::upper($contract->program->class) }} <b>“{{ Str::upper($contract->program->name) }}”</b>. <br>
-                <b>PRECIO REFERENCIAL:</b> monto mensual de Bs.- {{ NumerosEnLetras::convertir($salary, 'Bolivianos', true) }} <br>
+                <b>PRECIO REFERENCIAL:</b> monto mensual de Bs. {{ number_format($salary, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice($salary, 2, 'Bolivianos') }}) <br>
                 <b>PLAZO DE PRESTACIÓN DE SERVICIO:</b> El consultor prestará el servicio a partir del siguiente día hábil de la firma de contrato hasta el {{ date('d', strtotime($contract->finish)) }} de {{ $months[intval(date('m', strtotime($contract->finish)))] }} de {{ date('Y', strtotime($contract->finish)) }}. <br>
                 <b>DEPENDENCIA DEL CONSULTOR:</b> el consultor estará bajo la dependencia directa de la/el {{ Str::upper($contract->unidad_administrativa->nombre) }}. <br>
                 <b>FORMA DE PAGO:</b> la cancelación se realizará en pagos mensuales, en moneda nacional, previa presentación de informes, solicitud de pago por parte del adjudicatario y debidamente aprobado por la unidad solicitante. <br>

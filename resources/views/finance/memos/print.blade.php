@@ -39,7 +39,10 @@
             </div>
             <br><br>
             <p>
-                Previa revisión y certificación de presupuesto mediante comprobante preventivo número: <b>{{ $memo->number }}</b> D.A. <b>{{ $memo->da_sigep }}</b> FTE: <b>{{ $memo->source }}</b> sirvase <b>realizar la/el {{ $memo->type }} de Recursos Económicos la suma de Bs.- {{ Str::upper(NumerosEnLetras::convertir(number_format($memo->amount, 2, '.', ''), 'Bolivianos', true)) }}</b> a la orden de
+                @php
+                    $numeros_a_letras = new NumeroALetras();
+                @endphp
+                Previa revisión y certificación de presupuesto mediante comprobante preventivo número: <b>{{ $memo->number }}</b> D.A. <b>{{ $memo->da_sigep }}</b> FTE: <b>{{ $memo->source }}</b> sirvase <b>realizar la/el {{ $memo->type }} de Recursos Económicos la suma de Bs. {{ number_format($memo->amount, 2, ',', '.') }} ({{ Str::upper($numeros_a_letras->toInvoice(number_format($memo->amount, 2, '.', ''), 2, 'Bolivianos')) }})</b> a la orden de
                 @if ($memo->additional_person->count())
                     : <br>
                     <ul>
