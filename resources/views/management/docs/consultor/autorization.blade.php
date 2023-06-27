@@ -8,7 +8,7 @@
             $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
             $days = array('', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
             $code = $contract->code;
-            $signature = $contract->signature;
+            $signature = $contract->signature_alt ?? $contract->signature;
             if(!in_array($contract->direccion_administrativa_id, [5, 48]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4])){
                 $signature = null;   
             }

@@ -19,6 +19,7 @@ class Contract extends Model
         'procedure_type_id',
         'user_id',
         'signature_id',
+        'signature_alt_id',
         'code',
         'details_work',
         'preventive_number',
@@ -93,6 +94,10 @@ class Contract extends Model
 
     public function signature(){
         return $this->belongsTo(Signature::class, 'signature_id', 'id');
+    }
+    
+    public function signature_alt(){
+        return $this->belongsTo(Signature::class, 'signature_alt_id', 'id');
     }
 
     public function paymentschedules_details(){

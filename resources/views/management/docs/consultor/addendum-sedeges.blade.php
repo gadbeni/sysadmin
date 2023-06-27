@@ -88,6 +88,9 @@
             </tr>
         </table>
     </div>
+	<div id="options" style="position: fixed; bottom: 10px; right: 20px">
+        <button type="button" onclick="javascript:document.designMode = 'on'; document.getElementById('options').style.display = 'none'">Editar</button>
+    </div>
 @endsection
 
 @section('css')
@@ -99,6 +102,11 @@
         .content {
             padding: 0px 30px 0px 30px;
             font-size: 12px;
+        }
+        @media print {
+            #options{
+                display: none;
+            }
         }
     </style>
 @endsection

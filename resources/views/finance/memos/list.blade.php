@@ -113,7 +113,6 @@
 <script>
     var page = "{{ request('page') }}";
     $(document).ready(function(){
-        $('[data-toggle="popover"]').popover();
         $('.page-link').click(function(e){
             e.preventDefault();
             let link = $(this).attr('href');

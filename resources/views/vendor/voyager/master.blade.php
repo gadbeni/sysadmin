@@ -227,7 +227,8 @@
 
 
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
+            $('[data-toggle="popover"]').popover();
             $('.form-submit').submit(function(){
                 $('.form-submit .btn-submit').attr('disabled', 'disabled');
             });

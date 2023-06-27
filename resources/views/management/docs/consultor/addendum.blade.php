@@ -129,6 +129,7 @@
             padding: 0px 30px 0px 30px;
             font-size: 12px;
         }
+	    .content p{text-align: justify;}
     </style>
 @endsection
 
