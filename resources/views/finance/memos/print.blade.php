@@ -9,8 +9,8 @@
 @section('page_title', 'Memorámdum '.$code)
 
 @section('qr_code')
-    <div id="qr_code" style="text-align: center">
-        {!! QrCode::size(80)->generate('Memorámdum '.$code.' de fecha '.date('d/m/Y', strtotime($memo->date)).', de '.$memo->origin->person->first_name.' '.$memo->origin->person->last_name.' a '.$memo->destiny->person->first_name.' '.$memo->destiny->person->first_name) !!}
+    <div id="qr_code" >
+        {!! QrCode::size(70)->generate('MEMORANDUM '.$code.' de fecha '.date('d/m/Y', strtotime($memo->date)).', de '.$memo->origin->person->first_name.' '.$memo->origin->person->last_name.' a '.$memo->destiny->person->first_name.' '.$memo->destiny->person->first_name) !!}
         <br>
         <small>Hora: {{ date('H:i') }}</small>
     </div>
@@ -92,32 +92,13 @@
 @section('css')
     <style>
         .page-title {
-            padding: 0px 34px;
             text-align: center;
-            padding-top: 100px;
-        }
-        .page-title {
-            padding: 0px 50px;
-            text-align: center;
-            padding-top: 10px;
-        }
-        .page-body{
-            padding: 0px 30px;
-            padding-top: 10px;
-        }
-        .page-body p{
-            text-align: justify;
-            font-size: 14px;
-        }
-        .content {
-            padding: 0px 34px;
-            font-size: 13px;
         }
         .page-head{
             display: flex;
             flex-direction: row;
             width: 100%;
-            /* height: 100px; */
+            text-align: left;
             border-bottom: 2px solid #000;
         }
         .border-right{

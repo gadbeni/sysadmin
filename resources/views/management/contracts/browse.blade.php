@@ -53,7 +53,7 @@
                             <div class="col-sm-12">
                                 <div id="more-options" class="collapse">
                                     <div class="row">
-                                        <div class="form-group col-md-3">
+                                        <div class="form-group col-md-4">
                                             <label for="procedure_type_id">Tipo de contrato</label>
                                             <select name="procedure_type_id" class="form-control select2 select-filter" id="select-procedure_type_id">
                                                 <option value="">Todos</option>
@@ -62,7 +62,7 @@
                                                 <option value="2">Consultoría de línea</option>
                                             </select>
                                         </div>
-                                        <div class="form-group col-md-3">
+                                        <div class="form-group col-md-4">
                                             <label for="direccion_administrativa_id">Dirección administrativa</label>
                                             <select name="direccion_administrativa_id" class="form-control select2 select-filter" id="select-direccion_administrativa_id">
                                                 <option value="">Todas</option>
@@ -71,7 +71,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="form-group col-md-3">
+                                        <div class="form-group col-md-4">
                                             <label for="status">Estado</label>
                                             <select name="status" class="form-control select2 select-filter" id="select-status">
                                                 <option value="">Todos</option>
@@ -81,7 +81,14 @@
                                                 <option value="concluido">Concluido</option>
                                             </select>
                                         </div>
-                                        <div class="form-group col-md-3">
+                                        <div class="form-group col-md-4">
+                                            <label for="addendums">Adendas</label>
+                                            <select name="addendums" class="form-control select2 select-filter" id="select-addendums">
+                                                <option value="">Todos</option>
+                                                <option value="1">Con adenda</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-4">
                                             <label for="user_id">Registrado por</label>
                                             <select name="user_id" class="form-control select2 select-filter" id="select-user_id">
                                                 <option value="">Todos los usuarios</option>
@@ -166,12 +173,6 @@
                             <label for="details">Inciso mencionado</label>
                             <textarea name="details" class="form-control textarea-type-2" rows="2" placeholder=". e)  Inasistencia injustificada de tres (3) días hábiles consecutivos o seis (6) días hábiles discontinuos en un (1) mes" required></textarea>
                         </div>
-                        {{-- <div class="form-group" @if(Auth::user()->role_id > 1) style="display: none" @endif>
-                            <div class="checkbox">
-                                <br>
-                                <label><input type="checkbox" name="create_resolution" checked> Generar resolución de contrato</label>
-                            </div>
-                        </div> --}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -356,7 +357,11 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <p><b>Duración</b></p>
+                            <p><b>Contrato original</b></p>
+                            <p id="label-date-contract"></p>
+                        </div>
+                        <div class="col-md-12">
+                            <p><b>Detalles de adenda(s)</b></p>
                             <p id="label-date-addendum"></p>
                             <p id="label-status-addendum"></p>
                         </div>
@@ -449,6 +454,7 @@
         var direccion_administrativa_id = '';
         var status = '';
         var user_id = '';
+        var addendums = '';
 
         $(document).ready(() => {
             list();
@@ -465,6 +471,7 @@
                 direccion_administrativa_id = $('#select-direccion_administrativa_id option:selected').val();
                 status = $('#select-status option:selected').val();
                 user_id = $('#select-user_id option:selected').val();
+                addendums = $('#select-addendums option:selected').val();
                 list();
             });
 
@@ -527,7 +534,7 @@
             let url = '{{ url("admin/contracts/ajax/list") }}';
             let search = $('#input-search').val() ? $('#input-search').val() : '';
             $.ajax({
-                url: `${url}?search=${search}&procedure_type_id=${procedure_type_id}&direccion_administrativa_id=${direccion_administrativa_id}&user_id=${user_id}&status=${status}&paginate=${countPage}&page=${page}`,
+                url: `${url}?search=${search}&procedure_type_id=${procedure_type_id}&direccion_administrativa_id=${direccion_administrativa_id}&addendums=${addendums}&user_id=${user_id}&status=${status}&paginate=${countPage}&page=${page}`,
                 type: 'get',
                 success: function(response){
                     $('#div-results').html(response);

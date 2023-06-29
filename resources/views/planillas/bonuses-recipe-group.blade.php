@@ -65,10 +65,10 @@
                     <td style="text-align:center; width: 80px">
                         @php
                             $string_qr = 'BOLETA DE PAGO DE AGUINALDO NAVIDEÑO '.$bonus->year.' Nº '.str_pad($item->id, 6, "0", STR_PAD_LEFT).' '.$item->contract->person->first_name.' '.$item->contract->person->last_name.' CI:'.$item->contract->person->ci.', Bs. '.number_format($total_amount, 2, ',', '.');
-                            $qrcode = base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($string_qr));
+                            $qrcode = base64_encode(QrCode::format('svg')->size(70)->errorCorrection('H')->generate($string_qr));
                         @endphp
                         <img src="data:image/png;base64, {!! $qrcode !!}"> <br>
-                        {{-- {!! QrCode::size(80)->generate($string_qr); !!} <br> --}}
+                        {{-- {!! QrCode::size(70)->generate($string_qr); !!} <br> --}}
                         <small><b>N&deg; {{ str_pad($item->id, 6, "0", STR_PAD_LEFT) }}</b></small>
                     </td>
                 </tr>

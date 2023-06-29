@@ -81,11 +81,11 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
                         'C' => $item->contract->person->ci,
                         'D' => '',
                         'E' => $item->contract->person->nua_cua,
-                        'F' => explode(' ', $item->contract->person->last_name)[0],
-                        'G' => count(explode(' ', $item->contract->person->last_name)) > 1 ? explode(' ', $item->contract->person->last_name)[1] : '',
+                        'F' => $this->format_string(explode(' ', $item->contract->person->last_name)[0]),
+                        'G' => $this->format_string(count(explode(' ', $item->contract->person->last_name)) > 1 ? explode(' ', $item->contract->person->last_name)[1] : ''),
                         'H' => '',
-                        'I' => explode(' ', $item->contract->person->first_name)[0],
-                        'J' => count(explode(' ', $item->contract->person->first_name)) > 1 ? explode(' ', $item->contract->person->first_name)[1] : '',
+                        'I' => $this->format_string(explode(' ', $item->contract->person->first_name)[0]),
+                        'J' => $this->format_string(count(explode(' ', $item->contract->person->first_name)) > 1 ? explode(' ', $item->contract->person->first_name)[1] : ''),
                         'K' => 'BENI',
                         'L' => $novelty,
                         'M' => $novelty_date ? Date::stringToExcel($novelty_date) : '',
@@ -239,7 +239,7 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
                     array_push($datos, [
                         'A' => $cont,
                         'B' => 'CI',
-                        'C' => $item[0]->contract->person->ci,
+                        'C' => explode('-', $item[0]->contract->person->ci)[0],
                         'D' => count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '',
                         'E' => $item[0]->contract->person->nua_cua,
                         'F' => explode(' ', $item[0]->contract->person->last_name)[0],
@@ -379,8 +379,8 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
 
 		//Reemplazamos la N, n, C y c
 		$cadena = str_replace(
-		array('Ñ', 'ñ', 'Ç', 'ç'),
-		array('N', 'n', 'C', 'c'),
+		array('Ç', 'ç'),
+		array('C', 'c'),
 		$cadena);
 		
 		return $cadena;

@@ -592,7 +592,7 @@
                                         <tr>
                                             <td>{{ $cont }}</td>
                                             <td>I</td>
-                                            <td>{{ $item[0]->contract->person->ci }}</td>
+                                            <td>{{ explode('-', $item[0]->contract->person->ci)[0] }}</td>
                                             <td>{{ count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '' }}</td>
                                             <td>{{ $item[0]->contract->person->nua_cua }}</td>
                                             <td>{{ explode(' ', $item[0]->contract->person->last_name)[0] }}</td>
