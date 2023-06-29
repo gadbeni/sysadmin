@@ -37,11 +37,11 @@
                             @endphp
                             @if ($type_render == 1)
                                 @php
-                                    $qrcode = base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($string_qr));
+                                    $qrcode = base64_encode(QrCode::format('svg')->size(70)->errorCorrection('H')->generate($string_qr));
                                 @endphp
                                 <img src="data:image/png;base64, {!! $qrcode !!}"> <br>
                             @else
-                                {!! QrCode::size(80)->generate($string_qr); !!} <br>
+                                {!! QrCode::size(70)->generate($string_qr); !!} <br>
                             @endif
                         </td>
                     </tr>
@@ -564,11 +564,11 @@
                             @endphp
                             @if ($type_render == 1)
                                 @php
-                                    $qrcode = base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($string_qr));
+                                    $qrcode = base64_encode(QrCode::format('svg')->size(70)->errorCorrection('H')->generate($string_qr));
                                 @endphp
                                 <img src="data:image/png;base64, {!! $qrcode !!}"> <br>
                             @else
-                                {!! QrCode::size(80)->generate($string_qr); !!} <br>
+                                {!! QrCode::size(70)->generate($string_qr); !!} <br>
                             @endif
                         </td>
                     </tr>

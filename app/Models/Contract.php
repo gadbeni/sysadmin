@@ -123,4 +123,8 @@ class Contract extends Model
     public function jobs(){
         return $this->hasMany(ContractsJob::class);
     }
+
+    public function files(){
+        return $this->hasMany(ContractsFile::class);
+    }
 }

@@ -8,8 +8,15 @@
 @endphp
 
 @section('qr_code')
-    <div id="qr_code">
-        {!! QrCode::size(80)->generate('Rotación '.$code.' de '.$rotation->contract->person->first_name.' '.$rotation->contract->person->last_name.' con C.I. '.$rotation->contract->person->ci.', en fecha '.date('d', strtotime($rotation->date)).' de '.$months[intval(date('m', strtotime($rotation->date)))].' de '.date('Y', strtotime($rotation->date)).' a la '.Str::upper($rotation->destiny_dependency)); !!}
+    <div id="qr_code" >
+        @php
+            $qrcode = QrCode::size(70)->generate('MEMORANDUM DE ROTACIÓN '.$code.' de '.$rotation->contract->person->first_name.' '.$rotation->contract->person->last_name.' con C.I. '.$rotation->contract->person->ci.', en fecha '.date('d', strtotime($rotation->date)).' de '.$months[intval(date('m', strtotime($rotation->date)))].' de '.date('Y', strtotime($rotation->date)).' a la '.Str::upper($rotation->destiny_dependency));
+        @endphp
+        @if ($contract->files->count() > 0)
+            <img src="data:image/png;base64, {!! base64_encode($qrcode) !!}">
+        @else
+            {!! $qrcode !!}
+        @endif
     </div>
 @endsection
 
@@ -22,33 +29,32 @@
             </h2>
         </div>
         <div class="page-body">
-            <div class="page-head" style="width: 100%">
-                <div class="border-right">
-                    <p style="position:absolute; bottom: 10px">
-                        <span id="label-location">SANTISIMA TRINIDAD</span>, {{ date('d', strtotime($rotation->date)) }} de {{ $months[intval(date('m', strtotime($rotation->date)))] }} de {{ date('Y', strtotime($rotation->date)) }}
-                    </p>
-                </div>
-                <div class="border-left">
-                    <table>
-                        <tr>
-                            <td><b>DE:</b> <br> <br></td>
-                            <td>
-                                {{ Str::upper($rotation->responsible->first_name.' '.$rotation->responsible->last_name) }} <br>
-                                <b>{{ Str::upper($rotation->responsible_job) }}</b>
-                            </td>
-                        </tr>
-                        <tr><td><br> <br></td></tr>
-                        <tr>
-                            <td><b>A:</b> <br> <br></td>
-                            <td>
-                                {{ Str::upper($rotation->contract->person->first_name.' '.$rotation->contract->person->last_name) }} <br>
-                                <b>{{ $rotation->contract->cargo ? $rotation->contract->cargo->Descripcion : $rotation->contract->job->name }} <br> {{ Str::upper($rotation->contract->direccion_administrativa->nombre) }}</b>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <br>
+            <table class="table-head" cellpadding="10">
+                <tr>
+                    <td class="td-left">
+                        <span>{{ Str::upper($contract->direccion_administrativa->city ? $contract->direccion_administrativa->city->name : 'Santísima Trinidad') }}</span>, {{ date('d', strtotime($rotation->date)) }} de {{ Str::upper($months[intval(date('m', strtotime($rotation->date)))]) }} de {{ date('Y', strtotime($rotation->date)) }} <br>
+                    </td>
+                    <td class="td-right">
+                        <table>
+                            <tr>
+                                <td><b>DE:</b> <br> <br></td>
+                                <td>
+                                    {{ Str::upper($rotation->responsible->first_name.' '.$rotation->responsible->last_name) }} <br>
+                                    <b>{{ Str::upper($rotation->responsible_job) }}</b>
+                                </td>
+                            </tr>
+                            <tr><td><br> <br></td></tr>
+                            <tr>
+                                <td><b>A:</b> <br> <br></td>
+                                <td>
+                                    {{ Str::upper($rotation->contract->person->first_name.' '.$rotation->contract->person->last_name) }} <br>
+                                    <b>{{ $rotation->contract->cargo ? $rotation->contract->cargo->Descripcion : $rotation->contract->job->name }} <br> {{ Str::upper($rotation->contract->direccion_administrativa->nombre) }}</b>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
             <p style="text-align: center"><u><b>ROTACIÓN</b></u></p>
             <br>
             <p>
@@ -76,50 +82,31 @@
 @section('css')
     <style>
         .page-title {
-            padding: 0px 34px;
             text-align: center;
-            padding-top: 100px;
         }
-        .page-title {
-            padding: 0px 50px;
-            text-align: center;
-            padding-top: 10px;
+        .page-title h2 {
+            margin: 0px
         }
-        .page-body{
-            padding: 0px 30px;
-            padding-top: 10px;
+        .td-left {
+            width: 50%;
+            border-right: 1px solid black;
+            border-bottom: 1px solid black;
+            vertical-align: bottom;
         }
-        .page-body p{
-            text-align: justify;
-            font-size: 14px;
+        .td-right {
+            width: 50%;
+            border-left: 1px solid black;
+            border-bottom: 1px solid black
         }
-        .content {
-            padding: 0px 34px;
-            font-size: 13px;
-        }
-        .page-head{
-            display: flex;
-            flex-direction: row;
+        .table-head {
             width: 100%;
-            /* height: 100px; */
-            border-bottom: 2px solid #000;
-        }
-        .border-right{
-            position: relative;
-            padding: 10px;
-            width: 50%;
-            border-right: 1px solid black
-        }
-        .border-left{
-            padding: 10px;
-            width: 50%;
-            border-left: 1px solid black
-        }
+            border-collapse: collapse;
+            margin-top: 10px
+        } 
         .page-body th{
             background-color: #d7d7d7
         }
         .page-body table{
-            /* text-align: center; */
             margin: 30px 0px;
             width: 100%;
             font-size: 12px;

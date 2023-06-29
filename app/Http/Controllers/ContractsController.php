@@ -24,6 +24,7 @@ use App\Models\ContractsFinished;
 use App\Models\Addendum;
 use App\Models\ContractRatification;
 use App\Models\ContractsTransfer;
+use App\Models\ContractsFile;
 
 class ContractsController extends Controller
 {
@@ -55,6 +56,7 @@ class ContractsController extends Controller
         $status = request('status') ?? null;
         $user_id = request('user_id') ?? null;
         $direccion_administrativa_id = request('direccion_administrativa_id') ?? null;
+        $addendums = request('addendums') ?? null;
         $paginate = request('paginate') ?? 10;
         $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa.tipo', 'type', 'transfers', 'jobs', 'finished'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
@@ -78,6 +80,13 @@ class ContractsController extends Controller
                             ->OrWhereRaw($search ? "id = '$search'" : 1)
                             ->OrWhereRaw($search ? "code like '%$search%'" : 1)
                             ->OrWhereRaw($search ? "status like '%$search%'" : 1);
+                        }
+                    })
+                    ->where(function($query) use ($addendums){
+                        if($addendums){
+                            $query->OrwhereHas('addendums', function($query){
+                                $query->whereRaw("1");
+                            });
                         }
                     })
                     ->where(function($query) use ($procedure_type_id){
@@ -667,8 +676,10 @@ class ContractsController extends Controller
 
     // ================================
     
-    public function print($id, $document){
-        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature', 'signature_alt', 'addendums.signature', 'transfers'])->where('id', $id)->first();
+    public function print($id, $document) {
+        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature', 'signature_alt', 'addendums.signature', 'transfers', 'files' => function($q) use($document){
+                        $q->where('name', $document);
+                    }])->where('id', $id)->first();
         // Si no tiene comisión evaluadora del sistema actual buscar en el antiguo sistema
         if($contract->workers_memo_alt != null){
             $contract->workers = Contract::with(['person', 'job', 'cargo', 'alternate_job' => function($q){
@@ -678,13 +689,27 @@ class ContractsController extends Controller
         }else{
             $contract->workers = $contract->workers_memo != null && $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
         }
-
-        if($document == 'eventual.resolution' || $document == 'consultor.addendum'){
-            $pdf = PDF::loadView('management.docs.'.$document, compact('contract'));
+        if($contract->files->count() > 0){
+            $pdf = PDF::loadView('management.docs.'.$document, compact('contract', 'document'));
             return $pdf->setPaper('legal')->stream();
         }
 
-        return view('management.docs.'.$document, compact('contract'));
+        return view('management.docs.'.$document, compact('contract', 'document'));
+    }
+
+    public function file_store($id, Request $request) {
+        try {
+            ContractsFile::create([
+                'contract_id' => $id,
+                'user_id' => Auth::user()->id,
+                'name' => $request->name,
+                'text' => $request->text
+            ]);
+            return redirect()->route('contracts.print', ['id' => $id, 'document' => $request->name])->with(['message' => 'Contrato editado exitosamente', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('contracts.print', ['id' => $id, 'document' => $request->name])->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
     }
 
     // **** Métodos funcionales ****

@@ -1,144 +1,167 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>@yield('page_title') | {{ env('APP_NAME', 'MAMORE') }}</title>
-    <!-- Favicon -->
-    <?php $admin_favicon = Voyager::setting('admin.icon_image', ''); ?>
-    @if($admin_favicon == '')
-        <link rel="shortcut icon" href="{{ asset('images/icon.png') }}" type="image/png">
-    @else
-        <link rel="shortcut icon" href="{{ Voyager::image($admin_favicon) }}" type="image/png">
-    @endif
-    <style>
-        body{
-            margin: 50px auto;
-            font-family: Arial, sans-serif;
-            max-width: 740px;
-        }
-        #logo{
-            position: fixed;
-            top: 20px;
-            margin-left: 20px;
-            width: 90px;
-        }
-        #qr_code{
-            display: none;
-            position: fixed;
-            top: 20px;
-            right: 60px;
-        }
-        #watermark {
-            position: fixed;
-            top: 350px;
-            opacity: 0.1;
-            z-index:  -1;
-        }
-        #watermark img{
-            position: relative;
-            width: 300px;
-            left: 205px;
-        }
-
-        #footer {
-            display: none;
-        }
-
-        #label-location{
-            display: none;
-        }
-
-        @page {
-            size: legal;
-            margin: 10mm 0mm 30mm 0mm;
-        }
-
-        @media print {
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>@yield('page_title') | {{ env('APP_NAME', 'MAMORE') }}</title>
+        <!-- Favicon -->
+        <?php $admin_favicon = Voyager::setting('admin.icon_image', ''); ?>
+        @if($admin_favicon == '')
+            <link rel="shortcut icon" href="{{ asset('images/icon.png') }}" type="image/png">
+        @else
+            <link rel="shortcut icon" href="{{ Voyager::image($admin_favicon) }}" type="image/png">
+        @endif
+        <style>
             body{
-                margin: 40px auto;
+                margin: 0px auto;
+                font-family: Arial, sans-serif;
             }
-            #logo, #qr_code{
-                top: 0px;
+            .container {
+                display: flex;
+                justify-content: center;
+                width: 100%;
+                background: rgb(115,117,117);
+                background: linear-gradient(90deg, rgba(115,117,117,1) 0%, rgba(173,173,173,1) 50%, rgba(115,117,117,1) 100%);
+            }
+            .sheet {
+                padding: 30px;
+                max-width: 780px;
+                background-color: white
+            }
+            .content {
+                text-align: justify;
+                padding: 0px 34px;
+                font-size: 15px;
+            }
+            #logo{
+                margin: 0px;
+                width: 90px;
+            }
+            .page-head {
+                text-align: center;
+                margin-bottom: 30px
+            }
+            .page-head h3 {
+                margin-top: 0px !important
             }
             #watermark {
-                top: 450px;
-            }
-            #footer {
-                display: block;
                 position: fixed;
-                left: 0px;
-                right: 0px;
-                bottom: 3px;
-                background: rgb(24,155,85);
-                background: linear-gradient(90deg, rgba(24,155,85,1) 0%, rgba(3,180,85,1) 100%);
-                height: 45px;
+                top: 350px;
+                opacity: 0.1;
+                z-index:  100;
+            }
+            #watermark img{
+                position: relative;
+                width: 300px;
+                left: 205px;
+            }
+
+            .btn {
+                padding: 8px 15px
+            }
+            .text-center{
                 text-align: center;
-                color: white;
-                padding-top: 10px
             }
-            #qr_code{
-                display: block;
+            ol p{
+                margin: 10px
             }
-            #location-id{
-                display: none;
+            .table-signature {
+                width: 100%;
+                text-align: center;
+                margin-top: 100px;
+                margin-bottom: 50px;
             }
-            #label-location{
-                display: inline;
+
+            @page {
+                size: legal;
+                margin: 10mm 10mm 40mm 10mm;
             }
-            #options{
-                display: none;
+
+            @media print {
+                body{
+                    margin: 0px auto;
+                }
+                #options {
+                    display: none
+                }
+                .sheet {
+                    padding: 0px;
+                    max-width: 100%;
+                    background-color: white
+                }
+                .container {
+                    background-color: transparent
+                }
+                .table-signature {
+                    margin-bottom: 0px;
+                }
             }
-        }
-    </style>
-</head>
-<body>
-    <img id="logo" src="{{ asset('images/icon.png') }}" />
-    @yield('qr_code')
-    <div id="watermark">
-        <img src="{{ asset('images/icon.png') }}" /> 
-    </div>
-    @if (setting('auxiliares.edit-docs'))
-    <div id="options" style="position: fixed; bottom: 10px; right: 20px">
-        <button type="button" onclick="javascript:document.designMode = 'on'; document.getElementById('options').style.display = 'none'">Editar</button>
-    </div>
-    @endif
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="sheet">
+                <table width="100%">
+                    <tr>
+                        <td><img id="logo" src="{{ asset('images/icon.png') }}" /></td>
+                        <td style="text-align: right">@yield('qr_code')</td>
+                    </tr>
+                </table>
+                <div id="watermark">
+                    <img src="{{ asset('images/icon.png') }}" /> 
+                </div>
+                @if (setting('auxiliares.edit-docs') && $contract->files->count() == 0)
+                <div id="options" style="position: fixed; bottom: 10px; right: 20px">
+                    <button type="button" class="btn btn-edit">Editar</button>
+                    <button type="button" class="btn btn-print" onclick="window.print()">Imprimir</button>
+                    <button type="button" class="btn btn-save" style="display: none">Guardar</button>
+                </div>
+                @endif
+        
+                @yield('content')
+            </div>
+        </div>
 
-    @yield('content')
+        <form id="form-submit" action="{{ route('contracts.file.store', $contract->id) }}" style="display: none" method="post">
+            @csrf
+            <input type="text" name="name" value="{{ $document }}">
+            <textarea name="text" id="" cols="30" rows="10"></textarea>
+        </form>
 
-    <div id="footer">
-        Plaza Principal Mcal. José Ballivián acera sur <br> www.beni.gob.bo
-    </div>
+        @yield('css')
 
-    @yield('css')
+        <script>
+            window.onafterprint = function(event) {
+                console.log('before print');
+            };
+        </script>
 
-    <script>
-        document.body.addEventListener('keypress', function(e) {
-            switch (e.key) {
-                case 'Enter':
-                    window.print();
-                    break;
-                case 'Escape':
-                    window.close();
-                default:
-                    break;
-            }
-        });
+        <script type="text/javascript" src="{{ voyager_asset('js/app.js') }}"></script>
+        <script>
+            $(document).ready(function () {
+                @if ($contract->files->count() > 0)
+                $('#options').css('display', 'none');
+                @endif
+                
+                $('#location-id').change(function () {
+                    $('#label-location').html($(this).val());
+                });
 
-        window.onafterprint = function(event) {
-            console.log('before print');
-        };
-    </script>
-
-    <script type="text/javascript" src="{{ voyager_asset('js/app.js') }}"></script>
-    <script>
-        $(document).ready(function () {
-            $('#location-id').change(function () {
-                $('#label-location').html($(this).val());
+                $('.btn-edit').click(function(){
+                    document.designMode = 'on';
+                    $(this).css('display', 'none');
+                    $('.btn-print').css('display', 'none');
+                    $('.btn-save').css('display', 'block');
+                });
+                $('.btn-save').click(function(){
+                    document.designMode = 'off';
+                    $(this).css('display', 'none');
+                    $('textarea[name="text"]').text($('.content').html());
+                    $('#form-submit').trigger('submit');
+                });
             });
-        });
-    </script>
-    @yield('script')
-</body>
+        </script>
+        @yield('script')
+    </body>
 </html>

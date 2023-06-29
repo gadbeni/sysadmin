@@ -65,10 +65,10 @@
                     <td style="text-align:center; width: 80px">
                         @php
                             $string_qr = 'BOLETA DE PAGO DE AGUINALDO NAVIDEÑO '.$bonus->year.' Nº '.str_pad($item->id, 6, "0", STR_PAD_LEFT).' '.$item->contract->person->first_name.' '.$item->contract->person->last_name.' CI:'.$item->contract->person->ci.', Bs. '.number_format($total_amount, 2, ',', '.');
-                            $qrcode = base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($string_qr));
+                            $qrcode = base64_encode(QrCode::format('svg')->size(70)->errorCorrection('H')->generate($string_qr));
                         @endphp
                         <img src="data:image/png;base64, {!! $qrcode !!}"> <br>
-                        {{-- {!! QrCode::size(80)->generate($string_qr); !!} <br> --}}
+                        {{-- {!! QrCode::size(70)->generate($string_qr); !!} <br> --}}
                         <small><b>N&deg; {{ str_pad($item->id, 6, "0", STR_PAD_LEFT) }}</b></small>
                     </td>
                 </tr>
@@ -103,7 +103,10 @@
                 </tr>
                 <tr valign="bottom">
                     <td>
-                        <b>LÍQUIDO PAGABLE: </b> {{ NumerosEnLetras::convertir(number_format($total_amount, 2, '.', ''), 'Bolivianos', true) }}
+                        @php
+                            $numeros_a_letras = new NumeroALetras();
+                        @endphp
+                        <b>LÍQUIDO PAGABLE: </b>Bs. {{ number_format($total_amount, 2, '.', '') }} ({{ $numeros_a_letras->toInvoice(number_format($total_amount, 2, '.', ''), 2, 'Bolivianos') }})
                         <br> <br>
                     </td>
                     <td valign="bottom" style="text-align: center; height: 100px"><b><small>SELLO Y FIRMA</small></b></td>

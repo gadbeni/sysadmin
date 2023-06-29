@@ -144,7 +144,10 @@
                 </tr>
                 <tr>
                     <td valign="bottom">
-                        <b>LÍQUIDO PAGABLE: </b> {{ NumerosEnLetras::convertir(number_format($item->liquid_payable, 2, '.', ''), 'Bolivianos', true) }}
+                        @php
+                            $numeros_a_letras = new NumeroALetras();
+                        @endphp
+                        <b>LÍQUIDO PAGABLE: </b>Bs. {{ number_format($item->liquid_payable, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice($item->liquid_payable, 2, 'Bolivianos') }})
                         <br> <br>
                     </td>
                 </tr>

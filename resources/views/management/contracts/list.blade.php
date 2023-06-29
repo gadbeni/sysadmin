@@ -111,7 +111,7 @@
                                             $label = 'desconocida';
                                         }
                                     @endphp
-                                    <label class="label label-{{ $class }} label-addendum" title="Adenda {{ $label }}" data-item='@json($addendums->first())' data-toggle="modal" data-target="#addendum-show-modal" style="cursor: pointer"><i class="voyager-calendar"></i></label>
+                                    <label class="label label-{{ $class }} label-addendum" title="Adenda {{ $label }}" data-contract='@json($item)' data-addendums='@json($addendums)' data-toggle="modal" data-target="#addendum-show-modal" style="cursor: pointer"><i class="voyager-calendar"></i></label>
                                     @endif
                                 </li>
                             </ul>
@@ -379,23 +379,27 @@
 
         // Mostrar adenda
         $('.label-addendum').click(function(){
-            let item = $(this).data('item');
-            $('#label-date-addendum').html(`Inicio desde el ${moment(item.start).format('DD [de] MMMM [de] YYYY')} hasta el ${moment(item.finish).format('DD [de] MMMM [de] YYYY')}.`);
-            let style, label;
-            if (item.status == 'elaborado') {
-                style = 'dark';
-                label= 'Elaborada';
-            } else if (item.status == 'firmado') {
-                style = 'success';
-                label= 'Firmada';
-            }else if (item.status == 'concluido') {
-                style = 'warning';
-                label= 'Concluida';
-            }else{
-                style = 'default';
-                label= 'Desconocida';
-            }
-            $('#label-status-addendum').html(`<b>Estado de la adenda</b> <label class="label label-${style}">${label}</label>`);
+            let addendums = $(this).data('addendums');
+            let contract = $(this).data('contract');
+            $('#label-date-contract').html(`Inicio desde el ${moment(contract.start).format('DD [de] MMMM [de] YYYY')} hasta el ${moment(contract.addendums[0].start).add(-1, 'days').format('DD [de] MMMM [de] YYYY')}.`);
+            addendums.map(addendum => {
+                $('#label-date-addendum').html(`Inicio desde el ${moment(addendum.start).format('DD [de] MMMM [de] YYYY')} hasta el ${moment(addendum.finish).format('DD [de] MMMM [de] YYYY')}.`);
+                let style, label;
+                if (addendum.status == 'elaborado') {
+                    style = 'dark';
+                    label= 'Elaborada';
+                } else if (addendum.status == 'firmado') {
+                    style = 'success';
+                    label= 'Firmada';
+                }else if (addendum.status == 'concluido') {
+                    style = 'warning';
+                    label= 'Concluida';
+                }else{
+                    style = 'default';
+                    label= 'Desconocida';
+                }
+                $('#label-status-addendum').html(`<b>Estado de la adenda</b> <label class="label label-${style}">${label}</label><br>`);
+            });
         });
 
         $('.btn-addendum-status').click(function(){

@@ -11,7 +11,7 @@
 
 @section('content')
     <div class="page-content edit-add container-fluid">
-        <form action="{{ isset($contract) ? route('contracts.update', ['contract' => $contract->id]) : route('contracts.store') }}" method="post">
+        <form class="form-submit" action="{{ isset($contract) ? route('contracts.update', ['contract' => $contract->id]) : route('contracts.store') }}" method="post">
             @csrf
             @isset($contract)
                 @method('PUT')
@@ -373,7 +373,7 @@
 
             <div class="row">
                 <div class="col-md-12 text-right">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="submit" class="btn btn-primary btn-submit">Guardar</button>
                 </div>
             </div>
         </form>

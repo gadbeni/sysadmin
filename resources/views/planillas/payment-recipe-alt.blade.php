@@ -137,7 +137,10 @@
             </tr>
             <tr>
                 <td valign="bottom">
-                    <b>LÍQUIDO PAGABLE: </b> {{ $planilla ? $planilla->Liquido_Pagable.' '.$planilla->Literal : NumerosEnLetras::convertir(number_format($payment->paymentschedulesdetail->liquid_payable, 2, '.', ''), 'Bolivianos', true) }}
+                    @php
+                        $numeros_a_letras = new NumeroALetras();
+                    @endphp
+                    <b>LÍQUIDO PAGABLE: </b> {{ $planilla ? $planilla->Liquido_Pagable.' '.$planilla->Literal : 'Bs. '.number_format($payment->paymentschedulesdetail->liquid_payable, 2, '.', '').' ('.$numeros_a_letras->toInvoice(number_format($payment->paymentschedulesdetail->liquid_payable, 2, '.', ''), 2, 'Bolivianos').')' }}
                     <br> <br>
                 </td>
             </tr>

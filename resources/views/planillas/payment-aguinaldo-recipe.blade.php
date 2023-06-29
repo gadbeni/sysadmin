@@ -134,7 +134,10 @@
                         </tr>
                         <tr>
                             <td colspan="4" style="text-align: right">
-                                <h3 style="margin: 0px">Son: {{ NumerosEnLetras::convertir(number_format($payment->liquido_pagable, 2, '.', ''), 'Bolivianos', true) }}</h3>
+                                @php
+                                    $numeros_a_letras = new NumeroALetras();
+                                @endphp
+                                <h3 style="margin: 0px">Son: Bs. {{ number_format($payment->liquido_pagable, 2, '.', '') }} ({{ $numeros_a_letras->toInvoice(number_format($payment->liquido_pagable, 2, '.', ''), 2, 'Bolivianos') }})</h3>
                             </td>
                         </tr>
                     </table>
