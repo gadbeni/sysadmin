@@ -14,7 +14,7 @@ class UpdateContractsTable extends Migration
     public function up()
     {
         Schema::table('contracts', function(Blueprint $table){
-            $table->foreignId('signature_id')->nullable()->constrained('signatures');
+            $table->foreignId('signature_alt_id')->nullable()->constrained('signatures');
 		});
     }
 

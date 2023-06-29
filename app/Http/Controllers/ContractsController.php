@@ -209,6 +209,9 @@ class ContractsController extends Controller
             $d_a = Direccion::find($direccion_administrativa_id);
             $code = $d_a->sigla.'-'.str_pad($number_contract, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->start));
 
+            // Actualizar la AFP
+            Person::where('id', $request->person_id)->update(['afp' => 3]);
+
             $contract = Contract::create([
                 'person_id' => $request->person_id,
                 'program_id' => $request->program_id,
@@ -221,6 +224,7 @@ class ContractsController extends Controller
                 'procedure_type_id' => $request->procedure_type_id,
                 'user_id' => Auth::user()->id,
                 'signature_id' => $request->signature_id,
+                'signature_alt_id' => $request->signature_alt_id,
                 'code' => $code,
                 'details_work' => $request->details_work,
                 'requested_by' => $request->requested_by,
@@ -346,6 +350,7 @@ class ContractsController extends Controller
                 'direccion_administrativa_id' => $direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'signature_id' => $request->signature_id,
+                'signature_alt_id' => $request->signature_alt_id,
                 'code' => $code,
                 'details_work' => $request->details_work,
                 'requested_by' => $request->requested_by,
@@ -671,8 +676,8 @@ class ContractsController extends Controller
 
     // ================================
     
-    public function print($id, $document){
-        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature', 'addendums.signature', 'transfers', 'files' => function($q) use($document){
+    public function print($id, $document) {
+        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature', 'signature_alt', 'addendums.signature', 'transfers', 'files' => function($q) use($document){
                         $q->where('name', $document);
                     }])->where('id', $id)->first();
         // Si no tiene comisión evaluadora del sistema actual buscar en el antiguo sistema
@@ -684,7 +689,6 @@ class ContractsController extends Controller
         }else{
             $contract->workers = $contract->workers_memo != null && $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
         }
-
         if($contract->files->count() > 0){
             $pdf = PDF::loadView('management.docs.'.$document, compact('contract', 'document'));
             return $pdf->setPaper('legal')->stream();

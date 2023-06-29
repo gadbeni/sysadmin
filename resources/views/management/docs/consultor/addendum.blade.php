@@ -138,6 +138,7 @@
                 font-size: 14px;
             }
         }
+	    .content p{text-align: justify;}
     </style>
 @endsection
 

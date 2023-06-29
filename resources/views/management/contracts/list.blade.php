@@ -150,7 +150,7 @@
                                     @endif
 
                                     @if (count($addendums) > 0)
-                                        @if ($item->status == 'concluido' && $addendums->first()->status == 'elaborado' && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5))
+                                        @if ($addendums->first()->status == 'elaborado' && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5))
                                         <li><a class="btn-addendum-status" title="Firmar adenda" data-toggle="modal" data-target="#addendum-status-modal" data-id="{{ $addendums->first()->id }}" href="#">Firmar adenda</a></li>
                                         @endif
                                     @endif

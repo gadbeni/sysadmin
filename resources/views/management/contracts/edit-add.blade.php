@@ -64,13 +64,23 @@
                                     <label for="finish">Fin de contrato</label>
                                     <input type="date" name="finish" id="input-finish" value="{{ isset($contract) ? $contract->finish : '' }}" class="form-control">
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-12">
                                     <label for="requested_by">Persona o unidad solicitante (Opcional)</label>
                                     <input type="text" name="requested_by" value="{{ isset($contract) ? $contract->requested_by : '' }}" class="form-control">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="signature_id">Firma autorizada</label>
+                                    <label for="signature_id">
+                                        Firma autorizada 
+                                        <span class="voyager-question" data-toggle="popover" data-placement="top" data-trigger="hover" title="Información" data-content="Firma autorizada que va a figurar en el contrato (Si se deja vacío firma el actual Secretario(a) de Finanzas)" style="cursor: pointer"></span>
+                                    </label>
                                     <select name="signature_id" id="select-signature_id" class="form-control select2"></select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="signature_alt_id">
+                                        Firma autorizada de proceso de contratación RPA 
+                                        <span class="voyager-question" data-toggle="popover" data-placement="top" data-trigger="hover" title="Información" data-content="Firma autorizada que va a figurar en el proceso de contratación (Solo para consultoría)" style="cursor: pointer"></span>
+                                    </label>
+                                    <select name="signature_alt_id" id="select-signature_alt_id" class="form-control select2"></select>
                                 </div>
                             </div>
                         </div>
@@ -411,9 +421,15 @@
 
                 let signatures = $('#select-direccion_administrativa_id option:selected').data('signatures');
                 $('#select-signature_id').html('<option value="">--Seleccione firma autorizada--</option>');
+                $('#select-signature_alt_id').html('<option value="">--Seleccione firma autorizada--</option>');
                 if(signatures){
                     signatures.map(item => {
-                        $('#select-signature_id').append(`<option value="${item.id}">${item.designation} ${item.name} - ${item.job}</option>`);
+                        if(item.type == 'inmediato superior'){
+                            $('#select-signature_id').append(`<option value="${item.id}">${item.designation} ${item.name} - ${item.job}</option>`);
+                        }else{
+                            $('#select-signature_alt_id').append(`<option value="${item.id}">${item.designation} ${item.name} - ${item.job}</option>`);
+                        }
+
                     });
                 }
 
@@ -506,6 +522,7 @@
                 }, 0);
                 setTimeout(() => {
                     $('#select-signature_id').val("{{ $contract->signature_id }}").trigger('change');
+                    $('#select-signature_alt_id').val("{{ $contract->signature_alt_id }}").trigger('change');
                 }, 500);
             @endisset
         });

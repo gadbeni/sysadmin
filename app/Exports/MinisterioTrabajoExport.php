@@ -52,13 +52,13 @@ class MinisterioTrabajoExport implements WithColumnFormatting, FromCollection
                 'H' => $this->format_string($item->contract->person->first_name),
                 'I' => $item->contract->person->city ? $item->contract->person->city->state->country->name : 'No definida',
                 'J' => $item->contract->person->gender == 'masculino' ? 'M' : 'F',
-                'K' => $item->contract->person->retired,
-                'L' => $item->contract->person->afp_status,
-                'M' => $irremovability ? $irremovability->irremovability_type_id == 4 ? 1 : 0 : 0,
-                'N' => $irremovability ? $irremovability->irremovability_type_id == 5 ? 1 : 0 : 0,
+                'K' => $item->contract->person->retired ? "1" : "0",
+                'L' => $item->contract->person->afp_status ? "1" : "0",
+                'M' => $irremovability ? $irremovability->irremovability_type_id == 4 ? "1" : "0" : "0",
+                'N' => $irremovability ? $irremovability->irremovability_type_id == 5 ? "1" : "0" : "0",
                 'O' => Date::stringToExcel($item->contract->start),
                 'P' => date('Ym', strtotime($item->contract->finish)) == $year.$month ? Date::stringToExcel($item->contract->finish) : '',
-                'Q' => 2,
+                'Q' => date('Ym', strtotime($item->contract->finish)) == $year.$month ? "2" : '',
                 'R' => $item->contract->person->cc == 1 ? 6 : 2,
                 'S' => $afp,
                 'T' => $item->contract->person->nua_cua,
@@ -69,7 +69,7 @@ class MinisterioTrabajoExport implements WithColumnFormatting, FromCollection
                 'Y' => 1,
                 'Z' => $item->worked_days,
                 'AA' => 8,
-                'AB' => number_format($item->salary, 2, '.', ''),
+                'AB' => number_format($item->partial_salary, 2, '.', ''),
                 'AC' => number_format($item->seniority_bonus_amount, 2, '.', ''),
                 'AD' => '0',
                 'AE' => '0.00',
@@ -86,8 +86,8 @@ class MinisterioTrabajoExport implements WithColumnFormatting, FromCollection
                 'AP' => '0.00',
                 'AQ' => number_format($item->rc_iva_amount, 2, '.', ''),
                 'AR' => number_format($item->health, 2, '.', ''),
-                'AS' => number_format($item->solidary + $item->common_risk + $item->retirement, 2, '.', ''),
-                'AT' => number_format($item->faults_amount, 2, ',', '')
+                'AS' => number_format($item->solidary + $item->common_risk + $item->afp_commission + $item->retirement, 2, '.', ''),
+                'AT' => number_format($item->faults_amount, 2, '.', '')
             ]);
             $cont++;
         }
@@ -100,6 +100,10 @@ class MinisterioTrabajoExport implements WithColumnFormatting, FromCollection
             'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'O' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'P' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AQ' => NumberFormat::FORMAT_NUMBER_00,
+            'AR' => NumberFormat::FORMAT_NUMBER_00,
+            'AS' => NumberFormat::FORMAT_NUMBER_00,
+            'AT' => NumberFormat::FORMAT_NUMBER_00,
         ];
     }
 

@@ -2337,7 +2337,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
-                'order' => 3,
+                'order' => 4,
             ),
             145 => 
             array (
@@ -2353,7 +2353,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
-                'order' => 4,
+                'order' => 5,
             ),
             146 => 
             array (
@@ -2369,7 +2369,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
-                'order' => 5,
+                'order' => 6,
             ),
             147 => 
             array (
@@ -2385,7 +2385,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
-                'order' => 7,
+                'order' => 8,
             ),
             148 => 
             array (
@@ -2401,7 +2401,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 10,
+                'order' => 11,
             ),
             149 => 
             array (
@@ -2417,7 +2417,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 11,
+                'order' => 12,
             ),
             150 => 
             array (
@@ -2433,7 +2433,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 12,
+                'order' => 13,
             ),
             151 => 
             array (
@@ -2449,7 +2449,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"off":"Inactivo","on":"Activo","checked":true}',
-                'order' => 9,
+                'order' => 10,
             ),
             152 => 
             array (
@@ -3873,7 +3873,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
-                'order' => 8,
+                'order' => 9,
             ),
             241 => 
             array (
@@ -5361,7 +5361,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"options":{"Decreto Departamental":"Decreto Departamental","Resoluci\\u00f3n Administrativa de Gobernaci\\u00f3n":"Resoluci\\u00f3n Administrativa de Gobernaci\\u00f3n"},"display":{"width":6}}',
-                'order' => 6,
+                'order' => 7,
             ),
             334 => 
             array (
@@ -5969,6 +5969,22 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"model":"App\\\\Models\\\\AssetsCategory","table":"assets_categories","type":"belongsTo","column":"assets_category_id","key":"id","label":"name","pivot_table":"addendums","pivot":"0","taggable":"0"}',
+                'order' => 3,
+            ),
+            372 => 
+            array (
+                'id' => 433,
+                'data_type_id' => 17,
+                'field' => 'type',
+                'type' => 'select_dropdown',
+                'display_name' => 'Tipo',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6},"options":{"inmediato superior":"Inmediato superior","RPA":"RPA"}}',
                 'order' => 3,
             ),
         ));
