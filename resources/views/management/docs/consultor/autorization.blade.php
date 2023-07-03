@@ -37,7 +37,7 @@
             {!! $contract->files[0]->text !!}
         </div>
     @else
-        <div class="content" style="position: relative">
+        <div class="content">
             @php
                 $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
                 $days = array('', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
@@ -127,7 +127,7 @@
                     </p>
                 </div>
             </div>
-            <p style="position: absolute; bottom: 10px; left: 0px">
+            <p style="margin-top: 100px">
                 <span>{{ Str::upper($contract->direccion_administrativa->city ? $contract->direccion_administrativa->city->name : 'Santísima Trinidad') }}</span>, {{ date('d', strtotime($contract->date_autorization)) }} de {{ Str::upper($months[intval(date('m', strtotime($contract->date_autorization)))]) }} de {{ date('Y', strtotime($contract->date_autorization)) }} <br>
                 <small>
                     <i>Cc/arch.</i> <br>
@@ -149,11 +149,6 @@
         }
         .page-title h3{
             margin-top: 0px
-        }
-        @media print{
-            .content {
-                font-size: 14px;
-            }
         }
     </style>
 @endsection

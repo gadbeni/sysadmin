@@ -374,7 +374,25 @@
                                                     <label class="label label-{{ $style }}">{{ $label }}</label>
                                                 </td>
                                                 <td class="no-sort no-click bread-actions text-right">
-                                                    <a href="{{ route('contracts.print', ['id' => $contract->id, 'document' => 'consultor.addendum']) }}?type={{ $cont == 1 ? 'first' : '' }}" class="btn btn-default btn-sm" target="_blank">
+                                                    @php
+                                                        // Tipo de contrato
+                                                        if ($contract->procedure_type_id == 2) {
+                                                            $type = 'consultor';
+                                                        } else {
+                                                            $type = 'eventual';
+                                                        }
+                                                        
+                                                        // Tipo de documento
+                                                        switch ($contract->direccion_administrativa_id) {
+                                                            case 5:
+                                                                $file = "addendum-sedeges";
+                                                                break;
+                                                            default:
+                                                                $file = "addendum";
+                                                                break;
+                                                        }
+                                                    @endphp
+                                                    <a href="{{ route('contracts.print', ['id' => $contract->id, 'document' => $type.'.'.$file]) }}?type={{ $cont == 1 ? 'first' : '' }}" class="btn btn-default btn-sm" target="_blank">
                                                         <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
                                                     </a>
                                                     @if (auth()->user()->hasPermission('edit_addendum_contracts'))
@@ -428,7 +446,7 @@
                                 <select name="signature_id" class="form-control select2">
                                     <option value="">Secretario(a) de Administración y Finanzas</option>
                                     @foreach (App\Models\Signature::where('status', 1)->where('deleted_at', NULL)->get() as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->designation }} {{ $item->name }} - {{ $item->job }}</option>
                                     @endforeach
                                 </select>
                             </div>

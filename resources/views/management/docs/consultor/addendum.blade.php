@@ -81,10 +81,6 @@
                 @include('management.docs.consultor.partials.payment_details', ['subtitle' => '', 'contract' => $contract, 'contract_start' => $addendums->first()->start, 'contract_finish' => $addendums->first()->finish])
                 La cancelaci&oacute;n del servicio prestado se realizar&aacute; previa presentaci&oacute;n y aprobaci&oacute;n de informe de actividades de acuerdo a T&eacute;rminos de Referencia, aprobado por su inmediato superior.
             </p>
-            
-            <div class="saltopagina"></div>
-            <div class="pt"></div>
-
             <p><strong>CL&Aacute;USULA CUARTA. -</strong><strong> (Documentos que Integran)</strong></p>
             <p>Para el cumplimiento del presente Contrato Modificatorio, forman parte del mismo los siguientes documentos:</p>
             <ul>
@@ -133,12 +129,7 @@
 
 @section('css')
     <style>
-        @media print{
-            .content {
-                font-size: 14px;
-            }
-        }
-	    .content p{text-align: justify;}
+        
     </style>
 @endsection
 

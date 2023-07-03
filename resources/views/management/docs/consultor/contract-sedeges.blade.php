@@ -223,11 +223,7 @@
 
 @section('css')
     <style>
-        @media print{
-            .content {
-                font-size: 13px;
-            }
-        }
+
     </style>
 @endsection
 

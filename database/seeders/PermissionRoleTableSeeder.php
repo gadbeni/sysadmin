@@ -341,6 +341,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'read_centralize_paymentschedules' or
                                             `key` = 'browse_planillaspagos' or
                                             `key` = 'add_paymentschedules' or
+                                            `key` = 'edit_paymentschedules' or
                                             `key` = 'delete_paymentschedules' or
                                             `key` = 'approve_paymentschedules' or
                                             `key` = 'enable_paymentschedules' or

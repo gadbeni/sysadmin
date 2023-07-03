@@ -28,9 +28,6 @@
             {!! $qrcode !!}
         @endif
     </div>
-	<div id="options" style="position: fixed; bottom: 10px; right: 20px">
-        <button type="button" onclick="javascript:document.designMode = 'on'; document.getElementById('options').style.display = 'none'">Editar</button>
-    </div>
 @endsection
 
 @section('content')
@@ -109,16 +106,7 @@
 
 @section('css')
     <style>
-        @media print{
-            .content {
-                font-size: 14px;
-            }
-        }
-        @media print {
-            #options{
-                display: none;
-            }
-        }
+
     </style>
 @endsection
 

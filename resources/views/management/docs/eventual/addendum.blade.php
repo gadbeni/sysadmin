@@ -139,11 +139,7 @@
 
 @section('css')
     <style>
-        @media print{
-            .content {
-                font-size: 14px;
-            }
-        }
+        
     </style>
 @endsection
 

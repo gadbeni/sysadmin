@@ -88,11 +88,6 @@
         .page-title h3{
             margin-top: 0px
         }
-        @media print{
-            .content {
-                font-size: 14px;
-            }
-        }
     </style>
 @endsection
 

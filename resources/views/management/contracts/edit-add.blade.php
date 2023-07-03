@@ -276,91 +276,88 @@
                                         {{
                                             isset($contract) ?
                                             $contract->table_report :
-                                            '<p>&nbsp;</p>
-                                            <table style="color: #000000; font-family: Arial, sans-serif; width: 612px; font-size: 11px;" border="1" cellspacing="0" cellpadding="3">
-                                            <tbody>
-                                            <tr>
-                                            <th rowspan="2">NIVEL DE CONSULTOR&Iacute;A</th>
-                                            <th colspan="2">REQUISITOS</th>
-                                            </tr>
-                                            <tr>
-                                            <th>FORMACI&Oacute;N ACAD&Eacute;MICA</th>
-                                            <th>MEDIOS DE VERIFICACI&Oacute;N</th>
-                                            </tr>
-                                            <tr>
-                                            <td rowspan="3"><strong>TECNICO IV PARA LA DIRECCI&Oacute;N DE INTERACCI&Oacute;N SOCIAL</strong></td>
-                                            <td>
-                                            <ul style="padding-left: 20px;">
-                                            <li>Descripci&oacute;n</li>
-                                            </ul>
-                                            </td>
-                                            <td>
-                                            <ul style="padding-left: 20px;">
-                                            <li>Descripción</li>
-                                            </ul>
-                                            </td>
-                                            </tr>
-                                            <tr>
-                                            <td><strong>EXPERIENCIA LABORAL REQUERIDA</strong></td>
-                                            <td><strong>MEDIOS DE VERIFICACI&Oacute;N</strong></td>
-                                            </tr>
-                                            <tr>
-                                            <td>
-                                            <ul style="padding-left: 20px;">
-                                            <li>No aplica</li>
-                                            </ul>
-                                            </td>
-                                            <td>
-                                            <ul style="padding-left: 20px;">
-                                            <li>No aplica</li>
-                                            </ul>
-                                            </td>
-                                            </tr>
-                                            </tbody>
+                                            '<table style="color: #000000; font-family: Arial, sans-serif; font-size: 11px;" border="1" cellspacing="0" cellpadding="3">
+                                                <tbody>
+                                                    <tr>
+                                                        <th rowspan="2" style="font-size: 9px;">NIVEL DE CONSULTOR&Iacute;A</th>
+                                                        <th colspan="2" style="font-size: 9px;">REQUISITOS</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="font-size: 9px;">FORMACI&Oacute;N ACAD&Eacute;MICA</th>
+                                                        <th style="font-size: 9px;">MEDIOS DE VERIFICACI&Oacute;N</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td rowspan="3"><strong>TECNICO IV PARA LA DIRECCI&Oacute;N DE INTERACCI&Oacute;N SOCIAL</strong></td>
+                                                        <td>
+                                                            <ul style="padding-left: 20px;">
+                                                                <li>Descripci&oacute;n</li>
+                                                            </ul>
+                                                        </td>
+                                                        <td>
+                                                            <ul style="padding-left: 20px;">
+                                                                <li>Descripción</li>
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="font-size: 9px"><strong>EXPERIENCIA LABORAL REQUERIDA</strong></th>
+                                                        <th style="font-size: 9px"><strong>MEDIOS DE VERIFICACI&Oacute;N</strong></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <ul style="padding-left: 20px;">
+                                                                <li>No aplica</li>
+                                                            </ul>
+                                                        </td>
+                                                        <td>
+                                                            <ul style="padding-left: 20px;">
+                                                                <li>No aplica</li>
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
                                             </table>
-                                            <p>&nbsp;</p>
                                             <p style="text-align: justify; color: #000000; font-family: Arial, sans-serif; font-size: 13px;">As&iacute; mismo se procedi&oacute; a la Evaluaci&oacute;n mediante la metodolog&iacute;a CUMPLE y NO CUMPLE, tal como se detalla en el siguiente cuadro:</p>
-                                            <p>&nbsp;</p>
-                                            <table style="color: #000000; font-family: Arial, sans-serif; width: 612px; font-size: 11px;" border="1" cellspacing="0" cellpadding="3">
-                                            <tbody>
-                                            <tr>
-                                            <th rowspan="2">NIVEL DE CONSULTOR&Iacute;A</th>
-                                            <th colspan="2">VERIFICACI&Oacute;N</th>
-                                            </tr>
-                                            <tr>
-                                            <th>FORMACI&Oacute;N ACAD&Eacute;MICA</th>
-                                            <th>MEDIOS DE VERIFICACI&Oacute;N</th>
-                                            </tr>
-                                            <tr>
-                                            <td rowspan="3"><strong>TECNICO IV PARA LA DIRECCI&Oacute;N DE INTERACCI&Oacute;N SOCIAL</strong></td>
-                                            <td>
-                                            <ul style="padding-left: 20px;">
-                                            <li>Cumple</li>
-                                            </ul>
-                                            </td>
-                                            <td>
-                                            <ul style="padding-left: 20px;">
-                                            <li>Cumple</li>
-                                            </ul>
-                                            </td>
-                                            </tr>
-                                            <tr>
-                                            <td><strong>EXPERIENCIA LABORAL REQUERIDA</strong></td>
-                                            <td><strong>MEDIOS DE VERIFICACI&Oacute;N</strong></td>
-                                            </tr>
-                                            <tr>
-                                            <td>
-                                            <ul style="padding-left: 20px;">
-                                            <li>No aplica</li>
-                                            </ul>
-                                            </td>
-                                            <td>
-                                            <ul style="padding-left: 20px;">
-                                            <li>No aplica</li>
-                                            </ul>
-                                            </td>
-                                            </tr>
-                                            </tbody>
+                                            <table style="color: #000000; font-family: Arial, sans-serif; font-size: 11px;" border="1" cellspacing="0" cellpadding="3">
+                                                <tbody>
+                                                    <tr>
+                                                        <th rowspan="2" style="font-size: 9px">NIVEL DE CONSULTOR&Iacute;A</th>
+                                                        <th colspan="2" style="font-size: 9px">VERIFICACI&Oacute;N</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="font-size: 9px">FORMACI&Oacute;N ACAD&Eacute;MICA</th>
+                                                        <th style="font-size: 9px">MEDIOS DE VERIFICACI&Oacute;N</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td rowspan="3"><strong>TECNICO IV PARA LA DIRECCI&Oacute;N DE INTERACCI&Oacute;N SOCIAL</strong></td>
+                                                        <td>
+                                                            <ul style="padding-left: 20px;">
+                                                                <li>Cumple</li>
+                                                            </ul>
+                                                        </td>
+                                                        <td>
+                                                            <ul style="padding-left: 20px;">
+                                                                <li>Cumple</li>
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th style="font-size: 9px"><strong>EXPERIENCIA LABORAL REQUERIDA</strong></th>
+                                                        <th style="font-size: 9px"><strong>MEDIOS DE VERIFICACI&Oacute;N</strong></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <ul style="padding-left: 20px;">
+                                                                <li>No aplica</li>
+                                                            </ul>
+                                                        </td>
+                                                        <td>
+                                                            <ul style="padding-left: 20px;">
+                                                                <li>No aplica</li>
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
                                             </table>'
                                         }}
                                     </textarea>
