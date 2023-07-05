@@ -4,14 +4,14 @@
 
 @php
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-    $code = 'T-'.str_pad($contract->transfers->last()->code, 8, "0", STR_PAD_LEFT);
+    $code = 'PROM-'.str_pad($contract->promotions->last()->code, 8, "0", STR_PAD_LEFT);
     $signature = null;
 @endphp
 
 @section('qr_code')
     <div id="qr_code" >
         @php
-            $qrcode = QrCode::size(70)->generate('TRANSFERENCIA PERSONAL PERMANENTE '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)).' con un sueldo de '.number_format($contract->job->salary, 2, ',', '.').' Bs.');
+            $qrcode = QrCode::size(70)->generate('PROMOCION PERSONAL PERMANENTE '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' de '.date('Y', strtotime($contract->start)).' con un sueldo de '.number_format($contract->job->salary, 2, ',', '.').' Bs.');
         @endphp
         {!! $qrcode !!}
     </div>
@@ -21,7 +21,7 @@
     <div class="content">
         <div class="page-title">
             <h2>
-                <span style="color: #009A2F">TRANSFERENCIA</span> <br>
+                <span style="color: #009A2F">MEMORANDUM</span> <br>
                 <small>GAD-BENI N° {{ $code }}</small>
             </h2>
         </div>
@@ -39,20 +39,24 @@
                     </td>
                 </tr>
             </table>
+            <p style="text-align: center"><u><b>PROMOCION</b></u></p>
+            <br>
+            <p>De mi consideración:</p>
+            <br>
+            @php
+                $numeros_a_letras = new NumeroALetras();
+            @endphp
             <p>
-                @php
-                    $numeros_a_letras = new NumeroALetras();
-                @endphp
-                Conforme a las atribuciones conferidas y en aplicación del art. 31 del D.S. 26115 Normas Básicas del Sistema de Administración de Personal, comunico a usted que, a partir de la fecha, su persona ha sido transferido al Cargo de <b>{{ Str::upper($contract->job->name) }}</b>, con el Ítem Nº <b>{{ $contract->job->item }}</b>, con el nivel salarial Nº <b>{{ $contract->job->level }}</b>, con una remuneración mensual de <b>Bs. {{ number_format($contract->job->salary, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice($contract->job->salary, 2, 'Bolivianos') }})</b>, bajo la dependencia de <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b> y ésta a su vez del <b>GOBIERNO AUTÓNOMO DEPARTAMENTAL DEL BENI</b>.
+                A través de la presente, en el ejercicio de las atribuciones conferidas mediante <b>Resolución de Gobernación N° 12/2023</b> 
+                y conforme lo establece el <b>Decreto Supremo 26115 art.29</b> comunico a usted que a partir de la fecha se promociona a su persona al cargo de 
+                <b>{{ $contract->job->name }}</b> con el <b>Ítem Nº {{ $contract->job->item }}</b>, nivel {{ $contract->job->level }} de nuestra escala salarial en vigencia conforme a la 
+                <b>Resolución de Asamblea N° 131/2023</b> de fecha <b>28 de febrero del 2023</b>, y con el haber mensual de <b>Bs. {{ number_format($contract->job->salary, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice($contract->job->salary, 2, 'Bolivianos') }})</b>.
             </p>
             <p>
-                Así mismo, hacerle conocer que la transferencia, no conlleva el traslado mobiliario. equipos y otros enseres del Área de Origen, se agradece a usted que toda la documentación referente a las funciones que ha venido desempeñando, pueda dejar al día y en completo orden.
+                Así mismo, en cumplimiento al <b>Decreto Supremo 1233 en su artículo 5</b>, la <b>resolución CGE/019/2022</b>, se le recuerda la obligación de realizar la declaración jurada de bienes y rentas por actualización ante la Contraloría General del Estado Plurinacional por la promoción atribuible a su persona, cuya copia deberá ser presentada a la Dirección de recursos Humanos del GAD-BENI.
             </p>
             <p>
-                Se le recuerda, efectuar su Declaración Jurada de Bienes y Rentas ante la Contraloría General del Estado de conformidad al Decreto Supremo Nº 1233, por actualización de acuerdo a su fecha de nacimiento en la gestión.
-            </p>
-            <p>
-                Deseándole éxitos en el desempeño de sus funciones y que las mismas sean cumplidas con honestidad, responsabilidad, eficiencia e integridad, saludo a usted.
+                Sin otro particular motivo saludo a usted muy cordialmente.
             </p>
             <p>
                 Atentamente.

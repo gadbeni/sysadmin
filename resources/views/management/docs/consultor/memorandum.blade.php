@@ -7,11 +7,7 @@
         @php
             $qrcode = QrCode::size(70)->generate("MEMORANDUM DE PROCESO DE CONTRATACIÓN ".$contract->code." - CONSULTORÍA DE LÍNEA");
         @endphp
-        @if ($contract->files->count() > 0)
-            <img src="data:image/png;base64, {!! base64_encode($qrcode) !!}">
-        @else
-            {!! $qrcode !!}
-        @endif
+        {!! $qrcode !!}
     </div>
 @endsection
 
@@ -26,7 +22,7 @@
                 $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
                 $code = $contract->code;
                 $signature = $contract->signature;
-                if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4])){
+                if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
                     $signature = null;   
                 }
             @endphp

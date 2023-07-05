@@ -13,11 +13,7 @@
         @php
             $qrcode = QrCode::size(70)->generate('RESOLUCIÓN DEL CONTRATO  '.$code);
         @endphp
-        @if ($contract->files->count() > 0)
-            <img src="data:image/png;base64, {!! base64_encode($qrcode) !!}">
-        @else
-            {!! $qrcode !!}
-        @endif
+        {!! $qrcode !!}
     </div>
 @endsection
 

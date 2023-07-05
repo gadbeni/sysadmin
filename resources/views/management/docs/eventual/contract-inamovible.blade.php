@@ -21,11 +21,7 @@
         @php
             $qrcode = QrCode::size(70)->generate('CONTRATO DE PRESTACIÓN DE SERVICIOS PARA PERSONAL EVENTUAL GAD-BENI-C.E- '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' al '.date('d', strtotime($contract_finish)).' de '.$months[intval(date('m', strtotime($contract_finish)))].' de '.date('Y', strtotime($contract_finish)).' con un sueldo de '.number_format($sueldo, 2, ',', '.').' Bs.');
         @endphp
-        @if ($contract->files->count() > 0)
-            <img src="data:image/png;base64, {!! base64_encode($qrcode) !!}">
-        @else
-            {!! $qrcode !!}
-        @endif
+        {!! $qrcode !!}
     </div>
 @endsection
 

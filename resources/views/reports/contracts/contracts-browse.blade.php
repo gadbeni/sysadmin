@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <div class="panel panel-bordered">
                         <div class="panel-body" style="padding: 0px">
-                            <div class="col-md-8" style="padding: 0px">
+                            <div class="col-md-6" style="padding: 0px">
                                 <h1 class="page-title">
                                     <i class="voyager-certificate"></i> Reporte de Contratos
                                 </h1>
@@ -19,7 +19,7 @@
                                     <p>Puede obtener el valor de cada parámetro en cualquier lugar de su sitio llamando <code>setting('group.key')</code></p>
                                 </div> --}}
                             </div>
-                            <div class="col-md-4" style="margin-top: 30px">
+                            <div class="col-md-6" style="margin-top: 30px">
                                 <form name="form_search" id="form-search" action="{{ route('reports.contracts.contracts.list') }}" method="post">
                                     @csrf
                                     <input type="hidden" name="type">
@@ -32,13 +32,19 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group col-md-12">
+                                    <div class="form-group col-md-6">
                                         <select name="status" class="form-control select2">
-                                            <option value="">Todos</option>
+                                            <option value="">Todos los estados</option>
                                             <option value="elaborado">Elaborados</option>
                                             <option value="enviado">Enviado</option>
                                             <option value="firmado">Firmado</option>
                                             <option value="concluido">Concluido</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <select name="addendums" class="form-control select2">
+                                            <option value="">Todos los contratos</option>
+                                            <option value="1">Con adenda</option>
                                         </select>
                                     </div>
                                     <div class="form-group col-md-12">

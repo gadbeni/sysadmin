@@ -24,6 +24,7 @@ use App\Models\ContractsFinished;
 use App\Models\Addendum;
 use App\Models\ContractRatification;
 use App\Models\ContractsTransfer;
+use App\Models\ContractsPromotion;
 use App\Models\ContractsFile;
 
 class ContractsController extends Controller
@@ -58,7 +59,7 @@ class ContractsController extends Controller
         $direccion_administrativa_id = request('direccion_administrativa_id') ?? null;
         $addendums = request('addendums') ?? null;
         $paginate = request('paginate') ?? 10;
-        $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa.tipo', 'type', 'transfers', 'jobs', 'finished'])
+        $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa.tipo', 'type', 'transfers', 'promotions', 'jobs', 'finished'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
                     ->where(function($query) use ($search){
                         if($search){
@@ -606,10 +607,12 @@ class ContractsController extends Controller
             $contract->update();
 
             // Crear registro de transferencia
+            $last_transfer = ContractsTransfer::whereYear('date', date('Y'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->first();
             ContractsTransfer::create([
                 'user_id' => Auth::user()->id,
                 'contract_id' => $new_contratc->id,
                 'previus_contract_id' => $request->contract_id,
+                'code' => ($last_transfer ? explode('/', $last_transfer->code)[0] +1 : 1).'/'.date('Y'),
                 'date' => $request->date,
                 'observations' => $request->contract_id,
             ]);
@@ -617,7 +620,69 @@ class ContractsController extends Controller
             return response()->json(['message' => 'Transferencia registrada exitosamente.']);
         } catch (\Throwable $th) {
             DB::rollback();
-            dd($th);
+            // dd($th);
+            return response()->json(['error' => 'Ocurrió un error.']);
+        }
+    }
+
+    public function contracts_promotion_store(Request $request){
+        DB::beginTransaction();
+        try {
+
+            $contract = Contract::find($request->contract_id);
+
+            if ($contract->start >= $request->date) {
+                return response()->json(['error' => 'Error al definir la fecha de trasferencia.']);
+            }
+
+            // Crear contrato
+            $d_a = Direccion::find(Job::find($request->job_id)->direccion_administrativa_id);
+            $last_contract = Contract::whereYear('start', date('Y', strtotime($request->date)))
+                                    ->where('procedure_type_id', $contract->procedure_type_id)
+                                    ->where('direccion_administrativa_id', $d_a->id)
+                                    ->orderBy('id', 'DESC')->first();
+            $number_contract = $last_contract ? explode('/', explode('-', $last_contract->code)[1])[0] +1 : 1;
+
+            $program = Program::where('procedure_type_id', 1)->where('year', date('Y'))->where('deleted_at', NULL)->first();
+            if(!$program){
+                return response()->json(['message' => 'No existe un programa para la planilla permanente']);
+            }
+            
+            $code = $d_a->sigla.'-'.str_pad($number_contract, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->date));
+            $new_contratc = Contract::create([
+                'user_id' => Auth::user()->id,
+                'person_id' => $contract->person_id,
+                'procedure_type_id' => 1,
+                'program_id' => $program->id,
+                'job_id' => $request->job_id,
+                'direccion_administrativa_id' => $d_a->id,
+                'code' => $code,
+                'start' => $request->date,
+                'finish' => $contract->finish,
+                'details_work' => $contract->details_work,
+                'table_report' => $contract->table_report,
+            ]);
+
+            // Actualizar el contrato previo
+            $contract->finish = date("Y-m-d", strtotime("-1 day", strtotime($request->date)));
+            $contract->status = 'concluido';
+            $contract->update();
+
+            // Crear registro de promoci|ón
+            $last_promotion = ContractsPromotion::whereYear('date', date('Y'))->where('deleted_at', NULL)->orderBy('id', 'DESC')->first();
+            ContractsPromotion::create([
+                'user_id' => Auth::user()->id,
+                'contract_id' => $new_contratc->id,
+                'previus_contract_id' => $request->contract_id,
+                'code' => ($last_promotion ? explode('/', $last_promotion->code)[0] +1 : 1).'/'.date('Y'),
+                'date' => $request->date,
+                'observations' => $request->contract_id,
+            ]);
+            DB::commit();
+            return response()->json(['message' => 'Promición registrada exitosamente.']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            // dd($th);
             return response()->json(['error' => 'Ocurrió un error.']);
         }
     }
@@ -677,7 +742,7 @@ class ContractsController extends Controller
     // ================================
     
     public function print($id, $document) {
-        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature', 'signature_alt', 'addendums.signature', 'transfers', 'files' => function($q) use($document){
+        $contract = Contract::with(['user', 'person', 'program', 'finished', 'cargo.nivel', 'direccion_administrativa', 'job.direccion_administrativa', 'unidad_administrativa', 'signature', 'signature_alt', 'addendums.signature', 'transfers', 'promotions', 'files' => function($q) use($document){
                         $q->where('name', $document);
                     }])->where('id', $id)->first();
         // Si no tiene comisión evaluadora del sistema actual buscar en el antiguo sistema
@@ -689,11 +754,6 @@ class ContractsController extends Controller
         }else{
             $contract->workers = $contract->workers_memo != null && $contract->workers_memo != "null" ? DB::connection('mysqlgobe')->table('contribuyente')->whereIn('ID', json_decode($contract->workers_memo))->get() : [];
         }
-        if($contract->files->count() > 0){
-            $pdf = PDF::loadView('management.docs.'.$document, compact('contract', 'document'));
-            return $pdf->setPaper('legal')->stream();
-        }
-
         return view('management.docs.'.$document, compact('contract', 'document'));
     }
 

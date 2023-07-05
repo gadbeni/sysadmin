@@ -25,6 +25,7 @@
                 background: linear-gradient(90deg, rgba(115,117,117,1) 0%, rgba(173,173,173,1) 50%, rgba(115,117,117,1) 100%);
             }
             .sheet {
+                padding: 30px;
                 max-width: 780px;
                 background-color: white
             }
@@ -77,37 +78,29 @@
                 size: letter;
                 margin: 10mm 10mm 10mm 10mm;
             }
-        </style>
-
-        @if ($contract->files->count() == 0)
-            <style>
+            @media print {
+                body{
+                    margin: 0px auto;
+                }
+                .options {
+                    display: none
+                }
                 .sheet {
-                    padding: 30px;
+                    padding: 0px;
+                    max-width: 100%;
+                    background-color: white
                 }
-                @media print {
-                    body{
-                        margin: 0px auto;
-                    }
-                    .options {
-                        display: none
-                    }
-                    .sheet {
-                        padding: 0px;
-                        max-width: 100%;
-                        background-color: white
-                    }
-                    .container {
-                        background-color: transparent
-                    }
-                    .content {
-                        min-height: auto;
-                    }
-                    .table-signature {
-                        margin-bottom: 0px;
-                    }
+                .container {
+                    background-color: transparent
                 }
-            </style>
-        @endif
+                .content {
+                    min-height: auto;
+                }
+                .table-signature {
+                    margin-bottom: 0px;
+                }
+            }
+        </style>
     </head>
     <body>
         <div id="watermark">
@@ -121,19 +114,19 @@
                         <td style="text-align: right">@yield('qr_code')</td>
                     </tr>
                 </table>
-                @isset($contract)
-                    @if (setting('auxiliares.edit-docs') && $contract->files->count() == 0)
-                    <div class="options" style="position: fixed; bottom: 10px; right: 20px">
-                        <button type="button" class="btn btn-edit">Editar</button>
+                <div class="options" style="position: fixed; bottom: 10px; right: 20px">
+                    @isset($contract)
+                        @if (setting('auxiliares.edit-docs') && $contract->files->count() == 0)
+                            <button type="button" class="btn btn-edit">Editar</button>
+                            <button type="button" class="btn btn-print">Imprimir</button>
+                            <button type="button" class="btn btn-save" style="display: none">Guardar</button>
+                        @else
+                            <button type="button" class="btn btn-print">Imprimir</button>
+                        @endif
+                    @else
                         <button type="button" class="btn btn-print">Imprimir</button>
-                        <button type="button" class="btn btn-save" style="display: none">Guardar</button>
-                    </div>
-                    @endif
-                @else
-                    <div class="options" style="position: fixed; bottom: 10px; right: 20px">
-                        <button type="button" class="btn btn-print">Imprimir</button>
-                    </div>
-                @endisset
+                    @endisset
+                </div>
         
                 @yield('content')
             </div>
@@ -158,12 +151,6 @@
         <script src="{{ asset('js/jquery-3.4.1.min.js')}}" ></script>
         <script>
             $(document).ready(function () {
-                @isset($contract)
-                    @if ($contract->files->count() > 0)
-                    $('.options').css('display', 'none');
-                    @endif
-                @endisset
-                
                 $('#location-id').change(function () {
                     $('#label-location').html($(this).val());
                 });

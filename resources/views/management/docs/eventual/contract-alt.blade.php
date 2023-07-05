@@ -21,11 +21,7 @@
         @php
             $qrcode = QrCode::size(70)->generate('CONTRATO DE PRESTACIÓN DE SERVICIOS PARA PERSONAL EVENTUAL GAD-BENI-C.E- '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' al '.date('d', strtotime($contract_finish)).' de '.$months[intval(date('m', strtotime($contract_finish)))].' de '.date('Y', strtotime($contract_finish)).' con un sueldo de '.number_format($sueldo, 2, ',', '.').' Bs.');
         @endphp
-        @if ($contract->files->count() > 0)
-            <img src="data:image/png;base64, {!! base64_encode($qrcode) !!}">
-        @else
-            {!! $qrcode !!}
-        @endif
+        {!! $qrcode !!}
     </div>
 @endsection
 
@@ -43,7 +39,7 @@
             <p><strong>CL&Aacute;USULA PRIMERA - (PARTES)</strong></p>
             <ol>
                 <li>
-                    <p>EL GOBIERNO AUTÓNOMO DEPARTAMENTAL DEL BENI, con domicilio ubicado en {{ $contract->direccion_administrativa->direccion ?? 'el edificio de Gobernación en Acera Sud de la Plaza Mariscal José Ballivián' }}, representado legalmente para este acto por el ciudadano(a) {{ $signature->name }} con c&eacute;dula de identidad No. {{ $signature->ci }}, electo como {{ $signature->job }}, conforme se acredita por "Acta N&deg; 001/2020-2022 de Posesi&oacute;n y Juramento del Gobernador, Subgobernadoras y Subgobernadores, Corregidoras y Corregidores del Departamento del Beni, electos para el periodo Constitucional 2021-2026" emanado de la Asamblea Legislativa Departamental del Beni, en estricta conformidad con la Ley Departamental del Beni N&ordm; 001/2010 de fecha 09/Junio/2010, y con domicilio legal situado sobre la calle Benito Ruiz N&ordm; 146 Zona Pompeya, quien en adelante se denominar&aacute; la "<strong>ENTIDAD".</strong></p>
+                    <p>EL GOBIERNO AUTÓNOMO DEPARTAMENTAL DEL BENI, con domicilio ubicado en {{ $contract->direccion_administrativa->direccion ?? 'el edificio de Gobernación en Acera Sud de la Plaza Mariscal José Ballivián' }}, representado legalmente para este acto por el ciudadano(a) {{ $signature ? $signature->name : setting('firma-autorizada.name') }} con c&eacute;dula de identidad No. {{ $signature ? $signature->ci : setting('firma-autorizada.ci') }}, electo como {{ $signature ? $signature->job : setting('firma-autorizada.job') }}, conforme se acredita por "Acta N&deg; 001/2020-2022 de Posesi&oacute;n y Juramento del Gobernador, Subgobernadoras y Subgobernadores, Corregidoras y Corregidores del Departamento del Beni, electos para el periodo Constitucional 2021-2026" emanado de la Asamblea Legislativa Departamental del Beni, en estricta conformidad con la Ley Departamental del Beni N&ordm; 001/2010 de fecha 09/Junio/2010, y con domicilio legal situado sobre la calle Benito Ruiz N&ordm; 146 Zona Pompeya, quien en adelante se denominar&aacute; la "<strong>ENTIDAD".</strong></p>
                 </li>
             </ol>
             <ol start="2">

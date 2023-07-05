@@ -136,9 +136,10 @@
                                     @if ($item->status == 'firmado' && auth()->user()->hasPermission('ratificate_contracts'))
                                     <li><a href="#" title="Ratificar" data-toggle="modal" data-target="#ratificate-modal" onclick="ratificateContract({{ $item->id }})">Ratificar</a></li>
                                     @endif
-                                    {{-- si está firmado se puede transferir --}}
+                                    {{-- si está firmado se puede transferir y promocionar --}}
                                     @if ($item->status == 'firmado' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('transfer_contracts'))
                                     <li><a href="#" class="btn-transfer" data-toggle="modal" data-target="#transfer-modal" data-id="{{ $item->id }}" title="Crear transferencia" >Transferir</a></li>
+                                    <li><a href="#" class="btn-promotion" data-toggle="modal" data-target="#promotion-modal" data-id="{{ $item->id }}" title="Crear promoción" >Promoción</a></li>
                                     @endif
                                     {{-- Crear adenda --}}
                                     @if (auth()->user()->hasPermission('add_addendum_contracts') && ($item->status == 'firmado' || $item->status == 'concluido') && count($contracts) == 0 && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5) && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
@@ -177,6 +178,9 @@
                                                 <li><a title="Reasignación" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-reasignacion']) }}" target="_blank">Reasignación</a></li>
                                                 @if ($item->transfers->count() > 0)
                                                 <li><a title="Transferecnia" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.transfer']) }}" target="_blank">Transferencia</a></li>
+                                                @endif
+                                                @if ($item->promotions->count() > 0)
+                                                <li><a title="Promoción" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.promotion']) }}" target="_blank">Promoción</a></li>
                                                 @endif
                                                 @if ($item->jobs->count() > 0)
                                                 <li><a title="Reasignación de denominación de cargo" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'permanente.memorandum-reasignacion-alt']) }}" target="_blank">Reasignación de cargo</a></li>
@@ -320,7 +324,8 @@
     var page = "{{ request('page') }}";
     $(document).ready(function(){
 
-        $('#select-job_id').select2();
+        $('#select-job_id').select2({dropdownParent: $('#transfer-modal')});
+        $('#select-job_id-alt').select2({dropdownParent: $('#promotion-modal')});
         $('#select-applicant_id').select2();
 
         $.extend({selector: '.richTextBox'}, {})
@@ -338,6 +343,11 @@
         $('.btn-transfer').click(function(){
             let id = $(this).data('id');
             $('#form-transfer input[name="contract_id"]').val(id);
+        });
+
+        $('.btn-promotion').click(function(){
+            let id = $(this).data('id');
+            $('#form-promotion input[name="contract_id"]').val(id);
         });
 
         // Crear adenda

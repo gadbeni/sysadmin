@@ -14,11 +14,7 @@
         @php
             $qrcode = QrCode::size(70)->generate('MEMORANDUM DE RATIFICACIÓN '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($date)).' de '.$months[intval(date('m', strtotime($date)))].' de '.date('Y', strtotime($date)).' con un sueldo de '.number_format($contract->job->salary, 2, ',', '.').' Bs.');
         @endphp
-        @if ($contract->files->count() > 0)
-            <img src="data:image/png;base64, {!! base64_encode($qrcode) !!}">
-        @else
-            {!! $qrcode !!}
-        @endif
+        {!! $qrcode !!}
     </div>
 @endsection
 

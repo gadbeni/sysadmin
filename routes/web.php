@@ -231,6 +231,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('contracts/addendum/status', [ContractsController::class, 'contracts_addendum_status'])->name('contracts.addendum.status');
     Route::post('contracts/addendum/update', [ContractsController::class, 'contracts_addendum_update'])->name('contracts.addendum.update');
     Route::post('contracts/transfer/store', [ContractsController::class, 'contracts_transfer_store'])->name('contracts.transfer.store');
+    Route::post('contracts/promotion/store', [ContractsController::class, 'contracts_promotion_store'])->name('contracts.promotion.store');
     Route::get('contracts/direccion-administrativa/{id}', [ContractsController::class, 'contracts_direccion_administrativa']);
     Route::get('contracts/{id}/print/{document}', [ContractsController::class, 'print'])->name('contracts.print');
     Route::post('contracts/{id}/file/store', [ContractsController::class, 'file_store'])->name('contracts.file.store');

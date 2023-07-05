@@ -120,6 +120,10 @@ class Contract extends Model
         return $this->hasMany(ContractsTransfer::class);
     }
 
+    public function promotions(){
+        return $this->hasMany(ContractsPromotion::class);
+    }
+
     public function jobs(){
         return $this->hasMany(ContractsJob::class);
     }

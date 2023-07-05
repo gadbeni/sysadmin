@@ -20,11 +20,7 @@
         @php
             $qrcode = QrCode::size(70)->generate('CONTRATO ADMINISTRATIVO DE SERVICIO DE CONSULTORÍA DE LÍNEA '.$code.' '.$contract->person->first_name.' '.$contract->person->last_name.' con C.I. '.$contract->person->ci.', del '.date('d', strtotime($contract->start)).' de '.$months[intval(date('m', strtotime($contract->start)))].' al '.date('d', strtotime($contract_finish)).' de '.$months[intval(date('m', strtotime($contract_finish)))].' de '.date('Y', strtotime($contract_finish)).' con un sueldo de '.number_format($contract->cargo->nivel->where('IdPlanilla', $contract->cargo->idPlanilla)->first()->Sueldo, 2, ',', '.').' Bs.');
         @endphp
-        @if ($contract->files->count() > 0)
-            <img src="data:image/png;base64, {!! base64_encode($qrcode) !!}">
-        @else
-            {!! $qrcode !!}
-        @endif
+        {!! $qrcode !!}
     </div>
 @endsection
 
@@ -71,7 +67,7 @@
             <p>El objeto y causa del presente contrato es contratar los servicios de un consultor Individual de L&iacute;nea en el cargo de <strong>&ldquo;{{ Str::upper($contract->cargo->Descripcion) }}&rdquo;</strong> para dar apoyo a la/el <strong>{{ Str::upper($contract->unidad_administrativa->nombre) }}</strong><strong> </strong>dependiente de la <strong>{{ Str::upper($contract->direccion_administrativa->nombre) }}.</strong></p>
             <p><span style="text-decoration: underline;"><strong>CL&Aacute;USULA CUARTA</strong></span><strong>. - (OBLIGACIONES {{ $contract->person->gender == 'masculino' ? 'DEL CONSULTOR' : 'DE LA CONSULTORA' }}) </strong></p>
             <p><strong>LA CONSULTORA</strong><strong> </strong>se compromete y obliga a efectuar la prestaci&oacute;n de {{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}, objeto del presente contrato de acuerdo a las especificaciones t&eacute;cnicas, caracter&iacute;sticas, cantidades, plazo y lugar se&ntilde;alado en los T&eacute;rminos de Referencia, condiciones generales de su propuesta que forma parte del presente documento, as&iacute; mismo deber&aacute; registrarse en el Reloj Biom&eacute;trico - Planilla de asistencia manual a objeto de llevar el respectivo control de asistencia, conforme a los t&eacute;rminos y condiciones de este contrato entre otros, los siguiente:</p>
-            <p><strong>1. {{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, se compromete y obliga a realizar el marcado de entrada y salida en el reloj biom&eacute;trico, teniendo en cuenta y aceptando que, de no hacerlo, se proceder&aacute; a realizar descuentos por atrasos, de acuerdo a lo que se establece en los T&eacute;rminos de Referencia (TDR.), los mismos que forman parte indisoluble del presente contrato.</p>
+            <p><strong>1. {{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, se compromete y obliga a realizar el marcado de entrada y salida en el reloj biom&eacute;trico y/o planilla manuscrita, teniendo en cuenta y aceptando que, de no hacerlo, se proceder&aacute; a realizar descuentos por atrasos, de acuerdo a lo que se establece en los T&eacute;rminos de Referencia (TDR.), los mismos que forman parte indisoluble del presente contrato.</p>
             <p><strong>2. </strong><strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, se compromete y obliga a efectuar la prestaci&oacute;n del servicio, objeto del siguiente contrato en los plazos y lugar se&ntilde;alado en los t&eacute;rminos de referencia, TDR.</p>
             <p><strong>3.</strong> <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, prestara un informe mensual sobre el avance de las tareas en ejecuci&oacute;n o los t&eacute;rminos de referencia</p>
             <p><strong>4.</strong> <strong>{{ $contract->person->gender == 'masculino' ? 'EL CONSULTOR' : 'LA CONSULTORA' }}</strong>, se compromete y obliga a presentar los servicios descritos en los t&eacute;rminos de referencia con diligencia, eficiencia, &eacute;tica e integridad profesional, tomando en cuenta la naturaleza y el prop&oacute;sito del contrato y la confidencialidad de informaci&oacute;n y documentaci&oacute;n que se maneja.</p>

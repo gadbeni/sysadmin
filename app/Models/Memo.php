@@ -27,7 +27,7 @@ class Memo extends Model
     }
 
     public function person_external(){
-        return $this->belongsTo(PersonExternal::class, 'person_external_id');
+        return $this->belongsTo(PersonExternal::class, 'person_external_id')->withTrashed();
     }
 
     public function direccion(){

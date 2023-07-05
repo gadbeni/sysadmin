@@ -19,15 +19,11 @@
             $days = array('', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
             $code = $contract->code;
             $signature = $contract->signature_alt ?? $contract->signature;
-            if(!in_array($contract->direccion_administrativa_id, [5, 48]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4])){
+            if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
                 $signature = null;   
             }
         @endphp
-        @if ($contract->files->count() > 0)
-            <img src="data:image/png;base64, {!! base64_encode($qrcode) !!}">
-        @else
-            {!! $qrcode !!}
-        @endif
+        {!! $qrcode !!}
     </div>
 @endsection
 
@@ -38,15 +34,6 @@
         </div>
     @else
         <div class="content">
-            @php
-                $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-                $days = array('', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
-                $code = $contract->code;
-                $signature = $contract->signature;
-                if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4])){
-                    $signature = null;   
-                }
-            @endphp
             <div class="page-title">
                 <h3>AUTORIZACIÓN DE INICIO DE PROCESO DE CONTRATACIÓN</h3>
             </div>

@@ -213,7 +213,7 @@
         </div>
     </form>
 
-    {{-- change status modal --}}
+    {{-- Transfer modal --}}
     <form action="{{ route('contracts.transfer.store') }}" id="form-transfer" class="form-submit" method="POST">
         @csrf
         <div class="modal modal-primary fade" tabindex="-1" id="transfer-modal" role="dialog">
@@ -240,6 +240,49 @@
                         </div>
                         <div class="form-group">
                             <label for="date">Fecha de transferencia</label>
+                            <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="observations">Observaciones</label>
+                            <textarea name="observations" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark" value="Aceptar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {{-- Promotion modal --}}
+    <form action="{{ route('contracts.promotion.store') }}" id="form-promotion" class="form-submit" method="POST">
+        @csrf
+        <div class="modal modal-primary fade" tabindex="-1" id="promotion-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-check"></i> Registrar Promoción</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="contract_id">
+                        <div class="form-group">
+                            <label for="job_id">Item</label>
+                            <select name="job_id" id="select-job_id-alt" class="form-control" required>
+                                <option value="">--Seleccionar Item--</option>
+                                @php
+                                    $jobs = App\Models\Job::whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
+                                        ->where('status', 1)->where('deleted_at', NULL)->get();
+                                @endphp
+                                @foreach ($jobs as $item)
+                                <option value="{{ $item->id }}" data-item='@json($item)'>ITEM {{ $item->item }} : {{ $item->name }} - Bs.{{ $item->salary }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Fecha de promoción</label>
                             <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}" required>
                         </div>
                         <div class="form-group">
@@ -481,6 +524,7 @@
                 $('#addendum-status-modal').modal('hide');
                 $('#ratificate-modal').modal('hide');
                 $('#transfer-modal').modal('hide');
+                $('#promotion-modal').modal('hide');
                 $('#finish-modal').modal('hide');
                 e.preventDefault();
                 $('#div-results').loading({message: 'Cargando...'});

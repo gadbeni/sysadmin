@@ -146,6 +146,13 @@ class ReportsController extends Controller
                                 }
                             }
                         })
+                        ->where(function($query) use ($request){
+                            if($request->addendums){
+                                $query->OrwhereHas('addendums', function($query){
+                                    $query->whereRaw("1");
+                                });
+                            }
+                        })
                         ->where('deleted_at', NULL)->get();
         if($request->type == 'print'){
             return view('reports.contracts.contracts-print', compact('contracts'));

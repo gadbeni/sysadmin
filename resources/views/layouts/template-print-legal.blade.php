@@ -25,6 +25,7 @@
                 background: linear-gradient(90deg, rgba(115,117,117,1) 0%, rgba(173,173,173,1) 50%, rgba(115,117,117,1) 100%);
             }
             .sheet {
+                padding: 30px;
                 max-width: 780px;
                 background-color: white
             }
@@ -74,36 +75,28 @@
 
             @page {
                 size: legal;
-                margin: 10mm 10mm 40mm 10mm;
+                margin: 20mm 10mm 40mm 10mm;
+            }
+            @media print {
+                body{
+                    margin: 0px auto;
+                }
+                .options {
+                    display: none
+                }
+                .sheet {
+                    padding: 0px;
+                    max-width: 100%;
+                    background-color: white
+                }
+                .container {
+                    background-color: transparent
+                }
+                .table-signature {
+                    margin-bottom: 0px;
+                }
             }
         </style>
-
-        @if ($contract->files->count() == 0)
-            <style>
-                .sheet {
-                    padding: 30px;
-                }
-                @media print {
-                    body{
-                        margin: 0px auto;
-                    }
-                    .options {
-                        display: none
-                    }
-                    .sheet {
-                        padding: 0px;
-                        max-width: 100%;
-                        background-color: white
-                    }
-                    .container {
-                        background-color: transparent
-                    }
-                    .table-signature {
-                        margin-bottom: 0px;
-                    }
-                }
-            </style>
-        @endif
     </head>
     <body>
         <div class="container">
@@ -117,14 +110,15 @@
                 <div id="watermark">
                     <img src="{{ asset('images/icon.png') }}" /> 
                 </div>
-                @if (setting('auxiliares.edit-docs') && $contract->files->count() == 0)
-                <div class="options" style="position: fixed; bottom: 10px; right: 20px">
-                    <button type="button" class="btn btn-edit">Editar</button>
-                    <button type="button" class="btn btn-print" onclick="window.print()">Imprimir</button>
-                    <button type="button" class="btn btn-save" style="display: none">Guardar</button>
-                </div>
-                @endif
-        
+		        <div class="options" style="position: fixed; bottom: 10px; right: 20px">
+                    @if (setting('auxiliares.edit-docs') && $contract->files->count() == 0)
+                        <button type="button" class="btn btn-edit">Editar</button>
+                        <button type="button" class="btn btn-print" onclick="window.print()">Imprimir</button>
+                        <button type="button" class="btn btn-save" style="display: none">Guardar</button>
+                    @else
+                        <button type="button" class="btn btn-print" onclick="window.print()">Imprimir</button>
+                    @endif
+		        </div>
                 @yield('content')
             </div>
         </div>
@@ -146,12 +140,6 @@
         <script type="text/javascript" src="{{ voyager_asset('js/app.js') }}"></script>
         <script>
             $(document).ready(function () {
-                @isset($contract)
-                    @if ($contract->files->count() > 0)
-                    $('.options').css('display', 'none');
-                    @endif
-                @endisset
-                
                 $('#location-id').change(function () {
                     $('#label-location').html($(this).val());
                 });

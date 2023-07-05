@@ -22,11 +22,7 @@
         @php
             $qrcode = QrCode::size(70)->generate("CONTRATO MODIFICATORIO DE CONSULTORIA INDIVIDUAL DE LINEA ".($signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF')." NRO ".($addendums->first()->code)." RELACIONADO AL CONTRATO ".($signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF')."/GAD-BENI NRO ".$code);
         @endphp
-        @if ($contract->files->count() > 0)
-            <img src="data:image/png;base64, {!! base64_encode($qrcode) !!}">
-        @else
-            {!! $qrcode !!}
-        @endif
+        {!! $qrcode !!}
     </div>
 @endsection
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateContractsTransfersTable extends Migration
+class CreateContractsPromotionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateContractsTransfersTable extends Migration
      */
     public function up()
     {
-        Schema::create('contracts_transfers', function (Blueprint $table) {
+        Schema::create('contracts_promotions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->foreignId('contract_id')->nullable()->constrained('contracts');
@@ -33,6 +33,6 @@ class CreateContractsTransfersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contracts_transfers');
+        Schema::dropIfExists('contracts_promotions');
     }
 }
