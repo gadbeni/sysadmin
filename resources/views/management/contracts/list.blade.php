@@ -322,6 +322,12 @@
     moment.locale('es');
     var page = "{{ request('page') }}";
     $(document).ready(function(){
+
+        $('#select-job_id').select2({dropdownParent: $('#transfer-modal')});
+        $('#select-job_id-alt').select2({dropdownParent: $('#promotion-modal')});
+        $('#select-applicant_id').select2({dropdownParent: $('#addendum-modal')});
+        $('#select-signature_id').select2({dropdownParent: $('#addendum-modal')});
+
         
         $.extend({selector: '.richTextBox'}, {})
         tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
