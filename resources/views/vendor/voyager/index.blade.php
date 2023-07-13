@@ -502,7 +502,7 @@
                                 @php
                                     $jobs = App\Models\Job::whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
                                                 ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
-                                                ->where('deleted_at', NULL)->count();
+                                                ->where('status', 1)->where('deleted_at', NULL)->count();
                                 @endphp
                                 <h5>Cargos acéfalos</h5>
                                 <h2>{{ $jobs }}</h2>

@@ -68,22 +68,22 @@ class PeopleController extends Controller
     public function rotation_store($id, Request $request){
         try {
             $person = Person::with(['contracts' => function($q){
-                    $q->where('deleted_at', NULL);
+                    $q->where('status', 'firmado')->where('deleted_at', NULL);
                 }])
                 ->where('id', $id)->whereHas('contracts', function($query){
                     $query->where('status', 'firmado')->where('deleted_at', NULL);
                 })->where('deleted_at', NULL)->first();
-            if(count($person->contracts) == 0){
-                return redirect()->route('voyager.people.index')->with(['message' => 'El funcionario no tiene un contrato vigente', 'alert-type' => 'error']);
+            if(!$person){
+                return response()->json(['error' => 1, 'message' => 'El funcionario no tiene un contrato vigente']);
             }
 
             $destiny = Contract::where('person_id', $request->destiny_id)->where('status', 'firmado')->where('deleted_at', NULL)->first();
             if(!$destiny){
-                return redirect()->route('voyager.people.index')->with(['message' => 'El funcionario solicitante no tiene un contrato vigente', 'alert-type' => 'error']);
+                return response()->json(['error' => 1, 'message' => 'El funcionario solicitante no tiene un contrato vigente']);
             }
             $responsible = Contract::where('person_id', $request->responsible_id)->where('status', 'firmado')->where('deleted_at', NULL)->first();
             if(!$responsible){
-                return redirect()->route('voyager.people.index')->with(['message' => 'El funcionario responsable no tiene un contrato vigente', 'alert-type' => 'error']);
+                return response()->json(['error' => 1, 'message' => 'El funcionario responsable no tiene un contrato vigente']);
             }
 
             $rotation = PersonRotation::create([
@@ -97,11 +97,10 @@ class PeopleController extends Controller
                 'date' => $request->date,
                 'observations' => $request->observations
             ]);
-
-            return redirect()->route('voyager.people.index')->with(['message' => 'Rotación registrada correctamente', 'alert-type' => 'success', 'rotation_id' => $rotation->id]);
+            return response()->json(['success' => 1, 'message' => 'Rotación registrada correctamente', 'rotation' => $rotation]);
         } catch (\Throwable $th) {
             // dd($th);
-            return redirect()->route('voyager.people.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
         }
     }
 
@@ -117,7 +116,6 @@ class PeopleController extends Controller
     }
 
     public function file_store($id, Request $request){
-        // dd($request->all());
         try {
             $file_name = Str::random(20).'.'.$request->file->getClientOriginalExtension();
             $dir = "people/$id/".date('F').date('Y');
@@ -130,11 +128,10 @@ class PeopleController extends Controller
                 'file' => $dir.'/'.$file_name,
                 'observations' => $request->observations,
             ]);
-            
-            return redirect()->route('voyager.people.index')->with(['message' => 'File registrado correctamente', 'alert-type' => 'success']);
+            return response()->json(['success' => 1, 'message' => 'File registrado correctamente']);
         } catch (\Throwable $th) {
             // throw $th;
-            return redirect()->route('voyager.people.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
         }
     }
 
@@ -185,10 +182,10 @@ class PeopleController extends Controller
                 'finish' => $request->finish,
                 'observations' => $request->observations,
             ]);
-            return redirect()->route('voyager.people.index')->with(['message' => 'Inamovilidad registrada correctamente', 'alert-type' => 'success']);
+            return response()->json(['success' => 1, 'message' => 'Inamovilidad registrada correctamente']);
         } catch (\Throwable $th) {
             // dd($th);
-            return redirect()->route('voyager.people.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
         }
     }
 
@@ -209,10 +206,10 @@ class PeopleController extends Controller
                 'afp_status' => $request->afp_status ? 1 : 0,
                 'retired' => $request->retired ? 1 : 0
             ]);
-            return response()->json(['success' => 'Estado de AFP actualizado']);
+            return response()->json(['success' => 1, 'message' => 'Estado de AFP actualizado']);
         } catch (\Throwable $th) {
             //throw $th;
-            return response()->json(['error' => 'Ocurrió un error en el servidor']);
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error en el servidor']);
         }
     }
 }

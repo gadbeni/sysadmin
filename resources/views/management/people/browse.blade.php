@@ -62,7 +62,7 @@
     {{-- Modal rotation --}}
     <form class="form-submit" id="rotation-form" action="#" method="post">
         @csrf
-        <div class="modal modal-primary fade" tabindex="-1" id="modal-rotation" role="dialog">
+        <div class="modal modal-primary fade modal-option" tabindex="-1" id="modal-rotation" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -121,7 +121,7 @@
     {{-- Modal rotation --}}
     <form class="form-submit" id="irremovability-form" action="#" method="post">
         @csrf
-        <div class="modal modal-primary fade" tabindex="-1" id="modal-irremovability" role="dialog">
+        <div class="modal modal-primary fade modal-option" tabindex="-1" id="modal-irremovability" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -161,9 +161,9 @@
     </form>
 
     {{-- Modal rotation --}}
-    <form id="options-afp-form" action="#" method="post">
+    <form class="form-submit" id="options-afp-form" action="#" method="post">
         @csrf
-        <div class="modal modal-primary fade" tabindex="-1" id="modal-options-afp" role="dialog">
+        <div class="modal modal-primary fade modal-option" tabindex="-1" id="modal-options-afp" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -217,24 +217,38 @@
                 list();
             });
 
-            $('.form-submit').submit(function(){
-                $('.btn-submit').val('Guardando...');
-                $('.btn-submit').attr('disabled', 'disabled');
-            });
-
-            $('#options-afp-form').submit(function(e){
-                $('#options-afp-form .btn-submit').attr('disabled', 'disabled');
+            $('.form-submit').submit(function(e){
+                $('.form-submit .btn-submit').val('Guardando...');
                 e.preventDefault();
-                $.post($('#options-afp-form').attr('action'), $('#options-afp-form').serialize(), function(res){
-                    if(res.success){
-                        toastr.success(res.success, 'Bien hecho');
-                        $('#modal-options-afp').modal('hide');
-                    }else{
-                        toastr.error(res.error, 'Error');
+                var formData = new FormData($(this)[0]);
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    success: res => {
+                        if(res.success){
+                            toastr.success(res.message, 'Bien hecho');
+                            $('.modal-option').modal('hide');
+                            $(this).trigger('reset');
+                            list();
+                            
+                            if(res.rotation){
+                                window.open(`{{ url('admin/people/rotation') }}/${res.rotation.id}`, '_blank').focus();
+                            }
+                        }else{
+                            toastr.error(res.message, 'Error');
+                        }
+                        $('.form-submit .btn-submit').val('Guardar');
+                        setTimeout(() => {
+                            $('.form-submit .btn-submit').removeAttr('disabled');
+                        }, 0);
                     }
-                    list();
-                    $('#options-afp-form .btn-submit').removeAttr('disabled');
-                })
+                });
             });
         });
 
@@ -251,10 +265,5 @@
                 }
             });
         }
-
-        @if(session('rotation_id'))
-            let rotation_id = "{{ session('rotation_id') }}";
-            window.open(`{{ url('admin/people/rotation') }}/${rotation_id}`, '_blank').focus();
-        @endif
     </script>
 @stop

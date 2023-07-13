@@ -118,7 +118,9 @@ class PermissionsTableSeeder extends Seeder
             'print_finish_contracts',
             'add_addendum_contracts',
             'edit_addendum_contracts',
+            'delete_addendum_contracts',
             'transfer_contracts',
+            'promotion_contracts',
         ];
 
         foreach ($keys as $key) {
@@ -209,7 +211,8 @@ class PermissionsTableSeeder extends Seeder
 
         // Reports Contracts
         $keys = [
-            'browse_reportscontractscontracts',
+            'browse_reportsmanagementcontracts',
+            'browse_reportsmanagementaddendums',
         ];
 
         foreach ($keys as $key) {

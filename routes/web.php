@@ -230,6 +230,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('contracts/addendum/store', [ContractsController::class, 'contracts_addendum_store'])->name('contracts.addendum.store');
     Route::post('contracts/addendum/status', [ContractsController::class, 'contracts_addendum_status'])->name('contracts.addendum.status');
     Route::post('contracts/addendum/update', [ContractsController::class, 'contracts_addendum_update'])->name('contracts.addendum.update');
+    Route::post('contracts/addendum/delete', [ContractsController::class, 'contracts_addendum_delete'])->name('contracts.addendum.delete');
     Route::post('contracts/transfer/store', [ContractsController::class, 'contracts_transfer_store'])->name('contracts.transfer.store');
     Route::post('contracts/promotion/store', [ContractsController::class, 'contracts_promotion_store'])->name('contracts.promotion.store');
     Route::get('contracts/direccion-administrativa/{id}', [ContractsController::class, 'contracts_direccion_administrativa']);
@@ -306,14 +307,17 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('reports/cashier/vaults/list', [ReportsController::class, 'cashier_vaults_list'])->name('reports.cashier.vaults.list');
 
     // Contrataciones
-    Route::get('reports/contracts/contracts', [ReportsController::class, 'contracts_contracts_index'])->name('reports.contracts.contracts.index');
-    Route::post('reports/contracts/contracts/list', [ReportsController::class, 'contracts_contracts_list'])->name('reports.contracts.contracts.list');
+    Route::get('reports/management/contracts', [ReportsController::class, 'management_contracts_index'])->name('reports.management.contracts.index');
+    Route::post('reports/management/contracts/list', [ReportsController::class, 'management_contracts_list'])->name('reports.management.contracts.list');
+    Route::get('reports/management/addendums', [ReportsController::class, 'management_addendums_index'])->name('reports.management.addendums.index');
+    Route::post('reports/management/addendums/list', [ReportsController::class, 'management_addendums_list'])->name('reports.management.addendums.list');
 
     // Paymentschedules
     Route::get('reports/paymentschedules/details-status', [ReportsController::class, 'paymentschedules_details_status_index'])->name('reports.paymentschedules.details.status.index');
     Route::post('reports/paymentschedules/details-status/list', [ReportsController::class, 'paymentschedules_details_status_list'])->name('reports.paymentschedules.details.status.list');
 
     // Complementos
+    Route::get('get_duration/{start}/{finish}', [HomeController::class, 'get_duration'])->name('get.duration');
     Route::get('plugins/cashiers/tickets', [PluginsController::class, 'cashiers_tickets'])->name('cashiers.tickets');
     Route::get('plugins/cashiers/tickets/generate', [PluginsController::class, 'cashiers_tickets_generate'])->name('cashiers.tickets.generate');
     Route::post('plugins/cashiers/tickets/print', [PluginsController::class, 'cashiers_tickets_print'])->name('cashiers.tickets.print');

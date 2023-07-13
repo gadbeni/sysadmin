@@ -497,6 +497,7 @@ class ContractsController extends Controller
             Addendum::create([
                 'contract_id' => $request->id,
                 'signature_id' => $request->signature_id ?? NULL,
+                'user_id' => Auth::user()->id,
                 'code' => str_pad($count_addendum.'/'.date('Y', strtotime($request->start)), 8, "0", STR_PAD_LEFT),
                 'start' => $request->start,
                 'finish' => $request->finish,
@@ -540,20 +541,37 @@ class ContractsController extends Controller
     }
 
     public function contracts_addendum_update(Request $request){
-        // dd($request->all());
         DB::beginTransaction();
         try {
-
             $addendum = Addendum::find($request->id);
             $addendum->signature_id = $request->signature_id ?? NULL;
             $addendum->finish = $request->finish;
-            $addendum->status = $request->finish >= date('Y-m-d') ? 'elaborado' : 'concluido';
             $addendum->update();
 
-            $contract = Contract::findOrFail($addendum->contract_id);
-            $contract->finish = $addendum->finish;
-            $contract->status = $addendum->finish >= date('Y-m-d') ? 'firmado' : 'concluido';
-            $contract->update();
+            DB::commit();
+            return redirect()->route('contracts.show', $request->contract_id)->with(['message' => 'Adenda actualizada', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return redirect()->route('contracts.show', $request->contract_id)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
+    }
+
+    public function contracts_addendum_delete(Request $request){
+        DB::beginTransaction();
+        try {
+            $addendum = Addendum::find($request->id);
+
+            // Si la adenda está firmada
+            if ($addendum->status == 'firmado') {
+                $contract = Contract::findOrFail($addendum->contract_id);
+                // Obtener la fecha anterior del inicio de la adenda
+                $finish = date('Y-m-d', strtotime($addendum->start.' -1 days'));
+                $contract->finish = $finish;
+                $contract->status = 'firmado';
+                $contract->update();
+            }
+
+            $addendum->delete();
 
             DB::commit();
             return redirect()->route('contracts.show', $request->contract_id)->with(['message' => 'Adenda actualizada', 'alert-type' => 'success']);

@@ -10,6 +10,7 @@
                     <th>Fecha nac.</th>
                     <th>Telefono</th>
                     <th>AFP</th>
+                    <th>Registrado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -31,14 +32,22 @@
                             <tr>
                                 <td><img src="{{ $image }}" alt="{{ $item->first_name }} {{ $item->last_name }}" style="width: 60px; height: 60px; border-radius: 30px; margin-right: 10px"></td>
                                 <td>
-                                    {{ $item->first_name }} {{ $item->last_name }}
+                                    {{ $item->first_name }} {{ $item->last_name }} <br>
+                                    @if ($item->profession)
+                                        <small>{{ $item->profession }}</small> <br>
+                                    @endif
                                     @php
                                         $irremovability = $item->irremovabilities->count() ? $item->irremovabilities[0] : NULL;
                                     @endphp
                                     @if ($irremovability)
                                         <label class="label label-danger" title="{{ $irremovability->type->name }}">Inamovible</label>        
                                     @endif
-                                    <br> <small>{{ $item->profession }}</small>
+                                    @if (!$item->afp_status)
+                                        <label class="label label-warning">No aporta</label>        
+                                    @endif
+                                    @if ($item->retired)
+                                        <label class="label label-info">Jubilado</label>        
+                                    @endif
                                 </td>
                             </tr>
                         </table>
@@ -47,7 +56,12 @@
                     <td>{{ $item->city ? $item->city->name : 'No definido' }}</td>
                     <td>{{ date('d/m/Y', strtotime($item->birthday)) }} <br> <small>{{ $age }} años</small> </td>
                     <td>{{ $item->phone }}</td>
-                    <td>{{ $item->afp_type->name }} <br> <small class="@if(!$item->afp_status) text-warning @elseif(!is_numeric($item->nua_cua) || strlen($item->nua_cua) < 8 ) text-danger @endif" >{{ $item->nua_cua }}</small> </td>
+                    <td>{{ $item->afp_type->name }} <br> <small>{{ $item->nua_cua }}</small> </td>
+                    <td>
+                        {{ $item->user ? $item->user->name : '' }} <br>
+                        {{ date('d/m/Y H:i', strtotime($item->created_at)) }} <br>
+                        <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
+                    </td>
                     <td class="no-sort no-click bread-actions text-right">
                         <div class="btn-group" style="margin-right: 3px">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -88,7 +102,7 @@
                 </tr>
                 @empty
                     <tr class="odd">
-                        <td valign="top" colspan="7" class="dataTables_empty">No hay datos disponibles en la tabla</td>
+                        <td valign="top" colspan="9" class="dataTables_empty">No hay datos disponibles en la tabla</td>
                     </tr>
                 @endforelse
             </tbody>

@@ -8,14 +8,15 @@
             <tr>
                 <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="120px"></td>
                 <td style="text-align: right">
-                    <h3 style="margin-bottom: 0px; margin-top: 5px">
-                        REPORTE DE CONTRATOS <br>
+                    <h2 style="margin-bottom: -20px; margin-top: 10px">Reporte de Contratos</h2>
+                    <small>
+                         <br>
                         @php
                             $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                         @endphp
                         {{-- <small>RECURSOS HUMANOS</small> <br> --}}
                         <small style="font-size: 11px; font-weight: 100">Impreso por: {{ Auth::user()->name }} <br> {{ date('d/M/Y H:i:s') }}</small>
-                    </h3>
+                    </small>
                 </td>
             </tr>
             <tr>
@@ -23,7 +24,7 @@
             </tr>
         </table>
         <br><br>
-        <table style="width: 100%; font-size: 12px" border="1" cellspacing="0" cellpadding="5">
+        <table class="table-data" style="width: 100%;" border="1" cellspacing="0" cellpadding="5">
             <thead>
                 <tr>
                     <th>N&deg;</th>
@@ -53,20 +54,28 @@
                     $cont = 1;
                 @endphp
                 @forelse ($contracts as $item)
-                @php
-                    $salary = 0;
-                    $total = 0;
-                    if($item->start && $item->finish){
-                        $contract_duration = contract_duration_calculate($item->start, $item->finish);
+                    @php
+                        $salary = 0;
+                        $total = 0;
                         if ($item->cargo) {
                             $salary = $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo;
                         }
                         if($item->job){
                             $salary = $item->job->salary;
                         }
-                        $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
-                    }
-                @endphp
+
+                        // Calcular finalización de contrato en caso de tener adenda
+                        if($item->addendums->count() > 0) {
+                            $contract_finish = date('Y-m-d', strtotime($item->addendums->first()->start." -1 days"));
+                        } else {
+                            $contract_finish = $item->finish;
+                        }
+
+                        if($item->start && $contract_finish){
+                            $contract_duration = contract_duration_calculate($item->start, $contract_finish);
+                            $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
+                        }
+                    @endphp
                 <tr>
                     <td>{{ $cont }}</td>
                     <td>{{ $item->direccion_administrativa ? $item->direccion_administrativa->nombre : 'No definida' }}</td>
@@ -98,7 +107,7 @@
                     </td>
                     <td>{{ number_format($salary, 2, ',', '.') }}</td>
                     <td>{{ date('d/m/Y', strtotime($item->start)) }}</td>
-                    <td>{{ $item->finish ? date('d/m/Y', strtotime($item->finish)) : '' }}</td>
+                    <td>{{ $contract_finish ? date('d/m/Y', strtotime($contract_finish)) : '' }}</td>
                     <td>{{ number_format($total, 2, ',', '.') }}</td>
                     <td>{{ $item->program ? $item->program->name : 'No definido' }}</td>
                     <td>{{ $item->program ? $item->program->programatic_category : 'No definida' }}</td>
@@ -124,26 +133,28 @@
 @section('css')
 <style>
     .content {
-            padding-left: 30px;
-            padding-right: 30px;
-        }
-    th{
-        font-size: 7px !important
+        padding-left: 30px;
+        padding-right: 30px;
     }
-    td{
-        font-size: 8px !important
+    .table-data th{
+        font-size: 9px !important
+    }
+    .table-data td{
+        font-size: 10px !important
     }
     table, th, td {
         border-collapse: collapse;
     }
-    @media print{
-            @page {
-                size: landscape;
-            }
-            .content {
-                margin-left: 25px;
-                margin-right: -20px;
-            }
+    @page {
+        margin: 10mm 40mm 10mm 0mm;
+    }
+    @media print {
+        .table-data th{
+            font-size: 7px !important
         }
+        .table-data td{
+            font-size: 8px !important
+        }
+    }
 </style>
 @endsection

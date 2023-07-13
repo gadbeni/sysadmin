@@ -178,8 +178,8 @@
             tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
 
             $('#form-suggestion').submit(function(e){
-                $('.btn-submit').attr('disabled', 'disabled');
-                $('.btn-submit').html('<i class="fa fa-paper-plane"></i> Enviando');
+                $('#form-suggestion .btn-submit').attr('disabled', 'disabled');
+                $('#form-suggestion .btn-submit').html('<i class="fa fa-paper-plane"></i> Enviando');
                 e.preventDefault();
                 $.post($(this).attr('action'), $(this).serialize(), function(res){
                     if(res.success){

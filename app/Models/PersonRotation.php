@@ -26,4 +26,8 @@ class PersonRotation extends Model
     public function responsible(){
         return $this->belongsTo(Person::class, 'responsible_id');
     }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

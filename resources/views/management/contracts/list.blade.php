@@ -136,9 +136,12 @@
                                     @if ($item->status == 'firmado' && auth()->user()->hasPermission('ratificate_contracts'))
                                     <li><a href="#" title="Ratificar" data-toggle="modal" data-target="#ratificate-modal" onclick="ratificateContract({{ $item->id }})">Ratificar</a></li>
                                     @endif
-                                    {{-- si está firmado se puede transferir y promocionar --}}
+                                    {{-- si está firmado se puede transferir --}}
                                     @if ($item->status == 'firmado' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('transfer_contracts'))
                                     <li><a href="#" class="btn-transfer" data-toggle="modal" data-target="#transfer-modal" data-id="{{ $item->id }}" title="Crear transferencia" >Transferir</a></li>
+                                    @endif
+                                    {{-- si está firmado se puede promocionar --}}
+                                    @if ($item->status == 'firmado' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('promotion_contracts'))
                                     <li><a href="#" class="btn-promotion" data-toggle="modal" data-target="#promotion-modal" data-id="{{ $item->id }}" title="Crear promoción" >Promoción</a></li>
                                     @endif
                                     {{-- Crear adenda --}}
@@ -313,21 +316,13 @@
         max-height: 250px !important;
         overflow-y: auto;
     }
-    .select2-container {
-        width: 100% !important;
-        padding: 0;
-    }
 </style>
 
 <script>
     moment.locale('es');
     var page = "{{ request('page') }}";
     $(document).ready(function(){
-
-        $('#select-job_id').select2({dropdownParent: $('#transfer-modal')});
-        $('#select-job_id-alt').select2({dropdownParent: $('#promotion-modal')});
-        $('#select-applicant_id').select2();
-
+        
         $.extend({selector: '.richTextBox'}, {})
         tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
 
@@ -358,6 +353,7 @@
             $('#form-addendum input[name="start"]').val(date.format("YYYY-MM-DD"));
             $('#form-addendum input[name="signature_date"]').val(date.format("YYYY-MM-DD"));
             $('#form-addendum input[name="finish"]').attr('min', date.format("YYYY-MM-DD"));
+            $('#label-duration').html('');
 
             // Si es eventual
             if(item.procedure_type_id == 5){
@@ -384,6 +380,15 @@
                 $('#alert-weekend').fadeIn();
             }else{
                 $('#alert-weekend').fadeOut();
+            }
+        });
+
+        $('#form-addendum input[name="signature_date"]').change(function(){
+            let date = moment($(this).val(), "YYYY-MM-DD");
+            if(date.weekday() > 4){
+                $('#alert-weekend').fadeIn('fast');
+            }else{
+                $('#alert-weekend').fadeOut('fast');
             }
         });
 

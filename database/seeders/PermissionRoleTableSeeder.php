@@ -187,7 +187,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'browse_paymentschedules-files' or
                                             `key` = 'browse_planillaspagos' or
                                             table_name = 'reports_rrhh' or 
-                                            `key` = 'browse_reportscontractscontracts' or
+                                            `key` = 'browse_reportsmanagementcontracts' or
+                                            `key` = 'browse_reportsmanagementaddendums' or
                                             `key` = 'browse_bonuses' or
                                             `key` = 'add_bonuses' or
                                             `key` = 'read_bonuses' or
@@ -216,7 +217,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'browse_paymentschedules-files' or
                                             `key` = 'browse_planillaspagos' or
                                             table_name = 'reports_rrhh' or 
-                                            `key` = 'browse_reportscontractscontracts'")->get();
+                                            `key` = 'browse_reportsmanagementcontracts' or
+                                            `key` = 'browse_reportsmanagementaddendums'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_jefe_seccion')->firstOrFail();
@@ -241,7 +243,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'browse_paymentschedules-files' or
                                             `key` = 'browse_planillaspagos' or
                                             table_name = 'reports_rrhh' or 
-                                            `key` = 'browse_reportscontractscontracts'")->get();
+                                            `key` = 'browse_reportsmanagementcontracts' or
+                                            `key` = 'browse_reportsmanagementaddendums'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_tecnico')->firstOrFail();
@@ -269,7 +272,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'browse_paymentschedules-files' or
                                             `key` = 'browse_planillaspagos' or
                                             `key` = 'browse_reportshumans-resourcesaniversarios' or
-                                            `key` = 'browse_reportscontractscontracts' or
+                                            `key` = 'browse_reportsmanagementcontracts' or
+                                            `key` = 'browse_reportsmanagementaddendums' or
                                             `key` = 'browse_reportshumans-resourcesbonus' or
                                             `key` = 'browse_bonuses' or
                                             `key` = 'add_bonuses' or
@@ -293,6 +297,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'add_contracts' or
                                             `key` = 'upgrade_contracts' or
                                             `key` = 'add_addendum_contracts' or
+                                            `key` = 'edit_addendum_contracts' or
+                                            `key` = 'delete_addendum_contracts' or
                                             `key` = 'browse_cities' or
                                             `key` = 'edit_cities' or
                                             `key` = 'add_cities' or
@@ -304,7 +310,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'print_paymentschedules' or
                                             `key` = 'browse_paymentschedules-files' or
                                             `key` = 'add_paymentschedules-files' or 
-                                            `key` = 'browse_reportscontractscontracts'")->get();
+                                            `key` = 'browse_reportsmanagementcontracts' or
+                                            `key` = 'browse_reportsmanagementaddendums'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         $role = Role::where('name', 'rrhh_tecnico_planillas')->firstOrFail();
@@ -330,9 +337,12 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'ratificate_contracts' or
                                             `key` = 'delete_contracts' or
                                             `key` = 'add_addendum_contracts' or
+                                            `key` = 'edit_addendum_contracts' or
+                                            `key` = 'delete_addendum_contracts' or
                                             `key` = 'finish_contracts' or
                                             `key` = 'print_finish_contracts' or
                                             `key` = 'transfer_contracts' or
+                                            `key` = 'promotion_contracts' or
                                             `key` = 'browse_cities' or
                                             `key` = 'edit_cities' or
                                             `key` = 'add_cities' or
@@ -352,7 +362,8 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'browse_reportssocial-securityexports' or
                                             table_name = 'seniority_bonus_people' or
                                             `key` = 'browse_reportspaymentschedulesdetails-status' or
-                                            `key` = 'browse_reportscontractscontracts' or
+                                            `key` = 'browse_reportsmanagementcontracts' or
+                                            `key` = 'browse_reportsmanagementaddendums' or
                                             `key` = 'browse_reportshumans-resourcesaniversarios' or
                                             `key` = 'browse_reportshumans-resourcesjobs' or
                                             `key` = 'browse_reportshumans-resourcesbonus' or
@@ -410,6 +421,8 @@ class PermissionRoleTableSeeder extends Seeder
         $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'edit_contracts' or
                                             `key` = 'upgrade_contracts' or
+                                            `key` = 'browse_reportsmanagementcontracts' or
+                                            `key` = 'browse_reportsmanagementaddendums' or
                                             table_name = 'reports_contracts'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
@@ -417,6 +430,8 @@ class PermissionRoleTableSeeder extends Seeder
         $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'edit_contracts' or
                                             `key` = 'upgrade_contracts' or
+                                            `key` = 'browse_reportsmanagementcontracts' or
+                                            `key` = 'browse_reportsmanagementaddendums' or
                                             table_name = 'reports_contracts'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
@@ -424,7 +439,11 @@ class PermissionRoleTableSeeder extends Seeder
         $permissions = Permission::whereRaw("$similar_permissions_rrhh or
                                             `key` = 'edit_contracts' or
                                             `key` = 'upgrade_contracts' or
-                                            `key` = 'add_addendum_contracts'")->get();
+                                            `key` = 'browse_reportsmanagementcontracts' or
+                                            `key` = 'browse_reportsmanagementaddendums' or
+                                            `key` = 'add_addendum_contracts' or
+                                            `key` = 'edit_addendum_contracts' or
+                                            `key` = 'delete_addendum_contracts'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de auditoría interna

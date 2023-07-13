@@ -312,9 +312,6 @@
 
     @section('css')
         <style>
-            .select2-container {
-                width: 100% !important;
-            }
            /* CSS to style Treeview menu  */
             ol.tree {
                     padding: 0 0 0 30px;

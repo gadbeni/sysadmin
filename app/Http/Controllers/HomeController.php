@@ -91,4 +91,9 @@ class HomeController extends Controller
             return response()->json(['error' => 1]);
         }
     }
+
+    public function get_duration($start, $finish) {
+        $data = contract_duration_calculate($start, $finish);
+        return response()->json(['duration' => $data]);
+    }
 }

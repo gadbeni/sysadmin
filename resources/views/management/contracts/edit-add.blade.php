@@ -58,11 +58,12 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="start">Inicio de contrato</label>
-                                    <input type="date" name="start" value="{{ isset($contract) ? $contract->start : '' }}" class="form-control" required>
+                                    <input type="date" name="start" id="input-start" value="{{ isset($contract) ? $contract->start : '' }}" class="form-control input-date" required>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="finish">Fin de contrato</label>
-                                    <input type="date" name="finish" id="input-finish" value="{{ isset($contract) ? $contract->finish : '' }}" class="form-control">
+                                    <input type="date" name="finish" id="input-finish" value="{{ isset($contract) ? $contract->finish : '' }}" class="form-control input-date">
+                                    <div id="label-duration"></div>
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label for="requested_by">Persona o unidad solicitante (Opcional)</label>
@@ -505,6 +506,17 @@
                     $('#select-signature_id').html('<option value="">--Seleccione firma autorizada--</option>');
                     signatures.map(item => {
                         $('#select-signature_id').append(`<option value="${item.id}">${item.designation} ${item.name} - ${item.job}</option>`);
+                    });
+                }
+            });
+
+            $('.input-date').change(function(){
+                let start = $('#input-start').val();
+                let finish = $('#input-finish').val();
+                console
+                if (start && finish) {
+                    $.get("{{ url('admin/get_duration') }}/"+start+"/"+finish, function(res){
+                        $('#label-duration').html(`<b class="text-primary" style="font-weight: bold !important">${(res.duration.months *30) + res.duration.days} días de duración</b>`);
                     });
                 }
             });

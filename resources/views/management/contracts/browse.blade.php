@@ -314,11 +314,12 @@
                         <div class="row">
                             <div class="form-group col-md-6">
                                 <label for="start">Inicio</label>
-                                <input type="date" name="start" class="form-control" readonly required>
+                                <input type="date" name="start" id="input-start" class="form-control" readonly required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="finish">Fin</label>
-                                <input type="date" name="finish" class="form-control" required>
+                                <input type="date" name="finish" id="input-finish" class="form-control" required>
+                                <div id="label-duration"></div>
                             </div>
                             <div class="form-group col-md-12 div-eventual-consultor_sedeges">
                                 <label for="applicant_id">Solicitante</label>
@@ -361,7 +362,7 @@
 
                             <div class="form-group col-md-12">
                                 <label for="signature_id">Firma autorizada</label>
-                                <select name="signature_id" class="form-control select2">
+                                <select name="signature_id" id="select-signature_id" class="form-control">
                                     <option value="">Secretario(a) de Administración y Finanzas</option>
                                     @foreach (App\Models\Signature::where('status', 1)->where('deleted_at', NULL)->get() as $item)
                                     <option @if($item->direccion_administrativa_id == Auth::user()->direccion_administrativa_id) selected @endif value="{{ $item->id }}">{{ $item->designation }} {{ $item->name }} - {{ $item->job }}</option>
@@ -500,6 +501,10 @@
         var addendums = '';
 
         $(document).ready(() => {
+            $('#select-job_id').select2({dropdownParent: $('#transfer-modal')});
+            $('#select-job_id-alt').select2({dropdownParent: $('#promotion-modal')});
+            $('#select-applicant_id').select2({dropdownParent: $('#addendum-modal')});
+            $('#select-signature_id').select2({dropdownParent: $('#addendum-modal')});
             list();
             
             $('#input-search').on('keyup', function(e){
@@ -539,6 +544,14 @@
 
                     $('.form-submit').trigger('reset');
                     $('.btn-submit').removeAttr('disabled');
+                });
+            });
+
+            $('#input-finish').change(function(){
+                let start = $('#input-start').val();
+                let finish = $(this).val();
+                $.get("{{ url('admin/get_duration') }}/"+start+"/"+finish, function(res){
+                    $('#label-duration').html(`<b class="text-primary" style="font-weight: bold !important">${(res.duration.months *30) + res.duration.days} días de duración</b>`);
                 });
             });
 

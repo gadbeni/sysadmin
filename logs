@@ -1,6 +1,8 @@
-- eliminar migración 2023_03_14_183040_update_contracts_table
-- ejecutar migraciones y seederes de bread
+- ejecutar migraciones y seederes de bread/permisos
 
 NOTA:
 - anular resolucón de contrato
 - al anular contrato ver si el contrato no tiene planillas de ese mes o es mayor a 30 días y esa es su última planilla
+- formulario de creación de proyectos
+- imagen del funcionario en el reporte
+- Editar adenda elaborada en ver contrato (faltan campos)

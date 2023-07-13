@@ -86,13 +86,9 @@
         });
     </script>
 
-    <script type="text/javascript" src="{{ voyager_asset('js/app.js') }}"></script>
+    {{-- <script type="text/javascript" src="{{ voyager_asset('js/app.js') }}"></script> --}}
     <script>
-        $(document).ready(function () {
-            $('#location-id').change(function () {
-                $('#label-location').html($(this).val());
-            });
-        });
+        
     </script>
     @yield('script')
 </body>

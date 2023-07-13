@@ -51,7 +51,7 @@
                 text-align: center;
                 top: 350px;
                 opacity: 0.1;
-                z-index:  100;
+                z-index:  0;
             }
             #watermark img{
                 position: relative;

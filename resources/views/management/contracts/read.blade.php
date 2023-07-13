@@ -333,6 +333,7 @@
                                     <thead>
                                         <tr>
                                             <th>N&deg;</th>
+                                            <th>Código</th>
                                             <th>Inicio</th>
                                             <th>Conclusión</th>
                                             <th>Observaciones</th>
@@ -342,11 +343,15 @@
                                     </thead>
                                     <tbody>
                                         @php
-                                            $cont = 1;
+                                            $cont = 0;
                                         @endphp
                                         @forelse ($contract->addendums as $item)
+                                            @php
+                                                $cont++;
+                                            @endphp
                                             <tr>
-                                                <td>{{ str_pad($item->id, 2, "0", STR_PAD_LEFT) }}/2022</td>
+                                                <td>{{ $cont }}</td>
+                                                <td>{{ str_pad($item->code, 8, "0", STR_PAD_LEFT) }}</td>
                                                 <td>{{ date('d/M/Y', strtotime($item->start)) }}</td>
                                                 <td>{{ date('d/M/Y', strtotime($item->finish)) }}</td>
                                                 <td>{{ $item->observations }}</td>
@@ -395,19 +400,21 @@
                                                     <a href="{{ route('contracts.print', ['id' => $contract->id, 'document' => $type.'.'.$file]) }}?type={{ $cont == 1 ? 'first' : '' }}" class="btn btn-default btn-sm" target="_blank">
                                                         <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
                                                     </a>
-                                                    @if (auth()->user()->hasPermission('edit_addendum_contracts'))
-                                                    <a href="#" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' title="Editar" class="btn btn-sm btn-primary edit btn-edit-addendum">
+                                                    @if (auth()->user()->hasPermission('edit_addendum_contracts') && $item->status == 'elaborado')
+                                                    <a href="#" data-toggle="modal" data-target="#update-addendum-modal" data-item='@json($item)' title="Editar" class="btn btn-sm btn-primary edit btn-edit-addendum">
                                                         <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
                                                     </a>
                                                     @endif
+                                                    @if (((auth()->user()->hasPermission('delete_addendum_contracts') && $item->status == 'elaborado') || (Auth::user()->role_id == 1 && ($item->status == 'elaborado' || $item->status == 'firmado'))) && $contract->addendums->count() == $cont)
+                                                    <button type="button" data-toggle="modal" data-target="#delete-addendum-modal" data-id="{{ $item->id }}" title="Eliminar" class="btn btn-danger btn-delete-addendum">
+                                                        <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Eliminar</span>
+                                                    </button>
+                                                    @endif
                                                 </td>
                                             </tr>
-                                            @php
-                                                $cont++;
-                                            @endphp
                                         @empty
                                             <tr>
-                                                <td colspan="6">No hay datos disponible</td>
+                                                <td colspan="7">No hay datos disponible</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -420,11 +427,12 @@
         </div>
     </div>
 
-    <form action="{{ route('contracts.addendum.update') }}" id="form-addendum" class="form-submit" method="POST">
+    {{-- Update addendums --}}
+    <form action="{{ route('contracts.addendum.update') }}" id="form-update-addendum" class="form-submit" method="POST">
         @csrf
         <input type="hidden" name="id">
         <input type="hidden" name="contract_id" value="{{ $contract->id }}">
-        <div class="modal modal-primary fade" tabindex="-1" id="addendum-modal" role="dialog">
+        <div class="modal modal-primary fade" tabindex="-1" id="update-addendum-modal" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -443,7 +451,7 @@
                             </div>
                             <div class="form-group col-md-12">
                                 <label for="signature_id">Firma autorizada</label>
-                                <select name="signature_id" class="form-control select2">
+                                <select name="signature_id" id="select-signature_id" class="form-control">
                                     <option value="">Secretario(a) de Administración y Finanzas</option>
                                     @foreach (App\Models\Signature::where('status', 1)->where('deleted_at', NULL)->get() as $item)
                                     <option value="{{ $item->id }}">{{ $item->designation }} {{ $item->name }} - {{ $item->job }}</option>
@@ -455,6 +463,27 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         <input type="submit" class="btn btn-dark" value="Aceptar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {{-- Delete addendums --}}
+    <form action="{{ route('contracts.addendum.delete') }}" id="form-delete-addendum" class="form-submit" method="POST">
+        @csrf
+        <input type="hidden" name="id">
+        <input type="hidden" name="contract_id" value="{{ $contract->id }}">
+        <div class="modal modal-danger fade" tabindex="-1" id="delete-addendum-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-trash"></i> Desea anular la siguente adenda?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-danger btn-submit" value="Sí, eliminar">
                     </div>
                 </div>
             </div>
@@ -474,16 +503,20 @@
 @section('javascript')
     <script>
         $(document).ready(function () {
-
+            $('#select-signature_id').select2({dropdownParent: $('#update-addendum-modal')});
             $('.btn-edit-addendum').click(function(){
                 let item = $(this).data('item');
-                console.log(item)
-                $('#form-addendum input[name="id"]').val(item.id);
-                $('#form-addendum input[name="start"]').val(item.start);
-                $('#form-addendum input[name="finish"]').val(item.finish);
+                $('#form-update-addendum input[name="id"]').val(item.id);
+                $('#form-update-addendum input[name="start"]').val(item.start);
+                $('#form-update-addendum input[name="finish"]').val(item.finish);
                 $.extend({selector: '.richTextBox'}, {})
                 tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
-                $('#form-addendum select[name="signature_id"]').val(item.signature_id).trigger('change');
+                $('#form-update-addendum select[name="signature_id"]').val(item.signature_id).trigger('change');
+            });
+
+            $('.btn-delete-addendum').click(function(){
+                let id = $(this).data('id');
+                $('#form-delete-addendum input[name="id"]').val(id);
             });
         });
     </script>

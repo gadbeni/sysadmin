@@ -56,12 +56,6 @@
 
     @section('css')
         <style>
-            .select2-container {
-                width: 100% !important;
-            }
-        </style>
-
-        <style>
             .entrada:hover{
                 cursor: pointer;
                 opacity: .7;

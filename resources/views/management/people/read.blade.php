@@ -233,6 +233,7 @@
                                         <th>Inicio</th>
                                         <th>Fin</th>
                                         <th>Observaciones</th>
+                                        <th>Registrado</th>
                                         <th class="text-right">Acciones</th>
                                     </tr>
                                 </thead>
@@ -247,6 +248,11 @@
                                             <td>{{ date('d/m/Y', strtotime($item->start)) }}</td>
                                             <td>{{ $item->finish ? date('d/m/Y', strtotime($item->finish)) : "No definido" }}</td>
                                             <td>{{ $item->observations }}</td>
+                                            <td>
+                                                {{ $item->user ? $item->user->name : '' }} <br>
+                                                {{ date('d/m/Y H:i', strtotime($item->created_at)) }} <br>
+                                                <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
+                                            </td>
                                             <td class="no-sort no-click bread-actions text-right">
                                                 @if (auth()->user()->hasPermission('delete_irremovability_people'))
                                                 <button type="button" onclick="deleteItem('{{ route('people.irremovability.delete', ['people' => $person->id, 'id' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
@@ -260,7 +266,7 @@
                                         @endphp
                                     @empty
                                         <tr>
-                                            <td colspan="6">No hay datos disponible</td>
+                                            <td colspan="7">No hay datos disponible</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -285,6 +291,7 @@
                                         <th>Fecha</th>
                                         <th>Solicitante</th>
                                         <th>Destino</th>
+                                        <th>Registro</th>
                                         <th class="text-right">Acciones</th>
                                     </tr>
                                 </thead>
@@ -302,6 +309,11 @@
                                                 <td>{{ date('d/m/Y', strtotime($rotation->date)) }}</td>
                                                 <td>{{ $rotation->destiny->first_name }} {{ $rotation->destiny->last_name }}</td>
                                                 <td>{{ $rotation->destiny_dependency }}</td>
+                                                <td>
+                                                    {{ $rotation->user ? $rotation->user->name : '' }} <br>
+                                                    {{ date('d/m/Y H:i', strtotime($rotation->created_at)) }} <br>
+                                                    <small>{{ \Carbon\Carbon::parse($rotation->created_at)->diffForHumans() }}</small>
+                                                </td>
                                                 <td class="no-sort no-click bread-actions text-right">
                                                     <a href="{{ url('admin/people/rotation/'.$rotation->id) }}" class="btn btn-default btn-sm" target="_blank"><i class="glyphicon glyphicon-print"></i> Imprimir</a>
                                                     @if (auth()->user()->hasPermission('delete_rotation_people'))
@@ -315,7 +327,7 @@
                                     @endforeach
                                     @if ($cont == 0)
                                         <tr>
-                                            <td colspan="5">No hay datos disponible</td>
+                                            <td colspan="6">No hay datos disponible</td>
                                         </tr>
                                     @endif
                                 </tbody>
@@ -382,9 +394,28 @@
                 $('#edit-file-form textarea[name="observations"]').val(item.observations);
             });
 
-            $('.form-submit').submit(function(){
+            $('.form-submit').submit(function(e){
                 $('.btn-submit').val('Guardando...');
-                $('.btn-submit').attr('disabled', 'disabled');
+                e.preventDefault();
+                var formData = new FormData($(this)[0]);
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    success: res => {
+                        if(res.success){
+                            toastr.success(res.message, 'Bien hecho');
+                            location.reload();
+                        }else{
+                            toastr.error(res.message, 'Error');
+                        }
+                    }
+                });
             });
 
             $('.btn-add-file').click(function(e){

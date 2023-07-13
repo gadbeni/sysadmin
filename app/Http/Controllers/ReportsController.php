@@ -28,12 +28,14 @@ use App\Models\Person;
 use App\Models\Program;
 use App\Models\BonusesDetail;
 use App\Models\Afp;
+use App\Models\Addendum;
 
 // Exports
 use App\Exports\MinisterioTrabajoExport;
 use App\Exports\MinisterioEconomiaExport;
 use App\Exports\AFPExport;
 use App\Exports\ContractsExport;
+use App\Exports\AddendumsExport;
 use App\Exports\ProgramsExport;
 use App\Exports\BonusExport;
 use App\Exports\PaymentschedulesDetailsExport;
@@ -109,12 +111,13 @@ class ReportsController extends Controller
         }
     }
 
-    public function contracts_contracts_index(){
-        return view('reports.contracts.contracts-browse');
+    public function management_contracts_index(){
+        $this->custom_authorize('browse_reportsmanagementcontracts');
+        return view('reports.management.contracts-browse');
     }
 
-    public function contracts_contracts_list(Request $request){
-        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'unidad_administrativa', 'type'])
+    public function management_contracts_list(Request $request){
+        $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'unidad_administrativa', 'type', 'addendums'])
                         ->whereRaw($request->procedure_type_id ? "procedure_type_id = ".$request->procedure_type_id : 1)
                         ->whereRaw($request->status ? "status = '".$request->status."'" : 1)
                         ->whereHas('direccion_administrativa', function($q) use($request){
@@ -155,12 +158,44 @@ class ReportsController extends Controller
                         })
                         ->where('deleted_at', NULL)->get();
         if($request->type == 'print'){
-            return view('reports.contracts.contracts-print', compact('contracts'));
+            $type_render = 2;
+            return view('reports.management.contracts-print', compact('contracts', 'type_render'));
         }else if($request->type == 'excel'){
-            // return view('reports.contracts.contracts-excel', compact('contracts'));
+            // return view('reports.management.contracts-excel', compact('contracts'));
             return Excel::download(new ContractsExport($contracts), 'contratos.xlsx');
         }else{
-            return view('reports.contracts.contracts-list', compact('contracts'));
+            return view('reports.management.contracts-list', compact('contracts'));
+        }
+    }
+
+    public function management_addendums_index(){
+        $this->custom_authorize('browse_reportsmanagementaddendums');
+        return view('reports.management.addendums-browse');
+    }
+
+    public function management_addendums_list(Request $request) {
+        $addendums = Addendum::with(['contract'])
+                        ->whereHas('contract.direccion_administrativa', function($q) use($request){
+                            $q->whereRaw($request->direcciones_tipo_id ? "direcciones_tipo_id = ".$request->direcciones_tipo_id : 1);
+                        })
+                        ->whereHas('contract', function($q) use($request){
+                            if ($request->procedure_type_id) {
+                                $q->whereRaw($request->procedure_type_id ? "procedure_type_id = ".$request->procedure_type_id : 1);
+                            }
+                            if ($request->direccion_administrativa_id) {
+                                $q->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id in ".str_replace(array('[', ']'), array('(', ')'), json_encode($request->direccion_administrativa_id)) : 1);
+                            }
+                        })
+                        ->whereRaw($request->year ? "YEAR(start) = '".$request->year."'" : 1)
+                        ->whereRaw($request->status ? "status = '".$request->status."'" : 1)
+                        ->where('deleted_at', NULL)->get();
+        if($request->type == 'print'){
+            $type_render = 2;
+            return view('reports.management.addendums-print', compact('addendums', 'type_render'));
+        }else if($request->type == 'excel'){
+            return Excel::download(new AddendumsExport($addendums), 'adendas.xlsx');
+        }else{
+            return view('reports.management.addendums-list', compact('addendums'));
         }
     }
 

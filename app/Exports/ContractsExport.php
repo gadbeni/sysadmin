@@ -13,7 +13,7 @@ class ContractsExport implements FromView
 
     public function view(): View
     {
-        return view('reports.contracts.contracts-excel', [
+        return view('reports.management.contracts-excel', [
             'contracts' => $this->contracts
         ]);
     }
