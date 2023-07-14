@@ -230,8 +230,9 @@
                             <select name="job_id" id="select-job_id" class="form-control" required>
                                 <option value="">--Seleccionar Item--</option>
                                 @php
-                                    $jobs = App\Models\Job::whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
-                                        ->where('status', 1)->where('deleted_at', NULL)->get();
+                                    $jobs = App\Models\Job::where('status', 1)->where('deleted_at', NULL)
+                                                ->whereRaw(setting('auxiliares.start_contract_condition') ? "id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)" : 1)
+                                                ->get();
                                 @endphp
                                 @foreach ($jobs as $item)
                                 <option value="{{ $item->id }}" data-item='@json($item)'>ITEM {{ $item->item }} : {{ $item->name }} - Bs.{{ $item->salary }}</option>
@@ -273,8 +274,9 @@
                             <select name="job_id" id="select-job_id-alt" class="form-control" required>
                                 <option value="">--Seleccionar Item--</option>
                                 @php
-                                    $jobs = App\Models\Job::whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
-                                        ->where('status', 1)->where('deleted_at', NULL)->get();
+                                    $jobs = App\Models\Job::where('status', 1)->where('deleted_at', NULL)
+                                                ->whereRaw(setting('auxiliares.start_contract_condition') ? "id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)" : 1)
+                                                ->get();
                                 @endphp
                                 @foreach ($jobs as $item)
                                 <option value="{{ $item->id }}" data-item='@json($item)'>ITEM {{ $item->item }} : {{ $item->name }} - Bs.{{ $item->salary }}</option>

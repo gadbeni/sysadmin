@@ -160,7 +160,7 @@
                         <div class="row">
                             <div class="form-group col-md-12">
                                 <label for="memos_types_group_id ">Grupo</label>
-                                <select name="memos_types_group_id" id="select-memos_types_group_id" class="form-control select2" required>
+                                <select name="memos_types_group_id" id="select-memos_types_group_id" class="form-control" required>
                                     <option value="">-- Seleccione el tipo --</option>
                                     @foreach (App\Models\MemosTypesGroup::where('status', 1)->where('deleted_at', NULL)->get() as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -169,7 +169,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="origin_id">De</label>
-                                <select name="origin_id" id="select-origin_id-modal" class="form-control select2" required>
+                                <select name="origin_id" id="select-origin_id-modal" class="form-control" required>
                                     <option value="">--Seleccione origen--</option>
                                     @foreach ($contracts as $item)
                                     <option value="{{ $item->id }}" data-item='@json($item->alternate_job)' >{{ $item->person->first_name }} {{ $item->person->last_name }} - CI: {{ $item->person->ci }}</option>
@@ -178,7 +178,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="destiny_id">A</label>
-                                <select name="destiny_id" id="select-destiny_id-modal" class="form-control select2" required>
+                                <select name="destiny_id" id="select-destiny_id-modal" class="form-control" required>
                                     <option value="">--Seleccione destino--</option>
                                     @foreach ($contracts as $item)
                                     <option value="{{ $item->id }}" data-item='@json($item->alternate_job)'>{{ $item->person->first_name }} {{ $item->person->last_name }} - CI: {{ $item->person->ci }}</option>
@@ -220,7 +220,7 @@
                         <div class="row">
                             <div class="form-group col-md-12">
                                 <label for="person_external_type_id ">Tipo</label>
-                                <select name="person_external_type_id " class="form-control select2" required>
+                                <select name="person_external_type_id" id="select-person_external_type_id" class="form-control" required>
                                     <option value="">-- Seleccione el tipo --</option>
                                     @foreach (App\Models\PersonExternalType::where('status', 1)->where('deleted_at', NULL)->get() as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -229,7 +229,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="person_id">Funcionario</label>
-                                <select name="person_id" id="select-person_id" class="form-control select2">
+                                <select name="person_id" id="select-person_id" class="form-control">
                                     <option value="">-- Seleccione funcionario --</option>
                                     @foreach (App\Models\Person::where('deleted_at', NULL)->orderBy('last_name')->get() as $item)
                                     <option value="{{ $item->id }}" data-item='@json($item)'> {{ $item->first_name }} {{ $item->last_name }} - CI: {{ $item->ci }}</option>
@@ -279,6 +279,14 @@
 @section('javascript')
     <script>
         $(document).ready(function(){
+            $('#select-memos_types_group_id').select2({dropdownParent: $('#add-type-modal')});
+            $('#select-origin_id-modal').select2({dropdownParent: $('#add-type-modal')});
+            $('#select-destiny_id-modal').select2({dropdownParent: $('#add-type-modal')});
+
+            $('#select-person_external_type_id').select2({dropdownParent: $('#add-external-person-modal')});
+            $('#select-person_id').select2({dropdownParent: $('#add-external-person-modal')});
+            
+
             $('#select-memos_type_id').change(function(){
                 let item = $('#select-memos_type_id option:selected').data('item');
                 if(item){
@@ -375,9 +383,7 @@
                 $('#select-person_external_id').val(memo.person_external_id).trigger('change');
 
                 var additional_person = [];
-                console.log(memo)
                 memo.additional_person.map( data => additional_person.push(data.person_external.id));
-                console.log(additional_person)
                 $('#select-memos_additional_people_id').val(additional_person).trigger('change');
             @endisset
         });

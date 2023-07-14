@@ -26,6 +26,7 @@ use App\Http\Controllers\TcInboxController;
 use App\Http\Controllers\TcOutboxController;
 use App\Http\Controllers\TcController;
 use App\Http\Controllers\SeniorityBonusPeopleController;
+use App\Http\Controllers\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -315,6 +316,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     // Paymentschedules
     Route::get('reports/paymentschedules/details-status', [ReportsController::class, 'paymentschedules_details_status_index'])->name('reports.paymentschedules.details.status.index');
     Route::post('reports/paymentschedules/details-status/list', [ReportsController::class, 'paymentschedules_details_status_list'])->name('reports.paymentschedules.details.status.list');
+
+    // Users
+    Route::delete('users/{id}', [UsersController::class, 'destroy'])->name('voyager.users.destroy');
+    Route::get('users/{id}/restore', [UsersController::class, 'restore'])->name('voyager.users.restore');
 
     // Complementos
     Route::get('get_duration/{start}/{finish}', [HomeController::class, 'get_duration'])->name('get.duration');

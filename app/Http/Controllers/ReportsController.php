@@ -55,9 +55,11 @@ class ReportsController extends Controller
     public function humans_resources_people_list(Request $request){
         $afp_id = $request->afp_id;
         $afp_status = $request->afp_status;
+        $retired = $request->retired;
         $contract_active = $request->contract_active;
         $people = Person::whereRaw($afp_id ? "afp = $afp_id" : 1)
-                            ->whereRaw("afp_status = $afp_status")
+                            ->whereRaw($retired != 'todos' ? "retired = $retired" : 1)
+                            ->whereRaw($afp_status != 'todos' ? "afp_status = $afp_status" : 1)
                             ->where(function($query) use ($contract_active){
                                 if($contract_active){
                                     $query->OrwhereHas('contracts', function($query){

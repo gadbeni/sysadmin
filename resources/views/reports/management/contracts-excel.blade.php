@@ -1,26 +1,27 @@
 <table>
     <thead>
         <tr>
-            <th>N&deg;</th>
-            <th>Dir. adm.</th>
-            <th>Unid. adm.</th>
-            <th>Código</th>
-            <th>Tipo</th>
-            <th>Nombre(s)</th>
-            <th>Apellidos</th>
-            <th>CI</th>
-            <th>Género</th>
-            <th>NUA/CUA</th>
-            <th>Cargo</th>
-            <th>Nivel</th>
-            <th>Sueldo</th>
-            <th>Inicio</th>
-            <th>Fin</th>
-            <th>Monto total</th>
-            <th>Programa</th>
-            <th>Cat. prog.</th>
-            <th>Estado</th>
-            <th>Registrado</th>
+            <th><b>N&deg;</b></th>
+            <th><b>Dir. Adm.</b></th>
+            <th><b>Unid. Adm.</b></th>
+            <th><b>Código</b></th>
+            <th><b>Tipo</b></th>
+            <th><b>Nombre(s)</b></th>
+            <th><b>Apellidos</b></th>
+            <th><b>CI</b></th>
+            <th><b>Género</b></th>
+            <th><b>NUA/CUA</b></th>
+            <th><b>Cargo</b></th>
+            <th><b>Nivel</b></th>
+            <th><b>Sueldo</b></th>
+            <th><b>Inicio</b></th>
+            <th><b>Fin</b></th>
+            <th><b>Duración</b></th>
+            <th><b>Monto total</b></th>
+            <th><b>Programa</b></th>
+            <th><b>Cat. Prog.</b></th>
+            <th><b>Estado</b></th>
+            <th><b>Registrado</b></th>
         </tr>
     </thead>
     <tbody>
@@ -31,6 +32,7 @@
             @php
                 $salary = 0;
                 $total = 0;
+                $duracion = 'Indefinido';
                 if ($item->cargo) {
                     $salary = $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo;
                 }
@@ -47,6 +49,7 @@
 
                 if($item->start && $contract_finish){
                     $contract_duration = contract_duration_calculate($item->start, $contract_finish);
+                    $duracion = ($contract_duration->months *30) + $contract_duration->days;
                     $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
                 }
             @endphp
@@ -82,6 +85,7 @@
                 <td>{{ number_format($salary, 2, ',', '.') }}</td>
                 <td>{{ date('d/m/Y', strtotime($item->start)) }}</td>
                 <td>{{ $contract_finish ? date('d/m/Y', strtotime($contract_finish)) : '' }}</td>
+                <td>{{ $duracion }}</td>
                 <td>{{ number_format($total, 2, ',', '.') }}</td>
                 <td>{{ $item->program ? $item->program->name : 'No definido' }}</td>
                 <td>{{ $item->program ? $item->program->programatic_category : 'No definida' }}</td>
@@ -95,9 +99,7 @@
                 $cont++;
             @endphp
         @empty
-            <tr class="odd">
-                <td valign="top" colspan="19" class="text-center">No hay datos disponibles en la tabla</td>
-            </tr>
+        
         @endforelse
     </tbody>
 </table>

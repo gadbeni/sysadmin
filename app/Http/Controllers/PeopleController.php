@@ -31,7 +31,7 @@ class PeopleController extends Controller
 
     public function list($search = null){
         $paginate = request('paginate') ?? 10;
-        $data = Person::with(['city', 'afp_type', 'irremovabilities' => function($q){
+        $data = Person::with(['city', 'afp_type', 'contracts', 'irremovabilities' => function($q){
                         $q->where('start', '<=', date('Y-m-d'))->whereRaw("(finish is NULL or finish >= '".date('Y-m-d')."')");
                     }])
                     ->where(function($query) use ($search){

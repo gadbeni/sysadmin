@@ -36,17 +36,29 @@
                                     @if ($item->profession)
                                         <small>{{ $item->profession }}</small> <br>
                                     @endif
+                                    @if ($item->contracts->where('status', 'firmado')->count())
+                                        @php
+                                            $contract = $item->contracts->where('status', 'firmado')->first();
+                                        @endphp
+                                        <a href="{{ route('contracts.show', ['contract' => $contract->id]) }}"><label class="label label-success" title="{{ $contract->code }}" style="cursor: pointer">Con contrato</label></a>
+                                    @endif
+                                    @if ($item->contracts->whereIn('status', ['elaborado', 'enviado'])->count())
+                                        @php
+                                            $contract = $item->contracts->whereIn('status', ['elaborado', 'enviado'])->first();
+                                        @endphp
+                                        <a href="{{ route('contracts.show', ['contract' => $contract->id]) }}"><label class="label label-default" title="{{ $contract->code }}" style="cursor: pointer">Contrato en proceso</label></a>
+                                    @endif
                                     @php
                                         $irremovability = $item->irremovabilities->count() ? $item->irremovabilities[0] : NULL;
                                     @endphp
                                     @if ($irremovability)
-                                        <label class="label label-danger" title="{{ $irremovability->type->name }}">Inamovible</label>        
+                                        <label class="label label-danger" title="{{ $irremovability->type->name }}">Inamovible</label>
                                     @endif
                                     @if (!$item->afp_status)
-                                        <label class="label label-warning">No aporta</label>        
+                                        <label class="label label-warning">No aporta</label>
                                     @endif
                                     @if ($item->retired)
-                                        <label class="label label-info">Jubilado</label>        
+                                        <label class="label label-info">Jubilado</label>    
                                     @endif
                                 </td>
                             </tr>

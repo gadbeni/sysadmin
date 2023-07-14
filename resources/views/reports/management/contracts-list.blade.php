@@ -30,6 +30,7 @@
                             <th>Sueldo</th>
                             <th>Inicio</th>
                             <th>Fin</th>
+                            <th>Duración</th>
                             <th>Monto total</th>
                             <th>Programa/Proyecto</th>
                             <th>Cat. prog.</th>
@@ -45,6 +46,7 @@
                             @php
                                 $salary = 0;
                                 $total = 0;
+                                $duracion = 'Indefinido';
                                 if ($item->cargo) {
                                     $salary = $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo;
                                 }
@@ -61,6 +63,7 @@
 
                                 if($item->start && $contract_finish){
                                     $contract_duration = contract_duration_calculate($item->start, $contract_finish);
+                                    $duracion = ($contract_duration->months *30) + $contract_duration->days;
                                     $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
                                 }
                             @endphp
@@ -96,6 +99,7 @@
                                 <td>{{ number_format($salary, 2, ',', '.') }}</td>
                                 <td>{{ date('d/m/Y', strtotime($item->start)) }}</td>
                                 <td>{{ $contract_finish ? date('d/m/Y', strtotime($contract_finish)) : '' }}</td>
+                                <td>{{ $duracion }}</td>
                                 <td>{{ $total ? number_format($total, 2, ',', '.') : 'No definido' }}</td>
                                 <td>{{ $item->program ? $item->program->name : 'No definido' }}</td>
                                 <td>{{ $item->program ? $item->program->programatic_category : 'No definida' }}</td>
@@ -110,7 +114,7 @@
                             @endphp
                         @empty
                             <tr class="odd">
-                                <td valign="top" colspan="20" class="text-center">No hay datos disponibles en la tabla</td>
+                                <td valign="top" colspan="21" class="text-center">No hay datos disponibles en la tabla</td>
                             </tr>
                         @endforelse
                     </tbody>

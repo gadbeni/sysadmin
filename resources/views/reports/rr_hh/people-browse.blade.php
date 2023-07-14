@@ -30,10 +30,18 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group col-md-12">
+                                    <div class="form-group col-md-6">
                                         <select name="afp_status" class="form-control select2">
+                                            <option value="todos">Todos</option>
                                             <option value="1">AFP activo</option>
                                             <option value="0">AFP inactivo</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <select name="retired" class="form-control select2">
+                                            <option value="todos">Todos</option>
+                                            <option value="1">Jubilados</option>
+                                            <option value="0">No Jubilados</option>
                                         </select>
                                     </div>
                                     <div class="form-group col-md-12 text-right">

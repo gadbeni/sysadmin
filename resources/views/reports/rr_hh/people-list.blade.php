@@ -13,11 +13,14 @@
                     <thead>
                         <tr>
                             <th>N&deg;</th>
+                            <th>Fotografía</th>
                             <th>Nombre completo</th>
                             <th>CI</th>
                             <th>Lugar nac.</th>
                             <th>Fecha nac.</th>
+                            <th>Edad</th>
                             <th>Telefono</th>
+                            <th>Email</th>
                             <th>AFP</th>
                             <th>NUA/CUA</th>
                             <th>CAJA DE SALUD</th>
@@ -28,23 +31,35 @@
                             $cont = 1;
                         @endphp
                         @forelse ($people as $item)
-                        <tr>
-                            <td>{{ $cont }}</td>
-                            <td>{{ $item->first_name }} {{ $item->last_name }}</td>
-                            <td>{{ $item->ci }}</td>
-                            <td>{{ $item->city ? $item->city->name : 'No definido' }}</td>
-                            <td>{{ date('d/m/Y', strtotime($item->birthday)) }}</td>
-                            <td>{{ $item->phone }}</td>
-                            <td>{{ $item->afp_type->name }}</td>
-                            <td>{{ $item->nua_cua }}</td>
-                            <td>{{ $item->cc == 1 ? 'Caja Cordes' : 'Caja Petrolera' }}</td>
-                        </tr>
+                            @php
+                                $image = asset('images/default.jpg');
+                                if($item->image){
+                                    $image = asset('storage/'.str_replace('.', '-cropped.', $item->image));
+                                }
+                                $now = \Carbon\Carbon::now();
+                                $birthday = new \Carbon\Carbon($item->birthday);
+                                $age = $birthday->diffInYears($now);
+                            @endphp
+                            <tr>
+                                <td>{{ $cont }}</td>
+                                <td><img src="{{ $image }}" alt="{{ $item->first_name }} {{ $item->last_name }}" style="width: 60px; height: 60px; border-radius: 30px; margin-right: 10px"></td>
+                                <td>{{ $item->first_name }} {{ $item->last_name }}</td>
+                                <td>{{ $item->ci }}</td>
+                                <td>{{ $item->city ? $item->city->name : 'No definido' }}</td>
+                                <td>{{ date('d/m/Y', strtotime($item->birthday)) }}</td>
+                                <td>{{ $age }}</td>
+                                <td>{{ $item->phone }}</td>
+                                <td>{{ $item->email }}</td>
+                                <td>{{ $item->afp_type->name }}</td>
+                                <td>{{ $item->nua_cua }}</td>
+                                <td>{{ $item->cc == 1 ? 'Caja Cordes' : 'Caja Petrolera' }}</td>
+                            </tr>
                         @php
                             $cont++;
                         @endphp
                         @empty
                             <tr class="odd">
-                                <td valign="top" colspan="8" class="dataTables_empty">No hay datos disponibles en la tabla</td>
+                                <td valign="top" colspan="12" class="dataTables_empty">No hay datos disponibles en la tabla</td>
                             </tr>
                         @endforelse
                     </tbody>
