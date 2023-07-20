@@ -15,7 +15,7 @@
     margin-bottom: 1rem !important;
 }
 
-.select2-container {
+.modal .select2-container {
     width: 100% !important;
     /* padding: 0; */
 }

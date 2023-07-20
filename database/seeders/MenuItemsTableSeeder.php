@@ -727,7 +727,7 @@ class MenuItemsTableSeeder extends Seeder
             array (
                 'id' => 46,
                 'menu_id' => 1,
-                'title' => 'Programas',
+                'title' => 'Programas/Proyectos',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-documentation',
@@ -1463,7 +1463,7 @@ class MenuItemsTableSeeder extends Seeder
             array (
                 'id' => 97,
                 'menu_id' => 1,
-                'title' => 'Datos personales',
+                'title' => 'Personas',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-people',

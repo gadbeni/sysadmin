@@ -27,7 +27,12 @@ if (! function_exists('contract_duration_calculate')) {
             }
         }else{
             $count_months = 0;
-            $start_day = $start->format('d') > 30 ? 30 : $start->format('d');
+            if($start->format('d') > 30){
+                $start_day = 30;
+                $start = Carbon\Carbon::parse($start->format('Y-m').'-30');
+            }else{
+                $start_day = $start->format('d');
+            }
             $count_days = 30 - $start_day +1;
             $start = Carbon\Carbon::parse($start->addMonth()->format('Y-m').'-01');
             while ($start <= $finish) {

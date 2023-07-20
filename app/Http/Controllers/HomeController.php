@@ -69,10 +69,14 @@ class HomeController extends Controller
 
     public function send_message(Request $request){
         try {
-            if (env('APP_SERVER_WHATSAPP')) {
-                Http::get(env('APP_SERVER_WHATSAPP').'?number=591'.$request->phone.'&message='.$request->message);
+            if (setting('servidores.whatsapp')) {
+                $phone = strlen($request->phone) == 8 ? '591'.$request->phone : $request->phone;
+                Http::post(setting('servidores.whatsapp').'/send', [
+                    'phone' => $phone,
+                    'text' => $request->message
+                ]);
             }
-            return response()->json(['success' => 1, 'url' => env('APP_SERVER_WHATSAPP').'?number=591'.$request->phone.'&message='.$request->message]);
+            return response()->json(['success' => 1, 'phone' => $request->phone, 'message' => $request->message]);
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json(['error' => 1]);

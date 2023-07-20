@@ -132,7 +132,11 @@
                                     @if (auth()->user()->hasPermission('upgrade_contracts') && $item->status != 'concluido' && $item->status != 'firmado' && ($item->cargo_id || $item->job_id))
                                     <li><a href="#" title="Promover a {{ $netx_status }}" data-toggle="modal" data-target="#status-modal" onclick="changeStatus({{ $item->id }}, '{{ $netx_status }}')">Promover</a></li>
                                     @endif
-                                    {{-- Si está firmado --}}
+                                    {{-- Si está firmado se puede rotar --}}
+                                    @if ($item->status == 'firmado' && auth()->user()->hasPermission('add_rotation_people'))
+                                    <li><a href="#" class="btn-rotation" data-url="{{ route('people.rotation.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-rotation" >Rotar</a></li>
+                                    @endif
+                                    {{-- Si está firmado se puede ratificar --}}
                                     @if ($item->status == 'firmado' && auth()->user()->hasPermission('ratificate_contracts'))
                                     <li><a href="#" title="Ratificar" data-toggle="modal" data-target="#ratificate-modal" onclick="ratificateContract({{ $item->id }})">Ratificar</a></li>
                                     @endif

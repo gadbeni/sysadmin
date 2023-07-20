@@ -92,7 +92,7 @@
                                             <label for="user_id">Registrado por</label>
                                             <select name="user_id" class="form-control select2 select-filter" id="select-user_id">
                                                 <option value="">Todos los usuarios</option>
-                                                @foreach (App\Models\User::where('deleted_at', null)->whereRaw("id in (select user_id from contracts where deleted_at is null)")->where('role_id', '>', Auth::user()->role_id == 1 ? 0 : 1)->get() as $item)
+                                                @foreach (App\Models\User::where('deleted_at', null)->whereRaw("id in (select user_id from contracts where deleted_at is null)")->whereRaw(Auth::user()->role_id != 1 ? 'role_id > 1' : 1)->withTrashed()->get() as $item)
                                                 <option value="{{ $item->id }}">{{ $item->name }}</option>
                                                 @endforeach
                                             </select>

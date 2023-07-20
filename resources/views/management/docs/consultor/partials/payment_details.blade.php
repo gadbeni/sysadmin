@@ -34,13 +34,13 @@
         
         // Si el contrato empieza luego del inicio del mes
         if($start->format('d') > 1){
-            $dias_primera_cuota = 30 - $start->format('d') +1;
+            if($start->format('d') > 30){
+                $dias_primera_cuota = 1;
+                $start = Carbon\Carbon::parse($start->format('Y-m').'-30');
+            }else{
+                $dias_primera_cuota = 30 - $start->format('d') +1;
+            }
             $start = Carbon\Carbon::createFromFormat('Y-m-d', $start->format('Y').'-'.($start->format('m') +1).'-01');
-            
-            // Evitar que se agregue un mes si el contrato acaba el siguiente mes
-            // if($start->format('Ym') != $finish->format('Ym') && $finish->format('d') <= 30){
-            //     $meses_intermedias_cuotas++;
-            // }
         }
 
         // Agregar los meses completos a pagar

@@ -106,7 +106,7 @@
                                             $payroll_payments_afp->push([
                                                 'fpc_number' => $item->fpc_number,
                                                 'date_payment_afp' => date('d/m/Y', strtotime($item->date_payment_afp)),
-                                                'afp' => $item->afp == 1 ? 'AFP Futuro' : 'AFP Previsión'
+                                                'afp' => 'AFP '.$item->afp_details->name
                                             ]);
                                         }
 
@@ -116,7 +116,7 @@
                                                 'date_payment_cc' => $item->date_payment_cc ? date('d/m/Y', strtotime($item->date_payment_cc)) : '',
                                                 'gtc_number' => $item->gtc_number,
                                                 'recipe_number' => $item->recipe_number,
-                                                'afp' => $item->afp == 1 ? 'AFP Futuro' : 'AFP Previsión'
+                                                'afp' => 'AFP '.$item->afp_details->name
                                             ]);
                                         }
                                     }

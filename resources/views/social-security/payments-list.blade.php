@@ -27,7 +27,7 @@
                                 <small>Total ganado: </small> {{ number_format($row->planilla_haber->planilla_procesada ? $row->planilla_haber->planilla_procesada->Monto : 0, 2, ',', '.') }}
                             @elseif($row->paymentschedule)
                                 <b> {{ $row->paymentschedule->procedure_type->name }} - {{ $row->paymentschedule->period->name }}</b> <br>
-                                <small>Planilla: </small>{{ str_pad($row->paymentschedule->id, 6, "0", STR_PAD_LEFT) }} - {{ $row->afp == 1 ? 'Futuro' : 'Previsión' }} <br>
+                                <small>Planilla: </small>{{ str_pad($row->paymentschedule->id, 6, "0", STR_PAD_LEFT) }} - {{ $row->afp_details->name }}<br>
                                 <small>N&deg; de personas: </small> {{ $row->paymentschedule->details->where('afp', $row->afp)->count() }} <br>
                                 <small>Total ganado: </small> {{ number_format($row->paymentschedule->details->where('afp', $row->afp)->sum('partial_salary') + $row->paymentschedule->details->where('afp', $row->afp)->sum('seniority_bonus_amount'), 2, ',', '.') }}
                             @elseif($row->spreadsheet)

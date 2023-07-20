@@ -166,7 +166,7 @@
                                 <h3 class="panel-title">Código de contrato</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }}/GAD-BENI N&deg; {{ $code }}</p>
+                                <p>GAD-BENI N&deg; {{ $code }}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>

@@ -36,7 +36,7 @@
     @else
         <div class="content">
             <div class="page-head">
-                <h3>1er. CONTRATO MODIFICATORIO DE PERSONAL EVENTUAL {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }} N&deg; {{ $addendums->first()->code }} RELACIONADO AL CONTRATO {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }}/GAD-BENI N&deg; {{ $code }} </h3>
+                <h3>1er. CONTRATO MODIFICATORIO DE PERSONAL EVENTUAL {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }} N&deg; {{ $addendums->first()->code }} RELACIONADO AL CONTRATO GAD-BENI N&deg; {{ $code }} </h3>
             </div>
             <p><b>PRIMERA. - (ANTECEDENTES)</b></p>
             <p>

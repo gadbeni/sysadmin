@@ -64,7 +64,7 @@
                                     <p>
                                         <b><small>N&deg;:</small></b> {{ $row->number }} <br>
                                         <b>{{ $row->paymentschedule->procedure_type->name.' - '.$row->paymentschedule->period->name }}</b><br>
-                                        <b><small>Planilla:</small></b> {{ str_pad($row->paymentschedule->id, 6, "0", STR_PAD_LEFT).' - '.($row->afp == 1 ? 'Futuro' : 'Previsión') }} <br>
+                                        <b><small>Planilla:</small></b> {{ str_pad($row->paymentschedule->id, 6, "0", STR_PAD_LEFT) }} - {{ $row->afp_details->name }} <br>
                                         <b><small>Monto:</small></b> <span class="{{ $row->amount <= 0 ? 'text-danger' : '' }}">{{ number_format($row->amount, 2, ',', '.') }}</span> <br>
                                         {!! $status !!}
                                     </p>

@@ -31,7 +31,7 @@ class SocialSecurityController extends Controller
 
     public function checks_list($search = null){
         $paginate = request('paginate') ?? 10;
-        $data = ChecksPayment::with(['user', 'beneficiary.type', 'planilla_haber.tipo', 'spreadsheet', 'derivations.office', 'paymentschedule.procedure_type', 'paymentschedule.period', 'paymentschedule.direccion_administrativa'])
+        $data = ChecksPayment::with(['user', 'beneficiary.type', 'planilla_haber.tipo', 'spreadsheet', 'derivations.office', 'paymentschedule.procedure_type', 'paymentschedule.period', 'paymentschedule.direccion_administrativa', 'afp_details'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')
                     ->where(function($query) use ($search){
@@ -217,7 +217,7 @@ class SocialSecurityController extends Controller
 
     public function checks_edit($id){
         $type = 'edit';
-        $data = ChecksPayment::with('spreadsheet', 'paymentschedule')->where('id', $id)->where('deleted_at', NULL)->first();
+        $data = ChecksPayment::with('spreadsheet', 'paymentschedule', 'data.afp_details.name')->where('id', $id)->where('deleted_at', NULL)->first();
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $data->planilla_haber_id)->first();
         return view('social-security.checks-edit-add', compact('type', 'id', 'data', 'planilla'));
     }
@@ -289,7 +289,7 @@ class SocialSecurityController extends Controller
 
     public function payments_list($search = null){
         $paginate = request('paginate') ?? 10;
-        $data = PayrollPayment::with(['planilla_haber', 'planilla_haber.tipo', 'planilla_haber.planilla_procesada', 'spreadsheet', 'paymentschedule.details', 'paymentschedule.procedure_type', 'paymentschedule.period', 'paymentschedule.direccion_administrativa'])
+        $data = PayrollPayment::with(['planilla_haber', 'planilla_haber.tipo', 'planilla_haber.planilla_procesada', 'spreadsheet', 'paymentschedule.details', 'paymentschedule.procedure_type', 'paymentschedule.period', 'paymentschedule.direccion_administrativa', 'afp_details'])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'user_id = '.Auth::user()->id : 1)
                     ->where('deleted_at', NULL)->orderBy('id', 'DESC')
                     ->where(function($query) use ($search){
@@ -490,7 +490,7 @@ class SocialSecurityController extends Controller
 
     public function payments_edit($id){
         $type = 'edit';
-        $data = PayrollPayment::with('spreadsheet', 'paymentschedule')->where('id', $id)->where('deleted_at', NULL)->first();
+        $data = PayrollPayment::with('spreadsheet', 'paymentschedule', 'afp_details')->where('id', $id)->where('deleted_at', NULL)->first();
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $data->planilla_haber_id)->first();
         return view('social-security.payments-edit-add', compact('type', 'id', 'data', 'planilla'));
     }

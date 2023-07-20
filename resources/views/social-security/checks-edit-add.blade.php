@@ -246,13 +246,14 @@
             @else
                 let data = @json($data);
                 let planilla = @json($planilla);
+                console.log(data)
                 if(planilla !== null){
                     $("#select-planilla_haber_id").append(`<option value="${planilla.idPlanillaprocesada}">${planilla.idPlanillaprocesada} - ${planilla.Afp == 1 ? 'Futuro' : 'Previsión'}</option>`);
                 }else if(data){
                     if(data.spreadsheet){
                         $("#select-planilla_haber_id").append(`<option value="${data.spreadsheet.id}">${data.spreadsheet.codigo_planilla} - ${data.spreadsheet.afp_id == 1 ? 'Futuro' : 'Previsión'}</option>`);
                     }else{
-                        $("#select-planilla_haber_id").append(`<option value="${data.paymentschedule.id}">${String(data.paymentschedule.id).padStart(6, '0')} - ${data.afp == 1 ? 'Futuro' : 'Previsión'}</option>`);
+                        $("#select-planilla_haber_id").append(`<option value="${data.paymentschedule.id}">${String(data.paymentschedule.id).padStart(6, '0')} - ${data.afp_details.name}</option>`);
                     }
                 }
 

@@ -39,12 +39,14 @@
                                         </thead>
                                         <tbody>
                                             @forelse ($item->planillas as $planilla)
-                                                {{-- {{ dd($planilla) }} --}}
+                                                @php
+                                                    $afp = Afp::find($planilla->afp);
+                                                @endphp
                                                 <tr>
                                                     <td>{{ $planilla->Periodo }}</td>
                                                     <td>{{ $planilla->idPlanillaprocesada }}</td>
                                                     <td>{{ $planilla->tipo_planilla }}</td>
-                                                    <td>{{ $planilla->afp == 1 ? 'Futuro' : 'Previsión' }}</td>
+                                                    <td>{{ $afp->name }}</td>
                                                     <td style="text-align: right">{{ $planilla->personas }}</td>
                                                     <td style="text-align: right">{{ number_format($planilla->total_ganado, 2, ',', '.') }}</td>
                                                     <td style="text-align: right">
@@ -147,12 +149,14 @@
                                         </thead>
                                         <tbody>
                                             @forelse ($item->planillas as $planilla)
-                                                {{-- {{ dd($planilla) }} --}}
+                                                @php
+                                                    $afp = Afp::find($planilla->afp);
+                                                @endphp
                                                 <tr>
                                                     <td>{{ $planilla->Periodo }}</td>
                                                     <td>{{ $planilla->idPlanillaprocesada }}</td>
                                                     <td>{{ $planilla->tipo_planilla }}</td>
-                                                    <td>{{ $planilla->afp == 1 ? 'Futuro' : 'Previsión' }}</td>
+                                                    <td>{{ $afp->name }}</td>
                                                     <td style="text-align: right">{{ $planilla->personas }}</td>
                                                     <td style="text-align: right">{{ number_format($planilla->total_ganado, 2, ',', '.') }}</td>
                                                     <td style="text-align: right">

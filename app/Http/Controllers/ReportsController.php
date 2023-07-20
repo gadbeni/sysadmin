@@ -39,6 +39,7 @@ use App\Exports\AddendumsExport;
 use App\Exports\ProgramsExport;
 use App\Exports\BonusExport;
 use App\Exports\PaymentschedulesDetailsExport;
+use App\Exports\PeopleExport;
 
 class ReportsController extends Controller
 {
@@ -56,20 +57,24 @@ class ReportsController extends Controller
         $afp_id = $request->afp_id;
         $afp_status = $request->afp_status;
         $retired = $request->retired;
-        $contract_active = $request->contract_active;
+        $gender = $request->gender;
         $people = Person::whereRaw($afp_id ? "afp = $afp_id" : 1)
                             ->whereRaw($retired != 'todos' ? "retired = $retired" : 1)
                             ->whereRaw($afp_status != 'todos' ? "afp_status = $afp_status" : 1)
-                            ->where(function($query) use ($contract_active){
-                                if($contract_active){
-                                    $query->OrwhereHas('contracts', function($query){
-                                        $query->where("status", "firmado");
+                            ->whereRaw($gender != 'todos' ? "gender = '$gender'" : 1)
+                            ->where(function($query) use ($request){
+                                if($request->contract_active){
+                                    $query->whereHas('contracts', function($query) use ($request){
+                                        $query->whereRaw($request->contract_active == 1 ? "status = 'firmado'" : "(status = 'elaborado' or status = 'enviado')")
+                                            ->whereRaw($request->procedure_type_id ? "procedure_type_id = ".$request->procedure_type_id : 1);
                                     });
                                 }
                             })
                             ->where('deleted_at', NULL)->get();
         if($request->type == 'excel'){
-            return view('reports.rr_hh.contraloria-print', compact('funcionarios', 'periodo', 'afp'));
+            return Excel::download(new PeopleExport($people), 'personas.xlsx');
+        }elseif($request->type == 'print'){
+            return view('reports.rr_hh.people-print', compact('people'));
         }else{
             return view('reports.rr_hh.people-list', compact('people'));
         }
@@ -572,6 +577,7 @@ class ReportsController extends Controller
                     return view('reports.social_security.payments-list', compact('planillas'));
                 }
             }else{
+                dd($da);
                 return view('reports.social_security.payments-details-list', compact('da'));
             }
         }
@@ -849,7 +855,7 @@ class ReportsController extends Controller
                                 $query->whereRaw($afp ? "afp = ".$afp : 1);
                             }, 'check_payments' => function($q){
                                 $q->where('status', 2)->where('deleted_at', NULL);
-                            }, 'payroll_payments' => function($q){
+                            }, 'payroll_payments.afp_details', 'payroll_payments' => function($q){
                                 $q->where('deleted_at', NULL);
                             }, 'procedure_type'])->whereHas('details.contract.person', function($query) use ($afp){
                                 $query->whereRaw($afp ? "afp = ".$afp : 1);

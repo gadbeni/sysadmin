@@ -1,8 +1,8 @@
 
 <div class="col-md-12 text-right">
     @if (count($people))
-        {{-- <button type="button" onclick="report_export('pdf')" class="btn btn-danger"><i class="glyphicon glyphicon-print"></i> Imprimir</button> --}}
-        {{-- <button type="button" onclick="report_export('excel')" class="btn btn-success"><i class="glyphicon glyphicon-download"></i> Excel</button> --}}
+        <button type="button" onclick="report_export('print')" class="btn btn-danger"><i class="glyphicon glyphicon-print"></i> Imprimir</button>
+        <button type="button" onclick="report_export('excel')" class="btn btn-success"><i class="glyphicon glyphicon-download"></i> Excel</button>
     @endif
 </div>
 <div class="col-md-12">
@@ -19,11 +19,13 @@
                             <th>Lugar nac.</th>
                             <th>Fecha nac.</th>
                             <th>Edad</th>
+                            <th>Género</th>
                             <th>Telefono</th>
                             <th>Email</th>
                             <th>AFP</th>
                             <th>NUA/CUA</th>
-                            <th>CAJA DE SALUD</th>
+                            <th>Caja de salud</th>
+                            <th>Registrado</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -48,18 +50,23 @@
                                 <td>{{ $item->city ? $item->city->name : 'No definido' }}</td>
                                 <td>{{ date('d/m/Y', strtotime($item->birthday)) }}</td>
                                 <td>{{ $age }}</td>
+                                <td>{{ Str::ucfirst($item->gender) }}</td>
                                 <td>{{ $item->phone }}</td>
                                 <td>{{ $item->email }}</td>
                                 <td>{{ $item->afp_type->name }}</td>
                                 <td>{{ $item->nua_cua }}</td>
                                 <td>{{ $item->cc == 1 ? 'Caja Cordes' : 'Caja Petrolera' }}</td>
+                                <td>
+                                    {!! $item->user ? $item->user->name.'<br>' : '' !!}
+                                    <small>{{ date('d/m/Y H:i', strtotime($item->created_at)) }}</small>
+                                </td>
                             </tr>
                         @php
                             $cont++;
                         @endphp
                         @empty
                             <tr class="odd">
-                                <td valign="top" colspan="12" class="dataTables_empty">No hay datos disponibles en la tabla</td>
+                                <td valign="top" colspan="14" class="dataTables_empty">No hay datos disponibles en la tabla</td>
                             </tr>
                         @endforelse
                     </tbody>

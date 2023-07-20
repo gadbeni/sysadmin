@@ -552,7 +552,7 @@
                                                 </p>
                                             </div>
                                         </div>
-                                        @if(env('APP_SERVER_WHATSAPP'))
+                                        @if(setting('servidores.whatsapp'))
                                             <div>
                                                 <button title="Enviar felicitación" class="btn btn-success btn-send-message" data-toggle="modal" data-target="#send-message-modal" data-phone="{{ $item->phone }}" @if(!$item->phone) disabled @endif > <i class="fa fa-paper-plane"></i></button>
                                             </div>

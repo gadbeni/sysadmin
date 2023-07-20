@@ -35,4 +35,8 @@ class ChecksPayment extends Model
     public function paymentschedule(){
         return $this->belongsTo(Paymentschedule::class, 'paymentschedule_id');
     }
+
+    public function afp_details(){
+        return $this->belongsTo(Afp::class, 'afp');
+    }
 }
