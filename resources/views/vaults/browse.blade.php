@@ -270,7 +270,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="description">Motivo de anulación</label>
-                            <textarea name="description" class="form-control" rows="5" placeholder="Motivo de eliminación" required></textarea>
+                            <textarea name="description" class="form-control" rows="5" placeholder="Describa el motivo de anulación" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">

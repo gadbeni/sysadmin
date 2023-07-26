@@ -168,8 +168,11 @@
                                                     @if ( property_exists($row->details, 'format') && !is_null($data->{$row->field}) )
                                                         {{ \Carbon\Carbon::parse($data->{$row->field})->formatLocalized($row->details->format) }}
                                                     @else
-                                                        {{ $data->{$row->field} }} <br>
+                                                        {{ $data->{$row->field} }}
+                                                        @if ($data->{$row->field})
+                                                        <br>
                                                         <small>{{ \Carbon\Carbon::parse($data->{$row->field})->diffForHumans() }}</small>
+                                                        @endif
                                                     @endif
                                                 @elseif(($row->type == 'direccionadministrativa'))
                                                    @php

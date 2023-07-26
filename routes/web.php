@@ -224,7 +224,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
 
     // *Contratos
     Route::resource('contracts', ContractsController::class);
-    // Route::post('contracts/{contract}/destroy', [ContractsController::class, 'destroy'])->name('contracts.destroy');
     Route::get('contracts/ajax/list', [ContractsController::class, 'list']);
     Route::post('contracts/status', [ContractsController::class, 'contracts_status'])->name('contracts.status');
     Route::post('contracts/ratificate', [ContractsController::class, 'contracts_ratificate'])->name('contracts.ratificate');
@@ -237,6 +236,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('contracts/direccion-administrativa/{id}', [ContractsController::class, 'contracts_direccion_administrativa']);
     Route::get('contracts/{id}/print/{document}', [ContractsController::class, 'print'])->name('contracts.print');
     Route::post('contracts/{id}/file/store', [ContractsController::class, 'file_store'])->name('contracts.file.store');
+    Route::delete('contracts/file/{id}/destroy', [ContractsController::class, 'file_destroy'])->name('contracts.file.destroy');
+    Route::delete('contracts/finished/{id}/destroy', [ContractsController::class, 'finished_destroy'])->name('contracts.finished.destroy');
     
     // Bonos antigüedad
     Route::get('seniority-bonus-people', [SeniorityBonusPeopleController::class, 'index'])->name('voyager.seniority-bonus-people.index');

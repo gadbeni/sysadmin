@@ -1,9 +1,9 @@
-- crear setting servidores.whatsapp
+- Elminar tablas de assets
+- Ejecutar seeders AssetsCategoriesTableSeeder
 
 NOTA:
-- anular resolucón de contrato
 - al anular contrato ver si el contrato no tiene planillas de ese mes o es mayor a 30 días y esa es su última planilla
 - formulario de creación de proyectos
 - Editar adenda elaborada en ver contrato (faltan campos)
-- rotación desde lista de contratos
 - editar resolución de contrato
+- Editar algunas partes del contrato cuando está firmado

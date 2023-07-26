@@ -82,7 +82,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group col-md-4">
-                                            <label for="addendums">Adendas</label>
+                                            <label for="addendums">Filtro de adendas</label>
                                             <select name="addendums" class="form-control select2 select-filter" id="select-addendums">
                                                 <option value="">Todos</option>
                                                 <option value="1">Con adenda</option>
@@ -411,6 +411,7 @@
                             <p id="label-date-addendum"></p>
                             <p id="label-status-addendum"></p>
                         </div>
+                        <div id="label-program-addendum"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -486,6 +487,29 @@
             </div>
         </div>
     </form>
+
+    {{-- Restore modal --}}
+    <form action="#" class="form-submit" id="restore-form" method="POST">
+        <div class="modal modal-danger fade" tabindex="-1" id="restore-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-trash"></i> Desea restaurar el siguiente contrato?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        {{ method_field('DELETE') }}
+                        {{ csrf_field() }}
+                        <input type="submit" class="btn btn-danger pull-right delete-confirm" value="Sí, eliminar">
+                        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {{-- Modal rotation --}}
+    @include('management.people.partials.modal-rotation')
 @stop
 
 @section('css')
@@ -507,6 +531,9 @@
             $('#select-job_id-alt').select2({dropdownParent: $('#promotion-modal')});
             $('#select-applicant_id').select2({dropdownParent: $('#addendum-modal')});
             $('#select-signature_id').select2({dropdownParent: $('#addendum-modal')});
+            $('#select-destiny_id').select2({dropdownParent: $('#modal-rotation')});
+            $('#select-destiny_dependency').select2({dropdownParent: $('#modal-rotation')});
+            $('#select-responsible_id').select2({dropdownParent: $('#modal-rotation')});
             list();
             
             $('#input-search').on('keyup', function(e){
@@ -526,21 +553,18 @@
             });
 
             $('.form-submit').submit(function(e){
-                $('#status-modal').modal('hide');
-                $('#addendum-modal').modal('hide');
-                $('#addendum-status-modal').modal('hide');
-                $('#ratificate-modal').modal('hide');
-                $('#transfer-modal').modal('hide');
-                $('#promotion-modal').modal('hide');
-                $('#finish-modal').modal('hide');
+                $('.modal').modal('hide');
                 e.preventDefault();
                 $('#div-results').loading({message: 'Cargando...'});
                 $.post($(this).attr('action'), $(this).serialize(), function(res){
-                    if(res.message){
+                    if(res.success){
                         toastr.success(res.message);
                         list(page);
+                        if(res.rotation){
+                            window.open(`{{ url('admin/people/rotation') }}/${res.rotation.id}`, '_blank').focus();
+                        }
                     }else{
-                        toastr.error(res.error);
+                        toastr.error(res.message);
                         $('#div-results').loading('toggle');
                     }
 
@@ -633,8 +657,8 @@
             $('#downgrade-form input[name="status"]').val(status);
         }
 
-        function deleteItem(url){
-            $('#delete_form_alt').attr('action', url);
+        function setFormAction(url, form){
+            $(form).attr('action', url);
         }
 
     </script>

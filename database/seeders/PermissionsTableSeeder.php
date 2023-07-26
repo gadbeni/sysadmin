@@ -88,6 +88,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('suggestions');
         Permission::generateFor('assets_subcategories');
         Permission::generateFor('assets_categories');
+        Permission::generateFor('assets');
 
         // people
         $keys = [

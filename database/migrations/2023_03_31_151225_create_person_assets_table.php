@@ -17,6 +17,7 @@ class CreatePersonAssetsTable extends Migration
             $table->id();
             $table->foreignId('asset_id')->nullable()->constrained('assets');
             $table->foreignId('person_id')->nullable()->constrained('people');
+            $table->foreignId('user_id')->nullable()->constrained('users');
             $table->text('observations')->nullable();
             $table->string('status')->nullable();
             $table->date('date')->nullable();

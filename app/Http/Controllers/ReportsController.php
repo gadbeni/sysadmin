@@ -529,7 +529,6 @@ class ReportsController extends Controller
                     $da[$cont]->planillas = $planillas;
                     $cont++;
                 }
-                // dd($da);
                 break;
                 
         }
@@ -577,7 +576,6 @@ class ReportsController extends Controller
                     return view('reports.social_security.payments-list', compact('planillas'));
                 }
             }else{
-                dd($da);
                 return view('reports.social_security.payments-details-list', compact('da'));
             }
         }

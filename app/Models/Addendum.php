@@ -12,7 +12,7 @@ class Addendum extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'contract_id', 'signature_id', 'applicant_id', 'user_id', 'code', 'nci_date', 'nci_code', 'certification_date', 'certification_code', 'start', 'finish', 'signature_date', 'request_date', 'legal_report_date', 'observations', 'status'
+        'contract_id', 'signature_id', 'applicant_id', 'user_id', 'program_id', 'code', 'nci_date', 'nci_code', 'certification_date', 'certification_code', 'start', 'finish', 'signature_date', 'request_date', 'legal_report_date', 'observations', 'status'
     ];
 
     public function contract(){
@@ -29,5 +29,9 @@ class Addendum extends Model
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function program(){
+        return $this->belongsTo(Program::class);
     }
 }

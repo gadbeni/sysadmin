@@ -120,10 +120,5 @@
                 }
             });
         }
-
-        function deleteItem(url){
-            $('#delete_form_alt').attr('action', url);
-        }
-
     </script>
 @stop

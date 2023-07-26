@@ -23,10 +23,7 @@ class PeopleController extends Controller
     }
 
     public function index(){
-        $people =   Person::whereHas('contracts', function($query){
-                        $query->where('status', 'firmado')->where('deleted_at', NULL);
-                    })->where('deleted_at', NULL)->get();
-        return view('management.people.browse', compact('people'));
+        return view('management.people.browse');
     }
 
     public function list($search = null){

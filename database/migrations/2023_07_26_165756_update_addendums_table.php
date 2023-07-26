@@ -13,8 +13,8 @@ class UpdateAddendumsTable extends Migration
      */
     public function up()
     {
-        Schema::table('addendums', function(Blueprint $table) {
-            $table->foreignId('user_id')->nullable()->constrained('users');
+        Schema::table('addendums', function(Blueprint $table){
+            $table->foreignId('program_id')->nullable()->constrained('programs');
 		});
     }
 
@@ -26,7 +26,7 @@ class UpdateAddendumsTable extends Migration
     public function down()
     {
         Schema::table('addendums', function (Blueprint $table) {
-            $table->dropColumn(['user_id']);
+            $table->dropColumn(['program_id']);
         });
     }
 }

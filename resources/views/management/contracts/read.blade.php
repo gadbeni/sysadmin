@@ -308,7 +308,7 @@
                                             @endphp
                                         @empty
                                             <tr>
-                                                <td colspan="6">No hay datos disponible</td>
+                                                <td colspan="10" class="text-center text-muted"><h5>No hay datos disponible</h5></td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -333,10 +333,12 @@
                                     <thead>
                                         <tr>
                                             <th>N&deg;</th>
+                                            <th>ID</th>
                                             <th>Código</th>
                                             <th>Inicio</th>
                                             <th>Conclusión</th>
                                             <th>Observaciones</th>
+                                            <th>Programa/Proyecto</th>
                                             <th>Estado</th>
                                             <th>Acciones</th>
                                         </tr>
@@ -351,10 +353,12 @@
                                             @endphp
                                             <tr>
                                                 <td>{{ $cont }}</td>
+                                                <td>{{ $item->id }}</td>
                                                 <td>{{ str_pad($item->code, 8, "0", STR_PAD_LEFT) }}</td>
                                                 <td>{{ date('d/M/Y', strtotime($item->start)) }}</td>
                                                 <td>{{ date('d/M/Y', strtotime($item->finish)) }}</td>
                                                 <td>{{ $item->observations }}</td>
+                                                <td>{{ $item->program ? $item->program->name : '*Programa del contrato original' }}</td>
                                                 <td>
                                                     @php
                                                         switch ($item->status) {
@@ -400,7 +404,7 @@
                                                     <a href="{{ route('contracts.print', ['id' => $contract->id, 'document' => $type.'.'.$file]) }}?type={{ $cont == 1 ? 'first' : '' }}" class="btn btn-default btn-sm" target="_blank">
                                                         <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
                                                     </a>
-                                                    @if (auth()->user()->hasPermission('edit_addendum_contracts') && $item->status == 'elaborado')
+                                                    @if ((auth()->user()->hasPermission('edit_addendum_contracts') /*&& $item->status == 'elaborado'*/) || Auth::user()->role_id == 1)
                                                     <a href="#" data-toggle="modal" data-target="#update-addendum-modal" data-item='@json($item)' title="Editar" class="btn btn-sm btn-primary edit btn-edit-addendum">
                                                         <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
                                                     </a>
@@ -414,7 +418,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="7">No hay datos disponible</td>
+                                                <td colspan="9" class="text-center text-muted"><h5>No hay registros</h5></td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -425,15 +429,131 @@
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-bordered" style="padding-bottom:5px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Historial de rotaciones</h3>
+                            </div>
+                            <table id="dataTable" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>N&deg;</th>
+                                        <th>ID</th>
+                                        <th>Fecha</th>
+                                        <th>Solicitante</th>
+                                        <th>Destino</th>
+                                        <th>Registro</th>
+                                        <th class="text-right">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $cont = 0;
+                                    @endphp
+                                    @forelse ($contract->rotations as $rotation)
+                                        @php
+                                            $cont++;
+                                        @endphp
+                                        <tr>
+                                            <td>{{ $cont }}</td>
+                                            <td>{{ $item->id }}</td>
+                                            <td>{{ date('d/m/Y', strtotime($rotation->date)) }}</td>
+                                            <td>{{ $rotation->destiny->first_name }} {{ $rotation->destiny->last_name }}</td>
+                                            <td>{{ $rotation->destiny_dependency }}</td>
+                                            <td>
+                                                {{ $rotation->user ? $rotation->user->name : '' }} <br>
+                                                {{ date('d/m/Y H:i', strtotime($rotation->created_at)) }} <br>
+                                                <small>{{ \Carbon\Carbon::parse($rotation->created_at)->diffForHumans() }}</small>
+                                            </td>
+                                            <td class="no-sort no-click bread-actions text-right">
+                                                <a href="{{ url('admin/people/rotation/'.$rotation->id) }}" class="btn btn-default btn-sm" target="_blank"><i class="glyphicon glyphicon-print"></i> Imprimir</a>
+                                                @if (auth()->user()->hasPermission('delete_rotation_people'))
+                                                <button type="button" onclick="deleteItem('{{ route('people.rotation.delete', ['people' => $contract->person_id, 'id' => $rotation->id]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger edit">
+                                                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
+                                                </button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="text-center text-muted"><h5>No hay registros</h5></td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Auth::user()->role_id == 1)
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-bordered" style="padding-bottom:5px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Documentos generados</h3>
+                            </div>
+                            <div class="table-responsive">
+                                <table id="dataTable" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>N&deg;</th>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $cont = 0;
+                                        @endphp
+                                        @forelse ($contract->files as $item)
+                                            @php
+                                                $cont++;
+                                            @endphp
+                                            <tr>
+                                                <td>{{ $cont }}</td>
+                                                <td>{{ $item->id }}</td>
+                                                <td>{{ $item->name }}</td>
+                                                <td class="no-sort no-click bread-actions text-right">
+                                                    <a title="Ver" class="btn btn-warning" href="{{ route('contracts.print', ['id' => $contract->id, 'document' => $item->name]) }}" target="_blank">
+                                                        <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
+                                                    </a>
+                                                    <button title="Borrar" class="btn btn-sm btn-danger delete" onclick="deleteItem('{{ route('contracts.file.destroy', ['id' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal">
+                                                        <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Eliminar</span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="4" class="text-center text-muted"><h5>No hay registros</h5></td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 
     {{-- Update addendums --}}
-    <form action="{{ route('contracts.addendum.update') }}" id="form-update-addendum" class="form-submit" method="POST">
+    <form action="{{ route('contracts.addendum.update') }}" id="update-addendum-form" class="form-submit" method="POST">
         @csrf
         <input type="hidden" name="id">
         <input type="hidden" name="contract_id" value="{{ $contract->id }}">
         <div class="modal modal-primary fade" tabindex="-1" id="update-addendum-modal" role="dialog">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
@@ -443,20 +563,79 @@
                         <div class="row">
                             <div class="form-group col-md-6">
                                 <label for="start">Inicio</label>
-                                <input type="date" name="start" class="form-control" readonly required>
+                                <input type="date" name="start" id="input-start" class="form-control" readonly required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="finish">Fin</label>
-                                <input type="date" name="finish" class="form-control" required>
+                                <input type="date" name="finish" id="input-finish" class="form-control" required>
+                                <div id="label-duration"></div>
                             </div>
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-12 div-eventual-consultor_sedeges">
+                                <label for="applicant_id">Solicitante</label>
+                                <select name="applicant_id" id="select-applicant_id" class="form-control">
+                                    <option value="">--Seleccione una opción--</option>
+                                    @foreach (App\Models\Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get() as $item)
+                                    <option value="{{ $item->id }}">{{ $item->person->first_name }} {{ $item->person->last_name }} - {{ $item->cargo_id ? $item->cargo->Descripcion : $item->job->name }}</option>                                                
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            {{-- Eventual central --}}
+                            <div class="form-group col-md-6 div-eventual">
+                                <label for="nci_code">NCI</label>
+                                <input type="text" name="nci_code" class="form-control" >
+                            </div>
+                            <div class="form-group col-md-6 div-eventual">
+                                <label for="nci_date">Fecha de NCI</label>
+                                <input type="date" name="nci_date" class="form-control" >
+                            </div>
+                            <div class="form-group col-md-6 div-eventual">
+                                <label for="certification_code">Certificación presupuestaria</label>
+                                <input type="text" name="certification_code" class="form-control" >
+                            </div>
+                            <div class="form-group col-md-6 div-eventual">
+                                <label for="certification_date">Fecha de certificación presupuestaria</label>
+                                <input type="date" name="certification_date" class="form-control" >
+                            </div>
+
+                            {{-- Consultor SEDEGES --}}
+                            <div class="form-group col-md-6 div-consultor_sedeges">
+                                <label for="request_date">Fecha de solicitud</label>
+                                <input type="date" name="request_date" class="form-control" >
+                            </div>
+                            <div class="form-group col-md-6 div-consultor_sedeges">
+                                <label for="legal_report_date">Fecha de informe legal</label>
+                                <input type="date" name="legal_report_date" class="form-control" >
+                            </div>
+
+                            <div class="form-group col-md-6">
                                 <label for="signature_id">Firma autorizada</label>
                                 <select name="signature_id" id="select-signature_id" class="form-control">
                                     <option value="">Secretario(a) de Administración y Finanzas</option>
                                     @foreach (App\Models\Signature::where('status', 1)->where('deleted_at', NULL)->get() as $item)
-                                    <option value="{{ $item->id }}">{{ $item->designation }} {{ $item->name }} - {{ $item->job }}</option>
+                                    <option @if($item->direccion_administrativa_id == Auth::user()->direccion_administrativa_id) selected @endif value="{{ $item->id }}">{{ $item->designation }} {{ $item->name }} - {{ $item->job }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="signature_date">Fecha de suscripción de adenda</label>
+                                <input type="date" name="signature_date" class="form-control" required>
+                                <span id="alert-weekend" class="text-danger" style="font-weight: bold !important">Fin de semana</span>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label for="program_id">Programa/Proyecto</label>
+                                <select name="program_id" id="select-program_id" class="form-control">
+                                    <option value="">*Programa/Proyecto del contrato original</option>
+                                    @foreach (App\Models\Program::where('direccion_administrativa_id', $contract->direccion_administrativa_id)->where('year', date('Y'))->where('deleted_at', NULL)->get() as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }} {{ $item->number ? ' - ('.$item->number.')' : '' }}</option>
+                                    @endforeach
+                                </select>
+                                <small>Solo seleccione el programa/proyecto en caso de que cambie al del contrato principal</small>
+                            </div>
+                            <div class="form-group col-md-12 text-right" style="margin-bottom: 0px">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" required> Aceptar y guardar</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -501,18 +680,59 @@
 @endsection
 
 @section('javascript')
+    <script src="{{ url('js/main.js') }}"></script>
     <script>
         $(document).ready(function () {
+            moment.locale('es');
+            $('#select-applicant_id').select2({dropdownParent: $('#update-addendum-modal')});
             $('#select-signature_id').select2({dropdownParent: $('#update-addendum-modal')});
+            $('#select-program_id').select2({dropdownParent: $('#update-addendum-modal')});
+
             $('.btn-edit-addendum').click(function(){
                 let item = $(this).data('item');
-                $('#form-update-addendum input[name="id"]').val(item.id);
-                $('#form-update-addendum input[name="start"]').val(item.start);
-                $('#form-update-addendum input[name="finish"]').val(item.finish);
-                $.extend({selector: '.richTextBox'}, {})
-                tinymce.init(window.voyagerTinyMCE.getConfig({selector: '.richTextBox'}));
-                $('#form-update-addendum select[name="signature_id"]').val(item.signature_id).trigger('change');
+                $('#update-addendum-form input[name="id"]').val(item.id);
+                $('#update-addendum-form input[name="start"]').val(item.start);
+                $('#update-addendum-form input[name="finish"]').val(item.finish);
+                $('#update-addendum-form input[name="signature_date"]').val(item.signature_date);
+                $('#update-addendum-form select[name="signature_id"]').val(item.signature_id).trigger('change');
+
+                // Si es eventual
+                if(item.procedure_type_id == 5){
+                    $('.div-eventual').fadeIn();
+                }else{
+                    $('.div-eventual').fadeOut();
+                }
+
+                // Si es eventual o es consultor del SEDEGES
+                if(item.procedure_type_id == 5 || (item.procedure_type_id == 2 && item.direccion_administrativa_id == 5)){
+                    $('.div-eventual-consultor_sedeges').fadeIn();
+                }else{
+                    $('.div-eventual-consultor_sedeges').fadeOut();
+                }
+
+                // Si es consultor del SEDEGES
+                if(item.procedure_type_id == 2 && item.direccion_administrativa_id == 5){
+                    $('.div-consultor_sedeges').fadeIn();
+                }else{
+                    $('.div-consultor_sedeges').fadeOut();
+                }
+
+                let signature_date = moment(item.signature_date, "YYYY-MM-DD");
+                if(signature_date.weekday() > 4){
+                    $('#alert-weekend').fadeIn();
+                }else{
+                    $('#alert-weekend').fadeOut();
+                }
             });
+
+            $('#update-addendum-form input[name="signature_date"]').change(function(){
+            let date = moment($(this).val(), "YYYY-MM-DD");
+            if(date.weekday() > 4){
+                $('#alert-weekend').fadeIn('fast');
+            }else{
+                $('#alert-weekend').fadeOut('fast');
+            }
+        });
 
             $('.btn-delete-addendum').click(function(){
                 let id = $(this).data('id');

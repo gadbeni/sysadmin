@@ -14,6 +14,9 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $meses = ['', 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+                @endphp
                 @forelse ($data as $item)
                     @php
                         // Contrato posteriores al actual
@@ -53,9 +56,9 @@
                                     @endphp
                                     <b>Sueldo: </b> <small>Bs.</small> {{ number_format($salary, 2, ',', '.') }}
                                 </li>
-                                <li><b>Desde </b>{{ date('d/m/Y', strtotime($item->start)) }}
+                                <li><b>Desde </b>{{ date('d/', strtotime($item->start)).$meses[intval(date('m', strtotime($item->start)))].date('/Y', strtotime($item->start)) }}
                                 @if ($item->finish)
-                                <b> hasta </b>{{ date('d/m/Y', strtotime($item->finish)) }}
+                                <b> hasta </b>{{ date('d/', strtotime($item->finish)).$meses[intval(date('m', strtotime($item->finish)))].date('/Y', strtotime($item->finish)) }}
                                 @endif
                                 <li>
                                     @if ($item->start && $item->finish)
@@ -118,7 +121,7 @@
                         </td>
                         <td>
                             {{ $item->user ? $item->user->name : '' }} <br>
-                            {{ date('d/m/Y H:i', strtotime($item->created_at)) }} <br>
+                            {{ date('d/', strtotime($item->created_at)).$meses[intval(date('m', strtotime($item->created_at)))].date('/Y H:i', strtotime($item->created_at)) }} <br>
                             <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
                         </td>
                         <td class="no-sort no-click bread-actions text-right">
@@ -134,7 +137,7 @@
                                     @endif
                                     {{-- Si está firmado se puede rotar --}}
                                     @if ($item->status == 'firmado' && auth()->user()->hasPermission('add_rotation_people'))
-                                    <li><a href="#" class="btn-rotation" data-url="{{ route('people.rotation.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-rotation" >Rotar</a></li>
+                                    <li><a href="#" class="btn-rotation" data-url="{{ route('people.rotation.store', ['id' => $item->person_id]) }}" data-toggle="modal" data-target="#modal-rotation" >Rotar</a></li>
                                     @endif
                                     {{-- Si está firmado se puede ratificar --}}
                                     @if ($item->status == 'firmado' && auth()->user()->hasPermission('ratificate_contracts'))
@@ -156,16 +159,15 @@
                                     @if ($item->status == 'firmado' && auth()->user()->hasPermission('finish_contracts'))
                                     <li><a href="#" title="{{ $item->procedure_type_id == 1 ? 'Memo de agradecimiento' : 'Resolución' }}" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}', {{ $item->procedure_type_id }})">{{ $item->procedure_type_id == 1 ? 'Agradecimiento' : 'Resolución' }}</a></li>
                                     @endif
-
+                                    {{-- Restaurar contrato --}}
+                                    @if (auth()->user()->hasPermission('restore_contracts') && $item->finished)
+                                    <li><a href="#" title="Anular resolución de contrato" onclick="setFormAction('{{ route('contracts.finished.destroy', ['id' => $item->id]) }}', '#restore-form')" data-toggle="modal" data-target="#restore-modal">Anular resolución <br> ({{ $item->finished->previus_date ? date('d/m/Y', strtotime($item->finished->previus_date)) : 'Indefinido' }})</a></li>
+                                    @endif
+                                    {{-- Firmar adenda --}}
                                     @if (count($addendums) > 0)
                                         @if ($addendums->first()->status == 'elaborado' && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5))
                                         <li><a class="btn-addendum-status" title="Firmar adenda" data-toggle="modal" data-target="#addendum-status-modal" data-id="{{ $addendums->first()->id }}" href="#">Firmar adenda</a></li>
                                         @endif
-                                    @endif
-
-                                    {{-- Restaurar contrato --}}
-                                    @if (auth()->user()->hasPermission('restore_contracts') && $item->status == 'concluido' && $item->procedure_type_id == 1)
-                                    <li><a href="#" title="Restaurar" data-toggle="modal" data-target="#status-modal" onclick="changeStatus({{ $item->id }}, 'restaurar')">Restaurar</a></li>
                                     @endif
                                 </ul>
                             </div>
@@ -245,7 +247,7 @@
                                                 @endif
 
                                                 @if ($item->finished && $item->status == 'concluido' && auth()->user()->hasPermission('print_finish_contracts'))
-                                                <li><a title="Resolusión de contrato" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.resolution']) }}" target="_blank">Resolusión</a></li>
+                                                <li><a title="Resolución de contrato" href="{{ route('contracts.print', ['id' => $item->id, 'document' => 'eventual.resolution']) }}" target="_blank">Resolución</a></li>
                                                 @endif
 
                                                 @break
@@ -277,14 +279,14 @@
                                         <ul class="dropdown-menu" role="menu" style="left: -90px !important">
                                             <li><a href="#" onclick="downgradeContract({{ $item->id }}, 'elaborado')" data-toggle="modal" data-target="#downgrade-modal">Quitar firma</a></li>
                                             <li>
-                                                <a href="#" onclick="deleteItem('{{ route('contracts.destroy', ['contract' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal-alt" title="Anular">
+                                                <a href="#" onclick="setFormAction('{{ route('contracts.destroy', ['contract' => $item->id]) }}', '#delete_form_alt')" data-toggle="modal" data-target="#delete-modal-alt" title="Anular">
                                                     Anular
                                                 </a>
                                             </li>
                                         </ul>
                                     </div>
-                                @elseif($item->status != 'firmado' && auth()->user()->hasPermission('delete_contracts'))
-                                    <a href="#" onclick="deleteItem('{{ route('contracts.destroy', ['contract' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal-alt" title="Anular" class="btn btn-sm btn-danger delete">
+                                @elseif(($item->status != 'firmado' && auth()->user()->hasPermission('delete_contracts')) || ($item->status == 'elaborado' && auth()->user()->hasPermission('add_contracts')))
+                                    <a href="#" onclick="setFormAction('{{ route('contracts.destroy', ['contract' => $item->id]) }}', '#delete_form_alt')" data-toggle="modal" data-target="#delete-modal-alt" title="Anular" class="btn btn-sm btn-danger delete">
                                         <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Anular</span>
                                     </a>
                                 @endif
@@ -353,6 +355,12 @@
         $('.btn-promotion').click(function(){
             let id = $(this).data('id');
             $('#form-promotion input[name="contract_id"]').val(id);
+        });
+
+        $('.btn-rotation').click(function(e){
+            e.preventDefault();
+            let url = $(this).data('url');
+            $('#rotation-form').attr('action', url);
         });
 
         // Crear adenda
@@ -424,6 +432,16 @@
                     label= 'Desconocida';
                 }
                 $('#label-status-addendum').html(`<b>Estado de la adenda</b> <label class="label label-${style}">${label}</label><br>`);
+                
+                if(addendum.program){
+                    $('#label-program-addendum').html(`
+                        <div class="col-md-12">
+                            <p><b>Programa</b></p>
+                            <p>${addendum.program.name}</p>
+                        </div>`);
+                }else{
+                    $('#label-program-addendum').empty();
+                }
             });
         });
 

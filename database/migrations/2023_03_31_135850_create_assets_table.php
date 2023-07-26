@@ -16,10 +16,13 @@ class CreateAssetsTable extends Migration
         Schema::create('assets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assets_subcategory_id')->nullable()->constrained('assets_subcategories');
+            $table->foreignId('user_id')->nullable()->constrained('users');
             $table->string('code')->unique();
             $table->text('details')->nullable();
             $table->text('images')->nullable();
             $table->date('date_purchase')->nullable();
+            $table->string('status')->nullable();
+            $table->smallInteger('active')->nullable(1);
             $table->timestamps();
             $table->softDeletes();
         });

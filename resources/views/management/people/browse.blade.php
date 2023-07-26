@@ -59,66 +59,7 @@
         </div>
     </div>
 
-    {{-- Modal rotation --}}
-    <form class="form-submit" id="rotation-form" action="#" method="post">
-        @csrf
-        <div class="modal modal-primary fade modal-option" tabindex="-1" id="modal-rotation" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title"><i class="voyager-forward"></i> Realizar rotación</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>Fecha de rotación</label>
-                            <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}" required >
-                        </div>
-                        <div class="form-group">
-                            <label>Solicitante</label>
-                            <select name="destiny_id" class="form-control select2" required>
-                                <option selected disabled value="">--Seleccione al funcionario--</option>
-                                @foreach ($people as $item)
-                                    <option value="{{ $item->id }}">{{ $item->first_name }} {{ $item->last_name }} - CI:{{ $item->ci }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Destino</label>
-                            <select name="destiny_dependency" class="form-control select2" required>
-                                <option selected disabled value="">--Seleccione el destino--</option>
-                                @foreach (\App\Models\Direccion::where('Estado', 1)->get() as $item)
-                                    <option value="{{ $item->nombre }}">{{ $item->nombre }}</option>
-                                @endforeach
-                                @foreach (\App\Models\Unidad::where('Estado', 1)->get() as $item)
-                                    <option value="{{ $item->nombre }}">{{ $item->nombre }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Responsable</label>
-                            <select name="responsible_id" class="form-control select2">
-                                <option selected disabled value="">--Seleccione al reponsable--</option>
-                                @foreach ($people as $item)
-                                    <option value="{{ $item->id }}">{{ $item->first_name }} {{ $item->last_name }} - CI:{{ $item->ci }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Observaciones</label>
-                            <textarea name="observations" class="form-control" rows="5"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" class="btn btn-dark btn-submit" value="Guardar">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-
-    {{-- Modal rotation --}}
+    {{-- Modal irremovability --}}
     <form class="form-submit" id="irremovability-form" action="#" method="post">
         @csrf
         <div class="modal modal-primary fade modal-option" tabindex="-1" id="modal-irremovability" role="dialog">
@@ -160,7 +101,7 @@
         </div>
     </form>
 
-    {{-- Modal rotation --}}
+    {{-- Modal afp options --}}
     <form class="form-submit" id="options-afp-form" action="#" method="post">
         @csrf
         <div class="modal modal-primary fade modal-option" tabindex="-1" id="modal-options-afp" role="dialog">
@@ -191,6 +132,10 @@
 
     {{-- Modal add file --}}
     @include('management.people.partials.modal-add-file')
+
+    {{-- Modal rotation --}}
+    @include('management.people.partials.modal-rotation')
+    
 @stop
 
 @section('css')
@@ -202,6 +147,10 @@
     <script>
         var countPage = 10, order = 'id', typeOrder = 'desc';
         $(document).ready(() => {
+
+            $('#select-destiny_id').select2({dropdownParent: $('#modal-rotation')});
+            $('#select-destiny_dependency').select2({dropdownParent: $('#modal-rotation')});
+            $('#select-responsible_id').select2({dropdownParent: $('#modal-rotation')});
             list();
 
             $('.toggleswitch').bootstrapToggle();

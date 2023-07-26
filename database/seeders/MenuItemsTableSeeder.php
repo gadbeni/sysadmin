@@ -731,13 +731,13 @@ class MenuItemsTableSeeder extends Seeder
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-documentation',
-                'color' => NULL,
+                'color' => '#000000',
                 'parent_id' => 45,
                 'order' => 5,
                 'created_at' => '2022-01-04 10:56:31',
-                'updated_at' => '2023-03-29 16:16:39',
+                'updated_at' => '2023-07-26 17:51:21',
                 'route' => 'voyager.programs.index',
-                'parameters' => NULL,
+                'parameters' => 'null',
             ),
             45 => 
             array (
@@ -1463,7 +1463,7 @@ class MenuItemsTableSeeder extends Seeder
             array (
                 'id' => 97,
                 'menu_id' => 1,
-                'title' => 'Personas',
+                'title' => 'Datos personales',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-people',
@@ -1569,6 +1569,22 @@ class MenuItemsTableSeeder extends Seeder
                 'created_at' => '2023-07-13 15:11:28',
                 'updated_at' => '2023-07-13 15:11:44',
                 'route' => 'reports.management.addendums.index',
+                'parameters' => NULL,
+            ),
+            97 => 
+            array (
+                'id' => 104,
+                'menu_id' => 1,
+                'title' => 'Activos',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => 'voyager-tag',
+                'color' => NULL,
+                'parent_id' => 102,
+                'order' => 3,
+                'created_at' => '2023-07-26 14:12:01',
+                'updated_at' => '2023-07-26 14:13:00',
+                'route' => 'voyager.assets.index',
                 'parameters' => NULL,
             ),
         ));

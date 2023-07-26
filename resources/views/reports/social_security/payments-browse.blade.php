@@ -202,7 +202,7 @@
                 $('#div-results').empty();
             });
             $('#form-search').on('submit', function(e){
-                // e.preventDefault();
+                e.preventDefault();
                 $('#div-results').empty();
                 $('#div-results').loading({message: 'Cargando...'});
                 $.post($('#form-search').attr('action'), $('#form-search').serialize(), function(res){
