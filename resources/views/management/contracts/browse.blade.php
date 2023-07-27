@@ -408,10 +408,8 @@
                         </div>
                         <div class="col-md-12">
                             <p><b>Detalles de adenda(s)</b></p>
-                            <p id="label-date-addendum"></p>
-                            <p id="label-status-addendum"></p>
+                            <div id="details-addendum"></div>
                         </div>
-                        <div id="label-program-addendum"></div>
                     </div>
                 </div>
                 <div class="modal-footer">

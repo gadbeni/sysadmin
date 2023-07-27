@@ -12,6 +12,7 @@ class Contract extends Model
     protected $fillable = [
         'person_id',
         'program_id',
+        'current_program_id',
         'cargo_id',
         'job_id',
         'direccion_administrativa_id',
@@ -49,19 +50,20 @@ class Contract extends Model
         'status',
     ];
 
-    public function user()
-    {
+    public function user(){
         return $this->belongsTo(User::class);
     }
 
-    public function person()
-    {
+    public function person(){
         return $this->belongsTo(Person::class);
     }
 
-    public function program()
-    {
+    public function program(){
         return $this->belongsTo(Program::class);
+    }
+
+    public function current_program(){
+        return $this->belongsTo(Program::class, 'current_program_id');
     }
 
     public function type(){

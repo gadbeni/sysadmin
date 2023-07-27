@@ -283,7 +283,7 @@
                                 @php
                                     $cont = 1;
                                     if($group_by == 1){
-                                        $data = $data->details->groupBy('contract.program_id');
+                                        $data = $data->details->groupBy('program_id');
                                         $data = $data->map(function($item, $key){
                                             $program = \App\Models\Program::find($key);
                                             return [
@@ -431,7 +431,7 @@
                                 @php
                                     $cont = 1;
                                     if($group_by == 1){
-                                        $data = $data->details->groupBy('contract.program_id');
+                                        $data = $data->details->groupBy('program_id');
                                         $data = $data->map(function($item, $key){
                                             $program = \App\Models\Program::find($key);
                                             return [
@@ -553,7 +553,7 @@
                                 @php
                                     $cont = 1;
                                     if($group_by == 1){
-                                        $data = $data->details->groupBy('contract.program_id');
+                                        $data = $data->details->groupBy('program_id');
                                         $data = $data->map(function($item, $key){
                                             $program = \App\Models\Program::find($key);
                                             return [

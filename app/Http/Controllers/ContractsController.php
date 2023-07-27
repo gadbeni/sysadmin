@@ -59,7 +59,9 @@ class ContractsController extends Controller
         $direccion_administrativa_id = request('direccion_administrativa_id') ?? null;
         $addendums = request('addendums') ?? null;
         $paginate = request('paginate') ?? 10;
-        $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa.tipo', 'type', 'transfers', 'promotions', 'jobs', 'finished', 'addendums.program'])
+        $data = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa.tipo', 'type', 'transfers', 'promotions', 'jobs', 'finished', 'addendums.program', 'addendums' => function($q){
+                        $q->orderBy('id', 'DESC');            
+                    }])
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)
                     ->where(function($query) use ($search){
                         if($search){
@@ -216,6 +218,7 @@ class ContractsController extends Controller
             $contract = Contract::create([
                 'person_id' => $request->person_id,
                 'program_id' => $request->program_id,
+                'current_program_id' => $request->program_id,
                 // Si es un contrato de consultor o inversion
                 'cargo_id' => $request->procedure_type_id != 1 ? $request->cargo_id : NULL,
                 // Si es un contrato de permanente
@@ -344,6 +347,7 @@ class ContractsController extends Controller
             Contract::where('id', $id)->update([
                 'person_id' => $request->person_id,
                 'program_id' => $request->program_id,
+                'current_program_id' => $request->program_id,
                 // Si es un contrato de consultor o inversion
                 'cargo_id' => $request->procedure_type_id != 1 ? $request->cargo_id : NULL,
                 // Si es un contrato de permanente
@@ -541,6 +545,9 @@ class ContractsController extends Controller
             if($addendum->status == 'firmado'){
                 $contract = Contract::findOrFail($addendum->contract_id);
                 $contract->finish = $request->finish;
+                if ($request->program_id) {
+                    $contract->current_program_id = $request->program_id;
+                }
                 $contract->status = 'firmado';
                 $contract->update();
             }
@@ -549,6 +556,7 @@ class ContractsController extends Controller
             return redirect()->route('contracts.show', $request->contract_id)->with(['message' => 'Adenda actualizada', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
+            // dd($th);
             return redirect()->route('contracts.show', $request->contract_id)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
@@ -607,6 +615,7 @@ class ContractsController extends Controller
                 'person_id' => $contract->person_id,
                 'procedure_type_id' => 1,
                 'program_id' => $program->id,
+                'current_program_id' => $program->id,
                 'job_id' => $request->job_id,
                 'direccion_administrativa_id' => $d_a->id,
                 'code' => $code,
@@ -669,6 +678,7 @@ class ContractsController extends Controller
                 'person_id' => $contract->person_id,
                 'procedure_type_id' => 1,
                 'program_id' => $program->id,
+                'current_program_id' => $program->id,
                 'job_id' => $request->job_id,
                 'direccion_administrativa_id' => $d_a->id,
                 'code' => $code,

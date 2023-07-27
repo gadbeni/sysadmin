@@ -28,7 +28,7 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
         if($this->type == 1){
 
             if($this->group_by == 1){
-                $data = $this->data->details->groupBy('contract.program_id');
+                $data = $this->data->details->groupBy('program_id');
                 $data = $data->map(function($item, $key){
                     $program = \App\Models\Program::find($key);
                     return [
@@ -106,7 +106,7 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
         }elseif($this->type == 2){
 
             if($this->group_by == 1){
-                $data = $this->data->details->groupBy('contract.program_id');
+                $data = $this->data->details->groupBy('program_id');
                 $data = $data->map(function($item, $key){
                     $program = \App\Models\Program::find($key);
                     return [
@@ -191,7 +191,7 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
         }elseif($this->type == 3){
 
             if($this->group_by == 1){
-                $data = $this->data->details->groupBy('contract.program_id');
+                $data = $this->data->details->groupBy('program_id');
                 $data = $data->map(function($item, $key){
                     $program = \App\Models\Program::find($key);
                     return [

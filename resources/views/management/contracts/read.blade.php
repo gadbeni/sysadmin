@@ -211,7 +211,7 @@
                                 <h3 class="panel-title">Programa</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $contract->program->name }}</p>
+                                <p>{{ $contract->program->name }} {{ $contract->program->programatic_category ? ' ('.$contract->program->programatic_category.')' : '' }}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>
@@ -358,7 +358,7 @@
                                                 <td>{{ date('d/M/Y', strtotime($item->start)) }}</td>
                                                 <td>{{ date('d/M/Y', strtotime($item->finish)) }}</td>
                                                 <td>{{ $item->observations }}</td>
-                                                <td>{{ $item->program ? $item->program->name : '*Programa del contrato original' }}</td>
+                                                <td>{{ $item->program ? $item->program->name.($item->program->programatic_category ? ' ('.$item->program->programatic_category.')' : '') : '*Programa del contrato original' }}</td>
                                                 <td>
                                                     @php
                                                         switch ($item->status) {
@@ -627,7 +627,7 @@
                                 <select name="program_id" id="select-program_id" class="form-control">
                                     <option value="">*Programa/Proyecto del contrato original</option>
                                     @foreach (App\Models\Program::where('direccion_administrativa_id', $contract->direccion_administrativa_id)->where('year', date('Y'))->where('deleted_at', NULL)->get() as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }} {{ $item->number ? ' - ('.$item->number.')' : '' }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->name }} {{ $item->programatic_category ? ' ('.$item->programatic_category.')' : '' }}</option>
                                     @endforeach
                                 </select>
                                 <small>Solo seleccione el programa/proyecto en caso de que cambie al del contrato principal</small>
@@ -695,6 +695,12 @@
                 $('#update-addendum-form input[name="finish"]').val(item.finish);
                 $('#update-addendum-form input[name="signature_date"]').val(item.signature_date);
                 $('#update-addendum-form select[name="signature_id"]').val(item.signature_id).trigger('change');
+                if(item.program_id){
+                    $('#select-program_id').val(item.program_id).trigger('change')
+                }
+                if(item.signature_id){
+                    $('#select-signature_id').val(item.signature_id).trigger('change')
+                }
 
                 // Si es eventual
                 if(item.procedure_type_id == 5){

@@ -14,6 +14,7 @@ class PaymentschedulesDetail extends Model
     protected $fillable = [
         'paymentschedule_id',
         'contract_id',
+        'program_id',
         'afp',
         'cc',
         'item',
@@ -45,11 +46,15 @@ class PaymentschedulesDetail extends Model
     }
 
     public function paymentschedule(){
-        return $this->belongsTo(Paymentschedule::class, 'paymentschedule_id');
+        return $this->belongsTo(Paymentschedule::class);
     }
 
     public function contract(){
-        return $this->belongsTo(Contract::class, 'contract_id');
+        return $this->belongsTo(Contract::class);
+    }
+
+    public function program(){
+        return $this->belongsTo(Program::class);
     }
 
     public function payment(){

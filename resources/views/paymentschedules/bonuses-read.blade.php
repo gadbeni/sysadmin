@@ -164,7 +164,7 @@
                                 <label for="program_id">Programa/Proyecto</label>
                                 <select name="program_id" class="form-control select2">
                                     <option value="">--Todos--</option>
-                                    @foreach ($bonus->details->groupBy('contract.program_id') as $key => $item)
+                                    @foreach ($bonus->details->groupBy('program_id') as $key => $item)
                                     <option value="{{ $key }}">{{ App\Models\Program::find($key)->name }}</option>
                                     @endforeach
                                 </select>

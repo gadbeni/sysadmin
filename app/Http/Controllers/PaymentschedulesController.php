@@ -235,7 +235,8 @@ class PaymentschedulesController extends Controller
                 $contract = Contract::find($contract_id[$i]);
                 PaymentschedulesDetail::create([
                     'paymentschedule_id' => $paymentschedule->id,
-                    'contract_id' => $contract_id[$i],
+                    'contract_id' => $contract->id,
+                    'program_id' => $contract->current_program_id,
                     'afp' => $contract->person->afp,
                     'cc' => $contract->person->cc,
                     'worked_days' => $worked_days[$i],
@@ -290,7 +291,7 @@ class PaymentschedulesController extends Controller
         $excel = request('excel');
         $type_render = request('type_render');
 
-        $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract' => function($q){
+        $data = Paymentschedule::with(['user', 'direccion_administrativa', 'period', 'procedure_type', 'details.contract.addendums', 'details.program', 'details.contract' => function($q){
                         $q->where('deleted_at', NULL)->orderBy('id', 'DESC')->get();
                     }, 'details' => function($q) use($cc){
                         $q->whereRaw($cc ? "cc = $cc" : 1)->where('deleted_at', NULL);
@@ -299,7 +300,7 @@ class PaymentschedulesController extends Controller
         
         if($centralize){
             $centralize_code = $data->centralize_code;
-            $data->details = PaymentschedulesDetail::with(['contract.program', 'contract.type'])
+            $data->details = PaymentschedulesDetail::with(['program', 'contract.type'])
                             ->whereHas('paymentschedule', function($q) use($centralize_code){
                                 $q->where('centralize_code', $centralize_code)->where('deleted_at', NULL);
                             })
@@ -323,7 +324,7 @@ class PaymentschedulesController extends Controller
         if($program){
             $details = collect();
             foreach($data->details as $detail){
-                if($detail->contract->program_id == $program){
+                if($detail->program_id == $program){
                     $details->push($detail);
                 }
             }

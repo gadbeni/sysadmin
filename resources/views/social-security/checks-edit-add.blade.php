@@ -217,7 +217,7 @@
                         var total_ganado = 0;
                         planillaSelect.details.map(item => {
                             if(id){
-                                if(id == item.contract.program_id){
+                                if(id == item.program_id){
                                     cantidad_personas++;
                                     total_ganado += parseFloat(item.partial_salary) + parseFloat(item.seniority_bonus_amount);
                                 }

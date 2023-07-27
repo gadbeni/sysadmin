@@ -22,9 +22,6 @@ if (! function_exists('contract_duration_calculate')) {
         if($start->format('Ym') == $finish->format('Ym')){
             $count_months = 0;
             $count_days = $start->diffInDays($finish) +1;
-            if($finish->format('d') == 31){
-                $count_days -= 1;
-            }
             if($finish->format('m') == 2 && $count_days == 28){
                 $count_days += 2;
             }

@@ -148,7 +148,7 @@
                             @foreach ($item->groupBy('afp') as $key => $afp)
                                 @php
                                     $paymentschedule = $afp[0]->paymentschedule;
-                                    $programs = $paymentschedule->details->groupBy('contract.program_id');
+                                    $programs = $paymentschedule->details->groupBy('program_id');
                                 @endphp
                                 <tr>
                                     <td>{{ $cont }}</td>

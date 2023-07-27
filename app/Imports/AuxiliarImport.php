@@ -75,6 +75,7 @@ class AuxiliarImport implements ToModel
                 Contract::create([
                     'person_id' => $person->id,
                     'program_id' => 1,
+                    'current_program_id' => 1,
                     'procedure_type_id' => 1,
                     'user_id' => Auth::user()->id,
                     'code' => $row[12],

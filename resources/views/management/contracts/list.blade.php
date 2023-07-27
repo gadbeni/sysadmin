@@ -21,7 +21,7 @@
                     @php
                         // Contrato posteriores al actual
                         $contracts = \App\Models\Contract::where('person_id', $item->person_id)->where('deleted_at', NULL)->where('id', '>', $item->id)->get();
-                        $addendums = $item->addendums->where('deleted_at', NULL)->sortByDesc('id');
+                        $addendums = $item->addendums;
                     @endphp
                     <tr>
                         <td>{{ $item->id }}</td>
@@ -415,8 +415,8 @@
             let addendums = $(this).data('addendums');
             let contract = $(this).data('contract');
             $('#label-date-contract').html(`Inicio desde el ${moment(contract.start).format('DD [de] MMMM [de] YYYY')} hasta el ${moment(contract.addendums[0].start).add(-1, 'days').format('DD [de] MMMM [de] YYYY')}.`);
+            $('#details-addendum').empty();
             addendums.map(addendum => {
-                $('#label-date-addendum').html(`Inicio desde el ${moment(addendum.start).format('DD [de] MMMM [de] YYYY')} hasta el ${moment(addendum.finish).format('DD [de] MMMM [de] YYYY')}.`);
                 let style, label;
                 if (addendum.status == 'elaborado') {
                     style = 'dark';
@@ -431,17 +431,12 @@
                     style = 'default';
                     label= 'Desconocida';
                 }
-                $('#label-status-addendum').html(`<b>Estado de la adenda</b> <label class="label label-${style}">${label}</label><br>`);
-                
-                if(addendum.program){
-                    $('#label-program-addendum').html(`
-                        <div class="col-md-12">
-                            <p><b>Programa</b></p>
-                            <p>${addendum.program.name}</p>
-                        </div>`);
-                }else{
-                    $('#label-program-addendum').empty();
-                }
+                $('#details-addendum').append(`
+                    <p>Inicio desde el ${moment(addendum.start).format('DD [de] MMMM [de] YYYY')} hasta el ${moment(addendum.finish).format('DD [de] MMMM [de] YYYY')}.</p>
+                    <p><b>Estado de la adenda</b> <label class="label label-${style}">${label}</label></p>
+                    ${addendum.program ? '<p>'+addendum.program.name+'</p>' : ''}
+                    <br>
+                `);
             });
         });
 

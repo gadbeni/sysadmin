@@ -834,8 +834,8 @@
                                 <label for="program_id">Programa/Proyecto</label>
                                 <select name="program_id" class="form-control select2">
                                     <option value="">Todos</option>
-                                    @foreach ($contracts->groupBy('program_id') as $item)
-                                        <option value="{{ $item[0]->program->id }}">{{ $item[0]->program->name }}</option>
+                                    @foreach ($contracts->groupBy('current_program_id') as $item)
+                                        <option value="{{ $item[0]->current_program->id }}">{{ $item[0]->current_program->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
