@@ -83,8 +83,7 @@
     @php
         $cont = 1;
     @endphp
-
-    @if ($meses_intermedias_cuotas > 1)
+    @if ($meses_intermedias_cuotas >= 1)
         @if (!$dias_primera_cuota && $meses_intermedias_cuotas)
             la 
             @while ($cont <= $meses_intermedias_cuotas)
@@ -110,7 +109,10 @@
         correspondiente {{ $meses_intermedias_cuotas == 1 ? ' al mes ' : ' a los meses ' }} de 
         @php
             $cont = 1;
-            $start = $start->format('d') > 30 ? Carbon\Carbon::parse($contract_start->addDays()->format('Y-m-d')) : Carbon\Carbon::createFromFormat('Y-m-d', $contract_start);
+            $start = Carbon\Carbon::createFromFormat('Y-m-d', $contract_start);
+            if($start->format('d') > 30){
+                $start->addDays();
+            }
             if($dias_primera_cuota){
                 $mes_inicio = intval($start->addMonths(1)->format('m'));
             }else{

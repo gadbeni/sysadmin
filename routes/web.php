@@ -27,6 +27,7 @@ use App\Http\Controllers\TcOutboxController;
 use App\Http\Controllers\TcController;
 use App\Http\Controllers\SeniorityBonusPeopleController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\SchedulesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -259,6 +260,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::resource('memos', MemosController::class);
     Route::get('memos/ajax/list', [MemosController::class, 'list']);
     Route::get('memos/{id}/print', [MemosController::class, 'print']);
+
+    // Biométrico
+
+    Route::get('schedules/create', [SchedulesController::class, 'create'])->name('voyager.schedules.create');
+    Route::post('schedules/store', [SchedulesController::class, 'store'])->name('schedules.store');
+    Route::get('schedules/{id}/edit', [SchedulesController::class, 'edit'])->name('voyager.schedules.edit');
+    Route::put('schedules/{id}', [SchedulesController::class, 'update'])->name('schedules.update');
 
     // Reportes
 

@@ -540,6 +540,7 @@ class ContractsController extends Controller
             $addendum->signature_id = $request->signature_id ?? NULL;
             $addendum->program_id = $request->program_id ?? NULL;
             $addendum->finish = $request->finish;
+            $addendum->signature_date = $request->signature_date;
             $addendum->update();
 
             if($addendum->status == 'firmado'){

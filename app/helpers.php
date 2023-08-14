@@ -17,14 +17,14 @@ if (! function_exists('contract_duration_calculate')) {
         $start = Carbon\Carbon::parse($start);
         $finish = Carbon\Carbon::parse($finish);
         $count_months = 0;
-        $dia_fin = 31;
 
         if($start->format('Ym') == $finish->format('Ym')){
             $count_months = 0;
             $count_days = $start->diffInDays($finish) +1;
-            if($finish->format('m') == 2 && $count_days == 28){
-                $count_days += 2;
+            if($finish->format('m') == 2 && ($count_days == 28 || $count_days == 29)){
+                $count_days = 30;
             }
+            $count_days = $count_days > 30 ? 30 : $count_days;
         }else{
             $count_months = 0;
             if($start->format('d') > 30){

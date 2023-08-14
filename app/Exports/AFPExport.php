@@ -227,26 +227,26 @@ class AFPExport implements WithColumnFormatting, FromCollection, WithHeadings, W
                     $novelty_date = '';
                     if(date('Ym', strtotime($item[0]->contract->start)) == $item[0]->paymentschedule->period->name){
                         $novelty = 'I';
-                        $novelty_date = date('dmY', strtotime($item[0]->contract->start));
+                        $novelty_date = date('d/m/Y', strtotime($item[0]->contract->start));
                     }
                     if(date('Ym', strtotime($item[0]->contract->finish)) == $item[0]->paymentschedule->period->name){
                         $novelty = 'R';
-                        $novelty_date = date('dmY', strtotime($item[0]->contract->finish));
+                        $novelty_date = date('d/m/Y', strtotime($item[0]->contract->finish));
                     }
                     $worked_days = $item->sum('worked_days');
                     $total_amount = $item->sum('partial_salary') + $item->sum('seniority_bonus_amount');
 
                     array_push($datos, [
                         'A' => $cont,
-                        'B' => 'CI',
+                        'B' => 'I',
                         'C' => explode('-', $item[0]->contract->person->ci)[0],
                         'D' => count(explode('-', $item[0]->contract->person->ci)) > 1 ? explode('-', $item[0]->contract->person->ci)[1] : '',
                         'E' => $item[0]->contract->person->nua_cua,
-                        'F' => explode(' ', $item[0]->contract->person->last_name)[0],
-                        'G' => count(explode(' ', $item[0]->contract->person->last_name)) > 1 ? explode(' ', $item[0]->contract->person->last_name)[1] : '',
+                        'F' => $this->format_string(explode(' ', $item[0]->contract->person->last_name)[0]),
+                        'G' => $this->format_string(count(explode(' ', $item[0]->contract->person->last_name)) > 1 ? explode(' ', $item[0]->contract->person->last_name)[1] : ''),
                         'H' => '',
-                        'I' => explode(' ', $item[0]->contract->person->first_name)[0],
-                        'J' => count(explode(' ', $item[0]->contract->person->first_name)) > 1 ? explode(' ', $item[0]->contract->person->first_name)[1] : '',
+                        'I' => $this->format_string(explode(' ', $item[0]->contract->person->first_name)[0]),
+                        'J' => $this->format_string(count(explode(' ', $item[0]->contract->person->first_name)) > 1 ? explode(' ', $item[0]->contract->person->first_name)[1] : ''),
                         'K' => $novelty,
                         'L' => $novelty_date ? $novelty_date : '',
                         'M' => $worked_days,

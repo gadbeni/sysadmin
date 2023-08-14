@@ -174,7 +174,7 @@
                             <small>({{ $programs->count() }})</small>
                         </td>
                         <td style="text-align: right">{{ $afp->count() }}</td>
-                        <td>{{ $key == 1 ? 'Futuro' : 'Previsión' }}</td>
+                        <td>{{ $key == 1 ? 'Futuro' : $key == 2 ? 'Previsión' : 'Gestora' }}</td>
                         <td style="text-align: right">{{ number_format($afp->sum('partial_salary') + $afp->sum('seniority_bonus_amount'), 2, ',', '.') }}</td>
                         <td style="text-align: right">{{ number_format($afp->sum('common_risk') + $afp->sum('solidary_employer') + $afp->sum('housing_employer') + $afp->sum('labor_total'), 2, ',', '.') }}</td>
                         <td>

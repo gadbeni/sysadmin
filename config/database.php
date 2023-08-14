@@ -120,17 +120,18 @@ return [
             'prefix_indexes' => true,
         ],
 
-        'siat' => [
+        'sia' => [
             'driver' => 'sqlsrv',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST_SIAT', 'localhost'),
-            'port' => env('DB_PORT_SIAT', '1433'),
-            'database' => env('DB_DATABASE_SIAT', 'forge'),
-            'username' => env('DB_USERNAME_SIAT', 'forge'),
-            'password' => env('DB_PASSWORD_SIAT', ''),
+            'host' => env('DB_HOST_SIA', 'localhost'),
+            'port' => env('DB_PORT_SIA', '1433'),
+            'database' => env('DB_DATABASE_SIA', 'forge'),
+            'username' => env('DB_USERNAME_SIA', 'forge'),
+            'password' => env('DB_PASSWORD_SIA', ''),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
+            'trust_server_certificate' => true
         ],
 
     ],

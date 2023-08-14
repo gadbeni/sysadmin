@@ -7,22 +7,26 @@
     $code = $contract->code;
 
     // Si es la primera adenda se obtiene la primera registrada y si no se obtienen las últimas 2 en orden descendente
+    $number_addendum = '1ER.';
     if(request('type') == 'first'){
         $addendums = $contract->addendums->where('deleted_at', NULL)->sortBy('id')->slice(0, 1);
     }else{
         $addendums = $contract->addendums->where('deleted_at', NULL)->sortByDesc('id')->slice(0, 2);
+        if($contract->addendums->count() > 1){
+            $number_addendum = '2DO.';
+        }
     }
 
     // Solo en caso de adendas firma el director de finanzas
     $signature = $addendums->first()->signature;
 
-    $finish_contract_date = date('Y-m-d', strtotime($addendums->first()->start.' -1 days'));
+    $finish_contract_date = date('Y-m-d', strtotime($contract->addendums->where('deleted_at', NULL)->sortBy('id')->first()->start.' -1 days'));
 @endphp
 
 @section('qr_code')
     <div id="qr_code" >
         @php
-            $qrcode = QrCode::size(70)->generate("1ER. CONTRATO MODIFICATORIO DE PERSONAL EVENTUAL ".($signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF')." NRO ".$addendums->first()->code." RELACIONADO AL CONTRATO ".($signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF')."/GAD-BENI NRO ".$code);
+            $qrcode = QrCode::size(70)->generate("$number_addendum CONTRATO MODIFICATORIO DE PERSONAL EVENTUAL ".($signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF')." NRO ".$addendums->first()->code." RELACIONADO AL CONTRATO ".($signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF')."/GAD-BENI NRO ".$code);
         @endphp
         {!! $qrcode !!}
     </div>
@@ -36,7 +40,7 @@
     @else
         <div class="content">
             <div class="page-head">
-                <h3>1er. CONTRATO MODIFICATORIO DE PERSONAL EVENTUAL {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }} N&deg; {{ $addendums->first()->code }} RELACIONADO AL CONTRATO GAD-BENI N&deg; {{ $code }} </h3>
+                <h3>{{ $number_addendum }} CONTRATO MODIFICATORIO DE PERSONAL EVENTUAL {{ $signature ? $signature->direccion_administrativa->sigla : 'UJ/SDAF' }} N&deg; {{ $addendums->first()->code }} RELACIONADO AL CONTRATO GAD-BENI N&deg; {{ $code }} </h3>
             </div>
             <p><b>PRIMERA. - (ANTECEDENTES)</b></p>
             <p>

@@ -412,9 +412,17 @@
 
         // Mostrar adenda
         $('.label-addendum').click(function(){
-            let addendums = $(this).data('addendums');
+            let addendums = $(this).data('addendums').sort(function (a, b) {
+                                if (a.id > b.id) {
+                                    return 1;
+                                }
+                                if (a.id < b.id) {
+                                    return -1;
+                                }
+                                return 0;
+                            });
             let contract = $(this).data('contract');
-            $('#label-date-contract').html(`Inicio desde el ${moment(contract.start).format('DD [de] MMMM [de] YYYY')} hasta el ${moment(contract.addendums[0].start).add(-1, 'days').format('DD [de] MMMM [de] YYYY')}.`);
+            $('#label-date-contract').html(`Inicio desde el ${moment(contract.start).format('DD [de] MMMM [de] YYYY')} hasta el ${moment(addendums[0].start).add(-1, 'days').format('DD [de] MMMM [de] YYYY')}.`);
             $('#details-addendum').empty();
             addendums.map(addendum => {
                 let style, label;

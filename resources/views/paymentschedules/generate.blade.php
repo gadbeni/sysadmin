@@ -1,4 +1,4 @@
-<form action="{{ route('paymentschedules.store') }}" method="POST">
+<form class="form-submit" action="{{ route('paymentschedules.store') }}" method="POST">
     @csrf
     <input type="hidden" name="direccion_administrativa_id" value="{{ $direccion_administrativa_id }}">
     <input type="hidden" name="period_id" value="{{ $period->id }}">
@@ -172,8 +172,8 @@
                                         // Total ganado
                                         $total_amout = number_format($partial_salary + $seniority_bonus_amount, 2, '.', '');
 
-                                        // Calcular edad
-                                        $now = \Carbon\Carbon::now();
+                                        // Calcular edad (se calcula la edad que tenía hasta el 15 del mes)
+                                        $now = new \Carbon\Carbon(Str::substr($period->name, 0, 4).'-'.Str::substr($period->name, 4, 2).'-15');
                                         $birthday = new \Carbon\Carbon($item->person->birthday);
                                         $age = $birthday->diffInYears($now);
 
@@ -406,7 +406,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <input type="submit" class="btn btn-primary" value="Sí, guardar">
+                    <input type="submit" class="btn btn-primary btn-submit" value="Sí, guardar">
                 </div>
             </div>
         </div>

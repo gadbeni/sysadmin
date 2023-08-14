@@ -23,7 +23,7 @@
                                 <h3 class="panel-title">Planilla</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $check->planilla_haber_id ?? str_pad($check->paymentschedule_id, 6, "0", STR_PAD_LEFT).' - '.$check->paymentschedule->period->name.' | '.($check->afp ? 'Futuro' : 'Previsión') }}</p>
+                                <p>{{ $check->planilla_haber_id ?? str_pad($check->paymentschedule_id, 6, "0", STR_PAD_LEFT).' - '.$check->paymentschedule->period->name.' | '.($check->afp_details->name) }}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>
@@ -74,7 +74,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="panel-heading" style="border-bottom:0;">
-                                <h3 class="panel-title">Estoado</h3>
+                                <h3 class="panel-title">Estado</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
                                 @php

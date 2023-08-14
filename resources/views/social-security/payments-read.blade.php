@@ -23,7 +23,7 @@
                                 <h3 class="panel-title">Planilla</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $payment->planilla_haber_id ?? str_pad($payment->paymentschedule_id, 6, "0", STR_PAD_LEFT).' - '.$payment->paymentschedule->period->name.' | '.($payment->afp ? 'Futuro' : 'Previsión') }}</p>
+                                <p>{{ $payment->planilla_haber_id ?? str_pad($payment->paymentschedule_id, 6, "0", STR_PAD_LEFT).' - '.$payment->paymentschedule->period->name.' | '.($payment->afp_details->name) }}</p>
                             </div>
                             <hr style="margin:0;">
                         </div>

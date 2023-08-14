@@ -62,7 +62,7 @@ class SocialSecurityController extends Controller
     }
 
     public function checks_show($id){
-        $check = ChecksPayment::with(['user', 'beneficiary.type'])->where('id', $id)->where('deleted_at', NULL)->first();
+        $check = ChecksPayment::with(['user', 'beneficiary.type', 'afp_details'])->where('id', $id)->where('deleted_at', NULL)->first();
         return view('social-security.checks-read', compact('check'));        
     }
 
