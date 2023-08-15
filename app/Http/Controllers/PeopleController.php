@@ -105,10 +105,10 @@ class PeopleController extends Controller
         try {
             $irremovability = PersonRotation::find($id);
             $irremovability->delete();
-            return redirect()->route('voyager.people.show', $people)->with(['message' => 'Rotación eliminada correctamente', 'alert-type' => 'success']);
+            return redirect($_SERVER['HTTP_REFERER'] ?? 'admin/people')->with(['message' => 'Rotación eliminada correctamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             // dd($th);
-            return redirect()->route('voyager.people.show', $people)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+            return redirect($_SERVER['HTTP_REFERER'] ?? 'admin/people')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 

@@ -153,7 +153,7 @@
                                     @endif
                                     {{-- Crear adenda --}}
                                     @if (auth()->user()->hasPermission('add_addendum_contracts') && ($item->status == 'firmado' || $item->status == 'concluido') && count($contracts) == 0 && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5) && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
-                                    <li><a class="btn-addendum" title="Crear adenda" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' href="#">Crear adenda</a></li>
+                                    <li><a class="btn-addendum" title="Crear adenda" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' data-addendums='@json($addendums)' href="#">Crear adenda</a></li>
                                     @endif
                                     {{-- Crear memo/resolución --}}
                                     @if ($item->status == 'firmado' && auth()->user()->hasPermission('finish_contracts'))
@@ -367,11 +367,31 @@
         $('.btn-addendum').click(function(){
             let item = $(this).data('item');
             let date = moment(item.finish, "YYYY-MM-DD").add(1, 'days');
+            let addendums = $(this).data('addendums').sort(function (a, b) {
+                                if (a.id > b.id) {
+                                    return 1;
+                                }
+                                if (a.id < b.id) {
+                                    return -1;
+                                }
+                                return 0;
+                            });
             $('#form-addendum input[name="id"]').val(item.id);
             $('#form-addendum input[name="start"]').val(date.format("YYYY-MM-DD"));
             $('#form-addendum input[name="signature_date"]').val(date.format("YYYY-MM-DD"));
             $('#form-addendum input[name="finish"]').attr('min', date.format("YYYY-MM-DD"));
             $('#label-duration').html('');
+
+            // Calcular la fecha de inicio y fin del contrato principal
+            var start = item.start;
+            var finish = item.finish;
+            if(addendums.length > 0){
+                finish = moment(addendums[0].start).add(-1, 'days').format('YYYY-MM-DD');
+            }
+            $.get("{{ url('admin/get_duration') }}/"+start+"/"+finish, res => {
+                main_contract_duration = (res.duration.months *30) + res.duration.days;
+                $('#label-duration-contract').html(`Contrato principal desde ${moment(start).format('DD [de] MMMM')} hasta el ${moment(finish).format('DD [de] MMMM [de] YYYY')}, con una duración de ${main_contract_duration} días.`);
+            });
 
             // Si es eventual
             if(item.procedure_type_id == 5){

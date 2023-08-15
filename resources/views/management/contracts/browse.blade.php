@@ -314,6 +314,9 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
+                            <div class="col-md-12">
+                                <h4 id="label-duration-contract" class="text-primary"></h4>
+                            </div>
                             <div class="form-group col-md-6">
                                 <label for="start">Inicio</label>
                                 <input type="date" name="start" id="input-start" class="form-control" readonly required>
@@ -385,7 +388,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" class="btn btn-dark" value="Aceptar">
+                        <button type="submit" class="btn btn-dark btn-submit">Aceptar</button>
                     </div>
                 </div>
             </div>
@@ -523,6 +526,7 @@
         var status = '';
         var user_id = '';
         var addendums = '';
+        var main_contract_duration = null;
 
         $(document).ready(() => {
             $('#select-job_id').select2({dropdownParent: $('#transfer-modal')});
@@ -575,7 +579,13 @@
                 let start = $('#input-start').val();
                 let finish = $(this).val();
                 $.get("{{ url('admin/get_duration') }}/"+start+"/"+finish, function(res){
-                    $('#label-duration').html(`<b class="text-primary" style="font-weight: bold !important">${(res.duration.months *30) + res.duration.days} días de duración</b>`);
+                    let duration = (res.duration.months *30) + res.duration.days;
+                    $('#label-duration').html(`<b class="text-${duration <= main_contract_duration ? 'success' : 'danger'}" style="font-weight: bold !important">${duration} días de duración</b>`);
+                    if(duration <= main_contract_duration){
+                        $('#form-addendum .btn-submit').removeAttr('disabled');
+                    }else{
+                        $('#form-addendum .btn-submit').attr('disabled', 'disabled');
+                    }
                 });
             });
 

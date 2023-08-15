@@ -6128,8 +6128,8 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{}',
-                'order' => 13,
+                'details' => '{"display":{"width":6}}',
+                'order' => 15,
             ),
             382 => 
             array (
@@ -6240,8 +6240,8 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
-                'order' => 11,
+                'details' => '{"validation":{"rule":"required|max:191"}}',
+                'order' => 12,
             ),
             389 => 
             array (
@@ -6257,7 +6257,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{}',
-                'order' => 12,
+                'order' => 13,
             ),
             390 => 
             array (
@@ -6273,7 +6273,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 14,
+                'order' => 16,
             ),
             391 => 
             array (
@@ -6289,7 +6289,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 15,
+                'order' => 17,
             ),
             392 => 
             array (
@@ -6305,7 +6305,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 16,
+                'order' => 18,
             ),
             393 => 
             array (
@@ -6354,6 +6354,38 @@ class DataRowsTableSeeder extends Seeder
                 'delete' => 1,
                 'details' => '{"model":"App\\\\Models\\\\ProcedureType","table":"procedure_types","type":"belongsTo","column":"procedure_type_id","key":"id","label":"name","pivot_table":"addendums","pivot":"0","taggable":"0"}',
                 'order' => 7,
+            ),
+            396 => 
+            array (
+                'id' => 464,
+                'data_type_id' => 47,
+                'field' => 'bonus',
+                'type' => 'number',
+                'display_name' => 'Bono',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
+                'order' => 11,
+            ),
+            397 => 
+            array (
+                'id' => 465,
+                'data_type_id' => 47,
+                'field' => 'status',
+                'type' => 'checkbox',
+                'display_name' => 'Estado',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"on":"Avtivo","off":"Inactivo","checked":true,"display":{"width":6}}',
+                'order' => 14,
             ),
         ));
         

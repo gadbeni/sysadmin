@@ -27,6 +27,15 @@
             $netx_status = '';
             break;
     }
+    $contract_finish = $contract->finish;
+    $contract_duration_days = 0;
+    if($contract->addendums->count()){
+        $contract_finish = date('Y-m-d', strtotime($contract->addendums[0]->start.' -1 days'));
+    }
+    if ($contract_finish) {
+        $contract_duration = contract_duration_calculate($contract->start, $contract_finish);
+        $contract_duration_days = ($contract_duration->months * 30) + $contract_duration->days;
+    }
 @endphp
 
 @section('page_header')
@@ -229,7 +238,12 @@
                                 <h3 class="panel-title">Conclusión</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
-                                <p>{{ $contract->finish ? date('d', strtotime($contract->finish)).' de '.$months[intval(date('m', strtotime($contract->finish)))].' de '.date('Y', strtotime($contract->finish)) : 'No definido' }}</p>
+                                <p>
+                                    {{ $contract_finish ? date('d', strtotime($contract_finish)).' de '.$months[intval(date('m', strtotime($contract_finish)))].' de '.date('Y', strtotime($contract_finish)) : 'No definido' }}
+                                    @if ($contract_duration_days)
+                                        <b>({{ $contract_duration_days }} días)</b>
+                                    @endif
+                                </p>
                             </div>
                             <hr style="margin:0;">
                         </div>
@@ -641,7 +655,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" class="btn btn-dark" value="Aceptar">
+                        <button type="submit" class="btn btn-dark btn-submit">Aceptar</button>
                     </div>
                 </div>
             </div>
@@ -682,6 +696,7 @@
 @section('javascript')
     <script src="{{ url('js/main.js') }}"></script>
     <script>
+        var main_contract_duration = "{{ $contract_duration_days }}";
         $(document).ready(function () {
             moment.locale('es');
             $('#select-applicant_id').select2({dropdownParent: $('#update-addendum-modal')});
@@ -729,6 +744,14 @@
                 }else{
                     $('#alert-weekend').fadeOut();
                 }
+
+                getDuration(item.start, item.finish)
+            });
+
+            $('#input-finish').change(function(){
+                let start = $('#input-start').val();
+                let finish = $(this).val();
+                getDuration(start, finish);
             });
 
             $('#update-addendum-form input[name="signature_date"]').change(function(){
@@ -745,5 +768,17 @@
                 $('#form-delete-addendum input[name="id"]').val(id);
             });
         });
+
+        function getDuration(start, finish){
+            $.get("{{ url('admin/get_duration') }}/"+start+"/"+finish, function(res){
+                let duration = (res.duration.months *30) + res.duration.days;
+                    $('#label-duration').html(`<b class="text-${duration <= main_contract_duration ? 'success' : 'danger'}" style="font-weight: bold !important">${duration} días de duración</b>`);
+                    if(duration <= main_contract_duration){
+                        $('#update-addendum-form .btn-submit').removeAttr('disabled');
+                    }else{
+                        $('#update-addendum-form .btn-submit').attr('disabled', 'disabled');
+                    }
+            });
+        }
     </script>
 @stop
