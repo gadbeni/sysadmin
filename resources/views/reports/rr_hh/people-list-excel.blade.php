@@ -13,6 +13,7 @@
             <th><b>AFP</b></th>
             <th><b>NUA/CUA</b></th>
             <th><b>Caja de salud</b></th>
+            <th><b>Dependencia</b></th>
             <th><b>Registrado</b></th>
         </tr>
     </thead>
@@ -40,6 +41,11 @@
                 <td>{{ $item->afp_type->name }}</td>
                 <td>{{ $item->nua_cua }}</td>
                 <td>{{ $item->cc == 1 ? 'Caja Cordes' : 'Caja Petrolera' }}</td>
+                <td>
+                    @if ($item->contracts->count())
+                        {{ $item->contracts[0]->direccion_administrativa->nombre }}
+                    @endif
+                </td>
                 <td>
                     {!! $item->user ? $item->user->name.'<br>' : '' !!}
                     <small>{{ date('d/m/Y H:i', strtotime($item->created_at)) }}</small>

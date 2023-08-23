@@ -58,19 +58,22 @@ class ReportsController extends Controller
         $afp_status = $request->afp_status;
         $retired = $request->retired;
         $gender = $request->gender;
-        $people = Person::whereRaw($afp_id ? "afp = $afp_id" : 1)
-                            ->whereRaw($retired != 'todos' ? "retired = $retired" : 1)
-                            ->whereRaw($afp_status != 'todos' ? "afp_status = $afp_status" : 1)
-                            ->whereRaw($gender != 'todos' ? "gender = '$gender'" : 1)
-                            ->where(function($query) use ($request){
-                                if($request->contract_active){
-                                    $query->whereHas('contracts', function($query) use ($request){
-                                        $query->whereRaw($request->contract_active == 1 ? "status = 'firmado'" : "(status = 'elaborado' or status = 'enviado')")
-                                            ->whereRaw($request->procedure_type_id ? "procedure_type_id = ".$request->procedure_type_id : 1);
-                                    });
-                                }
-                            })
-                            ->where('deleted_at', NULL)->get();
+        $people = Person::with(['contracts.direccion_administrativa', 'contracts' => function($q) use ($request){
+                            $q->whereRaw($request->contract_active == 1 ? "status = 'firmado'" : "(status = 'elaborado' or status = 'enviado')");
+                        }])
+                        ->whereRaw($afp_id ? "afp = $afp_id" : 1)
+                        ->whereRaw($retired != 'todos' ? "retired = $retired" : 1)
+                        ->whereRaw($afp_status != 'todos' ? "afp_status = $afp_status" : 1)
+                        ->whereRaw($gender != 'todos' ? "gender = '$gender'" : 1)
+                        ->where(function($query) use ($request){
+                            if($request->contract_active){
+                                $query->whereHas('contracts', function($query) use ($request){
+                                    $query->whereRaw($request->contract_active == 1 ? "status = 'firmado'" : "(status = 'elaborado' or status = 'enviado')")
+                                        ->whereRaw($request->procedure_type_id ? "procedure_type_id = ".$request->procedure_type_id : 1);
+                                });
+                            }
+                        })
+                        ->where('deleted_at', NULL)->get();
         if($request->type == 'excel'){
             return Excel::download(new PeopleExport($people), 'personas.xlsx');
         }elseif($request->type == 'print'){

@@ -25,6 +25,7 @@
                             <th>AFP</th>
                             <th>NUA/CUA</th>
                             <th>Caja de salud</th>
+                            <th>Dependencia</th>
                             <th>Registrado</th>
                         </tr>
                     </thead>
@@ -57,6 +58,11 @@
                                 <td>{{ $item->nua_cua }}</td>
                                 <td>{{ $item->cc == 1 ? 'Caja Cordes' : 'Caja Petrolera' }}</td>
                                 <td>
+                                    @if ($item->contracts->count())
+                                        {{ $item->contracts[0]->direccion_administrativa->nombre }}
+                                    @endif
+                                </td>
+                                <td>
                                     {!! $item->user ? $item->user->name.'<br>' : '' !!}
                                     <small>{{ date('d/m/Y H:i', strtotime($item->created_at)) }}</small>
                                 </td>
@@ -66,7 +72,7 @@
                         @endphp
                         @empty
                             <tr class="odd">
-                                <td valign="top" colspan="14" class="dataTables_empty">No hay datos disponibles en la tabla</td>
+                                <td valign="top" colspan="15" class="dataTables_empty">No hay datos disponibles en la tabla</td>
                             </tr>
                         @endforelse
                     </tbody>
