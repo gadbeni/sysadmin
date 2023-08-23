@@ -48,13 +48,20 @@
                                     <label for="unidad_administrativa_id">Unidad administrativa</label>
                                     <select name="unidad_administrativa_id" id="select-unidad_administrativa_id" class="form-control select2"></select>
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-6" id="div-program_id">
                                     <label for="program_id">Programa</label>
                                     <select name="program_id" id="select-program_id" class="form-control select2" required></select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="cargo_id">Cargo</label>
-                                    <select name="cargo_id" id="select-cargo_id" class="form-control select2" required></select>
+                                    <div id="div-select-cargo_id">
+                                        <select name="cargo_id" id="select-cargo_id" class="form-control select2"></select>
+                                    </div>
+                                    <input type="text" name="job_description" id="input-job_description" class="form-control" value="{{ isset($contract) ? $contract->job_description : '' }}" style="display: none">
+                                </div>
+                                <div class="form-group col-md-6" style="display: none" id="div-salary">
+                                    <label for="salary">Sueldo</label>
+                                    <input type="number" name="salary" id="input-salary" class="form-control" value="{{ isset($contract) ? $contract->salary : '' }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="start">Inicio de contrato</label>
@@ -203,11 +210,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="workers_memo">Responsable(s) de evaluación</label>
-                                    <select name="workers_memo[]" id="select-workers_memo" class="form-control" multiple>
-                                        @foreach ($contracts->sortBy('person.last_name') as $item)
-                                        <option value="{{ $item->id }}">{{ $item->person->first_name }} {{ $item->person->last_name }} - {{ $item->cargo_id ? $item->cargo->Descripcion : $item->job->name }}</option>                                                
-                                        @endforeach
-                                    </select>
+                                    <select name="workers_memo[]" id="select-workers_memo" class="form-control" multiple></select>
                                 </div>
                             </div>
                         </div>
@@ -385,6 +388,7 @@
 @endsection
 
 @section('javascript')
+    <script src="{{ url('js/main.js') }}"></script>
     <script>
         var direccion_administrativas = @json($direccion_administrativas);
         var unidad_administrativas = @json($unidad_administrativas);
@@ -393,6 +397,7 @@
         var jobs = @json($jobs);
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
+            customSelect('#select-workers_memo', '{{ url("admin/contracts/ajax/search") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name);
             $('.div-hidden').fadeOut('fast');
             var additionalConfig = {
                 selector: '.richTextBox',
@@ -400,7 +405,7 @@
             $.extend(additionalConfig, {})
             tinymce.init(window.voyagerTinyMCE.getConfig(additionalConfig));
             
-            $('#select-workers_memo').select2();
+            // $('#select-workers_memo').select2();
             $('#select-procedure_type_id').select2();
 
             $('#select-direccion_administrativa_id').change(function(){
@@ -427,7 +432,6 @@
                         }else{
                             $('#select-signature_alt_id').append(`<option value="${item.id}">${item.designation} ${item.name} - ${item.job}</option>`);
                         }
-
                     });
                 }
 
@@ -443,17 +447,24 @@
                 $('.div-hidden').fadeOut('fast', () => {
                     $(`.div-${id}`).fadeIn('fast');
                 });
-
                 $('#select-cargo_id').html(`<option value="">Seleccione un cargo</option>`);
                 if(id == 1){
                     $('#select-direccion_administrativa_id').empty();
                     $('#select-unidad_administrativa_id').empty();
                     $('#select-program_id').empty();
-                    $('#select-direccion_administrativa_id').attr('disabled', true);
-                    $('#select-direccion_administrativa_id').attr('required', false);
-                    $('#select-unidad_administrativa_id').attr('disabled', true);
-                    $('#select-unidad_administrativa_id').attr('required', false);
-                    $('#input-finish').attr('required', false);
+                    $('#select-direccion_administrativa_id').prop('disabled', true);
+                    $('#select-direccion_administrativa_id').prop('required', false);
+                    $('#select-unidad_administrativa_id').prop('disabled', true);
+                    $('#select-unidad_administrativa_id').prop('required', false);
+                    $('#input-finish').prop('required', false);
+                    $('#div-program_id').css('display', 'block');
+                    $('#select-program_id').prop('required', true);
+                    $('#div-select-cargo_id').css('display', 'block');
+                    $('#select-cargo_id').prop('required', true);
+                    $('#input-job_description').css('display', 'none');
+                    $('#input-job_description').removeAttr('required');
+                    $('#div-salary').css('display', 'none');
+                    $('#input-salary').removeAttr('required');
                     
                     programs.map(item => {
                         if($('#select-procedure_type_id option:selected').val() == item.procedure_type_id){
@@ -465,11 +476,11 @@
                         $('#select-cargo_id').append(`<option value="${item.id}" data-signatures='${JSON.stringify(item.direccion_administrativa.signatures)}'>Item ${item.item} - ${item.name}</option>`);
                     });
                 }else{
-                    $('#select-direccion_administrativa_id').attr('disabled', false);
-                    $('#select-direccion_administrativa_id').attr('required', true);
-                    $('#select-unidad_administrativa_id').attr('disabled', false);
-                    $('#select-unidad_administrativa_id').attr('required', true);
-                    $('#input-finish').attr('required', true);
+                    $('#select-direccion_administrativa_id').prop('disabled', false);
+                    $('#select-direccion_administrativa_id').prop('required', true);
+                    $('#select-unidad_administrativa_id').prop('disabled', false);
+                    $('#select-unidad_administrativa_id').prop('required', true);
+                    $('#input-finish').prop('required', true);
                     $('#select-direccion_administrativa_id').html(`<option value="">Selecciona la dirección administrativa</option>`);
                     direccion_administrativas.map(item => {
                         $('#select-direccion_administrativa_id').append(`<option value="${item.id}" data-signatures='${JSON.stringify(item.signatures)}'>${item.nombre}</option>`);
@@ -497,6 +508,27 @@
                             $('#select-cargo_id').append(`<option value="${item.ID}">${item.Descripcion} | Nivel ${nivel.NumNivel} | Bs. ${nivel.Sueldo}</option>`);
                         }
                     });
+
+                    // Si es planilla TGN
+                    if(id == 6){
+                        $('#div-program_id').css('display', 'none');
+                        $('#select-program_id').removeAttr('required');
+                        $('#select-cargo_id').removeAttr('required');
+                        $('#div-select-cargo_id').css('display', 'none');
+                        $('#input-job_description').css('display', 'block');
+                        $('#input-job_description').prop('required', true);
+                        $('#div-salary').css('display', 'block');
+                        $('#input-salary').prop('required', true);
+                    }else{
+                        $('#div-program_id').css('display', 'block');
+                        $('#select-program_id').prop('required', true);
+                        $('#select-cargo_id').prop('required', true);
+                        $('#div-select-cargo_id').css('display', 'block');
+                        $('#input-job_description').css('display', 'none');
+                        $('#input-job_description').removeAttr('required');
+                        $('#div-salary').css('display', 'none');
+                        $('#input-salary').removeAttr('required');
+                    }
                 }
             });
 

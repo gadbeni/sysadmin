@@ -419,7 +419,7 @@
                                                         <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
                                                     </a>
                                                     @if ((auth()->user()->hasPermission('edit_addendum_contracts') /*&& $item->status == 'elaborado'*/) || Auth::user()->role_id == 1)
-                                                    <a href="#" data-toggle="modal" data-target="#update-addendum-modal" data-item='@json($item)' title="Editar" class="btn btn-sm btn-primary edit btn-edit-addendum">
+                                                    <a href="#" data-toggle="modal" data-target="#update-addendum-modal" data-contract='@json($contract)' data-item='@json($item)' title="Editar" class="btn btn-sm btn-primary edit btn-edit-addendum">
                                                         <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
                                                     </a>
                                                     @endif
@@ -474,7 +474,7 @@
                                         @endphp
                                         <tr>
                                             <td>{{ $cont }}</td>
-                                            <td>{{ $item->id }}</td>
+                                            <td>{{ $rotation->id }}</td>
                                             <td>{{ date('d/m/Y', strtotime($rotation->date)) }}</td>
                                             <td>{{ $rotation->destiny->first_name }} {{ $rotation->destiny->last_name }}</td>
                                             <td>{{ $rotation->destiny_dependency }}</td>
@@ -586,12 +586,7 @@
                             </div>
                             <div class="form-group col-md-12 div-eventual-consultor_sedeges">
                                 <label for="applicant_id">Solicitante</label>
-                                <select name="applicant_id" id="select-applicant_id" class="form-control">
-                                    <option value="">--Seleccione una opción--</option>
-                                    @foreach (App\Models\Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get() as $item)
-                                    <option value="{{ $item->id }}">{{ $item->person->first_name }} {{ $item->person->last_name }} - {{ $item->cargo_id ? $item->cargo->Descripcion : $item->job->name }}</option>                                                
-                                    @endforeach
-                                </select>
+                                <select name="applicant_id" id="select-applicant_id" class="form-control"></select>
                             </div>
 
                             {{-- Eventual central --}}
@@ -699,12 +694,14 @@
         var main_contract_duration = "{{ $contract_duration_days }}";
         $(document).ready(function () {
             moment.locale('es');
-            $('#select-applicant_id').select2({dropdownParent: $('#update-addendum-modal')});
             $('#select-signature_id').select2({dropdownParent: $('#update-addendum-modal')});
             $('#select-program_id').select2({dropdownParent: $('#update-addendum-modal')});
 
+            customSelect('#select-applicant_id', '{{ url("admin/contracts/ajax/search") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#update-addendum-modal'));
+
             $('.btn-edit-addendum').click(function(){
                 let item = $(this).data('item');
+                let contract = $(this).data('contract');
                 $('#update-addendum-form input[name="id"]').val(item.id);
                 $('#update-addendum-form input[name="start"]').val(item.start);
                 $('#update-addendum-form input[name="finish"]').val(item.finish);
@@ -718,21 +715,22 @@
                 }
 
                 // Si es eventual
-                if(item.procedure_type_id == 5){
+                if(contract.procedure_type_id == 5){
                     $('.div-eventual').fadeIn();
                 }else{
                     $('.div-eventual').fadeOut();
                 }
 
                 // Si es eventual o es consultor del SEDEGES
-                if(item.procedure_type_id == 5 || (item.procedure_type_id == 2 && item.direccion_administrativa_id == 5)){
+                if(contract.procedure_type_id == 5 || (contract.procedure_type_id == 2 && contract.direccion_administrativa_id == 5)){
+                    console.log(1)
                     $('.div-eventual-consultor_sedeges').fadeIn();
                 }else{
                     $('.div-eventual-consultor_sedeges').fadeOut();
                 }
 
                 // Si es consultor del SEDEGES
-                if(item.procedure_type_id == 2 && item.direccion_administrativa_id == 5){
+                if(contract.procedure_type_id == 2 && contract.direccion_administrativa_id == 5){
                     $('.div-consultor_sedeges').fadeIn();
                 }else{
                     $('.div-consultor_sedeges').fadeOut();

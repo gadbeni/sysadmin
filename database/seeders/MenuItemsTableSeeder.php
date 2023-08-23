@@ -1603,22 +1603,6 @@ class MenuItemsTableSeeder extends Seeder
                 'route' => 'voyager.schedules.index',
                 'parameters' => 'null',
             ),
-            99 => 
-            array (
-                'id' => 107,
-                'menu_id' => 1,
-                'title' => 'Contratos TGN',
-                'url' => '',
-                'target' => '_self',
-                'icon_class' => 'voyager-window-list',
-                'color' => NULL,
-                'parent_id' => 45,
-                'order' => 9,
-                'created_at' => '2023-08-14 10:15:41',
-                'updated_at' => '2023-08-14 10:16:16',
-                'route' => 'voyager.contracts-externals.index',
-                'parameters' => NULL,
-            ),
         ));
         
         

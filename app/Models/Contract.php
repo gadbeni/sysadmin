@@ -15,6 +15,8 @@ class Contract extends Model
         'current_program_id',
         'cargo_id',
         'job_id',
+        'job_description',
+        'salary',
         'direccion_administrativa_id',
         'unidad_administrativa_id',
         'procedure_type_id',

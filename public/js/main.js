@@ -104,3 +104,62 @@ function checkId(){
         $('.btn-multiple').fadeOut();
     }
 }
+
+function customSelect(select, url, templateResult, templateSelection, dropdownParent){
+    $(select).select2({
+        dropdownParent: dropdownParent ? dropdownParent : null,
+        maximumSelectionLength: 20,
+        ajax: { 
+            allowClear: true,
+            url,
+            type: "get",
+            dataType: 'json',
+            delay: 500,
+            data:  (params) =>  {
+                var query = {
+                    search: params.term
+                }
+                return query;
+            },
+            processResults: function (response) {
+                return {
+                    results: response
+                };
+            }
+        },
+        minimumInputLength: 4,
+        templateResult,
+        templateSelection
+    });
+}
+
+function formatResultContracts(data) {
+    if (data.loading) {
+        return 'Buscando...';
+    }
+    let image = "./images/default.jpg";
+    if(data.person.image){
+        image = "./storage/"+data.person.image.replace('.', '-cropped.');
+    }
+    var $container = $(
+        
+        `<div class="option-select2-custom">
+            <div style="display:flex; flex-direction: row">
+                <div>
+                    <img src="${image}" style="width: 60px; height: 60px; border-radius: 30px; margin-right: 10px" />
+                </div>
+                <div>
+                    <h5>
+                        ${data.person.first_name} ${data.person.last_name} <br>
+                        <p style="font-size: 13px; margin-top: 5px">
+                            ${data.person.ci}<br>
+                        </p>
+                    </h5>
+                </div>
+            </div>
+            
+        </div>`
+    );
+
+    return $container;
+}

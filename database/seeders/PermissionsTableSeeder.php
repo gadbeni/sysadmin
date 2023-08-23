@@ -90,7 +90,6 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('assets_categories');
         Permission::generateFor('assets');
         Permission::generateFor('schedules');
-        Permission::generateFor('contracts_externals');
 
         // people
         $keys = [

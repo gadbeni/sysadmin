@@ -239,6 +239,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('contracts/{id}/file/store', [ContractsController::class, 'file_store'])->name('contracts.file.store');
     Route::delete('contracts/file/{id}/destroy', [ContractsController::class, 'file_destroy'])->name('contracts.file.destroy');
     Route::delete('contracts/finished/{id}/destroy', [ContractsController::class, 'finished_destroy'])->name('contracts.finished.destroy');
+    Route::get('contracts/ajax/search', [ContractsController::class, 'search']);
     
     // Bonos antigüedad
     Route::get('seniority-bonus-people', [SeniorityBonusPeopleController::class, 'index'])->name('voyager.seniority-bonus-people.index');

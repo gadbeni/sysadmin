@@ -152,20 +152,17 @@ class ContractsController extends Controller
                                         $q->where('status', 1)->where('deleted_at', NULL);
                                     }])->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1)->get();
         $unidad_administrativas = Unidad::get();
-        // $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
-        $contracts = Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get();
         $programs = Program::where('year', date('Y'))->where('deleted_at', NULL)->get();
         $cargos = Cargo::with(['nivel' => function($q){
             $q->where('Estado', 1);
         }])->where('estado', 1)->get();
-        // dd($cargos);
         $jobs = Job::with(['direccion_administrativa.signatures' => function($q){
                         $q->where('status', 1)->where('deleted_at', NULL);
                     }])
                     ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)")
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->where('status', 1)->where('deleted_at', NULL)->get();
-        return view('management.contracts.edit-add', compact('procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'contracts', 'programs', 'cargos', 'jobs'));
+        return view('management.contracts.edit-add', compact('procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'programs', 'cargos', 'jobs'));
     }
 
     /**
@@ -223,6 +220,8 @@ class ContractsController extends Controller
                 'cargo_id' => $request->procedure_type_id != 1 ? $request->cargo_id : NULL,
                 // Si es un contrato de permanente
                 'job_id' => $request->procedure_type_id == 1 ? $request->cargo_id : NULL,
+                'job_description' => $request->job_description,
+                'salary' => $request->salary,
                 'direccion_administrativa_id' => $direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'procedure_type_id' => $request->procedure_type_id,
@@ -252,7 +251,7 @@ class ContractsController extends Controller
                 'name_job_alt' => $request->name_job_alt,
                 'work_location' => $request->work_location,
                 'documents_contract' => $request->documents_contract,
-                'status' => 'elaborado',
+                'status' => $request->procedure_type_id == 6 ? 'firmado' : 'elaborado',
             ]);
 
             return redirect()->route('contracts.index')->with(['message' => 'Contrato guardado exitosamente', 'alert-type' => 'success']);
@@ -300,8 +299,6 @@ class ContractsController extends Controller
                                         $q->where('status', 1)->where('deleted_at', NULL);
                                     }])->whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1)->get();
         $unidad_administrativas = Unidad::get();
-        // $funcionarios = DB::connection('mysqlgobe')->table('contribuyente')->where('Estado', 1)->get();
-        $contracts = Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get();
         $programs = Program::where('year', date('Y'))->where('deleted_at', NULL)->get();
         $cargos = Cargo::with(['nivel' => function($q){
                         $q->where('Estado', 1);
@@ -313,7 +310,7 @@ class ContractsController extends Controller
                     ->whereRaw("id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null) or id = ".($contract->job_id ?? 0))
                     ->whereRaw(Auth::user()->direccion_administrativa_id ? 'direccion_administrativa_id = '.Auth::user()->direccion_administrativa_id : 1)
                     ->where('deleted_at', NULL)->get();
-        return view('management.contracts.edit-add', compact('contract', 'procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'contracts', 'programs', 'cargos', 'jobs'));
+        return view('management.contracts.edit-add', compact('contract', 'procedure_type', 'people', 'direccion_administrativas', 'unidad_administrativas', 'programs', 'cargos', 'jobs'));
     }
 
     /**
@@ -352,6 +349,8 @@ class ContractsController extends Controller
                 'cargo_id' => $request->procedure_type_id != 1 ? $request->cargo_id : NULL,
                 // Si es un contrato de permanente
                 'job_id' => $request->procedure_type_id == 1 ? $request->cargo_id : NULL,
+                'job_description' => $request->job_description,
+                'salary' => $request->salary,
                 'direccion_administrativa_id' => $direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'signature_id' => $request->signature_id,
@@ -383,7 +382,7 @@ class ContractsController extends Controller
 
             return redirect()->route('contracts.index')->with(['message' => 'Contrato editado exitosamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
             return redirect()->route('contracts.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
@@ -833,6 +832,20 @@ class ContractsController extends Controller
             // dd($th);
             return response()->json(['error' => 1, 'message' => 'Ocurrió un error.']);
         }
+    }
+
+    public function search(){
+        $search = request('search');
+        $contracts = Contract::with('person')->where('status', 'firmado')
+                        ->where(function($query) use ($search){
+                            if($search){
+                                $query->OrwhereHas('person', function($query) use($search){
+                                    $query->whereRaw("(first_name like '%$search%' or last_name like '%$search%' or ci like '%$search%' or phone like '%$search%' or CONCAT(first_name, ' ', last_name) like '%$search%')");
+                                });
+                            }
+                        })
+                        ->where('deleted_at', NULL)->get();
+        return response()->json($contracts);
     }
 
     // **** Métodos funcionales ****

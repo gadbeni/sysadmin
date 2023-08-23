@@ -42,7 +42,11 @@
                                     @elseif ($item->job)
                                         {{ $item->job->name }}
                                     @else
-                                        No definido
+                                        @if ($item->job_description)
+                                            {{ $item->job_description }}
+                                        @else
+                                            No definido
+                                        @endif
                                     @endif
                                 </li>
                                 <li>
@@ -52,6 +56,8 @@
                                             $salary = $item->cargo->nivel->where('IdPlanilla', $item->cargo->idPlanilla)->first()->Sueldo;
                                         }elseif ($item->job){
                                             $salary = $item->job->salary;
+                                        }elseif ($item->salary){
+                                            $salary = $item->salary;
                                         }
                                     @endphp
                                     <b>Sueldo: </b> <small>Bs.</small> {{ number_format($salary, 2, ',', '.') }}
@@ -126,51 +132,55 @@
                         </td>
                         <td class="no-sort no-click bread-actions text-right">
 
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
-                                    Más <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu" style="left: -90px !important">
-                                    {{-- Definir siguiente estado --}}
-                                    @if (auth()->user()->hasPermission('upgrade_contracts') && $item->status != 'concluido' && $item->status != 'firmado' && ($item->cargo_id || $item->job_id))
-                                    <li><a href="#" title="Promover a {{ $netx_status }}" data-toggle="modal" data-target="#status-modal" onclick="changeStatus({{ $item->id }}, '{{ $netx_status }}')">Promover</a></li>
-                                    @endif
-                                    {{-- Si está firmado se puede rotar --}}
-                                    @if ($item->status == 'firmado' && auth()->user()->hasPermission('add_rotation_people'))
-                                    <li><a href="#" class="btn-rotation" data-url="{{ route('people.rotation.store', ['id' => $item->person_id]) }}" data-toggle="modal" data-target="#modal-rotation" >Rotar</a></li>
-                                    @endif
-                                    {{-- Si está firmado se puede ratificar --}}
-                                    @if ($item->status == 'firmado' && auth()->user()->hasPermission('ratificate_contracts'))
-                                    <li><a href="#" title="Ratificar" data-toggle="modal" data-target="#ratificate-modal" onclick="ratificateContract({{ $item->id }})">Ratificar</a></li>
-                                    @endif
-                                    {{-- si está firmado se puede transferir --}}
-                                    @if ($item->status == 'firmado' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('transfer_contracts'))
-                                    <li><a href="#" class="btn-transfer" data-toggle="modal" data-target="#transfer-modal" data-id="{{ $item->id }}" title="Crear transferencia" >Transferir</a></li>
-                                    @endif
-                                    {{-- si está firmado se puede promocionar --}}
-                                    @if ($item->status == 'firmado' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('promotion_contracts'))
-                                    <li><a href="#" class="btn-promotion" data-toggle="modal" data-target="#promotion-modal" data-id="{{ $item->id }}" title="Crear promoción" >Promoción</a></li>
-                                    @endif
-                                    {{-- Crear adenda --}}
-                                    @if (auth()->user()->hasPermission('add_addendum_contracts') && ($item->status == 'firmado' || $item->status == 'concluido') && count($contracts) == 0 && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5) && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
-                                    <li><a class="btn-addendum" title="Crear adenda" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' data-addendums='@json($addendums)' href="#">Crear adenda</a></li>
-                                    @endif
-                                    {{-- Crear memo/resolución --}}
-                                    @if ($item->status == 'firmado' && auth()->user()->hasPermission('finish_contracts'))
-                                    <li><a href="#" title="{{ $item->procedure_type_id == 1 ? 'Memo de agradecimiento' : 'Resolución' }}" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}', {{ $item->procedure_type_id }})">{{ $item->procedure_type_id == 1 ? 'Agradecimiento' : 'Resolución' }}</a></li>
-                                    @endif
-                                    {{-- Restaurar contrato --}}
-                                    @if (auth()->user()->hasPermission('restore_contracts') && $item->finished)
-                                    <li><a href="#" title="Anular resolución de contrato" onclick="setFormAction('{{ route('contracts.finished.destroy', ['id' => $item->id]) }}', '#restore-form')" data-toggle="modal" data-target="#restore-modal">Anular resolución <br> ({{ $item->finished->previus_date ? date('d/m/Y', strtotime($item->finished->previus_date)) : 'Indefinido' }})</a></li>
-                                    @endif
-                                    {{-- Firmar adenda --}}
-                                    @if (count($addendums) > 0)
-                                        @if ($addendums->first()->status == 'elaborado' && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5))
-                                        <li><a class="btn-addendum-status" title="Firmar adenda" data-toggle="modal" data-target="#addendum-status-modal" data-id="{{ $addendums->first()->id }}" href="#">Firmar adenda</a></li>
+                            {{-- No mostar la opción en caso de que sea un contrato TGN --}}
+                            @if ($item->procedure_type_id != 6)
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                                        Más <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" style="left: -90px !important">
+                                        {{-- Definir siguiente estado --}}
+                                        @if (auth()->user()->hasPermission('upgrade_contracts') && $item->status != 'concluido' && $item->status != 'firmado' && ($item->cargo_id || $item->job_id))
+                                        <li><a href="#" title="Promover a {{ $netx_status }}" data-toggle="modal" data-target="#status-modal" onclick="changeStatus({{ $item->id }}, '{{ $netx_status }}')">Promover</a></li>
                                         @endif
-                                    @endif
-                                </ul>
-                            </div>
+                                        {{-- Si está firmado se puede rotar --}}
+                                        @if ($item->status == 'firmado' && auth()->user()->hasPermission('add_rotation_people'))
+                                        <li><a href="#" class="btn-rotation" data-url="{{ route('people.rotation.store', ['id' => $item->person_id]) }}" data-toggle="modal" data-target="#modal-rotation" >Rotar</a></li>
+                                        @endif
+                                        {{-- Si está firmado se puede ratificar --}}
+                                        @if ($item->status == 'firmado' && auth()->user()->hasPermission('ratificate_contracts'))
+                                        <li><a href="#" title="Ratificar" data-toggle="modal" data-target="#ratificate-modal" onclick="ratificateContract({{ $item->id }})">Ratificar</a></li>
+                                        @endif
+                                        {{-- si está firmado se puede transferir --}}
+                                        @if ($item->status == 'firmado' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('transfer_contracts'))
+                                        <li><a href="#" class="btn-transfer" data-toggle="modal" data-target="#transfer-modal" data-id="{{ $item->id }}" title="Crear transferencia" >Transferir</a></li>
+                                        @endif
+                                        {{-- si está firmado se puede promocionar --}}
+                                        @if ($item->status == 'firmado' && $item->procedure_type_id == 1 && auth()->user()->hasPermission('promotion_contracts'))
+                                        <li><a href="#" class="btn-promotion" data-toggle="modal" data-target="#promotion-modal" data-id="{{ $item->id }}" title="Crear promoción" >Promoción</a></li>
+                                        @endif
+                                        {{-- Crear adenda --}}
+                                        @if (auth()->user()->hasPermission('add_addendum_contracts') && ($item->status == 'firmado' || $item->status == 'concluido') && count($contracts) == 0 && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5) && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
+                                        <li><a class="btn-addendum" title="Crear adenda" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' data-addendums='@json($addendums)' href="#">Crear adenda</a></li>
+                                        @endif
+                                        {{-- Crear memo/resolución --}}
+                                        @if ($item->status == 'firmado' && auth()->user()->hasPermission('finish_contracts'))
+                                        <li><a href="#" title="{{ $item->procedure_type_id == 1 ? 'Memo de agradecimiento' : 'Resolución' }}" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}', {{ $item->procedure_type_id }})">{{ $item->procedure_type_id == 1 ? 'Agradecimiento' : 'Resolución' }}</a></li>
+                                        @endif
+                                        {{-- Restaurar contrato --}}
+                                        @if (auth()->user()->hasPermission('restore_contracts') && $item->finished)
+                                        <li><a href="#" title="Anular resolución de contrato" onclick="setFormAction('{{ route('contracts.finished.destroy', ['id' => $item->id]) }}', '#restore-form')" data-toggle="modal" data-target="#restore-modal">Anular resolución <br> ({{ $item->finished->previus_date ? date('d/m/Y', strtotime($item->finished->previus_date)) : 'Indefinido' }})</a></li>
+                                        @endif
+                                        {{-- Firmar adenda --}}
+                                        @if (count($addendums) > 0)
+                                            @if ($addendums->first()->status == 'elaborado' && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5))
+                                            <li><a class="btn-addendum-status" title="Firmar adenda" data-toggle="modal" data-target="#addendum-status-modal" data-id="{{ $addendums->first()->id }}" href="#">Firmar adenda</a></li>
+                                            @endif
+                                        @endif
+                                    </ul>
+                                </div>
+                            @endif
+                            
                             {{-- Botón de impresión --}}
                             @if ($item->cargo_id || $item->job_id)
                                 <div class="btn-group">
@@ -258,9 +268,11 @@
                                 </div>
                             @endif
 
-                            <a href="{{ route('contracts.show', ['contract' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
-                                <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
-                            </a>
+                            @if ($item->procedure_type_id != 6)
+                                <a href="{{ route('contracts.show', ['contract' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
+                                    <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
+                                </a>
+                            @endif
                             
                             @if ($item->status != 'concluido')
                                 {{-- Se puede editar el contrato si no está firmado --}}
@@ -270,8 +282,8 @@
                                     </a>
                                 @endif
 
-                                {{-- Si está firmado y tiene permiso de cambiar el estado --}}
-                                @if ($item->status == 'firmado' && auth()->user()->hasPermission('delete_contracts') && auth()->user()->hasPermission('downgrade_contracts'))
+                                {{-- Si está firmado, no es un contrato TGN y tiene permiso de cambiar el estado --}}
+                                @if ($item->status == 'firmado' && $item->procedure_type_id != 6 && auth()->user()->hasPermission('delete_contracts') && auth()->user()->hasPermission('downgrade_contracts'))
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
                                             Anular <span class="caret"></span>
@@ -331,7 +343,6 @@
 
         $('#select-job_id').select2({dropdownParent: $('#transfer-modal')});
         $('#select-job_id-alt').select2({dropdownParent: $('#promotion-modal')});
-        $('#select-applicant_id').select2({dropdownParent: $('#addendum-modal')});
         $('#select-signature_id').select2({dropdownParent: $('#addendum-modal')});
 
         

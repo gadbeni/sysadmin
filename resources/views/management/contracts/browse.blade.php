@@ -328,12 +328,7 @@
                             </div>
                             <div class="form-group col-md-12 div-eventual-consultor_sedeges">
                                 <label for="applicant_id">Solicitante</label>
-                                <select name="applicant_id" id="select-applicant_id" class="form-control">
-                                    <option value="">--Seleccione una opción--</option>
-                                    @foreach (App\Models\Contract::with('person')->where('status', 'firmado')->where('deleted_at', NULL)->get() as $item)
-                                    <option value="{{ $item->id }}">{{ $item->person->first_name }} {{ $item->person->last_name }} - {{ $item->cargo_id ? $item->cargo->Descripcion : $item->job->name }}</option>                                                
-                                    @endforeach
-                                </select>
+                                <select name="applicant_id" id="select-applicant_id" class="form-control"></select>
                             </div>
 
                             {{-- Eventual central --}}
@@ -531,12 +526,13 @@
         $(document).ready(() => {
             $('#select-job_id').select2({dropdownParent: $('#transfer-modal')});
             $('#select-job_id-alt').select2({dropdownParent: $('#promotion-modal')});
-            $('#select-applicant_id').select2({dropdownParent: $('#addendum-modal')});
             $('#select-signature_id').select2({dropdownParent: $('#addendum-modal')});
             $('#select-destiny_id').select2({dropdownParent: $('#modal-rotation')});
             $('#select-destiny_dependency').select2({dropdownParent: $('#modal-rotation')});
             $('#select-responsible_id').select2({dropdownParent: $('#modal-rotation')});
             list();
+
+            customSelect('#select-applicant_id', '{{ url("admin/contracts/ajax/search") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#addendum-modal'));
             
             $('#input-search').on('keyup', function(e){
                 if(e.keyCode == 13) {
@@ -668,6 +664,5 @@
         function setFormAction(url, form){
             $(form).attr('action', url);
         }
-
     </script>
 @stop
