@@ -10,4 +10,8 @@ class AssetsCategory extends Model
 {
     use HasFactory, SoftDeletes;
     protected $dates = ['deleted_at'];
+
+    public function subcategories(){
+        return $this->hasMany(AssetsSubcategory::class);
+    }
 }

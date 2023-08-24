@@ -20,6 +20,8 @@ class CreateContractsTable extends Migration
             $table->foreignId('job_id')->nullable()->constrained('jobs');
             $table->string('job_description')->nullable()->comment('Nombre de cargo en caso de ser un contrato TGN');
             $table->decimal('salary', 10, 2)->nullable()->comment('Salario en caso de ser un contrato TGN');
+            $table->decimal('bonus', 10, 2)->nullable()->comment('Bono en caso de ser un contrato TGN');
+            $table->string('job_location')->nullable();
             $table->integer('direccion_administrativa_id')->nullable();
             $table->integer('unidad_administrativa_id')->nullable();
             $table->foreignId('program_id')->nullable()->constrained('programs');

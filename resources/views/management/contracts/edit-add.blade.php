@@ -59,9 +59,17 @@
                                     </div>
                                     <input type="text" name="job_description" id="input-job_description" class="form-control" value="{{ isset($contract) ? $contract->job_description : '' }}" style="display: none">
                                 </div>
-                                <div class="form-group col-md-6" style="display: none" id="div-salary">
+                                <div class="form-group col-md-6 div-tgn">
                                     <label for="salary">Sueldo</label>
                                     <input type="number" name="salary" id="input-salary" class="form-control" value="{{ isset($contract) ? $contract->salary : '' }}">
+                                </div>
+                                <div class="form-group col-md-6 div-tgn">
+                                    <label for="bonus">Bono</label>
+                                    <input type="text" name="bonus" value="{{ isset($contract) ? $contract->bonus : '' }}" class="form-control">
+                                </div>
+                                <div class="form-group col-md-6 div-tgn">
+                                    <label for="job_location">Lugar de trabajo</label>
+                                    <input type="text" name="job_location" value="{{ isset($contract) ? $contract->job_location : '' }}" class="form-control">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="start">Inicio de contrato</label>
@@ -72,18 +80,18 @@
                                     <input type="date" name="finish" id="input-finish" value="{{ isset($contract) ? $contract->finish : '' }}" class="form-control input-date">
                                     <div id="label-duration"></div>
                                 </div>
-                                <div class="form-group col-md-12">
+                                <div class="form-group col-md-12 div-signatures">
                                     <label for="requested_by">Persona o unidad solicitante (Opcional)</label>
                                     <input type="text" name="requested_by" value="{{ isset($contract) ? $contract->requested_by : '' }}" class="form-control">
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-6 div-signatures">
                                     <label for="signature_id">
                                         Firma autorizada 
                                         <span class="voyager-question" data-toggle="popover" data-placement="top" data-trigger="hover" title="Información" data-content="Firma autorizada que va a figurar en el contrato (Si se deja vacío firma el actual Secretario(a) de Finanzas)" style="cursor: pointer"></span>
                                     </label>
                                     <select name="signature_id" id="select-signature_id" class="form-control select2"></select>
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-6 div-signatures">
                                     <label for="signature_alt_id">
                                         Firma autorizada de proceso de contratación RPA 
                                         <span class="voyager-question" data-toggle="popover" data-placement="top" data-trigger="hover" title="Información" data-content="Firma autorizada que va a figurar en el proceso de contratación (Solo para consultoría)" style="cursor: pointer"></span>
@@ -383,7 +391,9 @@
 
 @section('css')
     <style>
-
+        .div-tgn {
+            display: none
+        }
     </style>
 @endsection
 
@@ -435,7 +445,8 @@
                     });
                 }
 
-                if($('#select-direccion_administrativa_id').val() == 5){
+                // Si es SEDEGES y no es planilla TGN
+                if($('#select-direccion_administrativa_id').val() == 5 && $('#select-procedure_type_id').val() != 6){
                     $('.div-sedeges').fadeIn();
                 }else{
                     $('.div-sedeges').fadeOut();
@@ -463,8 +474,9 @@
                     $('#select-cargo_id').prop('required', true);
                     $('#input-job_description').css('display', 'none');
                     $('#input-job_description').removeAttr('required');
-                    $('#div-salary').css('display', 'none');
+                    $('.div-tgn').css('display', 'none');
                     $('#input-salary').removeAttr('required');
+                    $('.div-signatures').css('display', 'block');
                     
                     programs.map(item => {
                         if($('#select-procedure_type_id option:selected').val() == item.procedure_type_id){
@@ -480,7 +492,6 @@
                     $('#select-direccion_administrativa_id').prop('required', true);
                     $('#select-unidad_administrativa_id').prop('disabled', false);
                     $('#select-unidad_administrativa_id').prop('required', true);
-                    $('#input-finish').prop('required', true);
                     $('#select-direccion_administrativa_id').html(`<option value="">Selecciona la dirección administrativa</option>`);
                     direccion_administrativas.map(item => {
                         $('#select-direccion_administrativa_id').append(`<option value="${item.id}" data-signatures='${JSON.stringify(item.signatures)}'>${item.nombre}</option>`);
@@ -517,8 +528,10 @@
                         $('#div-select-cargo_id').css('display', 'none');
                         $('#input-job_description').css('display', 'block');
                         $('#input-job_description').prop('required', true);
-                        $('#div-salary').css('display', 'block');
+                        $('.div-tgn').css('display', 'block');
                         $('#input-salary').prop('required', true);
+                        $('#input-finish').prop('required', false);
+                        $('.div-signatures').css('display', 'none');
                     }else{
                         $('#div-program_id').css('display', 'block');
                         $('#select-program_id').prop('required', true);
@@ -526,8 +539,10 @@
                         $('#div-select-cargo_id').css('display', 'block');
                         $('#input-job_description').css('display', 'none');
                         $('#input-job_description').removeAttr('required');
-                        $('#div-salary').css('display', 'none');
+                        $('.div-tgn').css('display', 'none');
                         $('#input-salary').removeAttr('required');
+                        $('#input-finish').prop('required', true);
+                        $('.div-signatures').css('display', 'block');
                     }
                 }
             });

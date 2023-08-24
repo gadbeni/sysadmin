@@ -17,6 +17,8 @@ class Contract extends Model
         'job_id',
         'job_description',
         'salary',
+        'bonus',
+        'job_location',
         'direccion_administrativa_id',
         'unidad_administrativa_id',
         'procedure_type_id',

@@ -1,7 +1,6 @@
 <table>
     <thead>
         <tr>
-            {{-- <th>Fotografía</th> --}}
             <th><b>Nombre completo</b></th>
             <th><b>CI</b></th>
             <th><b>Lugar nac.</b></th>
@@ -20,16 +19,11 @@
     <tbody>
         @foreach ($people as $item)
             @php
-                // $image = asset('images/default.jpg');
-                // if($item->image){
-                //     $image = asset('storage/'.str_replace('.', '-cropped.', $item->image));
-                // }
                 $now = \Carbon\Carbon::now();
                 $birthday = new \Carbon\Carbon($item->birthday);
                 $age = $birthday->diffInYears($now);
             @endphp
             <tr>
-                {{-- <td><img src="{{ $image }}" alt="{{ $item->first_name }} {{ $item->last_name }}" style="width: 60px; height: 60px; border-radius: 30px; margin-right: 10px"></td> --}}
                 <td>{{ $item->first_name }} {{ $item->last_name }}</td>
                 <td>{{ $item->ci }}</td>
                 <td>{{ $item->city ? $item->city->name : 'No definido' }}</td>

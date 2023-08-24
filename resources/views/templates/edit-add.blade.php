@@ -25,6 +25,12 @@
     </div>
 @stop
 
+@section('css')
+    <style>
+        
+    </style>
+@stop
+
 @section('javascript')
     <script>
         $(document).ready(function(){

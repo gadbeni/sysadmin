@@ -28,6 +28,7 @@ use App\Http\Controllers\TcController;
 use App\Http\Controllers\SeniorityBonusPeopleController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\SchedulesController;
+use App\Http\Controllers\AssetsControllers;
 
 /*
 |--------------------------------------------------------------------------
@@ -155,6 +156,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('paymentschedules-files/generate', [PaymentschedulesController::class, 'files_generate'])->name('paymentschedules-files.generate');
     Route::post('paymentschedules-files/store', [PaymentschedulesController::class, 'files_store'])->name('paymentschedules-files.store');
     Route::post('paymentschedules-files/delete', [PaymentschedulesController::class, 'files_delete'])->name('paymentschedules-files.delete');
+
+    // Activos fijos
+    Route::resource('assets', AssetsControllers::class);
+    Route::get('assets/list/ajax', [AssetsControllers::class, 'list'])->name('assets.list');
 
     // Aguinaldo
     Route::get('bonuses', [PaymentschedulesController::class, 'bonuses_index'])->name('bonuses.index');

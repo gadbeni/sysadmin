@@ -222,6 +222,8 @@ class ContractsController extends Controller
                 'job_id' => $request->procedure_type_id == 1 ? $request->cargo_id : NULL,
                 'job_description' => $request->job_description,
                 'salary' => $request->salary,
+                'bonus' => $request->bonus,
+                'job_location' => $request->job_location,
                 'direccion_administrativa_id' => $direccion_administrativa_id,
                 'unidad_administrativa_id' => $request->unidad_administrativa_id,
                 'procedure_type_id' => $request->procedure_type_id,

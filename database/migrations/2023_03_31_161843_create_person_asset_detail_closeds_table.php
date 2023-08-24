@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePersonAssetsTable extends Migration
+class CreatePersonAssetDetailClosedsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,15 @@ class CreatePersonAssetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('person_assets', function (Blueprint $table) {
+        Schema::create('person_asset_detail_closeds', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('person_id')->nullable()->constrained('people');
             $table->foreignId('user_id')->nullable()->constrained('users');
-            $table->string('code')->unique();
-            $table->date('date')->nullable();
+            $table->foreignId('person_asset_detail_id')->nullable()->constrained('person_asset_details');
+            $table->foreignId('person_asset_destiny_id')->nullable()->constrained('person_assets');
+            $table->string('type')->nullable();
             $table->text('observations')->nullable();
+            $table->date('date')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +34,6 @@ class CreatePersonAssetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('person_assets');
+        Schema::dropIfExists('person_asset_detail_closeds');
     }
 }

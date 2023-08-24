@@ -137,12 +137,11 @@ function formatResultContracts(data) {
     if (data.loading) {
         return 'Buscando...';
     }
-    let image = "./images/default.jpg";
+    let image = "/images/default.jpg";
     if(data.person.image){
-        image = "./storage/"+data.person.image.replace('.', '-cropped.');
+        image = "/storage/"+data.person.image.replace('.', '-cropped.');
     }
     var $container = $(
-        
         `<div class="option-select2-custom">
             <div style="display:flex; flex-direction: row">
                 <div>
