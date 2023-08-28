@@ -60,6 +60,7 @@
                                                 <option value="1">Permanente</option>
                                                 <option value="5">Eventual</option>
                                                 <option value="2">Consultoría de línea</option>
+                                                <option value="6">TGN</option>
                                             </select>
                                         </div>
                                         <div class="form-group col-md-4">

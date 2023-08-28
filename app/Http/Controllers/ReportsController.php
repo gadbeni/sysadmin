@@ -130,35 +130,12 @@ class ReportsController extends Controller
         $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'unidad_administrativa', 'type', 'addendums'])
                         ->whereRaw($request->procedure_type_id ? "procedure_type_id = ".$request->procedure_type_id : 1)
                         ->whereRaw($request->status ? "status = '".$request->status."'" : 1)
+                        ->whereRaw($request->start ? "DATE_FORMAT(start, '%Y-%m') = '".$request->start."'" : 1)
+                        ->whereRaw($request->finish ? "DATE_FORMAT(finish, '%Y-%m') = '".$request->finish."'" : 1)
                         ->whereHas('direccion_administrativa', function($q) use($request){
                             $q->whereRaw($request->direcciones_tipo_id ? "direcciones_tipo_id = ".$request->direcciones_tipo_id : 1);
                         })
                         ->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id in ".str_replace(array('[', ']'), array('(', ')'), json_encode($request->direccion_administrativa_id)) : 1)
-                        ->where(function($query) use ($request){
-                            if($request->status == 'elaborado' || $request->status == 'enviado'){
-                                $query->where('status', $request->status);
-                            }
-                            elseif($request->status == 'firmado'){
-                                $query->whereRaw($request->year ? "YEAR(start) = ".$request->year : 1)->whereRaw($request->month ? "MONTH(start) = ".intval($request->month) : 1);
-                            }
-                            elseif($request->status == 'concluido'){
-                                $query->whereRaw($request->year ? "YEAR(finish) = ".$request->year : 1)->whereRaw($request->month ? "MONTH(finish) = ".intval($request->month) : 1);
-                            }else{
-                                if($request->year && $request->month){
-                                    $query->OrWhereHas('paymentschedules_details.paymentschedule.period', function($q) use($request){
-                                        $q->whereRaw("name = '".$request->year.$request->month."'");
-                                    });
-                                }elseif($request->year){
-                                    $query->OrWhereHas('paymentschedules_details.paymentschedule.period', function($q) use($request){
-                                        $q->whereRaw("name like '".$request->year."%'");
-                                    });
-                                }elseif($request->month){
-                                    $query->OrWhereHas('paymentschedules_details.paymentschedule.period', function($q) use($request){
-                                        $q->whereRaw("name like '%".$request->month."'");
-                                    });
-                                }
-                            }
-                        })
                         ->where(function($query) use ($request){
                             if($request->addendums){
                                 $query->OrwhereHas('addendums', function($query){

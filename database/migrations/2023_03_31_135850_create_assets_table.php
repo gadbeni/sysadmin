@@ -30,7 +30,7 @@ class CreateAssetsTable extends Migration
             $table->text('observations')->nullable();
             $table->text('images')->nullable();
             $table->string('status')->nullable();
-            $table->smallInteger('active')->nullable(1);
+            $table->smallInteger('active')->nullable()->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

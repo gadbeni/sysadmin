@@ -10,4 +10,11 @@ class PersonAssetDetails extends Model
 {
     use HasFactory, SoftDeletes;
     protected $dates = ['deleted_at'];
+    protected $fillable = [
+        'person_asset_id',
+        'asset_id',
+        'office_id',
+        'observations',
+        'status'
+    ];
 }

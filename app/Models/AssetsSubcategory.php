@@ -11,6 +11,10 @@ class AssetsSubcategory extends Model
     use HasFactory, SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $fillable = [
-        'assets_category_id ', 'name', 'description	'
+        'assets_category_id', 'name', 'description	'
     ];
+
+    public function category(){
+        return $this->belongsTo(AssetsCategory::class, 'assets_category_id');
+    }
 }

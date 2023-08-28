@@ -66,24 +66,12 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <input type="number" name="year" class="form-control" placeholder="Año">
+                                    <input type="month" name="start" class="form-control">
+                                    <small class="text-muted">Inicio de contrato</small>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <select name="month" class="form-control select2">
-                                        <option value="">--Todos los meses--</option>
-                                        <option value="01">Enero</option>
-                                        <option value="02">Febrero</option>
-                                        <option value="03">Marzo</option>
-                                        <option value="04">Abril</option>
-                                        <option value="05">Mayo</option>
-                                        <option value="06">Junio</option>
-                                        <option value="07">Julio</option>
-                                        <option value="08">Agosto</option>
-                                        <option value="09">Septiembre</option>
-                                        <option value="10">Octubre</option>
-                                        <option value="11">Noviembre</option>
-                                        <option value="12">Diciembre</option>
-                                    </select>
+                                    <input type="month" name="finish" class="form-control">
+                                    <small class="text-muted">Fin de contrato</small>
                                 </div>
                                 <div class="col-md-12 text-right">
                                     <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>

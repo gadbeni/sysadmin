@@ -15,7 +15,6 @@ const io = require('socket.io')(server, {
 io.on('connection', (socket) => {
     console.log('connection');
 
-    // Ventas
     socket.on('set new ticket', data => {
         io.emit(`get new ticket`, data);
     });

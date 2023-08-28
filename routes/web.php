@@ -160,6 +160,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     // Activos fijos
     Route::resource('assets', AssetsControllers::class);
     Route::get('assets/list/ajax', [AssetsControllers::class, 'list'])->name('assets.list');
+    Route::get('assets/search/code', [AssetsControllers::class, 'search_by_code']);
 
     // Aguinaldo
     Route::get('bonuses', [PaymentschedulesController::class, 'bonuses_index'])->name('bonuses.index');

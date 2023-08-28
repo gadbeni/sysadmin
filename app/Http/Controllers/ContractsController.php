@@ -143,7 +143,7 @@ class ContractsController extends Controller
         $ids = substr($ids, 0, -1);
         $procedure_type = ProcedureType::where('deleted_at', NULL)
                             ->whereRaw(Auth::user()->role_id == 16 || Auth::user()->role_id == 25 ? 'id = 2' : 1)
-                            ->whereRaw($ids ? "id in ($ids)" : 1)->get();
+                            ->whereRaw($ids ? "id in ($ids,6)" : 1)->get();
 
         $people = Person::where('deleted_at', NULL)
                     ->whereRaw("id not in (select person_id from contracts where status <> 'concluido' and deleted_at is null)")

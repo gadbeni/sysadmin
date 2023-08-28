@@ -2,7 +2,7 @@
 <html lang="{{ config('app.locale') }}" dir="{{ __('voyager::generic.is_rtl') == 'true' ? 'rtl' : 'ltr' }}">
 <head>
     <title>@yield('page_title', setting('admin.title') . " - " . setting('admin.description'))</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <meta name="assets-path" content="{{ route('voyager.voyager_assets') }}"/>
 
@@ -119,7 +119,7 @@
     @include('voyager::partials.app-footer')
 
     {{-- Sugerencias button --}}
-    <div style="position: fixed; bottom: 10px; right: 10px; width: 60px; height: 60px; border-radius: 30px; background-color: {{ env('APP_COLOR', '#ccc') }}; text-align: center">
+    <div style="position: fixed; bottom: 10px; right: 10px; width: 60px; height: 60px; border-radius: 30px; background-color: {{ env('APP_COLOR', '#ccc') }}; text-align: center; z-index: 1">
         <button data-toggle="modal" data-target="#suggestion-modal" class="btn btn-link" style="margin-top: 10px" title="Hacer sugerencia"><i class="fa fa-commenting fa-2x"></i></button>
     </div>
 
@@ -228,6 +228,7 @@
 
     <script>
         $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
             $('[data-toggle="popover"]').popover();
             $('.form-submit').submit(function(){
                 $('.form-submit .btn-submit').attr('disabled', 'disabled');

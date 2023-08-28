@@ -91,7 +91,7 @@
                 <td>{{ $item->program ? $item->program->programatic_category : 'No definida' }}</td>
                 <td>{{ $item->status }}</td>
                 <td>
-                    {{ $item->user->name }} <br>
+                    {{ $item->user ? $item->user->name : '' }} <br>
                     {{ date('d/m/Y H:i', strtotime($item->created_at)) }}
                 </td>
             </tr>

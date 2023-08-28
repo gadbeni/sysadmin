@@ -57,7 +57,7 @@
                                         }elseif ($item->job){
                                             $salary = $item->job->salary;
                                         }elseif ($item->salary){
-                                            $salary = $item->salary;
+                                            $salary = $item->salary + $item->bonus;
                                         }
                                     @endphp
                                     <b>Sueldo: </b> <small>Bs.</small> {{ number_format($salary, 2, ',', '.') }}
