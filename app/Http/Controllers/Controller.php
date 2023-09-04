@@ -35,6 +35,17 @@ class Controller extends BaseController
             });
             $path =  $folder.'/'.date('F').date('Y').'/'.$filename;
             $image_resize->save(public_path('../storage/app/public/'.$path));
+
+            // imagen cuadrada
+            $filename_small = $base_name.'-cropped.'.$file->getClientOriginalExtension();
+            $image_resize = Image::make($file->getRealPath())->orientate();
+            $image_resize->resize(null, 256, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $image_resize->resizeCanvas(256, 256);
+            $path_small = "$folder/".date('F').date('Y').'/'.$filename_small;
+            $image_resize->save(public_path('../storage/app/public/'.$path_small));
+
             return $path;
         } catch (\Throwable $th) {
             return null;

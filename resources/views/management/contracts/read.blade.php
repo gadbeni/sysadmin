@@ -697,7 +697,7 @@
             $('#select-signature_id').select2({dropdownParent: $('#update-addendum-modal')});
             $('#select-program_id').select2({dropdownParent: $('#update-addendum-modal')});
 
-            customSelect('#select-applicant_id', '{{ url("admin/contracts/ajax/search") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#update-addendum-modal'));
+            customSelect('#select-applicant_id', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#update-addendum-modal'));
 
             $('.btn-edit-addendum').click(function(){
                 let item = $(this).data('item');

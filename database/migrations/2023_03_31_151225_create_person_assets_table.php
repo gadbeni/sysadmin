@@ -16,6 +16,7 @@ class CreatePersonAssetsTable extends Migration
         Schema::create('person_assets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('person_id')->nullable()->constrained('people');
+            $table->foreignId('contract_id')->nullable()->constrained('contracts')->comment('');
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->string('code')->unique();
             $table->date('date')->nullable();

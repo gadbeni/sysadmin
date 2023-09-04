@@ -43,4 +43,8 @@ class Person extends Model
     public function files(){
         return $this->hasMany(PersonFile::class);
     }
+
+    public function assignments(){
+        return $this->hasMany(PersonAsset::class, 'person_id');
+    }
 }

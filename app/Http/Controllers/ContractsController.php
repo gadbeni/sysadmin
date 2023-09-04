@@ -149,8 +149,9 @@ class ContractsController extends Controller
                     ->whereRaw("id not in (select person_id from contracts where status <> 'concluido' and deleted_at is null)")
                     ->get();
         $direccion_administrativas = Direccion::with(['signatures' => function($q){
-                                        $q->where('status', 1)->where('deleted_at', NULL);
-                                    }])->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1)->get();
+                                            $q->where('status', 1)->where('deleted_at', NULL);
+                                        }])->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1)
+                                        ->where('estado', 1)->get();
         $unidad_administrativas = Unidad::get();
         $programs = Program::where('year', date('Y'))->where('deleted_at', NULL)->get();
         $cargos = Cargo::with(['nivel' => function($q){
@@ -176,10 +177,10 @@ class ContractsController extends Controller
         // dd($request->all());
         if($request->procedure_type_id != 1){
             if($request->start >= $request->finish){
-                return redirect()->route('contracts.create')->with(['message' => 'La fecha de finalización debe ser mayor a la fecha de inicio.', 'alert-type' => 'error']);
+                return redirect()->route('contracts.create')->with(['message' => 'La fecha de finalización debe ser mayor a la fecha de inicio', 'alert-type' => 'error']);
             }
             if(date('Y', strtotime($request->start)) != date('Y', strtotime($request->finish))){
-                return redirect()->route('contracts.create')->with(['message' => 'El contrato no puede iniciar y finalizar en una gestón diferente.', 'alert-type' => 'error']);
+                return redirect()->route('contracts.create')->with(['message' => 'El contrato no puede iniciar y finalizar en una gestón diferente', 'alert-type' => 'error']);
             }
 
             // Verificar que el contrato no inicie pisando un contrato previo
@@ -187,7 +188,7 @@ class ContractsController extends Controller
                                 ->where('finish', '>=', $request->start)->where('status', '<>', 'anulado')
                                 ->where('deleted_at', NULL)->first();
             if($contract_person){
-                return redirect()->route('contracts.create')->with(['message' => 'El inicio de contrato coincide con el fin de otro contrato.', 'alert-type' => 'warning']);
+                return redirect()->route('contracts.create')->with(['message' => 'El inicio de contrato coincide con el fin de otro contrato', 'alert-type' => 'warning']);
             }
         }
         try {
@@ -198,7 +199,7 @@ class ContractsController extends Controller
             // Verificar que no haya ningun proceso de contratación vigente
             $contract_person = Contract::where('person_id', $request->person_id)->where('status', '<>', 'concluido')->where('deleted_at', NULL)->first();
             if($contract_person){
-                return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso.', 'alert-type' => 'warning']);
+                return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso', 'alert-type' => 'warning']);
             }
 
             $last_contract = Contract::whereYear('start', date('Y', strtotime($request->start)))
@@ -384,7 +385,7 @@ class ContractsController extends Controller
 
             return redirect()->route('contracts.index')->with(['message' => 'Contrato editado exitosamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
-            throw $th;
+            // throw $th;
             return redirect()->route('contracts.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
@@ -393,15 +394,31 @@ class ContractsController extends Controller
         // dd($request->all());
         DB::beginTransaction();
         try {
+            // Si es una resolución de contrato
+            if ($request->finish) {
+                // Obtener el último pago realizado
+                $payment = PaymentschedulesDetail::with(['paymentschedule.period'])->where('contract_id', $request->id)
+                            ->where('deleted_at', NULL)->get()->sortByDesc('paymentschedule.period.name')->first();
+                if($payment){
+                    // Si el mes es igual al inicio de contrato se debe tomar como referencia en 30 del mes
+                    if(date('Ym', strtotime($request->finish)) == date('Ym', strtotime($payment->contract->start))){
+                        // 20301"30"
+                        $last_payment = $payment->paymentschedule->period->name.'30';
+                    }else{
+                        // 20301"días trabajados"
+                        $last_payment = $payment->paymentschedule->period->name.str_pad($payment->worked_days, 2, "0", STR_PAD_LEFT);
+                    }
 
-            // Verificar si el contrato tenga pagos realizados
-            $payment = PaymentschedulesDetail::where('contract_id', $request->id)
-                        ->whereHas('paymentschedule.period', function($q) use($request){
-                            $q->whereRaw('name = "'.date('Ym', strtotime($request->finish)).'"')->where('status', '<>', 'anulada')->where('deleted_at', NULL);
-                        })
-                        ->where('deleted_at', NULL)->first();
-            if($payment && $request->finish && setting('auxiliares.finish_contract_condition')){
-                return response()->json(['error' => 1, 'message' => 'El contrato pertenece a una planilla en proceso de pago.']);
+                    // Si el último pago es mayor a la fecha de finalización que se envió mostrar error
+                    if($last_payment > date('Ymd', strtotime($request->finish))){
+                        return response()->json(['error' => 1, 'message' => 'El contrato pertenece a una planilla']);
+                    }
+                }elseif($payment->contract->procedure_type_id == 2){
+                    // Si el contarto es de consultoría que solo se puede concluir con fecha igual o mayor al periodo actual
+                    if (date('Ym', strtotime($request->finish)) < date('Ym')) {
+                        return response()->json(['error' => 1, 'message' => 'La fecha de finalización es previa al perido actual']);
+                    }
+                }
             }
 
             // Si se finaliza el contrato
@@ -410,7 +427,7 @@ class ContractsController extends Controller
             $previus_date = $contract->finish;
             if ($request->finish) {
                 if ($contract->start >= $request->finish) {
-                    return response()->json(['error' => 1, 'message' => 'Error al definir la fecha de finalización.']);
+                    return response()->json(['error' => 1, 'message' => 'Error al definir la fecha de finalización']);
                 }
                 $contract->finish = $request->finish;
             }
@@ -446,11 +463,26 @@ class ContractsController extends Controller
             }
 
             DB::commit();
-            return response()->json(['success'=> 1, 'message' => 'Cambio realizo exitosamente.']);
+            return response()->json(['success'=> 1, 'message' => 'Cambio realizo exitosamente']);
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return response()->json(['error' => 1, 'message' => 'Ocurrió un error.']);
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
+        }
+    }
+
+    public function contracts_resolution_update(Request $request){
+        try {
+            $contract =  Contract::find($request->id);
+            $contract->finished->technical_report = $request->technical_report;
+            $contract->finished->nci = $request->nci;
+            $contract->finished->legal_report = $request->legal_report;
+            $contract->finished->details = $request->details;
+            $contract->finished->update();
+            return response()->json(['success'=> 1, 'message' => 'Edición exitosa']);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
         }
     }
 
@@ -463,10 +495,10 @@ class ContractsController extends Controller
                 'date' => $request->date,
                 'observations' => $request->observations,
             ]);
-            return response()->json(['success'=> 1, 'message' => 'Ratificación exitosa.']);
+            return response()->json(['success'=> 1, 'message' => 'Ratificación exitosa']);
         } catch (\Throwable $th) {
             // throw $th;
-            return response()->json(['error' => 1, 'message' => 'Ocurrió un error.']);
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
         }
     }
 
@@ -506,10 +538,10 @@ class ContractsController extends Controller
             ]);
 
             DB::commit();
-            return response()->json(['success'=> 1, 'message' => 'Adenda registrada exitosamente.']);
+            return response()->json(['success'=> 1, 'message' => 'Adenda registrada exitosamente']);
         } catch (\Throwable $th) {
             DB::rollback();
-            return response()->json(['error' => 1, 'message' => 'Ocurrió un error.']);
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
         }
     }
 
@@ -527,10 +559,10 @@ class ContractsController extends Controller
             $contract->update();
 
             DB::commit();
-            return response()->json(['success'=> 1, 'message' => 'Adenda firmada exitosamente.']);
+            return response()->json(['success'=> 1, 'message' => 'Adenda firmada exitosamente']);
         } catch (\Throwable $th) {
             DB::rollback();
-            return response()->json(['error' => 1, 'message' => 'Ocurrió un error.']);
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
         }
     }
 
@@ -595,7 +627,7 @@ class ContractsController extends Controller
             $contract = Contract::find($request->contract_id);
 
             if ($contract->start >= $request->date) {
-                return response()->json(['error' => 1, 'message' => 'Error al definir la fecha de trasferencia.']);
+                return response()->json(['error' => 1, 'message' => 'Error al definir la fecha de trasferencia']);
             }
 
             // Crear contrato
@@ -643,11 +675,11 @@ class ContractsController extends Controller
                 'observations' => $request->contract_id,
             ]);
             DB::commit();
-            return response()->json(['success'=> 1, 'message' => 'Transferencia registrada exitosamente.']);
+            return response()->json(['success'=> 1, 'message' => 'Transferencia registrada exitosamente']);
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return response()->json(['error' => 1, 'message' => 'Ocurrió un error.']);
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
         }
     }
 
@@ -658,7 +690,7 @@ class ContractsController extends Controller
             $contract = Contract::find($request->contract_id);
 
             if ($contract->start >= $request->date) {
-                return response()->json(['error' => 1, 'message' => 'Error al definir la fecha de trasferencia.']);
+                return response()->json(['error' => 1, 'message' => 'Error al definir la fecha de trasferencia']);
             }
 
             // Crear contrato
@@ -706,11 +738,11 @@ class ContractsController extends Controller
                 'observations' => $request->contract_id,
             ]);
             DB::commit();
-            return response()->json(['success'=> 1, 'message' => 'Promición registrada exitosamente.']);
+            return response()->json(['success'=> 1, 'message' => 'Promición registrada exitosamente']);
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return response()->json(['error' => 1, 'message' => 'Ocurrió un error.']);
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
         }
     }
 
@@ -741,14 +773,14 @@ class ContractsController extends Controller
 
                 DB::commit();
 
-                return response()->json(['success'=> 1, 'message' => 'Anulado exitosamente.']);
+                return response()->json(['success'=> 1, 'message' => 'Anulado exitosamente']);
             }else{
-                return response()->json(['error' => 1, 'message' => 'El contrato ya fue planillado, no se puede eliminar.']);
+                return response()->json(['error' => 1, 'message' => 'El contrato ya fue planillado, no se puede eliminar']);
             }
         } catch (\Throwable $th) {
             DB::rollback();
             //throw $th;
-            return response()->json(['error' => 1, 'message' => 'Ocurrió un error.']);
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
         }
     }
 
@@ -818,7 +850,7 @@ class ContractsController extends Controller
             
             // Si la persona tiene un contrato activo no se debe restaurar
             if(Contract::where('person_id', $contract->person_id)->whereRaw('(status = "elaborado" or status = "enviado" or status = "firmado")')->where('deleted_at', NULL)->first()){
-                return response()->json(['error' => 1, 'message' => 'La persona ya tiene un contrato firmado o en proceso de elaboración.']);
+                return response()->json(['error' => 1, 'message' => 'La persona ya tiene un contrato firmado o en proceso de elaboración']);
             }
             
             $contract->status = 'firmado';
@@ -828,11 +860,11 @@ class ContractsController extends Controller
             $contract_finish->delete();
             
             DB::commit();
-            return response()->json(['success'=> 1, 'message' => 'Cambio realizo exitosamente.']);
+            return response()->json(['success'=> 1, 'message' => 'Cambio realizo exitosamente']);
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return response()->json(['error' => 1, 'message' => 'Ocurrió un error.']);
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
         }
     }
 

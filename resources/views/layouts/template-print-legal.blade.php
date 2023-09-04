@@ -111,10 +111,12 @@
                     <img src="{{ asset('images/icon.png') }}" /> 
                 </div>
 		        <div class="options" style="position: fixed; bottom: 10px; right: 20px">
-                    @if (setting('auxiliares.edit-docs') && $contract->files->count() == 0)
-                        <button type="button" class="btn btn-edit">Editar</button>
-                        <button type="button" class="btn btn-print" onclick="window.print()">Imprimir</button>
-                        <button type="button" class="btn btn-save" style="display: none">Guardar</button>
+                    @if (setting('auxiliares.edit-docs') && isset($contract))
+                        @if ($contract->files->count() == 0)
+                            <button type="button" class="btn btn-edit">Editar</button>
+                            <button type="button" class="btn btn-print" onclick="window.print()">Imprimir</button>
+                            <button type="button" class="btn btn-save" style="display: none">Guardar</button>
+                        @endif
                     @else
                         <button type="button" class="btn btn-print" onclick="window.print()">Imprimir</button>
                     @endif
@@ -123,11 +125,13 @@
             </div>
         </div>
 
-        <form id="form-submit" action="{{ route('contracts.file.store', $contract->id) }}" style="display: none" method="post">
-            @csrf
-            <input type="text" name="name" value="{{ $document }}">
-            <textarea name="text" id="" cols="30" rows="10"></textarea>
-        </form>
+        @isset($contract)
+            <form id="form-submit" action="{{ route('contracts.file.store', $contract->id) }}" style="display: none" method="post">
+                @csrf
+                <input type="text" name="name" value="{{ $document }}">
+                <textarea name="text" id="" cols="30" rows="10"></textarea>
+            </form>
+        @endisset
 
         @yield('css')
 

@@ -26,7 +26,7 @@
                                     <select name="assets_category_id" id="select-assets_category_id" class="form-control select2" required>
                                         <option value="">Seleccione una categoría</option>
                                         @foreach (App\Models\AssetsCategory::with('subcategories')->get() as $item)
-                                        <option value="{{ $item->id }}" data-item='@json($item)'>{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}" data-item='@json($item)'>{{ Str::upper($item->name) }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -71,14 +71,24 @@
                                     <label for="images">Imágenes</label>
                                     <input type="file" name="images[]" multiple accept=".jpg, .jpeg, .png" class="form-control">
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-6" style="{{ isset($asset) ? 'display: none' : '' }}">
                                     <label for="status">Estado</label>
-                                    <select name="status" class="form-control select2">
+                                    <select name="status" class="form-control select2" id="selects-status">
                                         <option value="bueno">Bueno</option>
                                         <option value="regular">Regular</option>
                                         <option value="malo">Malo</option>
                                     </select>
                                 </div>
+                                @isset($asset)
+                                <div class="form-group col-md-6">
+                                    @foreach (json_decode($asset->images) as $image)
+                                    <div class="image-container">
+                                        <img src="{{ asset('storage/'.str_replace('.', '-cropped.', $image)) }}" alt="Imagen" style="width: 70px">
+                                        <button type="button" class="delete-button" data-img="{{ $image }}" data-toggle="modal" data-target="#delete-image-modal" title="Eliminar">×</button>
+                                      </div>
+                                    @endforeach
+                                </div>
+                                @endisset
                                 <div class="form-group col-md-12">
                                     <label for="observations">Observaciones</label>
                                     <textarea name="observations" class="form-control" rows="5" placeholder="Observaciones">{{ isset($asset) ? $asset->observations : old('observations') }}</textarea>
@@ -109,6 +119,27 @@
             </div>
         </div>
     </div>
+
+    {{-- Single delete modal --}}
+    <form class="form-submit" id="form-delete-image" action="{{ route('assets.image.delete') }}" method="POST">
+        @csrf
+        <input type="hidden" name="id" value="{{ isset($asset) ? $asset->id : '' }}">
+        <input type="hidden" name="image">
+        <div class="modal modal-danger fade" tabindex="-1" id="delete-image-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-trash"></i> Desea eliminar el siguiente registro?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-danger btn-submit" value="Sí, eliminar">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('css')
@@ -121,6 +152,29 @@
         #map {
             height: 320px;
             margin-top: 20px
+        }
+        .image-container {
+            display: inline-block;
+            position: relative;
+        }
+
+        .delete-button {
+            display: none;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .image-container:hover .delete-button {
+            display: block;
         }
     </style>
 @stop
@@ -145,6 +199,7 @@
                 setTimeout(() => {
                     $('#select-assets_category_id').val('{{ $asset->subcategory->assets_category_id }}').trigger('change');
                     $('#select-city_id').val('{{ $asset->city_id }}').trigger('change');
+                    $('#selects-status').val('{{ $asset->status }}').trigger('change');
                 }, 0);
             @endisset
 
@@ -155,7 +210,7 @@
                 $('#select-assets_subcategory_id').html('<option value="">Seleccione una subcategoría</option>');
                 if (item) {
                     item.subcategories.map(subcategory => {
-                        $('#select-assets_subcategory_id').append(`<option value="${subcategory.id}">${subcategory.name}</option>`);
+                        $('#select-assets_subcategory_id').append(`<option value="${subcategory.id}">${subcategory.name.toUpperCase()}</option>`);
                     });   
                 }
 
@@ -181,6 +236,11 @@
 
             $('#input-code').on('keydown', function() {
                 clearTimeout(typingTimer); // Limpiamos el temporizador si se presiona una tecla antes de que expire
+            });
+
+            $('.delete-button').click(function(){
+                let img = $(this).data('img');
+                $('#form-delete-image input[name="image"]').val(img);
             });
         });
 

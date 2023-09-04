@@ -162,3 +162,47 @@ function formatResultContracts(data) {
 
     return $container;
 }
+
+function formatResultAssets(data) {
+    if (data.loading) {
+        return 'Buscando...';
+    }
+    let image = "/images/default.jpg";
+    if(data.images){
+        image = "/storage/"+JSON.parse(data.images)[0];
+    }
+
+    let labelType = 'default';
+    switch (data.status) {
+        case 'bueno':
+            labelType = 'success';
+            break;
+        case 'regular':
+            labelType = 'warning';
+            break;
+        case 'malo':
+            labelType = 'danger';
+            break;
+    }
+
+    var $container = $(
+        `<div class="option-select2-custom">
+            <div style="display:flex; flex-direction: row">
+                <div>
+                    <img src="${image}" style="width: 60px; height: 60px; border-radius: 30px; margin-right: 10px" />
+                </div>
+                <div>
+                    <h5>
+                        ${data.code} <label class="label label-${labelType}">${data.status.charAt(0).toUpperCase() + data.status.slice(1)}</label>
+                        <p style="font-size: 12px; margin-top: 5px">
+                            ${data.description.length > 100 ? data.description.substring(0, 100)+'...' : data.description} <br>
+                            ${data.subcategory.name}
+                        </p>
+                    </h5>
+                </div>
+            </div>
+            
+        </div>`
+    );
+    return $container;
+}

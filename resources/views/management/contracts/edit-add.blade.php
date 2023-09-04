@@ -407,7 +407,7 @@
         var jobs = @json($jobs);
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
-            customSelect('#select-workers_memo', '{{ url("admin/contracts/ajax/search") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name);
+            customSelect('#select-workers_memo', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name);
             $('.div-hidden').fadeOut('fast');
             var additionalConfig = {
                 selector: '.richTextBox',

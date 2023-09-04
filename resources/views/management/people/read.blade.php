@@ -223,6 +223,104 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel-heading" style="border-bottom:0;">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h3 class="panel-title">Activos asignados</h3>
+                                    </div>
+                                    <div class="col-md-4 text-right" style="padding-top: 20px">
+                                        @if (auth()->user()->hasPermission('add_assets_people') && $person->assignments->count())
+                                            @if ($person->assignments->count() == 1)
+                                                <a href="{{ route('people.assets.print', ['id' => $person->id,'person_asset_id' => $person->assignments[0]->id]) }}" class="btn btn-danger" target="_blank"><i class="fa fa-print"></i> <span>Imprimir</span></a>
+                                            @else
+                                                {{-- @foreach ($person->assignments as $item)
+                                                    
+                                                @endforeach --}}
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="dataTable" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Código de custodio</th>
+                                        <th>Código de activo</th>
+                                        <th>Categoría</th>
+                                        <th>Descripción</th>
+                                        <th>Imagen</th>
+                                        <th>Estado</th>
+                                        <th>Registrado por</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $meses = ['', 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+                                    @endphp
+                                    @forelse ($person->assignments as $assignment)
+                                        @foreach ($assignment->details as $item)
+                                            <tr>
+                                                <td>{{ $item->asset->id }}</td>
+                                                <td>{{ Str::upper($assignment->code) }}</td>
+                                                <td>{{ Str::upper($item->asset->code) }}</td>
+                                                <td>
+                                                    {{ $item->asset->subcategory->name }} <br>
+                                                    <label class="label label-default">{{ $item->asset->subcategory->category->name }}</label>
+                                                </td>
+                                                <td>{{ strlen($item->asset->description) <= 100 ? $item->asset->description : substr($item->asset->description, 0, 100).'...' }}</td>
+                                                <td>
+                                                    @php
+                                                        $image = asset('images/default.jpg');
+                                                        if(count(json_decode($item->asset->images))){
+                                                            $image = asset('storage/'.str_replace('.', '-cropped.', json_decode($item->asset->images)[0]));
+                                                        }
+                                                    @endphp
+                                                    <img src="{{ $image }}" alt="image" width="60px">
+                                                </td>
+                                                <td>
+                                                    @php
+                                                        if($item->status == "bueno"){
+                                                            $class = 'success';
+                                                        }elseif($item->status == "regular"){
+                                                            $class = 'warning';
+                                                        }elseif($item->status == "malo"){
+                                                            $class = 'danger';
+                                                        }else{
+                                                            $item->status = 'desconocido';
+                                                            $class = 'default';
+                                                        }
+                                                    @endphp
+                                                    <label class="label label-{{ $class }}">{{ Str::ucfirst($item->status) }}</label>
+                                                </td>
+                                                <td>
+                                                    {{ $item->asset->user ? $item->asset->user->name : '' }} <br>
+                                                    {{ date('d/', strtotime($item->asset->created_at)).$meses[intval(date('m', strtotime($item->asset->created_at)))].date('/Y H:i', strtotime($item->asset->created_at)) }} <br>
+                                                    <small>{{ \Carbon\Carbon::parse($item->asset->created_at)->diffForHumans() }}</small>
+                                                </td>
+                                                <td class="no-sort no-click bread-actions text-right">
+                                                    
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @empty
+                                        <tr class="odd">
+                                            <td valign="top" colspan="9" class="dataTables_empty">No hay activos asignados</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-bordered" style="padding-bottom:5px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel-heading" style="border-bottom:0;">
                                 <h3 class="panel-title">Historial de inamovilidades</h3>
                             </div>
                             <table id="dataTable" class="table table-bordered table-hover">

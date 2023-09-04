@@ -100,7 +100,8 @@ class PermissionsTableSeeder extends Seeder
             'browse_file_people',
             'add_file_people',
             'edit_file_people',
-            'delete_file_people'
+            'delete_file_people',
+            'add_assets_people',
         ];
 
         foreach ($keys as $key) {

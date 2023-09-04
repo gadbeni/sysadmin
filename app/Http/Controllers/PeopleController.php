@@ -14,6 +14,9 @@ use App\Models\PersonRotation;
 use App\Models\Contract;
 use App\Models\PersonIrremovability;
 use App\Models\PersonFile;
+use App\Models\PersonAsset;
+use App\Models\PersonAssetDetail;
+use App\Models\PersonAssetSignature;
 
 class PeopleController extends Controller
 {
@@ -23,6 +26,8 @@ class PeopleController extends Controller
     }
 
     public function index(){
+        $date = date('Y-m-d');
+        Contract::where('finish', '<', $date)->where('deleted_at', NULL)->where('status', 'firmado')->update(['status' => 'concluido']);
         return view('management.people.browse');
     }
 
@@ -30,6 +35,8 @@ class PeopleController extends Controller
         $paginate = request('paginate') ?? 10;
         $data = Person::with(['city', 'afp_type', 'contracts', 'irremovabilities' => function($q){
                         $q->where('start', '<=', date('Y-m-d'))->whereRaw("(finish is NULL or finish >= '".date('Y-m-d')."')");
+                    }, 'assignments.details' => function($q){
+                        $q->where('active', 1);
                     }])
                     ->where(function($query) use ($search){
                         if($search){
@@ -58,7 +65,7 @@ class PeopleController extends Controller
     }
 
     public function read($id){
-        $person = Person::with(['contracts.rotations', 'irremovabilities.type'])->where('id', $id)->first();
+        $person = Person::with(['contracts.rotations', 'irremovabilities.type', 'assignments.details.asset'])->where('id', $id)->first();
         return view('management.people.read', compact('person'));
     }
 
@@ -162,6 +169,73 @@ class PeopleController extends Controller
             // dd($th);
             return redirect()->route('voyager.people.show', $people)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
+    }
+
+    public function assets_store($id, Request $request){
+        // dd($request->all());
+        DB::beginTransaction();
+        try {
+
+            // *Verificar que alguno de los activo no esté asignado a otro funcionario
+            for ($i=0; $i < count($request->asset_id); $i++) { 
+
+                $asset_details = PersonAssetDetail::where('asset_id', $request->asset_id[$i])->where('active', 1)->first();
+                if ($asset_details) {
+                    return response()->json(['error' => 1, 'message' => 'El activo con el código '.$asset_details->asset->code.' ya está en uso']);
+                }
+            }
+
+            // Verificar que el código de acta no esté registrado
+            if(PersonAsset::where('code', $request->code)->first()){
+                return response()->json(['error' => 1, 'message' => 'El código de acta ya está registrado']);
+            }
+
+            // Verificar si la persona tiene contrato
+            $contract = Contract::where('person_id', $id)->where('status', 'firmado')->first();
+            if(!$contract){
+                return response()->json(['error' => 1, 'message' => 'La persona no tiene contrato vigente']);
+            }
+
+            $person_asset = PersonAsset::create([
+                'person_id' => $id,
+                'contract_id' => $contract->id,
+                'user_id' => Auth::user()->id,
+                'code' => $request->code,
+                'date' => $request->date,
+                'observations' => $request->observations
+            ]);
+
+            // Registrar detalle
+            for ($i=0; $i < count($request->asset_id); $i++) { 
+                PersonAssetDetail::create([
+                    'person_asset_id' => $person_asset->id,
+                    'asset_id' => $request->asset_id[$i],
+                    // 'office_id',
+                    'observations' => $request->asset_observations[$i],
+                    'status' => $request->status[$i]
+                ]);
+            }
+
+            // Registrar personas que firman
+            for ($i=0; $i < count($request->signature_id); $i++) { 
+                PersonAssetSignature::create([
+                    'person_asset_id' => $person_asset->id,
+                    'contract_id' => $request->signature_id[$i]
+                ]);
+            }
+
+            DB::commit();
+            return response()->json(['success' => 1, 'message' => 'Custodio registrada correctamente', 'person_asset' => $person_asset]);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            // throw $th;
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
+        }
+    }
+
+    public function assets_print($person_id, $person_asset_id){
+        $person_asset = PersonAsset::find($person_asset_id);
+        return view('management.people.print.assets', compact('person_asset'));
     }
 
     public function rotation_print($id){

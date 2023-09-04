@@ -52,7 +52,7 @@
                                 <input type="text" id="input-search" class="form-control">
                             </div>
                         </div>
-                        <div class="row" id="div-results" style="min-height: 120px"></div>
+                        <div class="row" id="div-results" style="min-height: 120px; padding-bottom: 80px"></div>
                     </div>
                 </div>
             </div>
@@ -133,24 +133,41 @@
     {{-- Modal add file --}}
     @include('management.people.partials.modal-add-file')
 
+    {{-- Modal add assets --}}
+    @include('management.people.partials.modal-add-assets')
+
     {{-- Modal rotation --}}
     @include('management.people.partials.modal-rotation')
     
 @stop
 
 @section('css')
-
+    <style>
+        @media (max-width: 767px) {
+            .table-responsive .dropdown-menu {
+                position: static !important;
+            }
+        }
+        @media (min-width: 768px) {
+            .table-responsive {
+                overflow: visible;
+            }
+        }
+    </style>
 @stop
 
 @section('javascript')
     <script src="{{ url('js/main.js') }}"></script>
     <script>
         var countPage = 10, order = 'id', typeOrder = 'desc';
+        var assetSelected = null;
         $(document).ready(() => {
 
             $('#select-destiny_id').select2({dropdownParent: $('#modal-rotation')});
             $('#select-destiny_dependency').select2({dropdownParent: $('#modal-rotation')});
             $('#select-responsible_id').select2({dropdownParent: $('#modal-rotation')});
+            customSelect('#select-asset_id', '{{ url("admin/assets/search/ajax") }}', formatResultAssets, data => {data.code+' - '+data.subcategory.name; assetSelected = data}, $('#modal-add-assets'));
+            customSelect('#select-signature_id', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#modal-add-assets'));
             list();
 
             $('.toggleswitch').bootstrapToggle();
@@ -164,6 +181,33 @@
             $('#select-paginate').change(function(){
                 countPage = $(this).val();
                 list();
+            });
+
+            $('#select-asset_id').change(function(){
+                let asset = assetSelected;
+                if (document.getElementById(`tr-asset-${asset.id}`)) {
+                    toastr.info('El activo ya se encuentra en la lista', 'Aviso')
+                    return 0;
+                }
+                $('#assets-list').append(`
+                    <tr id="tr-asset-${asset.id}">
+                        <td class="td-assets"></td>
+                        <td>
+                            <input type="hidden" name="asset_id[]" value="${asset.id}" />
+                            ${asset.code}
+                        </td>
+                        <td>${asset.description}</td>
+                        <td>
+                            <input type="hidden" name="status[]" value="${asset.status}" />
+                            ${asset.status.charAt(0).toUpperCase() + asset.status.slice(1)}
+                        </td>
+                        <td><textarea name="asset_observations[]" class="form-control"></textarea></td>
+                        <td>
+                            <button class="btn btn-link" onclick="deleteAssetTr(${asset.id})"><i class="voyager-trash text-danger"></i></button>
+                        </td>
+                    </tr>
+                `);
+                generateNumberRow();
             });
 
             $('.form-submit').submit(function(e){
@@ -184,10 +228,14 @@
                             toastr.success(res.message, 'Bien hecho');
                             $('.modal-option').modal('hide');
                             $(this).trigger('reset');
+                            $('#assets-list').html(`<tr id="tr-empty"><td colspan="5" class="text-center">Ningun activo seleccionado</td></tr>`);
                             list();
                             
                             if(res.rotation){
                                 window.open(`{{ url('admin/people/rotation') }}/${res.rotation.id}`, '_blank').focus();
+                            }
+                            if(res.person_asset){
+                                window.open(`{{ url('admin/people') }}/${res.person_id}/assets/${res.person_asset.id}/print`, '_blank').focus();
                             }
                         }else{
                             toastr.error(res.message, 'Error');
@@ -213,6 +261,26 @@
                     $('#div-results').loading('toggle');
                 }
             });
+        }
+
+        function generateNumberRow(){
+            let number = 1;
+            $('.td-assets').each(function(){
+                $(this).text(number);
+                number++;
+            });
+
+            // Mostrar/Ocultar en mensaje de "tabla vacía"
+            if(number > 1){
+                $('#tr-empty').fadeOut('fast');
+            }else{
+                $('#tr-empty').fadeIn('fast');
+            }
+        }
+
+        function deleteAssetTr(id){
+            $(`#tr-asset-${id}`).remove();
+            generateNumberRow();
         }
     </script>
 @stop

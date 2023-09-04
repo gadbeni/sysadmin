@@ -4,7 +4,12 @@
 
 @section('page_header')
     <h1 class="page-title">
-        <i class="voyager-tag"></i> Viendo Activo
+        <i class="voyager-tag"></i> Viendo Activo &nbsp;
+        @if (auth()->user()->hasPermission('edit_assets'))
+        <a href="{{ route('assets.edit', $asset->id) }}" class="btn btn-info">
+            <i class="glyphicon glyphicon-pencil"></i> <span class="hidden-xs hidden-sm">Editar</span>
+        </a>&nbsp;
+        @endif
         <a href="{{ route('assets.index') }}" class="btn btn-warning">
             <span class="glyphicon glyphicon-list"></span>&nbsp;
             Volver a la lista
@@ -109,7 +114,18 @@
                         </div>
                         <div class="col-md-12">
                             <div class="panel-heading" style="border-bottom:0;">
-                                <h3 class="panel-title">observaciones</h3>
+                                <h3 class="panel-title">Imágenes</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                @foreach (json_decode($asset->images) as $image)
+                                <img src="{{ asset('storage/'.str_replace('.', '-cropped.', $image)) }}" alt="Imagen" style="width: 70px">    
+                                @endforeach
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-12">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Observaciones</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
                                 <p>{{ $asset->observations ?? 'Ninguna' }}</p>
@@ -148,6 +164,92 @@
                             <hr style="margin:0;">
                         </div>
                         @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-bordered" style="padding-bottom:5px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h3 class="panel-title">Historial de custodio</h3>
+                                    </div>
+                                    <div class="col-md-4 text-right" style="padding-top: 20px">
+                                        {{-- @if (auth()->user()->hasPermission('add_file_people'))
+                                        <a href="#" class="btn btn-success btn-add-file" data-url="{{ route('people.file.store', ['id' => $person->id]) }}" data-toggle="modal" data-target="#modal-add-file" ><i class="voyager-plus"></i> <span>Agregar</span></a>
+                                        @endif --}}
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="dataTable" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>N&deg;</th>
+                                        <th>ID</th>
+                                        <th>Código de custodio</th>
+                                        <th>Nombre completo</th>
+                                        <th>Estado</th>
+                                        <th>Observaciones</th>
+                                        <th>Registrado</th>
+                                        {{-- <th class="text-right">Acciones</th> --}}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $cont = 1;
+                                    @endphp
+                                    @forelse ($asset->assignments->sortByDesc('id') as $item)
+                                        <tr>
+                                            <td>{{ $cont }}</td>
+                                            <td>{{ $item->id }}</td>
+                                            <td>{{ $item->person_asset->code }}</td>
+                                            <td>
+                                                {{ $item->person_asset->person->first_name }} {{ $item->person_asset->person->first_name }} <br>
+                                                <small>{{ $item->person_asset->person->ci }}</small>
+                                            </td>
+                                            <td>
+                                                @php
+                                                    if($item->status == "bueno"){
+                                                        $class = 'success';
+                                                    }elseif($item->status == "regular"){
+                                                        $class = 'warning';
+                                                    }elseif($item->status == "malo"){
+                                                        $class = 'danger';
+                                                    }else{
+                                                        $item->status = 'desconocido';
+                                                        $class = 'default';
+                                                    }
+                                                @endphp
+                                                <label class="label label-{{ $class }}">{{ Str::ucfirst($item->status) }}</label>
+                                            <td>{{ $item->observations }}</td>
+                                            <td>
+                                                {{ $item->person_asset->user ? $item->person_asset->user->name : '' }} <br>
+                                                {{ date('d/m/Y H:i', strtotime($item->person_asset->created_at)) }} <br>
+                                                <small>{{ \Carbon\Carbon::parse($item->person_asset->created_at)->diffForHumans() }}</small>
+                                            </td>
+                                            {{-- <td class="no-sort no-click bread-actions text-right">
+                                                @if (auth()->user()->hasPermission('delete_file_people'))
+                                                <button type="button" onclick="deleteItem('{{ route('people.file.delete', ['people' => $person->id, 'id' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal" title="Eliminar" class="btn btn-sm btn-danger delete">
+                                                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
+                                                </button>
+                                                @endif
+                                            </td> --}}
+                                        </tr>
+                                        @php
+                                            $cont++;
+                                        @endphp
+                                    @empty
+                                        <tr>
+                                            <td colspan="5">No hay datos disponible</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

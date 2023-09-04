@@ -42,6 +42,6 @@ class Asset extends Model
     }
 
     public function assignments(){
-        return $this->hasMany(PersonAssetDetails::class, 'asset_id');
+        return $this->hasMany(PersonAssetDetail::class);
     }
 }

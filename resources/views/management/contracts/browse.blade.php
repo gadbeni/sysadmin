@@ -138,7 +138,7 @@
     </form>
 
     {{-- Finish modal --}}
-    <form class="form-submit" action="{{ route('contracts.status') }}" id="form-finish" method="POST">
+    <form class="form-submit" action="#" id="form-finish" method="POST">
         {{ csrf_field() }}
         <div class="modal fade" tabindex="-1" id="finish-modal" role="dialog">
             <div class="modal-dialog modal-lg">
@@ -168,11 +168,11 @@
                         </div>
                         <div class="form-group type-2">
                             <label for="legal_report">Informe legal</label>
-                            <textarea name="legal_report" class="form-control textarea-type-2" rows="4" placeholder="Nº 001/2023 de 05 de abril de 2023, la Abog..." required></textarea>
+                            <textarea name="legal_report" class="form-control textarea-type-2" rows="5" placeholder="Nº 001/2023 de 05 de abril de 2023, la Abog..." required></textarea>
                         </div>
                         <div class="form-group type-2">
                             <label for="details">Inciso mencionado</label>
-                            <textarea name="details" class="form-control textarea-type-2" rows="2" placeholder=". e)  Inasistencia injustificada de tres (3) días hábiles consecutivos o seis (6) días hábiles discontinuos en un (1) mes" required></textarea>
+                            <textarea name="details" class="form-control textarea-type-2" rows="5" placeholder=". e)  Inasistencia injustificada de tres (3) días hábiles consecutivos o seis (6) días hábiles discontinuos en un (1) mes" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -533,7 +533,7 @@
             $('#select-responsible_id').select2({dropdownParent: $('#modal-rotation')});
             list();
 
-            customSelect('#select-applicant_id', '{{ url("admin/contracts/ajax/search") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#addendum-modal'));
+            customSelect('#select-applicant_id', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#addendum-modal'));
             
             $('#input-search').on('keyup', function(e){
                 if(e.keyCode == 13) {
@@ -636,11 +636,12 @@
             $('#form-status input[name="status"]').val(status);
         }
 
-        function finishContract(id, date, type) {
-            $('#form-finish input[name="id"]').val(id);
-            $('#form-finish input[name="finish"]').val(date);
-            $('#form-finish input[name="finish"]').attr("max", date);
-            if(type == 1){
+        function finishContract(contract) {
+            $('#form-finish').trigger('reset');
+            $('#form-finish input[name="id"]').val(contract.id);
+            $('#form-finish input[name="finish"]').val(contract.finish);
+            $('#form-finish input[name="finish"]').attr("max", contract.procedure_type_id);
+            if(contract.procedure_type_id == 1){
                 $('#form-finish .type-1').fadeIn('fast');
                 $('#form-finish .type-2').fadeOut('fast');
                 $('#form-finish .textarea-type-1').attr('required', 'required');
@@ -650,6 +651,19 @@
                 $('#form-finish .type-1').fadeOut('fast');
                 $('#form-finish .textarea-type-2').attr('required', 'required');
                 $('#form-finish .textarea-type-1').removeAttr('required');
+            }
+
+            // Si el contrato ya se finalizó, quiere decir que lo que queremos es editar
+            if (contract.finished) {
+                $('#form-finish').attr('action', "{{ route('contracts.resolution.update') }}");
+                $('#form-finish input[name="finish"]').prop('disabled', true);
+                $('#form-finish textarea[name="technical_report"]').val(contract.finished.technical_report);
+                $('#form-finish textarea[name="nci"]').val(contract.finished.nci);
+                $('#form-finish textarea[name="legal_report"]').val(contract.finished.legal_report);
+                $('#form-finish textarea[name="details"]').val(contract.finished.details);
+            }else{
+                $('#form-finish').attr('action', "{{ route('contracts.status') }}");
+                $('#form-finish input[name="finish"]').prop('disabled', false);
             }
         }
 

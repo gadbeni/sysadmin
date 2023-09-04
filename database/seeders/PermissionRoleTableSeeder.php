@@ -494,7 +494,9 @@ class PermissionRoleTableSeeder extends Seeder
         $role = Role::where('name', 'activos_tecnico')->firstOrFail();
         $permissions = Permission::whereRaw("table_name = 'admin' or
                                             `table_name` = 'assets' or
-                                            `table_name` = 'assets_categories'")->get();
+                                            `table_name` = 'assets_subcategories' or
+                                            `key` = 'browse_people' or
+                                            `key` = 'add_assets_people'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
     }
 }

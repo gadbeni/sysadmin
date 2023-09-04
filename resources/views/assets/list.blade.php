@@ -7,6 +7,8 @@
                     <th>Código</th>
                     <th>Categoría</th>
                     <th>Descripción</th>
+                    <th>Custodio</th>
+                    <th>Imagen</th>
                     <th>Estado</th>
                     <th>Registrado por</th>
                     <th>Acciones</th>
@@ -17,6 +19,12 @@
                     $meses = ['', 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
                 @endphp
                 @forelse ($data as $item)
+                    @php
+                        $image = asset('images/default.jpg');
+                        if(count(json_decode($item->images))){
+                            $image = asset('storage/'.str_replace('.', '-cropped.', json_decode($item->images)[0]));
+                        }
+                    @endphp
                     <tr>
                         <td>{{ $item->id }}</td>
                         <td>{{ Str::upper($item->code) }}</td>
@@ -25,6 +33,17 @@
                             <label class="label label-default">{{ $item->subcategory->category->name }}</label>
                         </td>
                         <td>{{ strlen($item->description) <= 100 ? $item->description : substr($item->description, 0, 100).'...' }}</td>
+                        <td>
+                            @if ($item->assignments->count())
+                                @php
+                                    $assignment = $item->assignments[0];
+                                @endphp
+                                <a href="{{ route('voyager.people.show', ['id' => $assignment->person_asset->person_id]) }}" title="Ver persona" target="_blank">{{ $assignment->person_asset->person->first_name }} {{ $assignment->person_asset->person->last_name }}</a>
+                            @else
+                                Ninguno
+                            @endif
+                        </td>
+                        <td><img src="{{ $image }}" alt="image" width="60px"></td>
                         <td>
                             @php
                                 if($item->status == "bueno"){

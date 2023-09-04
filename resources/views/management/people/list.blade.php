@@ -76,12 +76,16 @@
                     </td>
                     <td class="no-sort no-click bread-actions text-right">
                         <div class="btn-group" style="margin-right: 3px">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
                                 Más <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu" style="left: -90px !important">
                                 @if (auth()->user()->hasPermission('add_file_people'))
                                 <li><a href="#" class="btn-add-file" data-url="{{ route('people.file.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-add-file" >Agregar documentación</a></li>
+                                @endif
+                                {{-- Si no tiene ningún custodio activo --}}
+                                @if (auth()->user()->hasPermission('add_assets_people') && $item->contracts->where('status', 'firmado')->count() && $item->assignments->count() == 0)
+                                <li><a href="#" class="btn-add-assets" data-url="{{ route('people.assets.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-add-assets" >Agregar custodio</a></li>
                                 @endif
                                 @if (auth()->user()->hasPermission('add_rotation_people'))
                                 <li><a href="#" class="btn-rotation" data-url="{{ route('people.rotation.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-rotation" >Rotar</a></li>
@@ -151,6 +155,12 @@
             e.preventDefault();
             let url = $(this).data('url');
             $('#add-file-form').attr('action', url);
+        });
+
+        $('.btn-add-assets').click(function(e){
+            e.preventDefault();
+            let url = $(this).data('url');
+            $('#add-assets-form').attr('action', url);
         });
 
         $('.btn-rotation').click(function(e){

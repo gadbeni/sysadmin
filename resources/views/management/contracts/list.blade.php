@@ -165,7 +165,11 @@
                                         @endif
                                         {{-- Crear memo/resolución --}}
                                         @if ($item->status == 'firmado' && auth()->user()->hasPermission('finish_contracts'))
-                                        <li><a href="#" title="{{ $item->procedure_type_id == 1 ? 'Memo de agradecimiento' : 'Resolución' }}" data-toggle="modal" data-target="#finish-modal" onclick="finishContract({{ $item->id }}, '{{ $item->finish }}', {{ $item->procedure_type_id }})">{{ $item->procedure_type_id == 1 ? 'Agradecimiento' : 'Resolución' }}</a></li>
+                                        <li><a href="#" title="{{ $item->procedure_type_id == 1 ? 'Memo de agradecimiento' : 'Resolución' }}" data-toggle="modal" data-target="#finish-modal" onclick='finishContract(@json($item))'>{{ $item->procedure_type_id == 1 ? 'Agradecimiento' : 'Resolución' }}</a></li>
+                                        @endif
+                                        {{-- Editar resolución contrato --}}
+                                        @if (auth()->user()->role_id == 1 && $item->finished && $item->procedure_type_id != 1)
+                                        <li><a href="#" title="Editar resolución de contrato" data-toggle="modal" data-target="#finish-modal" onclick='finishContract(@json($item))'>Editar resolución</a></li>
                                         @endif
                                         {{-- Restaurar contrato --}}
                                         @if (auth()->user()->hasPermission('restore_contracts') && $item->finished)

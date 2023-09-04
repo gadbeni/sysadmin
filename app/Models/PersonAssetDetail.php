@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PersonAssetDetails extends Model
+class PersonAssetDetail extends Model
 {
     use HasFactory, SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -15,6 +15,15 @@ class PersonAssetDetails extends Model
         'asset_id',
         'office_id',
         'observations',
-        'status'
+        'status',
+        'active'
     ];
+
+    public function asset(){
+        return $this->belongsTo(Asset::class, 'asset_id');
+    }
+
+    public function person_asset(){
+        return $this->belongsTo(PersonAsset::class, 'person_asset_id');
+    }
 }

@@ -37,7 +37,9 @@ class AssetsControllers extends Controller
         $user_id = request('user_id') ?? null;
         $direccion_administrativa_id = request('direccion_administrativa_id') ?? null;
         $paginate = request('paginate') ?? 10;
-        $data = Asset::with(['user', 'subcategory.category'])
+        $data = Asset::with(['user', 'subcategory.category', 'assignments.person_asset.person', 'assignments' => function($q){
+                        $q->where('active', 1);
+                    }])
                     ->whereRaw($user_id ? "user_id = ".$user_id : 1)
                     ->where(function($query) use ($search){
                         if($search){
@@ -47,9 +49,16 @@ class AssetsControllers extends Controller
                             ->OrwhereHas('subcategory.category', function($query) use($search){
                                 $query->whereRaw("name like '%$search%'");
                             })
-                            ->OrWhereRaw($search ? "id = '$search'" : 1)
-                            ->OrWhereRaw($search ? "code like '%$search%'" : 1)
-                            ->OrWhereRaw($search ? "status like '%$search%'" : 1);
+                            ->OrwhereHas('assignments.person_asset.person', function($query) use($search){
+                                $query->whereRaw("(first_name like '%$search%' or last_name like '%$search%' or ci like '%$search%' or phone like '%$search%' or CONCAT(first_name, ' ', last_name) like '%$search%')");
+                            })
+                            ->OrWhereRaw("id = '$search'")
+                            ->orWhereRaw("code like '%$search%'")
+                            ->orWhereRaw("code_siaf like '%$search%'")
+                            ->orWhereRaw("code_internal like '%$search%'")
+                            ->orWhereRaw("tags like '%$search%'")
+                            ->orWhereRaw("description like '%$search%'")
+                            ->orWhereRaw("observations like '%$search%'");
                         }
                     })
                     // ->where(function($query) use ($addendums){
@@ -93,7 +102,10 @@ class AssetsControllers extends Controller
         $images = [];
         if($request->images){
             foreach ($request->images as $item) {
-                array_push($images, $this->store_image($item, 'assets', 1000));
+                $image = $this->store_image($item, 'assets', 1000);
+                if ($image) {
+                    array_push($images, $image);
+                }
             }
         }
         try {
@@ -102,7 +114,7 @@ class AssetsControllers extends Controller
                 'assets_subcategory_id' => is_numeric($request->assets_subcategory_id) ? $request->assets_subcategory_id : AssetsSubcategory::create(['assets_category_id' => $request->assets_category_id, 'name' => Str::upper($request->assets_subcategory_id)])->id,
                 'city_id' => $request->city_id,
                 'user_id' => Auth::user()->id,
-                'code' => $code,
+                'code' => Srt::upper($code),
                 'code_siaf' => $request->code_siaf,
                 'code_internal' => $request->code_internal,
                 'tags' => $request->tags,
@@ -116,7 +128,6 @@ class AssetsControllers extends Controller
                 'status' => $request->status
             ]);
             DB::commit();
-
             return redirect()->route('assets.index')->with(['message' => 'Activo guardado exitosamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
@@ -167,7 +178,10 @@ class AssetsControllers extends Controller
             $images = json_decode($asset->images);
             if($request->images){
                 foreach ($request->images as $item) {
-                    array_push($images, $this->store_image($item, 'assets', 1000));
+                    $image = $this->store_image($item, 'assets', 1000);
+                    if ($image) {
+                        array_push($images, $image);
+                    }
                 }
             }
             
@@ -211,6 +225,10 @@ class AssetsControllers extends Controller
             if($asset->assignments->count()){
                 return redirect()->route('assets.index')->with(['message' => 'El activo tiene historial de asiganción', 'alert-type' => 'error']);
             }
+            $asset->code = $asset->code.'-'.Carbon::now();
+            // Primero actualizamos el campo code para podes reusar el PB que tenía
+            $asset->update();
+            
             $asset->delete();
             return redirect()->route('assets.index')->with(['message' => 'Activo eliminado exitosamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
@@ -220,7 +238,52 @@ class AssetsControllers extends Controller
         }
     }
 
+    public function image_delete(Request $request){
+        try {
+            $asset = Asset::find($request->id);
+            $images = json_decode($asset->images);
+            $new_images = [];
+            foreach ($images as $item) {
+                if($item != $request->image){
+                    array_push($new_images, $item);
+                }
+            }
+            $asset->images = $new_images;
+            $asset->update();
+
+            return redirect()->route('assets.edit', $request->id)->with(['message' => 'Imagen eliminada exitosamente', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            // throw $th;
+            return redirect()->route('assets.edit', $request->id)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
+    }
+
     // Métodos funcionales
+    
+    public function search(){
+        $search = request('search');
+        $assets = Asset::with(['user', 'subcategory.category'])
+                    ->whereHas('assignments',function($q) {
+                        $q->where('active', 1);
+                    }, '<', 1)
+                    ->where(function($query) use ($search){
+                        $query->OrwhereHas('subcategory', function($query) use($search){
+                            $query->whereRaw("name like '%$search%'");
+                        })
+                        ->OrwhereHas('subcategory.category', function($query) use($search){
+                            $query->whereRaw("name like '%$search%'");
+                        })
+                        ->orWhereRaw("code like '%$search%'")
+                        ->orWhereRaw("code_siaf like '%$search%'")
+                        ->orWhereRaw("code_internal like '%$search%'")
+                        ->orWhereRaw("tags like '%$search%'")
+                        ->orWhereRaw("description like '%$search%'")
+                        ->orWhereRaw("observations like '%$search%'");
+                    })
+                    ->where('deleted_at', NULL)->get();
+        return response()->json($assets);
+    }
+
     public function search_by_code(){
         $code = request('code');
         return response()->json(Asset::where('code', Str::lower($code))->withTrashed()->first());

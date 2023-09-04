@@ -94,6 +94,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('people/{id}/file', [PeopleController::class, 'file_store'])->name('people.file.store');
     Route::put('people/{id}/file', [PeopleController::class, 'file_update'])->name('people.file.update');
     Route::delete('people/{people}/file/{id}', [PeopleController::class, 'file_delete'])->name('people.file.delete');
+    Route::post('people/{id}/assets', [PeopleController::class, 'assets_store'])->name('people.assets.store');
+    Route::get('people/{id}/assets/{person_asset_id}/print', [PeopleController::class, 'assets_print'])->name('people.assets.print');
     Route::get('people/rotation/{id}', [PeopleController::class, 'rotation_print']);
     Route::delete('people/{people}/rotation/{id}', [PeopleController::class, 'rotation_delete'])->name('people.rotation.delete');
     Route::post('people/{id}/irremovability', [PeopleController::class, 'irremovability_store'])->name('people.irremovability.store');
@@ -160,6 +162,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     // Activos fijos
     Route::resource('assets', AssetsControllers::class);
     Route::get('assets/list/ajax', [AssetsControllers::class, 'list'])->name('assets.list');
+    Route::post('assets/image/delete', [AssetsControllers::class, 'image_delete'])->name('assets.image.delete');
+    Route::get('assets/search/ajax', [AssetsControllers::class, 'search']);
+    // Para validar si el PB no está ocupado
     Route::get('assets/search/code', [AssetsControllers::class, 'search_by_code']);
 
     // Aguinaldo
@@ -233,6 +238,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::resource('contracts', ContractsController::class);
     Route::get('contracts/ajax/list', [ContractsController::class, 'list']);
     Route::post('contracts/status', [ContractsController::class, 'contracts_status'])->name('contracts.status');
+    Route::post('contracts/resolution/update', [ContractsController::class, 'contracts_resolution_update'])->name('contracts.resolution.update');
     Route::post('contracts/ratificate', [ContractsController::class, 'contracts_ratificate'])->name('contracts.ratificate');
     Route::post('contracts/addendum/store', [ContractsController::class, 'contracts_addendum_store'])->name('contracts.addendum.store');
     Route::post('contracts/addendum/status', [ContractsController::class, 'contracts_addendum_status'])->name('contracts.addendum.status');
@@ -245,7 +251,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('contracts/{id}/file/store', [ContractsController::class, 'file_store'])->name('contracts.file.store');
     Route::delete('contracts/file/{id}/destroy', [ContractsController::class, 'file_destroy'])->name('contracts.file.destroy');
     Route::delete('contracts/finished/{id}/destroy', [ContractsController::class, 'finished_destroy'])->name('contracts.finished.destroy');
-    Route::get('contracts/ajax/search', [ContractsController::class, 'search']);
+    Route::get('contracts/search/ajax', [ContractsController::class, 'search']);
     
     // Bonos antigüedad
     Route::get('seniority-bonus-people', [SeniorityBonusPeopleController::class, 'index'])->name('voyager.seniority-bonus-people.index');
