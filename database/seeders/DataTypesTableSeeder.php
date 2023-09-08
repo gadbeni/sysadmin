@@ -636,8 +636,8 @@ class DataTypesTableSeeder extends Seeder
                 'id' => 43,
                 'name' => 'assets_categories',
                 'slug' => 'assets-categories',
-                'display_name_singular' => 'Categoría de activos',
-                'display_name_plural' => 'Categorías de activos',
+                'display_name_singular' => 'Sección',
+                'display_name_plural' => 'Secciones',
                 'icon' => 'voyager-list',
                 'model_name' => 'App\\Models\\AssetsCategory',
                 'policy_name' => NULL,
@@ -647,15 +647,15 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2023-04-06 09:38:33',
-                'updated_at' => '2023-04-06 09:43:35',
+                'updated_at' => '2023-09-05 08:15:15',
             ),
             35 => 
             array (
                 'id' => 44,
                 'name' => 'assets_subcategories',
                 'slug' => 'assets-subcategories',
-                'display_name_singular' => 'Subcategoría de activos',
-                'display_name_plural' => 'Subcategorías de activos',
+                'display_name_singular' => 'Grupo',
+                'display_name_plural' => 'Grupos',
                 'icon' => 'voyager-list',
                 'model_name' => 'App\\Models\\AssetsSubcategory',
                 'policy_name' => NULL,
@@ -665,7 +665,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2023-04-06 09:39:54',
-                'updated_at' => '2023-04-06 09:45:30',
+                'updated_at' => '2023-09-05 08:15:30',
             ),
             36 => 
             array (

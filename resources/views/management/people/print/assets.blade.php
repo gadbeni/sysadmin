@@ -59,7 +59,7 @@
             <thead>
                 <tr>
                     <th>N&deg;</th>
-                    <th>CODIGO</th>
+                    <th width="60px">CODIGO</th>
                     <th>DETALLE</th>
                     <th>ESTADO</th>
                     <th>OBSERVVACIONES</th>
@@ -113,6 +113,7 @@
         .table-description{
             width: 100%;
             border-collapse: collapse;
+            font-size: 11px;
         }
         .table-description th{
             text-align: center

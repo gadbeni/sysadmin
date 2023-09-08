@@ -52,7 +52,7 @@
                                 <input type="text" id="input-search" class="form-control">
                             </div>
                         </div>
-                        <div class="row" id="div-results" style="min-height: 120px; padding-bottom: 80px"></div>
+                        <div class="row" id="div-results" style="min-height: 120px; padding-bottom: 120px"></div>
                     </div>
                 </div>
             </div>
@@ -130,6 +130,47 @@
         </div>
     </form>
 
+    {{-- Modal attendance options --}}
+    <div class="modal modal-primary fade modal-option" tabindex="-1" id="modal-options-attendance" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="voyager-calendar"></i> Marcaciones</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="options-attendance-form" action="#" method="post">
+                        @csrf
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label for="date">Fecha</label>
+                                <input type="date" name="date" id="input-date" class="form-control">
+                                <input type="hidden" name="current_hour" id="input-current-hour">
+                                <input type="hidden" name="new_hour" id="input-new-hour">
+                                <input type="hidden" name="ci" id="input-ci">
+                            </div>
+                            <div class="col-md-12">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>N&deg;</th>
+                                            <th>Hora</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="details-attendaces"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Modal add file --}}
     @include('management.people.partials.modal-add-file')
 
@@ -161,6 +202,7 @@
     <script>
         var countPage = 10, order = 'id', typeOrder = 'desc';
         var assetSelected = null;
+        var urlListAttendances = null; // Variavle auxiliar para almacenar la ruta de acceso a la lista de marcaciones del funcionario actual (al que se le dió click)
         $(document).ready(() => {
 
             $('#select-destiny_id').select2({dropdownParent: $('#modal-rotation')});
@@ -247,6 +289,40 @@
                     }
                 });
             });
+
+            $('#input-date').change(function(){
+                $('#details-attendaces').html('<tr><td colspan="3">Obteniendo datos...</td></tr>');
+                $.post(urlListAttendances, $('#options-attendance-form').serialize(), function(res){
+                    $('#details-attendaces').empty();
+                    res.attendances.map((item, index) => {
+                        $('#details-attendaces').append(`
+                            <tr id="tr-${index}">
+                                <td>${index +1}</td>
+                                <td id="td-${index}">
+                                    <span>${moment(item.fecha+' '+item.hora).format('HH:mm:ss')}</span>
+                                    <div class="input-group" id="input-group-hour-${index}" style="display:none">
+                                        <input type="time" id="input-edit-hour-${index}" class="form-control" onchange="setNewHour(${index})" value="${moment(item.fecha+' '+item.hora).format('HH:mm:ss')}" />
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-default" type="button" onclick="tdUpdate(${index})" style="margin-top: -1px" title="Guardar">
+                                                <i class="voyager-check"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <button type="button" class="btn btn-link" title="Agregar nuevo" id="btn-add-${index}" onclick="trAdd(${index}, ${res.person_id})" style="${index != res.attendances.length -1 ? 'display:none' : ''}"><i class="voyager-plus text-success"></i></button>
+                                    <button type="button" class="btn btn-link" title="Editar" id="btn-edit-${index}" onclick="tdEdit(${index}, ${res.person_id})"><i class="voyager-edit text-info"></i></button>
+                                    <button type="button" class="btn btn-link" title="Eliminar" id="btn-delete-${index}" onclick="tdDelete(${index}, ${res.person_id})"><i class="voyager-trash text-danger"></i></button>
+                                </td>
+                            </tr>
+                        `);
+                        $('#input-ci').val(item.ci)
+                    });
+                    if(!res.attendances.length){
+                        $('#details-attendaces').html(`<tr id="tr-0"><td colspan="3">No hay marcaciones <button type="button" class="btn btn-link" title="Agregar nuevo" id="btn-add-0" onclick="trAdd(0, ${res.person_id})"><i class="voyager-plus text-success"></i></button></td></tr>`);
+                    }
+                });
+            });
         });
 
         function list(page = 1){
@@ -281,6 +357,80 @@
         function deleteAssetTr(id){
             $(`#tr-asset-${id}`).remove();
             generateNumberRow();
+        }
+
+        // Edit attendance
+        function tdEdit(index, person_id){
+            $('#options-attendance-form').attr('action', "{{ url('admin/people') }}/"+person_id+"/attendance/update");
+            $(`#details-attendaces #td-${index} span`).fadeOut('fast');
+            $(`#details-attendaces #btn-add-${index}`).fadeOut('fast');
+            $(`#details-attendaces #btn-edit-${index}`).fadeOut('fast');
+            $(`#details-attendaces #btn-delete-${index}`).fadeOut('fast');
+            $(`#details-attendaces #td-${index} #input-group-hour-${index}`).fadeIn('fast');
+            $(`#input-current-hour`).val($(`#details-attendaces #td-${index} #input-edit-hour-${index}`).val());
+            $(`#input-new-hour`).val($(`#details-attendaces #td-${index} #input-edit-hour-${index}`).val());
+        }
+
+        // Edit attendance
+        function trAdd(index, person_id){
+            $('#options-attendance-form').attr('action', "{{ url('admin/people') }}/"+person_id+"/attendance/store");
+            $(`#tr-${index}`).after(`
+                <tr id="tr-add-${index}">
+                    <td></td>
+                    <td>
+                        <div class="input-group" id="input-group-hour-${index}">
+                            <input type="time" id="input-add-hour-${index}" class="form-control" />
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" type="button" onclick="tdSave(${index})" style="margin-top: -1px" title="Guardar">
+                                    <i class="voyager-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            `);
+        }
+
+        function setNewHour(index){
+            $(`#input-new-hour`).val($(`#details-attendaces #td-${index} #input-edit-hour-${index}`).val());
+        }
+
+        function tdSave(index){
+            $(`#input-new-hour`).val($(`#input-add-hour-${index}`).val());
+            $(`#tr-add-${index}`).html('<tr><td colspan="3">Registrando...</td></tr>');
+            $.post($('#options-attendance-form').attr('action'), $('#options-attendance-form').serialize(), function(res){
+                $('#input-date').trigger('change');
+                if(res.success){
+                    toastr.success('Dato registrado', 'Bien hecho');
+                }else{
+                    toastr.error('Ocurrió un error', 'Error');
+                }
+            });
+        }
+
+        function tdUpdate(index){
+            $.post($('#options-attendance-form').attr('action'), $('#options-attendance-form').serialize(), function(res){
+                $(`#details-attendaces #td-${index} #input-group-hour-${index}`).fadeOut('fast');
+                $('#input-date').trigger('change');
+                if(res.success){
+                    toastr.success('Dato actualizado', 'Bien hecho');
+                }else{
+                    toastr.error('Ocurrió un error', 'Error');
+                }
+            });
+        }
+
+        function tdDelete(index, person_id){
+            $(`#input-current-hour`).val($(`#details-attendaces #td-${index} #input-edit-hour-${index}`).val());
+            $.post("{{ url('admin/people') }}/"+person_id+"/attendance/delete", $('#options-attendance-form').serialize(), function(res){
+                $('#input-date').trigger('change');
+                if(res.success){
+                    toastr.success('Dato eliminado', 'Bien hecho');
+                }else{
+                    toastr.error('Ocurrió un error', 'Error');
+                }
+            });
         }
     </script>
 @stop

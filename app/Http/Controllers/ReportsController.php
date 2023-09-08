@@ -1146,4 +1146,9 @@ class ReportsController extends Controller
             return view('reports.paymentschedules.bonus-list', compact('bonuses', 'year'));
         }
     }
+
+    public function attendances_index(){
+        $this->custom_authorize('browse_reportshumans-resourcesattendances');
+        return view('reports.rr_hh.attendances-browse');
+    }
 }

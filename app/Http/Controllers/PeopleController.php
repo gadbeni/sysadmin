@@ -283,4 +283,73 @@ class PeopleController extends Controller
             return response()->json(['error' => 1, 'message' => 'Ocurrió un error en el servidor']);
         }
     }
+
+    public function attendances($id, Request $request){
+        $person = Person::find($id);
+        $ci = str_replace(' ', '-', $person->ci); // Reemplazar los espacios en blancos con -
+        $ci = explode('-', $ci)[0]; // Obtener solo el valor numérico de CI
+        $attendances = DB::connection('sia')
+                            ->table('Asistencia')
+                            ->where('IdPersona', $ci)
+                            ->whereDate('Fecha', $request->date)
+                            ->select(DB::raw('IdPersona as ci'), DB::raw('CONVERT(DATE, Fecha) as fecha'), DB::raw('CONVERT(TIME, Hora) as hora'), DB::raw('*'))
+                            ->get();
+        return response()->json(['attendances' => $attendances, 'person_id' => $id]);
+    }
+
+    public function attendances_store($id, Request $request){
+        if (!$request->new_hour) {
+            return response()->json(['error' => 1]);
+        }
+        try {
+            $person = Person::find($id);
+            $ci = str_replace(' ', '-', $person->ci); // Reemplazar los espacios en blancos con -
+            $ci = explode('-', $ci)[0]; // Obtener solo el valor numérico de CI
+            $insert = DB::connection('sia')
+                ->table('Asistencia')
+                ->insert([
+                    'IdPersona' => $ci,
+                    'Fecha' => date('d/m/Y', strtotime($request->date)),
+                    'Hora' => '30/12/1899 '.$request->new_hour.':'.rand(10,59),
+                    'Tipo' => 'R'
+                ]);
+            return response()->json(['success' => 1]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => 1]);
+        }
+    }
+
+    public function attendances_update($id, Request $request){
+        try {
+            $person = Person::find($id);
+            $ci = str_replace(' ', '-', $person->ci); // Reemplazar los espacios en blancos con -
+            $ci = explode('-', $ci)[0]; // Obtener solo el valor numérico de CI
+            DB::connection('sia')
+                ->table('Asistencia')
+                ->where('IdPersona', $ci)
+                ->whereDate('Fecha', $request->date)
+                ->whereTime('Hora', $request->current_hour)
+                ->update(['Hora' => '30-12-1899 '.$request->new_hour]);
+            return response()->json(['success' => 1]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => 1]);
+        }
+    }
+
+    public function attendances_delete($id, Request $request){
+        try {
+            $person = Person::find($id);
+            $ci = str_replace(' ', '-', $person->ci); // Reemplazar los espacios en blancos con -
+            $ci = explode('-', $ci)[0]; // Obtener solo el valor numérico de CI
+            DB::connection('sia')
+                ->table('Asistencia')
+                ->where('IdPersona', $ci)
+                ->whereDate('Fecha', $request->date)
+                ->whereTime('Hora', $request->current_hour)
+                ->delete();
+            return response()->json(['success' => 1]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => 1]);
+        }
+    }
 }

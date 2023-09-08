@@ -4,7 +4,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Código</th>
+                    <th width="90px">Código</th>
                     <th>Categoría</th>
                     <th>Descripción</th>
                     <th>Custodio</th>

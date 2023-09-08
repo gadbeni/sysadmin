@@ -243,7 +243,7 @@
                             <table id="dataTable" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>N&deg;</th>
                                         <th>Código de custodio</th>
                                         <th>Código de activo</th>
                                         <th>Categoría</th>
@@ -257,11 +257,12 @@
                                 <tbody>
                                     @php
                                         $meses = ['', 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+                                        $cont = 1;
                                     @endphp
                                     @forelse ($person->assignments as $assignment)
                                         @foreach ($assignment->details as $item)
                                             <tr>
-                                                <td>{{ $item->asset->id }}</td>
+                                                <td>{{ $cont }}</td>
                                                 <td>{{ Str::upper($assignment->code) }}</td>
                                                 <td>{{ Str::upper($item->asset->code) }}</td>
                                                 <td>
@@ -302,6 +303,9 @@
                                                     
                                                 </td>
                                             </tr>
+                                            @php
+                                                $cont++;
+                                            @endphp
                                         @endforeach
                                     @empty
                                         <tr class="odd">

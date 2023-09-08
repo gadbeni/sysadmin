@@ -114,7 +114,7 @@ class AssetsControllers extends Controller
                 'assets_subcategory_id' => is_numeric($request->assets_subcategory_id) ? $request->assets_subcategory_id : AssetsSubcategory::create(['assets_category_id' => $request->assets_category_id, 'name' => Str::upper($request->assets_subcategory_id)])->id,
                 'city_id' => $request->city_id,
                 'user_id' => Auth::user()->id,
-                'code' => Srt::upper($code),
+                'code' => Str::upper($code),
                 'code_siaf' => $request->code_siaf,
                 'code_internal' => $request->code_internal,
                 'tags' => $request->tags,

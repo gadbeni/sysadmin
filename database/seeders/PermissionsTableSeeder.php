@@ -90,6 +90,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('assets_categories');
         Permission::generateFor('assets');
         Permission::generateFor('schedules');
+        Permission::generateFor('attendances');
 
         // people
         $keys = [
@@ -102,6 +103,7 @@ class PermissionsTableSeeder extends Seeder
             'edit_file_people',
             'delete_file_people',
             'add_assets_people',
+            'edit_attendances_people',
         ];
 
         foreach ($keys as $key) {
@@ -198,6 +200,7 @@ class PermissionsTableSeeder extends Seeder
             'browse_reportshumans-resourcespeople',
             'browse_reportshumans-resourcescontraloria',
             'browse_reportshumans-resourcesaniversarios',
+            'browse_reportshumans-resourcesattendances',
             'browse_reportshumans-resourcesjobs',
             'browse_reportshumans-resourcesrelationships',
             'browse_reportshumans-resourcesprojectsdetails',

@@ -273,6 +273,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'browse_paymentschedules-files' or
                                             `key` = 'browse_planillaspagos' or
                                             `key` = 'browse_reportshumans-resourcesaniversarios' or
+                                            `key` = 'browse_reportshumans-resourcesattendances' or
                                             `key` = 'browse_reportsmanagementcontracts' or
                                             `key` = 'browse_reportsmanagementaddendums' or
                                             `key` = 'browse_reportshumans-resourcesbonus' or
@@ -368,6 +369,7 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'browse_reportsmanagementcontracts' or
                                             `key` = 'browse_reportsmanagementaddendums' or
                                             `key` = 'browse_reportshumans-resourcesaniversarios' or
+                                            `key` = 'browse_reportshumans-resourcesattendances' or
                                             `key` = 'browse_reportshumans-resourcesjobs' or
                                             `key` = 'browse_reportshumans-resourcesbonus' or
                                             `key` = 'browse_bonuses' or
@@ -488,6 +490,13 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'read_paymentschedules' or
                                             `key` = 'enable_paymentschedules' or
                                             `key` = 'close_paymentschedules'")->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
+
+        // Roles de SIA
+        $role = Role::where('name', 'sia_tecnico')->firstOrFail();
+        $permissions = Permission::whereRaw("table_name = 'admin' or
+                                            `key` = 'browse_people' or
+                                            `key` = 'edit_attendances_people'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
 
         // Roles de activos fijos

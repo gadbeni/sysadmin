@@ -40,7 +40,7 @@
                                         @php
                                             $contract = $item->contracts->where('status', 'firmado')->first();
                                         @endphp
-                                        <a href="{{ route('contracts.show', ['contract' => $contract->id]) }}"><label class="label label-success" title="{{ $contract->code }}" style="cursor: pointer">Con contrato</label></a>
+                                        <a href="{{ $contract->procedure_type_id != 6 ? route('contracts.show', ['contract' => $contract->id]) : '#' }}"><label class="label label-success" title="{{ $contract->code }}" style="cursor: pointer">Con contrato</label></a>
                                     @endif
                                     @if ($item->contracts->whereIn('status', ['elaborado', 'enviado'])->count())
                                         @php
@@ -96,9 +96,12 @@
                                 @if (auth()->user()->hasPermission('edit_people'))
                                 <li><a href="#" class="btn-afp-options" data-item="{{ $item }}" data-url="{{ route('people.afp_status.update', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-options-afp" >Opciones de AFP</a></li>
                                 @endif
+                                {{-- Opciones de marcaciones --}}
+                                @if (auth()->user()->hasPermission('edit_attendances_people'))
+                                <li><a href="#" class="btn-attendance-options" data-item="{{ $item }}" data-url="{{ route('people.attendances', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-options-attendance" >Marcaciones</a></li>
+                                @endif
                             </ul>
                         </div>
-
                         @if (auth()->user()->hasPermission('read_people'))
                         <a href="{{ route('voyager.people.show', ['id' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
                             <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
@@ -182,6 +185,13 @@
             $('#checkbox-afp_status').bootstrapToggle(item.afp_status ? 'on' : 'off');
             $('#checkbox-retired').bootstrapToggle(item.retired ? 'on' : 'off');
             $('#options-afp-form').attr('action', url);
+        });
+
+        $('.btn-attendance-options').click(function(e){
+            e.preventDefault();
+            urlListAttendances = $(this).data('url');
+            $('#details-attendaces').html('<tr><td colspan="3">Seleccione la fecha</td></tr>');
+            $('#options-attendance-form').trigger('reset');
         });
     });
 </script>

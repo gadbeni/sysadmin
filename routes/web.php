@@ -29,6 +29,7 @@ use App\Http\Controllers\SeniorityBonusPeopleController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\SchedulesController;
 use App\Http\Controllers\AssetsControllers;
+use App\Http\Controllers\AttendancesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,6 +102,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('people/{id}/irremovability', [PeopleController::class, 'irremovability_store'])->name('people.irremovability.store');
     Route::delete('people/{people}/irremovability/{id}', [PeopleController::class, 'irremovability_delete'])->name('people.irremovability.delete');
     Route::post('people/{id}/afp_status', [PeopleController::class, 'afp_status'])->name('people.afp_status.update');
+    Route::post('people/{id}/attendance', [PeopleController::class, 'attendances'])->name('people.attendances');
+    Route::post('people/{id}/attendance/store', [PeopleController::class, 'attendances_store'])->name('people.attendances.store');
+    Route::post('people/{id}/attendance/update', [PeopleController::class, 'attendances_update'])->name('people.attendances.update');
+    Route::post('people/{id}/attendance/delete', [PeopleController::class, 'attendances_delete'])->name('people.attendances.delete');
 
     Route::post('cashiers/store', [CashiersController::class, 'store'])->name('cashiers.store');
     Route::delete('cashiers/destroy/{id}', [CashiersController::class, 'destroy'])->name('voyager.cashiers.destroy');
@@ -281,6 +286,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('schedules/{id}/edit', [SchedulesController::class, 'edit'])->name('voyager.schedules.edit');
     Route::put('schedules/{id}', [SchedulesController::class, 'update'])->name('schedules.update');
 
+    Route::resource('attendances', AttendancesController::class);
+    Route::post('attendances/generate', [AttendancesController::class, 'generate'])->name('attendances.generate');
+
     // Reportes
 
     // *Recursos humanos
@@ -298,6 +306,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('reports/humans-resources/projects/details', [ReportsController::class, 'contracts_projects_details_list'])->name('reports.humans_resources.projects.details.list');
     Route::get('reports/humans-resources/bonus', [ReportsController::class, 'bonus_index'])->name('reports.humans_resources.bonus.index');
     Route::post('reports/humans-resources/bonus/list', [ReportsController::class, 'bonus_list'])->name('reports.humans_resources.bonus.list');
+    Route::get('reports/humans-resources/attendances', [ReportsController::class, 'attendances_index'])->name('reports.humans_resources.attendances.index');
 
     // *Previsión social
     Route::get('reports/social-security/payments', [ReportsController::class, 'social_security_payments_index'])->name('reports.social_security.payments');

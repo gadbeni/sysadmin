@@ -20,7 +20,7 @@
                 @forelse ($data as $item)
                     @php
                         // Contrato posteriores al actual
-                        $contracts = \App\Models\Contract::where('person_id', $item->person_id)->where('deleted_at', NULL)->where('id', '>', $item->id)->get();
+                        $contracts = \App\Models\Contract::where('person_id', $item->person_id)->where('deleted_at', NULL)->where('start', '>', $item->start)->get();
                         $addendums = $item->addendums;
                     @endphp
                     <tr>

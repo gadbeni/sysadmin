@@ -190,6 +190,12 @@ class RolesTableSeeder extends Seeder
             $role->fill(['display_name' => 'Técnico'])->save();
         }
 
+        // SIA
+        $role = Role::firstOrNew(['name' => 'sia_tecnico']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Técnico SIA'])->save();
+        }
+
         // Activos fijos
         $role = Role::firstOrNew(['name' => 'activos_tecnico']);
         if (!$role->exists) {

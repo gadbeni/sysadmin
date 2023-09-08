@@ -168,8 +168,8 @@ function formatResultAssets(data) {
         return 'Buscando...';
     }
     let image = "/images/default.jpg";
-    if(data.images){
-        image = "/storage/"+JSON.parse(data.images)[0];
+    if(JSON.parse(data.images).length){
+        image = "/storage/"+JSON.parse(data.images)[0].replace('.', '-cropped.');
     }
 
     let labelType = 'default';
