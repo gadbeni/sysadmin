@@ -103,6 +103,7 @@ class PermissionsTableSeeder extends Seeder
             'edit_file_people',
             'delete_file_people',
             'add_assets_people',
+            'add_assets_maintenances',
             'edit_attendances_people',
         ];
 

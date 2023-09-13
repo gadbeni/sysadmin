@@ -14,6 +14,12 @@
 @section('qr_code')
     <div id="qr_code" >
         @php
+            $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+            $code = $contract->code;
+            $signature = $contract->signature_alt ?? $contract->signature;
+            if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
+                $signature = null;   
+            }
             $qrcode = QrCode::size(70)->generate("INVITACIÓN A PRESENTAR PROPUESTA - PROCESO DE CONTRATACIÓN GAD-BENI/".$contract->code." - CONSULTORÍA DE LÍNEA");
         @endphp
         {!! $qrcode !!}
@@ -28,14 +34,6 @@
     @else
         <div class="content">
             <div class="page-head">
-                @php
-                    $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-                    $code = $contract->code;
-                    $signature = $contract->signature;
-                    if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
-                        $signature = null;   
-                    }
-                @endphp
                 <p style="font-size: 13px">
                     <span>{{ Str::upper($contract->direccion_administrativa->city ? $contract->direccion_administrativa->city->name : 'Santísima Trinidad') }}</span>, {{ date('d', strtotime($contract->date_invitation)) }} de {{ Str::upper($months[intval(date('m', strtotime($contract->date_invitation)))]) }} de {{ date('Y', strtotime($contract->date_invitation)) }}<br>
                     <b>INV/GAD-BENI/{{ $code }}</b>

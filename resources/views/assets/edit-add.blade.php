@@ -22,18 +22,18 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label for="assets_category_id">Categoría</label>
+                                    <label for="assets_category_id">Sección</label>
                                     <select name="assets_category_id" id="select-assets_category_id" class="form-control select2" required>
-                                        <option value="">Seleccione una categoría</option>
+                                        <option value="">Seleccione una sección</option>
                                         @foreach (App\Models\AssetsCategory::with('subcategories')->get() as $item)
                                         <option value="{{ $item->id }}" data-item='@json($item)'>{{ Str::upper($item->name) }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="assets_subcategory_id">Subcategoría</label>
+                                    <label for="assets_subcategory_id">Grupo</label>
                                     <select name="assets_subcategory_id" id="select-assets_subcategory_id" class="form-control" required>
-                                        <option value="">Seleccione una subcategoría</option>
+                                        <option value="">Seleccione un grupo</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -207,7 +207,7 @@
                 let id = $('#select-assets_category_id option:selected').val();
                 let item = $('#select-assets_category_id  option:selected').data('item');
                 $('#select-assets_subcategory_id').empty();
-                $('#select-assets_subcategory_id').html('<option value="">Seleccione una subcategoría</option>');
+                $('#select-assets_subcategory_id').html('<option value="">Seleccione un grupo</option>');
                 if (item) {
                     item.subcategories.map(subcategory => {
                         $('#select-assets_subcategory_id').append(`<option value="${subcategory.id}">${subcategory.name.toUpperCase()}</option>`);

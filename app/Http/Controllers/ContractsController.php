@@ -870,7 +870,7 @@ class ContractsController extends Controller
 
     public function search(){
         $search = request('search');
-        $contracts = Contract::with('person')->where('status', 'firmado')
+        $contracts = Contract::with('person', 'cargo', 'job', 'direccion_administrativa', 'unidad_administrativa')->where('status', 'firmado')
                         ->where(function($query) use ($search){
                             if($search){
                                 $query->OrwhereHas('person', function($query) use($search){

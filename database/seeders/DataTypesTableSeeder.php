@@ -674,7 +674,7 @@ class DataTypesTableSeeder extends Seeder
                 'slug' => 'schedules',
                 'display_name_singular' => 'Horario',
                 'display_name_plural' => 'Horarios',
-                'icon' => 'fa fa-clock',
+                'icon' => 'voyager-calendar',
                 'model_name' => 'App\\Models\\Schedule',
                 'policy_name' => NULL,
                 'controller' => NULL,
@@ -683,7 +683,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2023-08-01 18:04:25',
-                'updated_at' => '2023-08-01 18:09:00',
+                'updated_at' => '2023-09-08 17:17:22',
             ),
         ));
         

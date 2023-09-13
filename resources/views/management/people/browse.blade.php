@@ -200,6 +200,7 @@
 @section('javascript')
     <script src="{{ url('js/main.js') }}"></script>
     <script>
+        moment.locale('es');
         var countPage = 10, order = 'id', typeOrder = 'desc';
         var assetSelected = null;
         var urlListAttendances = null; // Variavle auxiliar para almacenar la ruta de acceso a la lista de marcaciones del funcionario actual (al que se le dió click)
@@ -208,7 +209,7 @@
             $('#select-destiny_id').select2({dropdownParent: $('#modal-rotation')});
             $('#select-destiny_dependency').select2({dropdownParent: $('#modal-rotation')});
             $('#select-responsible_id').select2({dropdownParent: $('#modal-rotation')});
-            customSelect('#select-asset_id', '{{ url("admin/assets/search/ajax") }}', formatResultAssets, data => {data.code+' - '+data.subcategory.name; assetSelected = data}, $('#modal-add-assets'));
+            customSelect('#select-asset_id', '{{ url("admin/assets/search/ajax") }}', formatResultAssets, data => {assetSelected = data}, $('#modal-add-assets'));
             customSelect('#select-signature_id', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#modal-add-assets'));
             list();
 
@@ -299,9 +300,9 @@
                             <tr id="tr-${index}">
                                 <td>${index +1}</td>
                                 <td id="td-${index}">
-                                    <span>${moment(item.fecha+' '+item.hora).format('HH:mm:ss')}</span>
+                                    <span>${moment(item.hora).format('HH:mm:ss')}</span>
                                     <div class="input-group" id="input-group-hour-${index}" style="display:none">
-                                        <input type="time" id="input-edit-hour-${index}" class="form-control" onchange="setNewHour(${index})" value="${moment(item.fecha+' '+item.hora).format('HH:mm:ss')}" />
+                                        <input type="time" id="input-edit-hour-${index}" class="form-control" onchange="setNewHour(${index})" value="${moment(item.hora).format('HH:mm:ss')}" />
                                         <div class="input-group-btn">
                                             <button class="btn btn-default" type="button" onclick="tdUpdate(${index})" style="margin-top: -1px" title="Guardar">
                                                 <i class="voyager-check"></i>
@@ -318,6 +319,7 @@
                         `);
                         $('#input-ci').val(item.ci)
                     });
+                    $('#details-attendaces').append(`<tr><td colspan="3">última sincronización <b class="text-primary">${moment(res.last_attendance.fecha).format('DD [de] MMMM [de] YYYY')}, ${moment(res.last_attendance.hora).format('HH:mm:ss')}</b></td></tr>`);
                     if(!res.attendances.length){
                         $('#details-attendaces').html(`<tr id="tr-0"><td colspan="3">No hay marcaciones <button type="button" class="btn btn-link" title="Agregar nuevo" id="btn-add-0" onclick="trAdd(0, ${res.person_id})"><i class="voyager-plus text-success"></i></button></td></tr>`);
                     }

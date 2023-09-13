@@ -39,6 +39,13 @@
                         @endif
 
                         <div class="panel-body">
+                            @if (auth()->user()->role_id == 1)
+                            <div class="form-group">
+                                <label>Funcionario</label>
+                                <select id="select-person_id" class="form-control"></select>
+                            </div>
+                            @endif
+                            <input type="hidden" name="person_id" value="{{ old('name', $dataTypeContent->person_id ?? '') }}">
                             <div class="form-group">
                                 <label for="name">{{ __('voyager::generic.name') }}</label>
                                 <input type="text" class="form-control" id="name" name="name" placeholder="{{ __('voyager::generic.name') }}"
@@ -147,9 +154,22 @@
 @stop
 
 @section('javascript')
+    <script src="{{ url('js/main.js') }}"></script>
     <script>
+        moment.locale('es');
+        var personSelected = null;
         $('document').ready(function () {
             $('.toggleswitch').bootstrapToggle();
+            customSelect('#select-person_id', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => {personSelected = data; return data.person.first_name+' '+data.person.last_name;}, null);
+
+            $('#select-person_id').change(function(){
+                $('.form-submit input[name="person_id"]').val(personSelected.person.id);
+                // Solo se autocompleta en el caso de que se esté creando el registro
+                @if(!isset($dataTypeContent->id))
+                $('.form-submit input[name="name"]').val(personSelected.person.first_name);
+                $('.form-submit input[name="ci"]').val(personSelected.person.ci);
+                @endif
+            });
         });
     </script>
 @stop

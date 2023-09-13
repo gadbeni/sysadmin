@@ -169,6 +169,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('assets/list/ajax', [AssetsControllers::class, 'list'])->name('assets.list');
     Route::post('assets/image/delete', [AssetsControllers::class, 'image_delete'])->name('assets.image.delete');
     Route::get('assets/search/ajax', [AssetsControllers::class, 'search']);
+    Route::post('assets/maintenances/store', [AssetsControllers::class, 'maintenances_store'])->name('maintenances.store');
+    Route::get('assets/maintenances/{id}/print', [AssetsControllers::class, 'maintenances_print'])->name('maintenances.print');
     // Para validar si el PB no está ocupado
     Route::get('assets/search/code', [AssetsControllers::class, 'search_by_code']);
 

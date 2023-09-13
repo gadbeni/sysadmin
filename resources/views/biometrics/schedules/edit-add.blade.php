@@ -4,7 +4,7 @@
 
 @section('page_header')
     <h1 class="page-title">
-        <i class="fa fa-clock"></i>
+        <i class="voyager-calendar"></i>
         Añadir Horario
     </h1>
 @stop

@@ -3,6 +3,12 @@
 @section('page_title', 'Nota de adjudicación')
 
 @php
+    $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+    $code = $contract->code;
+    $signature = $contract->signature_alt ?? $contract->signature;
+    if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
+        $signature = null;   
+    }
     // Calcular finalización de contrato en caso de tener adenda
     if($contract->addendums->count() > 0) {
         $contract_finish = date('Y-m-d', strtotime($contract->addendums->first()->start." -1 days"));
@@ -28,14 +34,6 @@
     @else
         <div class="content">
             <div class="page-head">
-                @php
-                    $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-                    $code = $contract->code;
-                    $signature = $contract->signature;
-                    if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
-                        $signature = null;   
-                    }
-                @endphp
                 <p style="text-align: right; margin: 0px">
                     <span>{{ Str::upper($contract->direccion_administrativa->city ? $contract->direccion_administrativa->city->name : 'Santísima Trinidad') }}</span>, {{ date('d', strtotime($contract->date_note)) }} de {{ Str::upper($months[intval(date('m', strtotime($contract->date_note)))]) }} de {{ date('Y', strtotime($contract->date_note)) }} <br>
                     <b>NA/GAD-BENI/{{ $code }}</b>

@@ -44,4 +44,8 @@ class Asset extends Model
     public function assignments(){
         return $this->hasMany(PersonAssetDetail::class);
     }
+
+    public function maintenances(){
+        return $this->hasMany(AssetMaintenance::class);
+    }
 }

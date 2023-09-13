@@ -149,9 +149,10 @@ function formatResultContracts(data) {
                 </div>
                 <div>
                     <h5>
-                        ${data.person.first_name} ${data.person.last_name} <br>
+                        ${data.person.first_name.toUpperCase()} ${data.person.last_name.toUpperCase()} <br>
                         <p style="font-size: 13px; margin-top: 5px">
-                            ${data.person.ci}<br>
+                            ${data.person.ci} <br>
+                            ${(data.cargo_id ? data.cargo.Descripcion : data.job.name).toUpperCase()} ${data.procedure_type_id != 1 ? ' - '+(data.unidad_administrativa ? data.unidad_administrativa.nombre : data.direccion_administrativa.nombre).toUpperCase() : ''}
                         </p>
                     </h5>
                 </div>

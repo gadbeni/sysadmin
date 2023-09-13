@@ -507,5 +507,13 @@ class PermissionRoleTableSeeder extends Seeder
                                             `key` = 'browse_people' or
                                             `key` = 'add_assets_people'")->get();
         $role->permissions()->sync($permissions->pluck('id')->all());
+
+        // Roles de activos fijos
+        $role = Role::where('name', 'sistemas_tecnico')->firstOrFail();
+        $permissions = Permission::whereRaw("table_name = 'admin' or
+                                            `key` = 'browse_assets' or
+                                            `key` = 'read_assets' or
+                                            `key` = 'add_assets_maintenances'")->get();
+        $role->permissions()->sync($permissions->pluck('id')->all());
     }
 }

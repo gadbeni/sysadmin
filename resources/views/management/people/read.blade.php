@@ -230,7 +230,8 @@
                                     <div class="col-md-4 text-right" style="padding-top: 20px">
                                         @if (auth()->user()->hasPermission('add_assets_people') && $person->assignments->count())
                                             @if ($person->assignments->count() == 1)
-                                                <a href="{{ route('people.assets.print', ['id' => $person->id,'person_asset_id' => $person->assignments[0]->id]) }}" class="btn btn-danger" target="_blank"><i class="fa fa-print"></i> <span>Imprimir</span></a>
+                                            {{-- <a href="#" class="btn btn-info" style="border: 0px"><i class="voyager-edit"></i> <span>Editar</span></a> --}}
+                                            <a href="{{ route('people.assets.print', ['id' => $person->id,'person_asset_id' => $person->assignments[0]->id]) }}" class="btn btn-danger" target="_blank"><i class="fa fa-print"></i> <span>Imprimir</span></a>
                                             @else
                                                 {{-- @foreach ($person->assignments as $item)
                                                     

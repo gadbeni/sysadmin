@@ -37,22 +37,30 @@ class AttendancesController extends Controller
      */
     public function create()
     {
-        $this->custom_authorize('add_paymentschedules');
-        $direccion_administrativa_id = Auth::user()->direccion_administrativa_id;
-        $tipo_da = DireccionesTipo::with(['direcciones_administrativas' => function($q) use($direccion_administrativa_id){
-                            $q->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1)->where('estado', 1);
-                        }])
-                        ->whereHas('direcciones_administrativas', function($q) use($direccion_administrativa_id){
-                            $q->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1);
-                        })
-                        ->where('estado', 1)->get();
-        return view('biometrics.attendances.edit-add', compact('tipo_da'));
+        // $this->custom_authorize('add_paymentschedules');
+        // $direccion_administrativa_id = Auth::user()->direccion_administrativa_id;
+        // $tipo_da = DireccionesTipo::with(['direcciones_administrativas' => function($q) use($direccion_administrativa_id){
+        //                     $q->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1)->where('estado', 1);
+        //                 }])
+        //                 ->whereHas('direcciones_administrativas', function($q) use($direccion_administrativa_id){
+        //                     $q->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1);
+        //                 })
+        //                 ->where('estado', 1)->get();
+        // return view('biometrics.attendances.edit-add', compact('tipo_da'));
     }
 
     public function generate(Request $request){
-        $contracts = Contract::whereHas('direccion_administrativa', function($q){
-                            // $q->
-                        })->where('start', '<=', $request->start)->where('finish', '<=', $request->finish)->get();
+        $contract = Contract::find($request->person_id);
+        $ci = str_replace(' ', '-', $contract->person->ci); // Reemplazar los espacios en blancos con -
+        $ci = explode('-', $ci)[0]; // Obtener solo el valor numérico de CI
+        $attendances = DB::connection('sia')
+                            ->table('Asistencia')
+                            ->where('IdPersona', $ci)
+                            ->whereDate('Fecha', '>=', $request->start)
+                            ->whereDate('Fecha', '<=', $request->finish)
+                            ->select(DB::raw('IdPersona as ci'), DB::raw('Fecha as fecha'), DB::raw('Hora as hora'))
+                            ->get();
+        dd($attendances->groupBy('fecha'));
     }
 
     /**

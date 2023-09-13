@@ -5,6 +5,12 @@
 @section('qr_code')
     <div id="qr_code" >
         @php
+            $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+            $code = $contract->code;
+            $signature = $contract->signature_alt ?? $contract->signature;
+            if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
+                $signature = null;   
+            }
             $qrcode = QrCode::size(70)->generate("DECLARACIÓN JURADA DE NO INCOMPATIBILIDAD LEGAL ".$contract->code." - CONSULTORÍA DE LÍNEA");
         @endphp
         {!! $qrcode !!}
@@ -19,14 +25,6 @@
     @else
         <div class="content">
             <div class="page-head">
-                @php
-                    $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-                    $code = $contract->code;
-                    $signature = $contract->signature;
-                    if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
-                        $signature = null;   
-                    }
-                @endphp
                 <div class="page-title">
                     <h3>DECLARACIÓN JURADA DE NO INCOMPATIBILIDAD LEGAL</h3>
                 </div>
@@ -35,7 +33,7 @@
                     <span>{{ Str::upper($contract->direccion_administrativa->city ? $contract->direccion_administrativa->city->name : 'Santísima Trinidad') }}</span>, {{ date('d', strtotime($contract->date_statement)) }} de {{ Str::upper($months[intval(date('m', strtotime($contract->date_statement)))]) }} de {{ date('Y', strtotime($contract->date_statement)) }}
                 </p>
                 <p style="text-align: left">
-                    Señor: <br>
+                    Señor(a): <br>
                     {{ $signature ? $signature->name : setting('firma-autorizada.name') }} <br>
                     <b>{{ $signature ? $signature->job : 'Responsable de Proceso de Contratación de Apoyo Nacional a la Producción y Empleo - RPA' }}</b> <br>
                     Presente.–

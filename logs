@@ -2,3 +2,7 @@ Eliminar `person_assets`, `person_asset_details`, `person_asset_detail_closeds`
 
 NOTA:
 - formulario de creación de proyectos
+- Generar reporte de cargos asignados a funcionarios (5 tecnicos II, 4 tecnicos III)
+- agregar fotos del funcionario en reporte de contratos
+- crear dashboard de activos fijos (todos los activos, activos asignados, en almacen y contratos por concluir )
+- Editar acta  de custodia

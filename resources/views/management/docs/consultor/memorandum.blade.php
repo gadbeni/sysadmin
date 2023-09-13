@@ -5,6 +5,12 @@
 @section('qr_code')
     <div id="qr_code" >
         @php
+            $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+            $code = $contract->code;
+            $signature = $contract->signature_alt ?? $contract->signature;
+            if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
+                $signature = null;   
+            }
             $qrcode = QrCode::size(70)->generate("MEMORANDUM DE PROCESO DE CONTRATACIÓN ".$contract->code." - CONSULTORÍA DE LÍNEA");
         @endphp
         {!! $qrcode !!}
@@ -18,14 +24,6 @@
         </div>
     @else
         <div class="content">
-            @php
-                $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-                $code = $contract->code;
-                $signature = $contract->signature;
-                if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
-                    $signature = null;   
-                }
-            @endphp
             <div class="page-title">
                 <h2>
                     <span style="color: #009A2F">MEMORANDUM</span> <br>

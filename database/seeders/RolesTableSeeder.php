@@ -201,5 +201,11 @@ class RolesTableSeeder extends Seeder
         if (!$role->exists) {
             $role->fill(['display_name' => 'Técnico'])->save();
         }
+
+        // Unidad de sistemas
+        $role = Role::firstOrNew(['name' => 'sistemas_tecnico']);
+        if (!$role->exists) {
+            $role->fill(['display_name' => 'Técnico'])->save();
+        }
     }
 }

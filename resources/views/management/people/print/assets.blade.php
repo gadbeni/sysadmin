@@ -30,7 +30,7 @@
                 <u>
                     ACTA DE CUSTODIA U.R.C.B.P. N&deg; {{ $person_asset->code }} <br>
                     {{ Str::upper($person_asset->contract->direccion_administrativa->nombre) }} <br>
-                    {{ Str::upper($person_asset->contract->unidad_administrativa->nombre) }}
+                    {{ $person_asset->contract->unidad_administrativa ? Str::upper($person_asset->contract->unidad_administrativa->nombre) : '' }}
                 </u>
             </h4>
         </div>
@@ -49,8 +49,8 @@
             </tr>
             <tr>
                 <td><b>CARGO</b></td>
-                <td>{{ Str::upper($person_asset->contract->cargo ? $person_asset->contract->cargo->Descripcion : $person_asset->contract->job->name) }}</td>
-                <td><b>TIPO DE CONTRATO</b></td>
+                <td style="max-width: 200px">{{ Str::upper($person_asset->contract->cargo ? $person_asset->contract->cargo->Descripcion : $person_asset->contract->job->name) }}</td>
+                <td><b>CONTRATO</b></td>
                 <td>{{ Str::upper($person_asset->contract->type->name) }}</td>
             </tr>
         </table>

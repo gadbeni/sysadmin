@@ -292,9 +292,10 @@ class PeopleController extends Controller
                             ->table('Asistencia')
                             ->where('IdPersona', $ci)
                             ->whereDate('Fecha', $request->date)
-                            ->select(DB::raw('IdPersona as ci'), DB::raw('CONVERT(DATE, Fecha) as fecha'), DB::raw('CONVERT(TIME, Hora) as hora'), DB::raw('*'))
+                            ->select(DB::raw('IdPersona as ci'), DB::raw('Fecha as fecha'), DB::raw('Hora as hora'))
                             ->get();
-        return response()->json(['attendances' => $attendances, 'person_id' => $id]);
+        $last_attendance = DB::connection('sia')->table('Asistencia')->where('IdPersona', $ci)->select(DB::raw('Fecha as fecha'), DB::raw('Hora as hora'))->orderBy('Fecha', 'DESC')->orderBy('Hora', 'DESC')->first();
+        return response()->json(['attendances' => $attendances, 'person_id' => $id, 'last_attendance' => $last_attendance]);
     }
 
     public function attendances_store($id, Request $request){
@@ -309,8 +310,8 @@ class PeopleController extends Controller
                 ->table('Asistencia')
                 ->insert([
                     'IdPersona' => $ci,
-                    'Fecha' => date('d/m/Y', strtotime($request->date)),
-                    'Hora' => '30/12/1899 '.$request->new_hour.':'.rand(10,59),
+                    'Fecha' => date('Y-m-d', strtotime($request->date)),
+                    'Hora' => '1899-12-30 '.$request->new_hour.':'.rand(10,59),
                     'Tipo' => 'R'
                 ]);
             return response()->json(['success' => 1]);
@@ -329,7 +330,7 @@ class PeopleController extends Controller
                 ->where('IdPersona', $ci)
                 ->whereDate('Fecha', $request->date)
                 ->whereTime('Hora', $request->current_hour)
-                ->update(['Hora' => '30-12-1899 '.$request->new_hour]);
+                ->update(['Hora' => '1899-12-30 '.$request->new_hour]);
             return response()->json(['success' => 1]);
         } catch (\Throwable $th) {
             return response()->json(['error' => 1]);

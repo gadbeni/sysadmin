@@ -65,9 +65,9 @@
                                             <label for="status">Estado</label>
                                             <select name="status" class="form-control select2 select-filter" id="select-status">
                                                 <option value="">Todos</option>
+                                                <option value="bueno">Bueno</option>
+                                                <option value="regular">Regular</option>
                                                 <option value="malo">Malo</option>
-                                                <option value="Regular">Regular</option>
-                                                <option value="Malo">Malo</option>
                                             </select>
                                         </div>
                                         <div class="form-group col-md-4">

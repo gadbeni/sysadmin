@@ -14,6 +14,12 @@
 @section('qr_code')
     <div id="qr_code" >
         @php
+            $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+            $code = $contract->code;
+            $signature = $contract->signature_alt ?? $contract->signature;
+            if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
+                $signature = null;   
+            }
             $qrcode = QrCode::size(70)->generate("INFORME ".$contract->code." - CONSULTORÍA DE LÍNEA");
         @endphp
         {!! $qrcode !!}
@@ -28,14 +34,6 @@
     @else
         <div class="content">
             <div class="page-head" style="margin-top: -40px !important">
-                @php
-                    $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-                    $code = $contract->code;
-                    $signature = $contract->signature;
-                    if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
-                        $signature = null;   
-                    }
-                @endphp
                 <h4 style="text-align: center; margin: 0px; margin-bottom: 10px">
                     INFORME <br>
                     INF/GAD-BENI/{{ $code }}

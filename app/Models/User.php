@@ -24,7 +24,8 @@ class User extends \TCG\Voyager\Models\User
         'email',
         'ci',
         'password',
-        'direccion_administrativa_id'
+        'direccion_administrativa_id',
+        'person_id'
     ];
 
     /**
@@ -48,5 +49,9 @@ class User extends \TCG\Voyager\Models\User
 
     public function direccion_administrativa(){
         return $this->belongsTo(Direccion::class, 'direccion_administrativa_id');
+    }
+
+    public function person(){
+        return $this->belongsTo(Person::class, 'person_id');
     }
 }
