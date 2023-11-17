@@ -3,9 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-// use Illuminate\Events\Dispatcher;
 use TCG\Voyager\Facades\Voyager;
 use Illuminate\Pagination\Paginator;
+
+// Formfields
 use App\FormFields\DireccionAdministrativaFormField;
 use App\FormFields\UserIdFormField;
 
@@ -34,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
         Voyager::addAction(\App\Actions\CashiersClose::class);
         Voyager::addAction(\App\Actions\CashiersPrintOpen::class);
         Voyager::addAction(\App\Actions\CashiersPrintClose::class);
+        Voyager::addAction(\App\Actions\SchedulesAssignment::class);
 
         Paginator::useBootstrap();
     }

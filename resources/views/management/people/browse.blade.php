@@ -284,6 +284,8 @@
                             toastr.error(res.message, 'Error');
                         }
                         $('.form-submit .btn-submit').val('Guardar');
+                        $('#select-asset_id').val(null).trigger('change');
+                        $('#select-signature_id').val(null).trigger('change');
                         setTimeout(() => {
                             $('.form-submit .btn-submit').removeAttr('disabled');
                         }, 0);

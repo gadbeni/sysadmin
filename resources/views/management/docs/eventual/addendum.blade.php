@@ -12,7 +12,7 @@
         $addendums = $contract->addendums->where('deleted_at', NULL)->sortBy('id')->slice(0, 1);
     }else{
         $addendums = $contract->addendums->where('deleted_at', NULL)->sortByDesc('id')->slice(0, 2);
-        if($contract->addendums->count() > 1){
+        if($addendums->count() > 1){
             $number_addendum = '2DO.';
         }
     }
@@ -33,7 +33,7 @@
 @endsection
 
 @section('content')
-    @if ($contract->files->count() > 0)
+    @if (false)
         <div class="content">
             {!! $contract->files[0]->text !!}
         </div>

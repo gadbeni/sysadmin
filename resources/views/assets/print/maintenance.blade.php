@@ -67,11 +67,12 @@
             </div>
             <br>
             @php
-                $direccion_administrativa = $maintenance->asset->assignments->where('active', 1)[0]->person_asset->contract->direccion_administrativa->nombre;
+                $assignment = $maintenance->asset->assignments->where('active', 1);
+                $direccion_administrativa = $assignment->count() ? $assignment[0]->person_asset->contract->direccion_administrativa->nombre : null;
             @endphp
             <p>
                 Mediante la presente le informo que el activo: <br>
-                {{ $maintenance->asset->description }} con código <b>{{ $maintenance->asset->code }}</b>, perteneciente a {{ $direccion_administrativa }}, ha sido revisada por el personal del área de <b>Soporte Técnico de la Unidad de Sistemas y Telecomunicaciones</b>. Como resultado de la revisión le informa lo siguiente:
+                {{ $maintenance->asset->description }} con código <b>{{ $maintenance->asset->code }}</b>{{ $direccion_administrativa ? ', perteneciente a '.$direccion_administrativa : '' }}, ha sido revisada por el personal del área de <b>Soporte Técnico de la Unidad de Sistemas y Telecomunicaciones</b>. Como resultado de la revisión le informa lo siguiente:
             </p>
             <p>{{ $maintenance->details }}</p>
             <br>

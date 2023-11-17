@@ -6,15 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Schedule extends Model
+class ContractSchedule extends Model
 {
     use HasFactory, SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $fillable = [
-        'name', 'description', 'status'
+        'user_id', 'contract_id', 'start', 'finish'
     ];
-
-    public function details(){
-        return $this->hasMany(ScheduleDetail::class, 'schedule_id');
-    }
 }

@@ -91,6 +91,9 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('assets');
         Permission::generateFor('schedules');
         Permission::generateFor('attendances');
+        Permission::generateFor('assets_types');
+        Permission::generateFor('assets_accessories');
+        Permission::generateFor('assets_type_accessories');
 
         // people
         $keys = [
@@ -274,6 +277,18 @@ class PermissionsTableSeeder extends Seeder
             Permission::firstOrCreate([
                 'key'        => $key,
                 'table_name' => 'plugins',
+            ]);
+        }
+
+        // schedules
+        $keys = [
+            'browse_schedules-assignments',
+        ];
+
+        foreach ($keys as $key) {
+            Permission::firstOrCreate([
+                'key'        => $key,
+                'table_name' => 'schedules',
             ]);
         }
     }

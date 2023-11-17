@@ -413,10 +413,12 @@ class ContractsController extends Controller
                     if($last_payment > date('Ymd', strtotime($request->finish))){
                         return response()->json(['error' => 1, 'message' => 'El contrato pertenece a una planilla']);
                     }
-                }elseif($payment->contract->procedure_type_id == 2){
-                    // Si el contarto es de consultoría que solo se puede concluir con fecha igual o mayor al periodo actual
-                    if (date('Ym', strtotime($request->finish)) < date('Ym')) {
-                        return response()->json(['error' => 1, 'message' => 'La fecha de finalización es previa al perido actual']);
+
+                    if($payment->contract->procedure_type_id == 2){
+                        // Si el contarto es de consultoría que solo se puede concluir con fecha igual o mayor al periodo actual
+                        if (date('Ym', strtotime($request->finish)) < date('Ym')) {
+                            return response()->json(['error' => 1, 'message' => 'La fecha de finalización es previa al perido actual']);
+                        }
                     }
                 }
             }
@@ -572,6 +574,7 @@ class ContractsController extends Controller
             $addendum = Addendum::find($request->id);
             $addendum->signature_id = $request->signature_id ?? NULL;
             $addendum->program_id = $request->program_id ?? NULL;
+            $addendum->applicant_id = $request->applicant_id ? $request->applicant_id : $addendum->applicant_id;
             $addendum->finish = $request->finish;
             $addendum->signature_date = $request->signature_date;
             $addendum->update();

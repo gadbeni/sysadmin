@@ -65,6 +65,14 @@
                             <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
                         </td>
                         <td class="no-sort no-click bread-actions text-right">
+                            {{-- <div class="btn-group">
+                                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                                    Más <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" style="left: -90px !important">
+                                    <li><a href="#" class="" title="Agregar información técnica" data-toggle="modal" data-target="#status-modal">Información técnica</a></li>
+                                </ul>
+                            </div> --}}
                             @if (auth()->user()->hasPermission('read_assets'))
                                 <a href="{{ route('assets.show', ['asset' => $item->id]) }}" title="Ver" class="btn btn-sm btn-warning view">
                                     <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
@@ -106,6 +114,9 @@
 </div>
 
 <style>
+    .bread-actions .btn{
+        border: 0px
+    }
     .mce-edit-area{
         max-height: 250px !important;
         overflow-y: auto;

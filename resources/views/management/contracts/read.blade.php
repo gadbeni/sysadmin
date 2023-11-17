@@ -587,6 +587,7 @@
                             <div class="form-group col-md-12 div-eventual-consultor_sedeges">
                                 <label for="applicant_id">Solicitante</label>
                                 <select name="applicant_id" id="select-applicant_id" class="form-control"></select>
+                                <small>Si no cambia el solicitante dejarlo vacío</small>
                             </div>
 
                             {{-- Eventual central --}}

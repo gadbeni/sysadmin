@@ -27,7 +27,7 @@
 @endsection
 
 @section('content')
-    @if ($contract->files->count() > 0)
+    @if (false)
         <div class="content">
             {!! $contract->files[0]->text !!}
         </div>

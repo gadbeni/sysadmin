@@ -16,6 +16,7 @@ class CreateAssetsTable extends Migration
         Schema::create('assets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assets_subcategory_id')->nullable()->constrained('assets_subcategories');
+            $table->foreignId('assets_type_id')->nullable()->constrained('assets_types');
             $table->foreignId('city_id')->nullable()->constrained('cities');
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->string('code')->unique();

@@ -160,7 +160,7 @@
                                         <li><a href="#" class="btn-promotion" data-toggle="modal" data-target="#promotion-modal" data-id="{{ $item->id }}" title="Crear promoción" >Promoción</a></li>
                                         @endif
                                         {{-- Crear adenda --}}
-                                        @if (auth()->user()->hasPermission('add_addendum_contracts') && ($item->status == 'firmado' || $item->status == 'concluido') && count($contracts) == 0 && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5) && $addendums->where('status', 'elaborado')->count() == 0 && $addendums->where('status', 'firmado')->count() == 0)
+                                        @if (auth()->user()->hasPermission('add_addendum_contracts') && ($item->status == 'firmado' || $item->status == 'concluido') && count($contracts) == 0 && ($item->procedure_type_id == 2 || $item->procedure_type_id == 5) && $addendums->where('status', 'elaborado')->count() == 0 /*&& $addendums->where('status', 'firmado')->count() == 0*/)
                                         <li><a class="btn-addendum" title="Crear adenda" data-toggle="modal" data-target="#addendum-modal" data-item='@json($item)' data-addendums='@json($addendums)' href="#">Crear adenda</a></li>
                                         @endif
                                         {{-- Crear memo/resolución --}}
@@ -334,6 +334,9 @@
 </div>
 
 <style>
+    .bread-actions .btn{
+        border: 0px
+    }
     .mce-edit-area{
         max-height: 250px !important;
         overflow-y: auto;

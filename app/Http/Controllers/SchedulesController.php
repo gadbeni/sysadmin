@@ -100,8 +100,17 @@ class SchedulesController extends Controller
             return redirect()->route('voyager.schedules.index')->with(['message' => 'Horario editado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
-            throw $th;
             return redirect()->route('voyager.schedules.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }
+    }
+
+    public function assignments_index($id){
+        $this->custom_authorize('browse_schedules-assignments');
+        $schedule = Schedule::findOrFail($id);
+        return view('schedules.assignments-browse', compact('schedule'));
+    }
+
+    public function assignments_create($id){
+        return view('schedules.assignments-edit-add', compact('id'));
     }
 }

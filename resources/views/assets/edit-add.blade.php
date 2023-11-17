@@ -109,6 +109,19 @@
                                 <div class="form-group col-md-12" id="map"></div>
                                 <input type="hidden" name="location" id="input-location" value="{{ isset($asset) ? $asset->location : old('location') }}">
                                 <small class="text-muted div-inmuebles">Para cambiar la ubicación puede mover el mapa y dar click para mover el marcador del mapa</small>
+                                {{-- <br>
+                                <div class="form-group col-md-12">
+                                    <h3>Información técinca</h3>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label for="assets_type_id">Tipo de activo</label>
+                                    <select name="assets_type_id" id="select-assets_type_id" class="form-control select2">
+                                        <option value="">Seleccione tipo de activo</option>
+                                        @foreach (App\Models\AssetsType::all() as $item)
+                                        <option value="{{ $item->id }}" data-item='@json($item)'>{{ Str::upper($item->name) }}</option>
+                                        @endforeach
+                                    </select>
+                                </div> --}}
                             </div>
                         </div>
                         <div class="panel-footer text-right">

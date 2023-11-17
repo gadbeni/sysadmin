@@ -1,4 +1,5 @@
-Eliminar `person_assets`, `person_asset_details`, `person_asset_detail_closeds`
+Eliminar `person_assets`, `person_asset_details`, `person_asset_detail_closeds` (no sé si ya lo hice)
+Ejecutar seeder de BREAD
 
 NOTA:
 - formulario de creación de proyectos
@@ -6,3 +7,7 @@ NOTA:
 - agregar fotos del funcionario en reporte de contratos
 - crear dashboard de activos fijos (todos los activos, activos asignados, en almacen y contratos por concluir )
 - Editar acta  de custodia
+- Editar contrato si aún no se ha planillado (solo eventual y permanente)
+- FOTO DE MANTENIMIENTO
+- la edición de adenda falla
+- jalar la fecha de suscripción y no la de inicio en la adendas

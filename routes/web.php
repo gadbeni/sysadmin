@@ -106,6 +106,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('people/{id}/attendance/store', [PeopleController::class, 'attendances_store'])->name('people.attendances.store');
     Route::post('people/{id}/attendance/update', [PeopleController::class, 'attendances_update'])->name('people.attendances.update');
     Route::post('people/{id}/attendance/delete', [PeopleController::class, 'attendances_delete'])->name('people.attendances.delete');
+    Route::get('people/ajax/search/{type}', [PeopleController::class, 'search']);
 
     Route::post('cashiers/store', [CashiersController::class, 'store'])->name('cashiers.store');
     Route::delete('cashiers/destroy/{id}', [CashiersController::class, 'destroy'])->name('voyager.cashiers.destroy');
@@ -287,6 +288,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('schedules/store', [SchedulesController::class, 'store'])->name('schedules.store');
     Route::get('schedules/{id}/edit', [SchedulesController::class, 'edit'])->name('voyager.schedules.edit');
     Route::put('schedules/{id}', [SchedulesController::class, 'update'])->name('schedules.update');
+    Route::get('schedules/{id}/assignments', [SchedulesController::class, 'assignments_index'])->name('schedules.assignments');
+    Route::get('schedules/{id}/assignments/create', [SchedulesController::class, 'assignments_create'])->name('schedules.assignments.create');
 
     Route::resource('attendances', AttendancesController::class);
     Route::post('attendances/generate', [AttendancesController::class, 'generate'])->name('attendances.generate');

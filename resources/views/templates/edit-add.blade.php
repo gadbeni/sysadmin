@@ -1,9 +1,5 @@
 @extends('voyager::master')
 
-@section('css')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-@stop
-
 @section('page_title', 'Title')
 
 @section('page_header')
@@ -18,7 +14,9 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-bordered">
+                    <div class="panel-body">
 
+                    </div>
                 </div>
             </div>
         </div>

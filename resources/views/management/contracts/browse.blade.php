@@ -569,6 +569,7 @@
 
                     $('.form-submit').trigger('reset');
                     $('.btn-submit').removeAttr('disabled');
+                    $('#select-applicant_id').val(null).trigger('change');
                 });
             });
 

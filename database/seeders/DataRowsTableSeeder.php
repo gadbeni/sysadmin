@@ -1217,7 +1217,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"required|max:191"}}',
-                'order' => 22,
+                'order' => 23,
             ),
             75 => 
             array (
@@ -1249,7 +1249,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 24,
+                'order' => 25,
             ),
             77 => 
             array (
@@ -1265,7 +1265,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 25,
+                'order' => 26,
             ),
             78 => 
             array (
@@ -1281,7 +1281,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 26,
+                'order' => 27,
             ),
             79 => 
             array (
@@ -3137,7 +3137,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{}',
-                'order' => 23,
+                'order' => 24,
             ),
             195 => 
             array (
@@ -3168,8 +3168,8 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"display":{"width":6},"resize":{"width":"1000","height":null},"quality":"70%","upsize":true,"thumbnails":[{"name":"medium","scale":"50%"},{"name":"small","scale":"25%"},{"name":"cropped","crop":{"width":"300","height":"250"}}]}',
-                'order' => 21,
+                'details' => '{"display":{"width":6},"resize":{"width":"900","height":null},"quality":"90%","upsize":true,"thumbnails":[{"name":"medium","scale":"50%"},{"name":"small","scale":"25%"},{"name":"cropped","crop":{"width":"256","height":"256"}}]}',
+                'order' => 22,
             ),
             197 => 
             array (
@@ -3185,7 +3185,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
-                'order' => 20,
+                'order' => 21,
             ),
             198 => 
             array (
@@ -6114,6 +6114,22 @@ class DataRowsTableSeeder extends Seeder
                 'delete' => 1,
                 'details' => '{}',
                 'order' => 2,
+            ),
+            381 => 
+            array (
+                'id' => 467,
+                'data_type_id' => 9,
+                'field' => 'number_children',
+                'type' => 'number',
+                'display_name' => 'Cantidad de hijos',
+                'required' => 0,
+                'browse' => 0,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"display":{"width":6}}',
+                'order' => 20,
             ),
         ));
         

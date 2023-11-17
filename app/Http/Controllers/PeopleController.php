@@ -64,6 +64,28 @@ class PeopleController extends Controller
         return view('management.people.list', compact('data'));
     }
 
+    public function search($type){
+        switch ($type) {
+            case 'schedules':
+                $direcciones_tipo_id = request('direcciones_tipo_id') ?? null;
+                $direccion_administrativa_id = request('direccion_administrativa_id') ?? null;
+                $contracts = Contract::with(['person'])
+                                ->whereHas('direccion_administrativa.tipo', function($q) use($direcciones_tipo_id){
+                                    $q->whereRaw($direcciones_tipo_id ? "id = $direcciones_tipo_id" : 1);
+                                })
+                                ->whereHas('direccion_administrativa', function($q) use($direccion_administrativa_id){
+                                    $q->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1);
+                                })
+                                ->withCount('schedules')->where('status', 'firmado')->get()->where('schedules_count', 0);
+                return view('schedules.partials.people-list', compact('contracts'));
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
     public function read($id){
         $person = Person::with(['contracts.rotations', 'irremovabilities.type', 'assignments.details.asset'])->where('id', $id)->first();
         return view('management.people.read', compact('person'));
@@ -294,7 +316,7 @@ class PeopleController extends Controller
                             ->whereDate('Fecha', $request->date)
                             ->select(DB::raw('IdPersona as ci'), DB::raw('Fecha as fecha'), DB::raw('Hora as hora'))
                             ->get();
-        $last_attendance = DB::connection('sia')->table('Asistencia')->where('IdPersona', $ci)->select(DB::raw('Fecha as fecha'), DB::raw('Hora as hora'))->orderBy('Fecha', 'DESC')->orderBy('Hora', 'DESC')->first();
+        $last_attendance = DB::connection('sia')->table('Asistencia')->select(DB::raw('Fecha as fecha'), DB::raw('Hora as hora'))->orderBy('Fecha', 'DESC')->orderBy('Hora', 'DESC')->first();
         return response()->json(['attendances' => $attendances, 'person_id' => $id, 'last_attendance' => $last_attendance]);
     }
 

@@ -137,4 +137,8 @@ class Contract extends Model
     public function files(){
         return $this->hasMany(ContractsFile::class);
     }
+
+    public function schedules(){
+        return $this->hasMany(ContractSchedule::class);
+    }
 }
