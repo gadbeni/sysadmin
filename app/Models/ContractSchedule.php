@@ -11,6 +11,14 @@ class ContractSchedule extends Model
     use HasFactory, SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $fillable = [
-        'user_id', 'contract_id', 'start', 'finish'
+        'user_id', 'schedule_id', 'contract_id', 'start', 'finish'
     ];
+
+    public function contract(){
+        return $this->belongsTo(Contract::class, 'contract_id');
+    }
+
+    public function schedule(){
+        return $this->belongsTo(Schedule::class, 'schedule_id');
+    }
 }

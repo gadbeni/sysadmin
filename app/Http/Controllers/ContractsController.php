@@ -146,7 +146,7 @@ class ContractsController extends Controller
                             ->whereRaw($ids ? "id in ($ids,6)" : 1)->get();
 
         $people = Person::where('deleted_at', NULL)
-                    ->whereRaw("id not in (select person_id from contracts where status <> 'concluido' and deleted_at is null)")
+                    ->whereRaw(!setting('auxiliares.enable_all_people_for_contract') ? "id not in (select person_id from contracts where status <> 'concluido' and deleted_at is null)" : 1)
                     ->get();
         $direccion_administrativas = Direccion::with(['signatures' => function($q){
                                             $q->where('status', 1)->where('deleted_at', NULL);
@@ -414,7 +414,8 @@ class ContractsController extends Controller
                         return response()->json(['error' => 1, 'message' => 'El contrato pertenece a una planilla']);
                     }
 
-                    if($payment->contract->procedure_type_id == 2){
+                    // Si el usuario no es administrador y el contrato ya se planilló
+                    if($payment->contract->procedure_type_id == 2 && Auth::user()->role_id > 1){
                         // Si el contarto es de consultoría que solo se puede concluir con fecha igual o mayor al periodo actual
                         if (date('Ym', strtotime($request->finish)) < date('Ym')) {
                             return response()->json(['error' => 1, 'message' => 'La fecha de finalización es previa al perido actual']);
@@ -505,19 +506,18 @@ class ContractsController extends Controller
     }
 
     public function contracts_addendum_store(Request $request){
-        // dd($request->all());
         DB::beginTransaction();
         try {
-            // Solo para el SEDEGES
+            // Solo para el SEDEGES ya es una DA que genera sus adendas propias
             $contract = Contract::find($request->id);
             if($contract->direccion_administrativa->direcciones_tipo_id == 5){
                 $count_addendum = Addendum::whereHas('contract', function($q) use($contract){
                                     $q->where('direccion_administrativa_id', $contract->direccion_administrativa_id);
-                                })->whereYear('start', date('Y'))->count() +1;
+                                })->whereYear('start', date('Y'))->withTrashed()->count() +1;
             }else{
                 $count_addendum = Addendum::whereHas('contract.direccion_administrativa', function($q) use($contract){
                                     $q->where('direcciones_tipo_id', '<>', 5);
-                                })->whereYear('start', date('Y'))->count() +1;
+                                })->whereYear('start', date('Y'))->withTrashed()->count() +1;
             }
 
             // dd($count_addendum);

@@ -162,9 +162,9 @@
                             </div>
                             <div class="form-group col-md-12">
                                 <label for="program_id">Programa/Proyecto</label>
-                                <select name="program_id" class="form-control select2">
+                                <select name="program_id" id="select-program_id" class="form-control">
                                     <option value="">--Todos--</option>
-                                    @foreach ($bonus->details->groupBy('program_id') as $key => $item)
+                                    @foreach ($bonus->details->groupBy('contract.program_id') as $key => $item)
                                     <option value="{{ $key }}">{{ App\Models\Program::find($key)->name }}</option>
                                     @endforeach
                                 </select>
@@ -200,7 +200,9 @@
 @section('javascript')
     <script>
         $(document).ready(function () {
-            
+            $('#select-program_id').select2({
+                dropdownParent: $('#print-modal')
+            })
         });
     </script>
 @stop

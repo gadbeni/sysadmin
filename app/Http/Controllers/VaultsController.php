@@ -128,7 +128,7 @@ class VaultsController extends Controller
             return redirect()->route('vaults.index')->with(['message' => 'Bóveda guardada exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             //throw $th;
-            return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -205,7 +205,7 @@ class VaultsController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -224,7 +224,7 @@ class VaultsController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -241,7 +241,7 @@ class VaultsController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -290,7 +290,7 @@ class VaultsController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('vaults.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 

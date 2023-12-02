@@ -28,10 +28,13 @@
                             <th>Cargo</th>
                             <th>Nivel</th>
                             <th>Sueldo</th>
-                            <th>Inicio</th>
-                            <th>Fin</th>
-                            <th>Duración</th>
-                            <th>Monto total</th>
+                            <th>Inicio contrato</th>
+                            <th>Fin contrato</th>
+                            <th>Fin adenda</th>
+                            <th>Duración contrato</th>
+                            <th>Duración contrato + adenda</th>
+                            <th>Monto contrato</th>
+                            <th>Monto contrato + adenda</th>
                             <th>Programa/Proyecto</th>
                             <th>Cat. prog.</th>
                             <th>Estado</th>
@@ -65,6 +68,13 @@
                                     $contract_duration = contract_duration_calculate($item->start, $contract_finish);
                                     $duracion = ($contract_duration->months *30) + $contract_duration->days;
                                     $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
+                                    $duracion_adenda = '';
+                                    $total_adenda = '';
+                                    if($contract_finish != $item->finish){
+                                        $contract_total_duration = contract_duration_calculate($item->start, $item->finish);
+                                        $duracion_adenda = ($contract_total_duration->months *30) + $contract_total_duration->days;
+                                        $total_adenda = ($salary *$contract_total_duration->months) + (number_format($salary /30, 5) *$contract_total_duration->days);
+                                    }
                                 }
                             @endphp
                             <tr>
@@ -99,8 +109,11 @@
                                 <td>{{ number_format($salary, 2, ',', '.') }}</td>
                                 <td>{{ date('d/m/Y', strtotime($item->start)) }}</td>
                                 <td>{{ $contract_finish ? date('d/m/Y', strtotime($contract_finish)) : '' }}</td>
+                                <td>{{ $contract_finish != $item->finish ? date('d/m/Y', strtotime($item->finish)) : '' }}</td>
                                 <td>{{ $duracion }}</td>
+                                <td>{{ $duracion_adenda }}</td>
                                 <td>{{ $total ? number_format($total, 2, ',', '.') : 'No definido' }}</td>
+                                <td>{{ $total_adenda ? number_format($total_adenda, 2, ',', '.') : '' }}</td>
                                 <td>{{ $item->program ? $item->program->name : 'No definido' }}</td>
                                 <td>{{ $item->program ? $item->program->programatic_category : 'No definida' }}</td>
                                 <td>{{ $item->status }}</td>
@@ -114,7 +127,7 @@
                             @endphp
                         @empty
                             <tr class="odd">
-                                <td valign="top" colspan="21" class="text-center">No hay datos disponibles en la tabla</td>
+                                <td valign="top" colspan="24" class="text-center">No hay datos disponibles en la tabla</td>
                             </tr>
                         @endforelse
                     </tbody>

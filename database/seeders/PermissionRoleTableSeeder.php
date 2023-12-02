@@ -106,6 +106,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = "read_paymentschedules" or
                                                 `key` = "read_centralize_paymentschedules" or
                                                 `key` = "browse_reportssocial-securitypayrollpayments" or
+                                                `key` = "browse_reportssocial-securitypersonalpayments" or
                                                 `key` = "browse_people" or
                                                 `key` = "read_people" or
                                                 `key` = "add_irremovability_people" or
@@ -127,6 +128,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 table_name = "spreadsheets" or
                                                 table_name = "reports_social_security" or
                                                 `key` = "browse_reportssocial-securitypayrollpayments" or
+                                                `key` = "browse_reportssocial-securitypersonalpayments" or
                                                 `key` = "browse_people" or
                                                 `key` = "read_people" or
                                                 `key` = "add_irremovability_people" or
@@ -159,6 +161,7 @@ class PermissionRoleTableSeeder extends Seeder
                                                 `key` = "read_people" or
                                                 `key` = "add_irremovability_people" or
                                                 `key` = "browse_reportssocial-securitypayrollpayments" or
+                                                `key` = "browse_reportssocial-securitypersonalpayments" or
                                                 `key` = "browse_reportssocial-securitycontracts" or
                                                 `key` = "browse_contracts"')->get();
         $role->permissions()->sync($permissions->pluck('id')->all());

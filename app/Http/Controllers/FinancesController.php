@@ -40,7 +40,7 @@ class FinancesController extends Controller
             if($request->ajax){
                 return response()->json(['error' => 1]);
             }
-            return redirect()->route('voyager.person-externals.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('voyager.person-externals.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -71,7 +71,7 @@ class FinancesController extends Controller
             if($request->ajax){
                 return response()->json(['error' => 1]);
             }
-            return redirect()->route('voyager.memos-types.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('voyager.memos-types.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -100,7 +100,7 @@ class FinancesController extends Controller
 
         } catch (\Throwable $th) {
             //throw $th;
-            return redirect()->route('voyager.memos-types.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('voyager.memos-types.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 }

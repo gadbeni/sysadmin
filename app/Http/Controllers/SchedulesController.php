@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 // Models
 use App\Models\Schedule;
 use App\Models\ScheduleDetail;
+use App\Models\ContractSchedule;
+use App\Models\Contract;
 
 class SchedulesController extends Controller
 {
@@ -53,7 +55,7 @@ class SchedulesController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             //throw $th;
-            return redirect()->route('voyager.schedules.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('voyager.schedules.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -94,23 +96,56 @@ class SchedulesController extends Controller
                     }
                 }
             }
-
             DB::commit();
-
             return redirect()->route('voyager.schedules.index')->with(['message' => 'Horario editado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
-            return redirect()->route('voyager.schedules.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('voyager.schedules.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
     public function assignments_index($id){
         $this->custom_authorize('browse_schedules-assignments');
-        $schedule = Schedule::findOrFail($id);
+        $schedule = Schedule::with(['contracts_schedules.contract.person', 'contracts_schedules.contract.jobs', 'contracts_schedules.contract.cargo'])->where('id', $id)->first();
         return view('schedules.assignments-browse', compact('schedule'));
     }
 
     public function assignments_create($id){
+        $this->custom_authorize('add_schedules-assignments');
         return view('schedules.assignments-edit-add', compact('id'));
+    }
+
+    public function assignments_store($id, Request $request){
+        if(!$request->contract_id){
+            return redirect()->route('schedules.assignments.create', $id)->with(['message' => 'Debe seleccionar al menos un funcionario', 'alert-type' => 'error']);
+        }
+        DB::beginTransaction();
+        try {
+            foreach ($request->contract_id as $item) {
+                $contract = Contract::findOrFail($item);
+                ContractSchedule::create([
+                    'user_id' => Auth::user()->id,
+                    'schedule_id' => $id,
+                    'contract_id' => $item,
+                    'start' => $contract->start,
+                    // Si es un contrato permanente se pone como fin el 2030
+                    'finish' => $contract->finish ?? '2030-12-30'
+                ]);
+            }
+            DB::commit();
+            return redirect()->route('schedules.assignments', $id)->with(['message' => 'Horario asignado correctamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return redirect()->route('schedules.assignments', $id)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
+    }
+
+    public function assignments_delete($id, Request $request){
+        try {
+            ContractSchedule::where('id', $id)->delete();
+            return redirect()->to($_SERVER['HTTP_REFERER'])->with(['message' => 'Horario asignado correctamente.', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            return redirect()->to($_SERVER['HTTP_REFERER'])->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
     }
 }

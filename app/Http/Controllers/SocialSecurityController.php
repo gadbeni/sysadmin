@@ -210,7 +210,7 @@ class SocialSecurityController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             env('APP_DEBUG') ? dd($th) : null;
-            // return redirect()->route($request->redirect ?? 'payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            // return redirect()->route($request->redirect ?? 'payments.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
             return response()->json(['data' => 'error']);
         }
     }
@@ -236,7 +236,7 @@ class SocialSecurityController extends Controller
             return redirect()->route('social-security.checks.index')->with(['message' => 'Cheque editado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('social-security.checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('social-security.checks.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -248,7 +248,7 @@ class SocialSecurityController extends Controller
             return redirect()->route('social-security.checks.index')->with(['message' => 'Cheque eliminado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('social-security.checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('social-security.checks.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -262,7 +262,7 @@ class SocialSecurityController extends Controller
             return redirect()->route('social-security.checks.index')->with(['message' => 'Cheques eliminados correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('social-security.checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('social-security.checks.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -483,7 +483,7 @@ class SocialSecurityController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             // env('APP_DEBUG') ? dd($th) : null;
-            // return redirect()->route($request->redirect ?? 'payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            // return redirect()->route($request->redirect ?? 'payments.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
             return response()->json(['data' => 'error']);
         }
     }
@@ -531,7 +531,7 @@ class SocialSecurityController extends Controller
             return redirect()->route('payments.index')->with(['message' => 'Pago editado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -543,7 +543,7 @@ class SocialSecurityController extends Controller
             return redirect()->route('payments.index')->with(['message' => 'Pago eliminado correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -581,7 +581,7 @@ class SocialSecurityController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -595,7 +595,7 @@ class SocialSecurityController extends Controller
             return redirect()->route('payments.index')->with(['message' => 'Pagos eliminados correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('payments.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 

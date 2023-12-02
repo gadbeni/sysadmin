@@ -42,5 +42,6 @@ class TemplateDatabaseSeeder extends Seeder
         $this->call(PersonExternalTypesTableSeeder::class);
         $this->call(AfpsTableSeeder::class);
         $this->call(AssetsCategoriesTableSeeder::class);
+        $this->call(HolidaysTableSeeder::class);
     }
 }

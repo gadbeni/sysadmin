@@ -18,29 +18,25 @@
                                 @csrf
                                 <input type="hidden" name="type">
                                 <div class="form-group col-md-12">
-                                    <select name="contribuyente_id" class="form-control select2" required>
+                                    <label class="radio-inline"><input type="radio" name="type_data" value="1" checked>Nuevo sistema</label>
+                                    <label class="radio-inline"><input type="radio" name="type_data" value="2">Antiguo sistema</label>
+                                </div>
+                                <div class="form-group col-md-12" id="div-contribuyente"  style="display:none">
+                                    <select name="contribuyente_id" class="form-control select2">
                                         <option value="">--Seleccione a un funcionario--</option>
                                         @foreach($contribuyentes as $contribuyente)
                                             <option value="{{ $contribuyente->ID }}">{{ str_replace('  ', ' ', $contribuyente->NombreCompleto) }} - {{ $contribuyente->N_Carnet }}</option>
                                         @endforeach
                                     </select>
-                                    {{-- <input type="number" name="ci" class="form-control" placeholder="Carnet de identidad" required> --}}
+                                </div>
+                                <div class="form-group col-md-12" id="div-person">
+                                    <select name="person_id" id="select-person_id" class="form-control"></select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control input-picker" name="start" required/>
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
+                                    <input type="month" name="start" class="form-control" required>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control input-picker" name="end" required/>
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
+                                    <input type="month" name="finish" class="form-control" required>
                                 </div>
                                 <div class="form-group col-md-12 text-right">
                                     <button type="submit" class="btn btn-primary">Generar <i class="voyager-settings"></i></button>
@@ -64,19 +60,24 @@
 @stop
 
 @section('css')
-    <link href="{{ asset('vendor/datepicker/datepicker.min.css') }}" rel="stylesheet">
+
 @stop
 
 @section('javascript')
-    <script src="{{ asset('vendor/datepicker/bootstrap-datepicker.min.js') }}"></script>
-    <script src="{{ asset('vendor/datepicker/bootstrap-datepicker.es.min.js') }}"></script>
+    <script src="{{ url('js/main.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $(".input-picker").datepicker( {
-                format: "mm-yyyy",
-                startView: "months", 
-                minViewMode: "months",
-                language: 'es'
+
+            customSelect('#select-person_id', '{{ url("admin/people/ajax/search") }}', formatResultPeople, data => data.first_name+' '+data.last_name, null);
+
+            $('#form-search input[name="type_data"]').click(function(){
+                if($(this).val() == 1){
+                    $('#div-contribuyente').fadeOut();
+                    $('#div-person').fadeIn();
+                }else{
+                    $('#div-contribuyente').fadeIn();
+                    $('#div-person').fadeOut();
+                }
             });
             
             $('#form-search').submit(function(e) {

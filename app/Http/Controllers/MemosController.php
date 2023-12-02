@@ -103,7 +103,7 @@ class MemosController extends Controller
             return redirect()->route('memos.index')->with(['message' => 'Memorándum guardado exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             dd($th);
-            return redirect()->route('memos.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('memos.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -169,7 +169,7 @@ class MemosController extends Controller
             return redirect()->route('memos.index')->with(['message' => 'Memorándum actualizado exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             // dd($th);
-            return redirect()->route('memos.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('memos.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 

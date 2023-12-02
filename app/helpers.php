@@ -60,3 +60,30 @@ if (! function_exists('contract_duration_calculate')) {
         return json_decode(json_encode(['months' => $count_months, 'days' => $count_days]));
     }
 }
+
+if (! function_exists('getDiasHabiles')) {
+    function getDiasHabiles($fechainicio, $fechafin, $diasferiados = array()) {
+        // Convirtiendo en timestamp las fechas
+        $fechainicio = strtotime($fechainicio);
+        $fechafin = strtotime($fechafin);
+       
+        // Incremento en 1 dia
+        $diainc = 24*60*60;
+       
+        // Arreglo de dias habiles, inicianlizacion
+        $diashabiles = array();
+       
+        // Se recorre desde la fecha de inicio a la fecha fin, incrementando en 1 dia
+        for ($midia = $fechainicio; $midia <= $fechafin; $midia += $diainc) {
+                // Si el dia indicado, no es sabado o domingo es habil
+                if (!in_array(date('N', $midia), array(6,7))) { // DOC: http://www.php.net/manual/es/function.date.php
+                        // Si no es un dia feriado entonces es habil
+                        if (!in_array(date('Y-m-d', $midia), $diasferiados)) {
+                                array_push($diashabiles, date('Y-m-d', $midia));
+                        }
+                }
+        }
+       
+        return $diashabiles;
+    }
+}

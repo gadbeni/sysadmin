@@ -232,7 +232,8 @@
                                 <option value="">--Seleccionar Item--</option>
                                 @php
                                     $jobs = App\Models\Job::where('status', 1)->where('deleted_at', NULL)
-                                                ->whereRaw(setting('auxiliares.start_contract_condition') ? "id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)" : 1)
+                                                // Mostrar solo cargos que estén acefalos
+                                                ->whereRaw(!setting('auxiliares.enable_all_jobs_for_contract') ? "id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)" : 1)
                                                 ->get();
                                 @endphp
                                 @foreach ($jobs as $item)
@@ -276,7 +277,8 @@
                                 <option value="">--Seleccionar Item--</option>
                                 @php
                                     $jobs = App\Models\Job::where('status', 1)->where('deleted_at', NULL)
-                                                ->whereRaw(setting('auxiliares.start_contract_condition') ? "id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)" : 1)
+                                                // Mostrar solo cargos que estén acefalos
+                                                ->whereRaw(!setting('auxiliares.enable_all_jobs_for_contract') ? "id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)" : 1)
                                                 ->get();
                                 @endphp
                                 @foreach ($jobs as $item)

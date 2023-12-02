@@ -404,7 +404,7 @@ class PlanillasController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return redirect()->route('voyager.cashiers.show', ['id' => $request->id])->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('voyager.cashiers.show', ['id' => $request->id])->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 

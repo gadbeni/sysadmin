@@ -179,7 +179,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 1,
                 'details' => '{"order_column":"last_name","order_display_column":"first_name","order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2021-12-29 16:09:12',
-                'updated_at' => '2023-11-16 09:59:53',
+                'updated_at' => '2023-02-15 16:00:43',
             ),
             9 => 
             array (
@@ -684,6 +684,24 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2023-08-01 18:04:25',
                 'updated_at' => '2023-09-08 17:17:22',
+            ),
+            37 => 
+            array (
+                'id' => 48,
+                'name' => 'holidays',
+                'slug' => 'holidays',
+                'display_name_singular' => 'Feriado',
+                'display_name_plural' => 'Feriados',
+                'icon' => 'voyager-calendar',
+                'model_name' => 'App\\Models\\Holiday',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":"id","order_display_column":"id","order_direction":"asc","default_search_key":"name","scope":null}',
+                'created_at' => '2023-11-24 13:32:27',
+                'updated_at' => '2023-11-24 13:58:33',
             ),
         ));
         

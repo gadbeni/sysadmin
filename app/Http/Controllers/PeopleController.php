@@ -64,7 +64,7 @@ class PeopleController extends Controller
         return view('management.people.list', compact('data'));
     }
 
-    public function search($type){
+    public function search($type = null){
         switch ($type) {
             case 'schedules':
                 $direcciones_tipo_id = request('direcciones_tipo_id') ?? null;
@@ -81,7 +81,9 @@ class PeopleController extends Controller
                 break;
             
             default:
-                # code...
+                $search = request('search');
+                $people = Person::whereRaw("(first_name like '%$search%' or last_name like '%$search%' or ci like '%$search%' or phone like '%$search%' or CONCAT(first_name, ' ', last_name) like '%$search%')")->where('deleted_at', NULL)->get();
+                return response()->json($people);
                 break;
         }
     }

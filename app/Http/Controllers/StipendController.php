@@ -22,7 +22,7 @@ class StipendController extends Controller
             
             return redirect()->route('planillas_adicionales.index')->with(['message' => 'Pago Registrado Exitosamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
-            return redirect()->route('planillas_adicionales.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('planillas_adicionales.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
         // return $request;
     }
@@ -44,7 +44,7 @@ class StipendController extends Controller
             
             return redirect()->route('planillas_adicionales.index')->with(['message' => 'Registro Actualizado.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
-            return redirect()->route('planillas_adicionales.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('planillas_adicionales.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
         // return $request;
     }

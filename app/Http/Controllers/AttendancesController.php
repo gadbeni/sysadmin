@@ -53,6 +53,8 @@ class AttendancesController extends Controller
         $contract = Contract::find($request->person_id);
         $ci = str_replace(' ', '-', $contract->person->ci); // Reemplazar los espacios en blancos con -
         $ci = explode('-', $ci)[0]; // Obtener solo el valor numérico de CI
+        $start = $request->start;
+        $finish = $request->finish;
         $attendances = DB::connection('sia')
                             ->table('Asistencia')
                             ->where('IdPersona', $ci)
@@ -60,7 +62,8 @@ class AttendancesController extends Controller
                             ->whereDate('Fecha', '<=', $request->finish)
                             ->select(DB::raw('IdPersona as ci'), DB::raw('Fecha as fecha'), DB::raw('Hora as hora'))
                             ->get();
-        dd($attendances->groupBy('fecha'));
+        // dd($attendances->groupBy('fecha'));
+        return view('biometrics.attendances.list', compact('attendances', 'contract', 'start', 'finish'));
     }
 
     /**

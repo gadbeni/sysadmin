@@ -124,6 +124,9 @@
                             <button type="button" class="btn btn-print">Imprimir</button>
                         @endif
                     @else
+                        @if (setting('auxiliares.edit-docs'))
+                        <button type="button" class="btn btn-edit">Editar</button>
+                        @endif
                         <button type="button" class="btn btn-print">Imprimir</button>
                     @endisset
                 </div>

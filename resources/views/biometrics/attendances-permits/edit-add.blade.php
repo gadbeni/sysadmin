@@ -1,11 +1,11 @@
 @extends('voyager::master')
 
-@section('page_title', 'Asignar Horario')
+@section('page_title', 'Crear Permiso/Licencia')
 
 @section('page_header')
     <h1 class="page-title">
         <i class="voyager-calendar"></i>
-        Asignar Horario
+        Crear Permiso/Licencia
     </h1>
 @stop
 
@@ -17,7 +17,7 @@
                     <form role="form" class="form-submit" action="#" method="POST">
                         <div class="panel-body">
                             <div class="form-group col-md-6">
-                                <label class="control-label" for="direcciones_tipo_id">Tipo</label>
+                                <label class="control-label" for="direcciones_tipo_id">Tipo de Dirección Administrativa</label>
                                 <select name="direcciones_tipo_id" id="select-direcciones_tipo_id" class="form-control select2" onchange="peopleList()">
                                     <option value="">--Seleccionar tipo de DA--</option>
                                     @foreach (App\Models\DireccionesTipo::whereHas('direcciones_administrativas', function($q){
@@ -45,10 +45,29 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-bordered">
-                    <form role="form" class="form-submit" action="{{ route('schedules.assignments.store', $id) }}" method="POST">
+                    <form role="form" class="form-submit" action="#" method="POST">
                         @csrf
                         <div class="panel-body">
                             <div id="div-results"></div>
+                            <br>
+                            <div class="form-group col-md-6">
+                                <label class="control-label" for="attendance_permit_type_id">Tipo</label>
+                                <select name="attendance_permit_type_id" class="form-control select2" id="">
+
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label" for="date">Fecha</label>
+                                <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}" required>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="control-label" for="file">Documento</label>
+                                <input type="file" name="file" class="form-control" accept="image/png, image/jpeg">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="control-label" for="observations">Observaciones</label>
+                                <textarea name="observations" class="form-control" rows="3"></textarea>
+                            </div>
                         </div>
                         <div class="panel-footer text-right">
                             <button type="submit" class="btn btn-primary btn-submit save">Guardar <i class="voyager-check"></i> </button>

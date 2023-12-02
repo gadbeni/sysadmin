@@ -67,7 +67,7 @@ class CheckController extends Controller
             return redirect()->route('checks.index')->with(['message' => 'Cheque Registrado Correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('checks.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
 
         }
     }
@@ -86,7 +86,7 @@ class CheckController extends Controller
             return redirect()->route('checks.index')->with(['message' => 'Cheque Actualizado Correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('checks.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('checks.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
 
         }
     }

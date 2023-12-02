@@ -501,7 +501,7 @@
                         $('#form-pagar').trigger("reset");
                     }
                 }else{
-                    toastr.error(res.message ? res.message : 'Ocurrió un error.', 'Oops!')
+                    toastr.error(res.message ? res.message : 'Ocurrió un error', 'Oops!')
                 }
                 $('.btn-submit').attr('disabled', false);
             })

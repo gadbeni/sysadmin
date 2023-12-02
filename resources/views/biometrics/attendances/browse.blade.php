@@ -30,10 +30,10 @@
                                         <select name="person_id" id="select-person_id" class="form-control"></select>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <input type="date" name="start" class="form-control" required>
+                                        <input type="date" name="start" value="{{ date('Y-m') }}-01" class="form-control" required>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <input type="date" name="finish" class="form-control" required>
+                                        <input type="date" name="finish" value="{{ date('Y-m') }}-{{ date('t') }}" class="form-control" required>
                                     </div>
                                     <div class="col-md-12 text-right">
                                         <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
@@ -80,7 +80,7 @@
             });
 
             $('#form-search').on('submit', function(e){
-                // e.preventDefault();
+                e.preventDefault();
                 $('#div-results').empty();
                 $('#div-results').loading({message: 'Cargando...'});
                 $.post($('#form-search').attr('action'), $('#form-search').serialize(), function(res){

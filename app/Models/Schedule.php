@@ -17,4 +17,8 @@ class Schedule extends Model
     public function details(){
         return $this->hasMany(ScheduleDetail::class, 'schedule_id');
     }
+
+    public function contracts_schedules(){
+        return $this->hasMany(ContractSchedule::class, 'schedule_id');
+    }
 }

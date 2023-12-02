@@ -112,7 +112,7 @@ class SpreadsheetsController extends Controller
             return redirect()->route('spreadsheets.index')->with(['message' => 'Planilla registrada correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('spreadsheets.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('spreadsheets.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -168,7 +168,7 @@ class SpreadsheetsController extends Controller
             return redirect()->route('spreadsheets.index')->with(['message' => 'Planilla editada correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('spreadsheets.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('spreadsheets.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -187,7 +187,7 @@ class SpreadsheetsController extends Controller
             return redirect()->route('spreadsheets.index')->with(['message' => 'Planilla eliminada correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('spreadsheets.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('spreadsheets.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -201,7 +201,7 @@ class SpreadsheetsController extends Controller
             return redirect()->route('spreadsheets.index')->with(['message' => 'Planillas eliminadas correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             env('APP_DEBUG') ? dd($th) : null;
-            return redirect()->route('spreadsheets.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('spreadsheets.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 }

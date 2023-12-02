@@ -99,7 +99,7 @@ class CashiersController extends Controller
             } catch (\Throwable $th) {
                 DB::rollback();
                 //throw $th;
-                return redirect()->route('voyager.cashiers.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+                return redirect()->route('voyager.cashiers.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
             }
         }else{
             return redirect()->route('voyager.cashiers.index')->with(['message' => 'El usuario seleccionado tiene una caja que no ha sido cerrada.', 'alert-type' => 'warning']);
@@ -174,7 +174,7 @@ class CashiersController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return redirect()->route($request->redirect ?? 'voyager.cashiers.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route($request->redirect ?? 'voyager.cashiers.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -221,7 +221,7 @@ class CashiersController extends Controller
         } catch (\Throwable $th) {
             // DB::rollback();
             // dd($th);
-            return redirect()->route('voyager.dashboard')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('voyager.dashboard')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -306,7 +306,7 @@ class CashiersController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return redirect()->route('voyager.dashboard')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('voyager.dashboard')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -331,7 +331,7 @@ class CashiersController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return redirect()->route('voyager.dashboard')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('voyager.dashboard')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
@@ -379,7 +379,7 @@ class CashiersController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
-            return redirect()->route('voyager.cashiers.index')->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
+            return redirect()->route('voyager.cashiers.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 

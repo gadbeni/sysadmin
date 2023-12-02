@@ -775,40 +775,59 @@ class ReportsController extends Controller
     }
 
     public function social_security_personal_payments_list(Request $request){
-        $start = '01-'.$request->start;
-        $end = '01-'.$request->end;
-        $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
-                        ->join('contribuyente as c', 'c.N_Carnet', 'p.CedulaIdentidad')
-                        ->join('direccionadministrativa as da', 'da.ID', 'p.idDa')
-                        ->where('c.ID', $request->contribuyente_id)
-                        ->where('p.Periodo', '>=', date('Ym', strtotime($start)))
-                        ->where('p.Periodo', '<=', date('Ym', strtotime($end)))
-                        ->select(
-                            'p.ID as id',
-                            DB::raw('REPLACE(p.Nombre_Empleado, "  ", " ") as empleado'),
-                            'da.NOMBRE as direccion_administrativa',
-                            'p.CedulaIdentidad as ci',
-                            'p.idPlanillaprocesada as planilla_procesada',
-                            'p.Afp as afp',
-                            'p.Num_Nua as nua_cua',
-                            'p.Periodo as periodo',
-                            'p.Total_Ganado as total',
-                            'p.Total_Aportes_Afp as total_afp'
-                        )
-                        ->orderBy('p.Periodo', 'ASC')->get();
-        $cont = 0;
-        foreach ($planillas as $item) {
-            // Obtener detalle de pago
-            $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('Afp', $item->afp)->where('idPlanillaprocesada', $item->planilla_procesada)->get();
-            $payments = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
-            $planillas[$cont]->payments = $payments;
-            $cont++;
-        }
-        // dd($request->all());
-        if($request->type == 'print'){
-            return view('reports.social_security.personal-payments-print', compact('planillas'));
+        $type_data = $request->type_data;
+        $planillas = [];
+        $paymentschedules_details = [];
+        
+        // Si es 1 entonces traemos datos de la base de datos de MAMORE
+        if ($type_data) {
+            $paymentschedules_details = PaymentschedulesDetail::with(['paymentschedule.payroll_payments' => function($q){
+                                            $q->where('fpc_number', '<>', NULL)->groupBy('fpc_number');
+                                        }, 'paymentschedule.period', 'contract.person', 'contract.direccion_administrativa'])
+                                        ->whereHas('contract', function($q)use($request){
+                                            $q->where('person_id', $request->person_id);
+                                        })
+                                        ->whereHas('paymentschedule.period', function($q)use($request){
+                                            $q->where('name',  '>=', date('Ym', strtotime($request->start)))
+                                                ->where('name',  '<=', date('Ym', strtotime($request->finish)));
+                                        })
+                                        ->where('deleted_at', null)->get();
         }else{
-            return view('reports.social_security.personal-payments-list', compact('planillas'));
+            $start = $request->start.'-01';
+            $finish = $request->finish.'-01';
+            $planillas = DB::connection('mysqlgobe')->table('planillahaberes as p')
+                            ->join('contribuyente as c', 'c.N_Carnet', 'p.CedulaIdentidad')
+                            ->join('direccionadministrativa as da', 'da.ID', 'p.idDa')
+                            ->where('c.ID', $request->contribuyente_id)
+                            ->where('p.Periodo', '>=', date('Ym', strtotime($start)))
+                            ->where('p.Periodo', '<=', date('Ym', strtotime($finish)))
+                            ->select(
+                                'p.ID as id',
+                                DB::raw('REPLACE(p.Nombre_Empleado, "  ", " ") as empleado'),
+                                'da.NOMBRE as direccion_administrativa',
+                                'p.CedulaIdentidad as ci',
+                                'p.idPlanillaprocesada as planilla_procesada',
+                                'p.Afp as afp',
+                                'p.Num_Nua as nua_cua',
+                                'p.Periodo as periodo',
+                                'p.Total_Ganado as total',
+                                'p.Total_Aportes_Afp as total_afp'
+                            )
+                            ->orderBy('p.Periodo', 'ASC')->get();
+            $cont = 0;
+            foreach ($planillas as $item) {
+                // Obtener detalle de pago
+                $planillahaberes = DB::connection('mysqlgobe')->table('planillahaberes')->where('Afp', $item->afp)->where('idPlanillaprocesada', $item->planilla_procesada)->get();
+                $payments = PayrollPayment::whereIn('planilla_haber_id', $planillahaberes->pluck('ID'))->where('deleted_at', NULL)->get();
+                $planillas[$cont]->payments = $payments;
+                $cont++;
+            }
+        }
+        
+        if($request->type == 'print'){
+            return view('reports.social_security.personal-payments-print', compact('planillas', 'type_data', 'paymentschedules_details'));
+        }else{
+            return view('reports.social_security.personal-payments-list', compact('planillas', 'type_data', 'paymentschedules_details'));
         }
     }
 

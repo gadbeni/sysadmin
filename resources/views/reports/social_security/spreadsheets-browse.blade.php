@@ -22,22 +22,10 @@
                                 @csrf
                                 <input type="hidden" name="print">
                                 <div class="form-group">
-                                    <label for="start">Desde</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control input-picker" name="start" />
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                      </div>
+                                    <input type="month" name="start" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label for="end">Hasta</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control input-picker" name="end" />
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                      </div>
+                                    <input type="month" name="end" class="form-control">
                                 </div>
                                 <div class="text-right">
                                     <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
@@ -62,21 +50,13 @@
 @stop
 
 @section('css')
-    <link href="{{ asset('vendor/datepicker/datepicker.min.css') }}" rel="stylesheet">
+    
 @stop
 
 @section('javascript')
-    <script src="{{ asset('vendor/datepicker/bootstrap-datepicker.min.js') }}"></script>
-    <script src="{{ asset('vendor/datepicker/bootstrap-datepicker.es.min.js') }}"></script>
     <script src="{{ url('js/main.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $(".input-picker").datepicker( {
-                format: "mm-yyyy",
-                startView: "months", 
-                minViewMode: "months",
-                language: 'es'
-            });
 
             $('#form-search').on('submit', function(e){
                 e.preventDefault();

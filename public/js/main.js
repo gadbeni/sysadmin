@@ -133,6 +133,36 @@ function customSelect(select, url, templateResult, templateSelection, dropdownPa
     });
 }
 
+function formatResultPeople(data) {
+    if (data.loading) {
+        return 'Buscando...';
+    }
+    let image = "/images/default.jpg";
+    if(data.image){
+        image = "/storage/"+data.image.replace('.', '-cropped.');
+    }
+    var $container = $(
+        `<div class="option-select2-custom">
+            <div style="display:flex; flex-direction: row">
+                <div>
+                    <img src="${image}" style="width: 60px; height: 60px; border-radius: 30px; margin-right: 10px" />
+                </div>
+                <div>
+                    <h5>
+                        ${data.first_name.toUpperCase()} ${data.last_name.toUpperCase()} <br>
+                        <p style="font-size: 13px; margin-top: 5px">
+                            ${data.ci}
+                        </p>
+                    </h5>
+                </div>
+            </div>
+            
+        </div>`
+    );
+
+    return $container;
+}
+
 function formatResultContracts(data) {
     if (data.loading) {
         return 'Buscando...';
