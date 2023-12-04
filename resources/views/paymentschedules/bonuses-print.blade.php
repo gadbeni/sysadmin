@@ -60,9 +60,9 @@
                         <th>CI</th>
                         <th>INICIO</th>
                         <th>FIN</th>
-                        <th>DÍAS TRABAJADOS</th>
+                        <th>DÍAS<br>TRAB.</th>
                         <th>MESES</th>
-                        <th>SUELDO PROMEDIO</th>
+                        <th>SUELDO<br>PROMEDIO</th>
                         <th>AGUINALDO</th>
                         @if ($signature_field)
                         <th>FIRMA</th>
@@ -91,28 +91,12 @@
                                     @endif
                                 </td>
                                 <td>{{ $item->contract->person->ci }}</td>
-                                @php
-                                    $start_contract = $item->contract;
-                                    $aux = true;
-                                    while ($aux) {
-                                        $contract = App\Models\Contract::where('person_id', $start_contract->person_id)
-                                                    ->where('finish', '<', $start_contract->start)
-                                                    ->orderBy('finish', 'DESC')->where('deleted_at', NULL)->first();
-                                        if($contract){
-                                            $current_start = Carbon\Carbon::createFromFormat('Y-m-d', $item->contract->start);
-                                            $new_finish = Carbon\Carbon::createFromFormat('Y-m-d', $contract->finish);
-                                            if($current_start->diffInDays($new_finish) == 1){
-                                                $start_contract = $contract;
-                                            }else{
-                                                $aux = false;
-                                            }
-                                        }else{
-                                            $aux = false;
-                                        }
-                                    }
-                                @endphp
-                                <td>{{ date('d-m-Y', strtotime($start_contract->start)) }}</td>
-                                <td>{{ $item->contract->finish ? date('d-m-Y', strtotime($item->contract->finish)) : '31-12-'.$bonus->year }}</td>
+                                <td>
+                                    @if ($item->start)
+                                        {{ date('d-m-Y', strtotime($item->start)) }}
+                                    @endif
+                                </td>
+                                <td>{{ $item->finish ? date('d-m-Y', strtotime($item->finish)) : '31-12-'.$bonus->year }}</td>
                                 <td style="text-align:center">{{ $item->days }}</td>
                                 <td>
                                     <table width="100%">

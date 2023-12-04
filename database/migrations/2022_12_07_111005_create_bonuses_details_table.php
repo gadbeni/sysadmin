@@ -25,6 +25,9 @@ class CreateBonusesDetailsTable extends Migration
             $table->decimal('partial_salary_3', 10, 2)->nullable();
             $table->decimal('seniority_bonus_3', 10, 2)->nullable();
             $table->smallInteger('days')->nullable();
+            $table->string('contracts')->nullable();
+            $table->date('start')->nullable();
+            $table->date('finish')->nullable();
             $table->smallInteger('status')->nullable()->default(1);
             $table->text('observations')->nullable();
             $table->timestamps();

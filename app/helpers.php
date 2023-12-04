@@ -14,6 +14,8 @@ if (!function_exists('set_setting')) {
 if (! function_exists('contract_duration_calculate')) {
     function contract_duration_calculate($start, $finish)
     {
+        // Obtener el último día de febrero (por si es un año bisiesto)
+        $last_day_february = date("t", strtotime(date('Y').'-02-01'));
         $start = Carbon\Carbon::parse($start);
         $finish = Carbon\Carbon::parse($finish);
         $count_months = 0;
@@ -24,8 +26,8 @@ if (! function_exists('contract_duration_calculate')) {
                 $finish = Carbon\Carbon::parse($finish->addDays(-1)->format('Y-m-d'));
             }
             $count_days = $start->diffInDays($finish) +1;
-            if($finish->format('m') == 2 && ($count_days == 28 || $count_days == 29)){
-                $count_days = 30;
+            if($finish->format('m') == 2 && ($finish->format('d') == $last_day_february)){
+                $count_days += (30 - $finish->endOfMonth()->format('d'));
             }
             $count_days = $count_days > 30 ? 30 : $count_days;
         }else{
@@ -45,7 +47,7 @@ if (! function_exists('contract_duration_calculate')) {
             // Calcula la cantidad de días del ultimo mes
             $count_days_last_month = $start->subMonth()->diffInDays($finish) +1;
             // Si es mayor o igual a 30 se toma como un mes completo
-            if($count_days_last_month >= 30 || ($finish->format('m') == 2 && $count_days_last_month == 28)){
+            if($count_days_last_month >= 30 || ($finish->format('m') == 2 && $count_days_last_month == $last_day_february)){
                 $count_days_last_month = 0;
                 $count_months++;
             }

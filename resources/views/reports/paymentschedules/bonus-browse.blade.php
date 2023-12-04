@@ -18,7 +18,37 @@
                                 @csrf
                                 <input type="hidden" name="type">
                                 <div class="form-group">
-                                    <label for="year">Gestión</label>
+                                    <select name="direcciones_tipo_id" id="select-direcciones_tipo_id" class="form-control select2">
+                                        @if (!Auth::user()->direccion_administrativa_id)
+                                        <option value="">Todos los tipos de DA</option>
+                                        @endif
+                                        @foreach (App\Models\DireccionesTipo::with(['direcciones_administrativas' => function($q){
+                                                        $q->whereRaw("estado = 1 and deleted_at is null");
+                                                    }])->whereHas('direcciones_administrativas', function($q){
+                                                        $q->whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1);
+                                                    })->where('estado', 1)->where('deleted_at', NULL)->get() as $item)
+                                        <option value="{{ $item->id }}" data-direcciones='@json($item->direcciones_administrativas)'>{{ $item->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select name="direccion_administrativa_id[]" id="select-direccion_administrativa_id" class="form-control select2" multiple @if(Auth::user()->direccion_administrativa_id) required @endif>
+                                        @if (!Auth::user()->direccion_administrativa_id)
+                                        <option value="">Todas las direcciones administrativas</option>
+                                        @endif
+                                        @foreach (App\Models\Direccion::where('estado', 1)->whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1)->get() as $item)
+                                        <option value="{{ $item->id }}">{{ $item->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select name="procedure_type_id" class="form-control select2">
+                                        <option value="">Todas las planillas</option>
+                                        <option value="1">Permanente</option>
+                                        <option value="5">Eventual</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <input type="number" name="year" class="form-control" value="{{ date('Y') }}" min="2022" step="1" required>
                                 </div>
                                 <div class="text-right">
@@ -51,6 +81,17 @@
     <script src="{{ url('js/main.js') }}"></script>
     <script>
         $(document).ready(function() {
+
+            $('#select-direcciones_tipo_id').change(function(){
+                let direcciones = $('#select-direcciones_tipo_id option:selected').data('direcciones');
+                if (direcciones) {
+                    $('#select-direccion_administrativa_id').empty()
+                    direcciones.map(item => {
+                        $('#select-direccion_administrativa_id').append(`<option value="${item.id}">${item.nombre}</option>`)
+                    })
+                }
+                
+            });
 
             $('#form-search').on('submit', function(e){
                 e.preventDefault();

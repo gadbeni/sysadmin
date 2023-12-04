@@ -35,20 +35,39 @@
                                 <table class="table" style="margin: 0px">
                                     @php
                                         $index = 1;
+                                        $days_total = 0;
                                     @endphp
                                     @foreach ($bonus->contracts_list as $contracts_list)
                                         @php
                                             $amounts = array();
                                             $subtotal = 0;
                                             $count = 1;
+                                            $contracts = array();
+                                            $current_contract = $contracts_list['contracts']['0'];
                                             foreach ($contracts_list['contracts'] as $contract) {
-                                                $current_contract = $contract;
-                                                foreach ($contract->paymentschedules_details->sortByDesc('paymentschedule.period.name')->groupBy('paymentschedule.period.name') as $paymentschedules_detail) {
-                                                    $salary = $paymentschedules_detail->sum('salary') / $paymentschedules_detail->count();
+                                                array_push($contracts, $contract->id);
+                                                $contract_paymentschedules_details = $contract->paymentschedules_details->sortByDesc('paymentschedule.period.name')->groupBy('paymentschedule.period.name');
+                                                
+                                                // El último pago no se toma en cuenta a menos que sea de diciembre (porque no se ha planillado)
+                                                // solo se aplica para el último pago del primer contrato (último contrato ORDER BY DESC)
+                                                if(date('m', strtotime($contract->finish)) < 12 && $count == 1){
+                                                    $contract_paymentschedules_details = $contract_paymentschedules_details->slice(1);
+                                                }
+
+                                                foreach ($contract_paymentschedules_details as $key => $paymentschedules_detail) {
+                                                    $salary = $paymentschedules_detail->sum('partial_salary') / $paymentschedules_detail->count();
                                                     $seniority_bonus_amount = $paymentschedules_detail->sum('seniority_bonus_amount') / $paymentschedules_detail->count();
                                                     $subtotal += $salary + $seniority_bonus_amount;
-                                                    array_push($amounts, ['salary' => $salary, 'seniority_bonus_amount' => $seniority_bonus_amount]);
-                                                    $count++;
+
+                                                    // Buscar que el perido no haya sido registrado
+                                                    $index_search = array_search($key, array_column($amounts, 'period'));
+                                                    if ($index_search !== false) {
+                                                        $amounts[$index_search]['salary'] += $salary;
+                                                        $amounts[$index_search]['seniority_bonus_amount'] += $seniority_bonus_amount;
+                                                    }else{
+                                                        array_push($amounts, ['period' => $key, 'salary' => $salary, 'seniority_bonus_amount' => $seniority_bonus_amount]);
+                                                        $count++;
+                                                    }
                                                     if ($count > 3) {
                                                         break;
                                                     }
@@ -59,31 +78,46 @@
                                             }
                                             $amount_subtotal = (($subtotal /3) /360) * ($contracts_list['days']);
                                             $amount_accumulated += $amount_subtotal;
+                                            $days_total += $contracts_list['days'];
+                                            $start = $contracts_list['contracts'][count($contracts_list['contracts']) -1]->start;
+                                            $finish = $contracts_list['contracts'][0]->finish;
                                         @endphp
                                         <tr>
-                                            <td>{{ $current_contract->type->name }}</td>
+                                            <td title="{{ date('d/m/Y', strtotime($start)) }} - {{ $finish ? date('d/m/Y', strtotime($finish)) : 'No definida' }}"><a href="{{ route('contracts.show', $current_contract->id) }}#table-payments-history" target="_blank">{{ $current_contract->type->name }}</a></td>
                                             @php
                                                 $index = 1;
+                                                $average = 0;
                                             @endphp
+                                            {{-- Mostrar los últimos 3 meses planillados --}}
                                             @foreach ($amounts as $amount)
-                                            <td class="text-right">
+                                            <td class="text-right" title="{{ $amount['period'] }}">
                                                 {{ $amount['salary'] + $amount['seniority_bonus_amount'] }}
                                                 <input type="hidden" name="partial_salary_{{ $index }}[]" value="{{ $amount['salary'] }}">
                                                 <input type="hidden" name="seniority_bonus_{{ $index }}[]" value="{{ $amount['seniority_bonus_amount'] }}">
                                             </td>
                                             @php
                                                 $index++;
+                                                $average += $amount['salary'] + $amount['seniority_bonus_amount'];
                                             @endphp
                                             @endforeach
+                                            <td class="text-right"><b>{{ number_format($average /3, 2, ',', '.') }}</b></td>
                                             <td class="text-right"><b>{{ $contracts_list['days'] }}</b></td>
                                             <td class="text-right">
                                                 <b>{{ $amount_subtotal == intval($amount_subtotal) ? intval($amount_subtotal) : number_format($amount_subtotal, 2, ',', '.') }}</b>
-                                                <input type="hidden" name="procedure_type_id[]" value="{{ $current_contract->procedure_type_id }}">
                                                 <input type="hidden" name="contract_id[]" value="{{ $current_contract->id }}">
+                                                <input type="hidden" name="procedure_type_id[]" value="{{ $current_contract->procedure_type_id }}">
+                                                <input type="hidden" name="contracts[]" value="{{ json_encode($contracts) }}">
+                                                <input type="hidden" name="start[]" value="{{ $start }}">
+                                                <input type="hidden" name="finish[]" value="{{ $finish ?? '' }}">
                                                 <input type="hidden" name="days[]" value="{{ $contracts_list['days'] }}">
                                             </td>
                                         </tr>
                                     @endforeach
+                                    <tr>
+                                        <td colspan="5" class="text-right"><b>TOTAL</b></td>
+                                        <td class="text-right"><b @if($days_total > 360) class="text-danger" @endif>{{ $days_total }}</b></td>
+                                        <td></td>
+                                    </tr>
                                 </table>
                             </td>
                             <td class="text-right">{{ $amount_accumulated == intval($amount_accumulated) ? intval($amount_accumulated) : number_format($amount_accumulated, 2, ',', '.') }}</td>
@@ -110,8 +144,8 @@
 </form>
 <script>
     $(document).ready(function(){
-        // $('#form').submit(function(e){
-        //     $('#btn-submit').attr('disabled', true);
-        // });
+        $('.form-submit').submit(function(e){
+            $('.form-submit .btn-submit').attr('disabled', true);
+        });
     });
 </script>

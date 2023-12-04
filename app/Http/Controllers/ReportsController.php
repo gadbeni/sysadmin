@@ -1154,13 +1154,25 @@ class ReportsController extends Controller
         $bonuses = BonusesDetail::whereHas('bonus', function($q) use($year){
                         $q->where('year', $year)->where('deleted_at', NULL);
                     })
-                    ->whereHas('contract', function($q){
-                        $q->where('procedure_type_id', 1);
+                    ->whereHas('contract', function($q) use($request){
+                        $q->whereRaw($request->procedure_type_id ? 'procedure_type_id = '.$request->procedure_type_id : 1);
+                    })
+                    ->whereHas('contract.direccion_administrativa', function($q) use($request){
+                        $q->whereRaw($request->direcciones_tipo_id ? "direcciones_tipo_id = ".$request->direcciones_tipo_id : 1);
+                    })
+                    ->whereHas('contract', function($q) use($request){
+                        $q->whereRaw($request->direccion_administrativa_id ? "direccion_administrativa_id in ".str_replace(array('[', ']'), array('(', ')'), json_encode($request->direccion_administrativa_id)) : 1);
                     })
                     ->where('deleted_at', NULL)->get();
         if($request->type == 'excel'){
             // return view('reports.paymentschedules.bonus-excel', compact('bonuses', 'year'));
             return Excel::download(new BonusExport($bonuses, $year), 'aguinaldos-'.$year.'.xlsx');
+        }elseif($request->type == 'print'){
+            $type_render = 1;
+            $procedure_type_id = $request->procedure_type_id;
+            $direcciones_tipo_id = $request->direcciones_tipo_id;
+            $direccion_administrativa_id = $request->direccion_administrativa_id;
+            return view('reports.paymentschedules.bonus-print', compact('bonuses', 'year', 'type_render', 'procedure_type_id'));
         }else{
             return view('reports.paymentschedules.bonus-list', compact('bonuses', 'year'));
         }

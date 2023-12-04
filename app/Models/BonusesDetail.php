@@ -21,6 +21,9 @@ class BonusesDetail extends Model
         'partial_salary_3',
         'seniority_bonus_3',
         'days',
+        'contracts',
+        'start',
+        'finish',
         'status',
         'observations'
     ];

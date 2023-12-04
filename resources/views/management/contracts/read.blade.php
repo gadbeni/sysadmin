@@ -252,7 +252,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" id="table-payments-history">
             <div class="col-md-12">
                 <div class="panel panel-bordered" style="padding-bottom:5px;">
                     <div class="row">
