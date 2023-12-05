@@ -17,6 +17,7 @@ class CreateBonusesTable extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->foreignId('direccion_id')->nullable()->constrained('direcciones');
+            $table->foreignId('procedure_type_id')->nullable()->constrained('procedure_types');
             $table->smallInteger('year')->nullable();
             $table->smallInteger('status')->nullable()->default(1);
             $table->text('observations')->nullable();

@@ -681,18 +681,23 @@ class PaymentschedulesController extends Controller
     public function bonuses_create(){
         $this->custom_authorize('add_bonuses');
         $year = date('Y');
-        $direcciones = Direccion::where('deleted_at', NULL)->where('estado', 1)
-        ->whereRaw("id not in (select direccion_id from bonuses where status and year = $year and deleted_at is null)")
+        $direcciones = Direccion::with(['bonuses' => function($q) use($year){
+                            $q->where('year', $year);
+                        }])
+                        ->where('deleted_at', NULL)->where('estado', 1)
+                        ->whereRaw("id not in (select direccion_id from bonuses where status and year = $year and procedure_type_id is null and deleted_at is null)")
                         ->whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1)->get();
         return view('paymentschedules.bonuses-edit-add', compact('direcciones'));
     }
 
     public function bonuses_generate(Request $request){
         $direccion_id = $request->direccion_id;
+        $procedure_type_id = $request->procedure_type_id;
         $year = $request->year;
 
-        $bonus = Bonus::where('deleted_at', null)
-                    ->where('direccion_id', $direccion_id)->where('year', $year)->first();
+        $bonus = Bonus::where('direccion_id', $direccion_id)
+                    ->whereRaw($procedure_type_id ? 'procedure_type_id = '.$procedure_type_id : 1)
+                    ->where('year', $year)->first();
         if($bonus){
             return response()->json(['error' => 'Ya se generó la planilla de aguinaldos.']);
         }
@@ -778,17 +783,24 @@ class PaymentschedulesController extends Controller
 
         $direccion = Direccion::find($direccion_id);
 
-        return view('paymentschedules.bonuses-generate', compact('bonuses', 'direccion', 'year'));
+        return view('paymentschedules.bonuses-generate', compact('bonuses', 'direccion', 'year', 'procedure_type_id'));
     }
 
     public function bonuses_store(Request $request){
         $direccion_id = $request->direccion_id;
+        $procedure_type_id = $request->procedure_type_id;
         $year = $request->year;
 
-        $bonus = Bonus::where('deleted_at', null)
-                    ->where('direccion_id', $direccion_id)->where('year', $year)->first();
+        $bonus = Bonus::where('direccion_id', $direccion_id)
+                    ->whereRaw($procedure_type_id ? 'procedure_type_id = '.$procedure_type_id : 1)
+                    ->where('year', $year)->first();
         if($bonus){
-            return redirect()->route('bonuses.create')->with(['message' => 'Ya se generó la planilla de aguinaldos.', 'alert-type' => 'error']);
+            return redirect()->route('bonuses.create')->with(['message' => 'Ya se generó la planilla de aguinaldos', 'alert-type' => 'error']);
+        }
+
+        // Si no hay funcionarios en la lista
+        if(!$request->contract_id){
+            return redirect()->route('bonuses.create')->with(['message' => 'Debe haber funcionarios en la lista', 'alert-type' => 'error']);
         }
 
         DB::beginTransaction();
@@ -798,6 +810,7 @@ class PaymentschedulesController extends Controller
             $bonus = Bonus::create([
                 'user_id' => Auth::user()->id,
                 'direccion_id' => $direccion_id,
+                'procedure_type_id' => $procedure_type_id,
                 'year' => $year
             ]);
 
@@ -805,7 +818,7 @@ class PaymentschedulesController extends Controller
                 BonusesDetail::create([
                     'bonus_id' => $bonus->id,
                     'contract_id' => $request->contract_id[$i],
-                    'procedure_type_id' => $request->procedure_type_id[$i],
+                    'procedure_type_id' => $request->contract_procedure_type_id[$i],
                     'partial_salary_1' => $request->partial_salary_1[$i],
                     'seniority_bonus_1' => $request->seniority_bonus_1[$i],
                     'partial_salary_2' => $request->partial_salary_2[$i],
@@ -822,6 +835,7 @@ class PaymentschedulesController extends Controller
             return redirect()->route('bonuses.index')->with(['message' => 'Planilla de aguinaldos registrada correctamente.', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
             DB::rollback();
+            dd($th);
             return redirect()->route('bonuses.create')->with(['message' => 'Ocurrió un error en el servidor.', 'alert-type' => 'error']);
         }
     }

@@ -19,7 +19,7 @@
             <div class="col-md-12">
                 <div class="panel panel-bordered" style="padding-bottom:5px;">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="panel-heading" style="border-bottom:0;">
                                 <h3 class="panel-title">Dirección Administrativa</h3>
                             </div>
@@ -28,12 +28,27 @@
                             </div>
                             <hr style="margin:0;">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="panel-heading" style="border-bottom:0;">
                                 <h3 class="panel-title">Gestión</h3>
                             </div>
                             <div class="panel-body" style="padding-top:0;">
                                 <p>{{ $bonus->year }}</p>
+                            </div>
+                            <hr style="margin:0;">
+                        </div>
+                        <div class="col-md-4">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Tipo de planilla</h3>
+                            </div>
+                            <div class="panel-body" style="padding-top:0;">
+                                <p>
+                                    @if ($bonus->procedure_type)
+                                        {{ $bonus->procedure_type->name }}
+                                    @else
+                                        Todas
+                                    @endif
+                                </p>
                             </div>
                             <hr style="margin:0;">
                         </div>
@@ -140,8 +155,8 @@
                             <div class="form-group col-md-12">
                                 <label for="procedure_type_id">Tipo de planilla</label>
                                 <select name="procedure_type_id" class="form-control select2">
-                                    <option value="1">Permanente</option>
-                                    <option value="5">Eventual</option>
+                                    <option value="1" @if($bonus->procedure_type_id == 1) selected @elseif(!$bonus->procedure_type_id) @else disabled @endif>Permanente</option>
+                                    <option value="5" @if($bonus->procedure_type_id == 5) selected @elseif(!$bonus->procedure_type_id) @else disabled @endif>Eventual</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-12">

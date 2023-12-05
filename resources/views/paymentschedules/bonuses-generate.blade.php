@@ -1,6 +1,7 @@
 <form class="form-submit" action="{{ route('bonuses.store') }}" method="post">
     @csrf
     <input type="hidden" name="direccion_id" value="{{ $direccion->id }}">
+    <input type="hidden" name="procedure_type_id" value="{{ $procedure_type_id }}">
     <input type="hidden" name="year" value="{{ $year }}">
     <div class="col-md-12">
         <div id="dataTable" class="table-responsive">
@@ -23,6 +24,24 @@
                     @endphp
                     @foreach ($bonuses as $bonus)
                         @php
+                            /*
+                                Si se seleccionó el tipo de planilla se debe recorrer todos los primeros contratos
+                                para verificar si es de ese tipo de planilla exite en la lista
+                            */
+                            if($procedure_type_id){
+                                $encontrado = false;
+                                foreach ($bonus->contracts_list as $contracts_list) {
+                                    
+                                    if($contracts_list['contracts']['0']->procedure_type_id == $procedure_type_id){
+                                        $encontrado = true;
+                                    }
+                                }
+                                // Si no se encontró se hace un salto de interacción
+                                if (!$encontrado) {
+                                    continue;
+                                }
+                            }
+
                             $amount_accumulated = 0;
                         @endphp
                         <tr>
@@ -43,7 +62,7 @@
                                             $subtotal = 0;
                                             $count = 1;
                                             $contracts = array();
-                                            $current_contract = $contracts_list['contracts']['0'];
+                                            $current_contract = $contracts_list['contracts'][0];
                                             foreach ($contracts_list['contracts'] as $contract) {
                                                 array_push($contracts, $contract->id);
                                                 $contract_paymentschedules_details = $contract->paymentschedules_details->sortByDesc('paymentschedule.period.name')->groupBy('paymentschedule.period.name');
@@ -80,38 +99,41 @@
                                             $amount_accumulated += $amount_subtotal;
                                             $days_total += $contracts_list['days'];
                                             $start = $contracts_list['contracts'][count($contracts_list['contracts']) -1]->start;
-                                            $finish = $contracts_list['contracts'][0]->finish;
+                                            $finish = $current_contract->finish;
                                         @endphp
-                                        <tr>
-                                            <td title="{{ date('d/m/Y', strtotime($start)) }} - {{ $finish ? date('d/m/Y', strtotime($finish)) : 'No definida' }}"><a href="{{ route('contracts.show', $current_contract->id) }}#table-payments-history" target="_blank">{{ $current_contract->type->name }}</a></td>
-                                            @php
-                                                $index = 1;
-                                                $average = 0;
-                                            @endphp
-                                            {{-- Mostrar los últimos 3 meses planillados --}}
-                                            @foreach ($amounts as $amount)
-                                            <td class="text-right" title="{{ $amount['period'] }}">
-                                                {{ $amount['salary'] + $amount['seniority_bonus_amount'] }}
-                                                <input type="hidden" name="partial_salary_{{ $index }}[]" value="{{ $amount['salary'] }}">
-                                                <input type="hidden" name="seniority_bonus_{{ $index }}[]" value="{{ $amount['seniority_bonus_amount'] }}">
-                                            </td>
-                                            @php
-                                                $index++;
-                                                $average += $amount['salary'] + $amount['seniority_bonus_amount'];
-                                            @endphp
-                                            @endforeach
-                                            <td class="text-right"><b>{{ number_format($average /3, 2, ',', '.') }}</b></td>
-                                            <td class="text-right"><b>{{ $contracts_list['days'] }}</b></td>
-                                            <td class="text-right">
-                                                <b>{{ $amount_subtotal == intval($amount_subtotal) ? intval($amount_subtotal) : number_format($amount_subtotal, 2, ',', '.') }}</b>
-                                                <input type="hidden" name="contract_id[]" value="{{ $current_contract->id }}">
-                                                <input type="hidden" name="procedure_type_id[]" value="{{ $current_contract->procedure_type_id }}">
-                                                <input type="hidden" name="contracts[]" value="{{ json_encode($contracts) }}">
-                                                <input type="hidden" name="start[]" value="{{ $start }}">
-                                                <input type="hidden" name="finish[]" value="{{ $finish ?? '' }}">
-                                                <input type="hidden" name="days[]" value="{{ $contracts_list['days'] }}">
-                                            </td>
-                                        </tr>
+                                        {{-- Si no se seleccionó el tipo de planilla o seleccionó y es igual a la del último contrato (Primero ORDER BY DESC) --}}
+                                        @if (!$procedure_type_id || $current_contract->procedure_type_id == $procedure_type_id)
+                                            <tr>
+                                                <td title="{{ date('d/m/Y', strtotime($start)) }} - {{ $finish ? date('d/m/Y', strtotime($finish)) : 'No definida' }}"><a href="{{ route('contracts.show', $current_contract->id) }}#table-payments-history" target="_blank">{{ $current_contract->type->name }}</a></td>
+                                                @php
+                                                    $index = 1;
+                                                    $average = 0;
+                                                @endphp
+                                                {{-- Mostrar los últimos 3 meses planillados --}}
+                                                @foreach ($amounts as $amount)
+                                                <td class="text-right" title="{{ $amount['period'] }}">
+                                                    {{ $amount['salary'] + $amount['seniority_bonus_amount'] }}
+                                                    <input type="hidden" name="partial_salary_{{ $index }}[]" value="{{ $amount['salary'] }}">
+                                                    <input type="hidden" name="seniority_bonus_{{ $index }}[]" value="{{ $amount['seniority_bonus_amount'] }}">
+                                                </td>
+                                                @php
+                                                    $index++;
+                                                    $average += $amount['salary'] + $amount['seniority_bonus_amount'];
+                                                @endphp
+                                                @endforeach
+                                                <td class="text-right"><b>{{ number_format($average /3, 2, ',', '.') }}</b></td>
+                                                <td class="text-right"><b>{{ $contracts_list['days'] }}</b></td>
+                                                <td class="text-right">
+                                                    <b>{{ $amount_subtotal == intval($amount_subtotal) ? intval($amount_subtotal) : number_format($amount_subtotal, 2, ',', '.') }}</b>
+                                                    <input type="hidden" name="contract_id[]" value="{{ $current_contract->id }}">
+                                                    <input type="hidden" name="contract_procedure_type_id[]" value="{{ $current_contract->procedure_type_id }}">
+                                                    <input type="hidden" name="contracts[]" value="{{ json_encode($contracts) }}">
+                                                    <input type="hidden" name="start[]" value="{{ $start }}">
+                                                    <input type="hidden" name="finish[]" value="{{ $finish ?? '' }}">
+                                                    <input type="hidden" name="days[]" value="{{ $contracts_list['days'] }}">
+                                                </td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                     <tr>
                                         <td colspan="5" class="text-right"><b>TOTAL</b></td>
@@ -123,7 +145,7 @@
                             <td class="text-right">{{ $amount_accumulated == intval($amount_accumulated) ? intval($amount_accumulated) : number_format($amount_accumulated, 2, ',', '.') }}</td>
                         </tr>
                         @php
-                        $total += $amount_accumulated;
+                            $total += $amount_accumulated;
                             $cont++;
                         @endphp
                     @endforeach

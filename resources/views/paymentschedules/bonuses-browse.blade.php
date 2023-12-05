@@ -40,6 +40,7 @@
                                     <tr>
                                         <th>N&deg;</th>
                                         <th>Dirección administrativa</th>
+                                        <th>Tipo de planilla</th>
                                         <th>N&deg; de personas</th>
                                         <th>Gestión</th>
                                         <th>Registrado</th>
@@ -54,6 +55,13 @@
                                         <tr>
                                             <td>{{ $cont }}</td>
                                             <td>{{ $item->direccion->nombre }}</td>
+                                            <td>
+                                                @if ($item->procedure_type)
+                                                    {{ $item->procedure_type->name }}
+                                                @else
+                                                    Todas
+                                                @endif
+                                            </td>
                                             <td>{{ $item->details->count() }}</td>
                                             <td>{{ $item->year }}</td>
                                             <td>
@@ -82,7 +90,7 @@
                                                     <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                                                 </a>
                                                 @endif
-                                                @if ($item->status == 1 && auth()->user()->hasPermission('delete_bonuses'))
+                                                @if ($item->status == 1 && auth()->user()->hasPermission('delete_bonuses') && (Auth::user()->id == $item->user_id || Auth::user()->role_id == 1))
                                                 <button title="Borrar" class="btn btn-sm btn-danger delete" onclick="deleteItem('{{ route('bonuses.destroy', ['id' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal">
                                                     <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Borrar</span>
                                                 </button>

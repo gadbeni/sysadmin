@@ -31,4 +31,8 @@ class Direccion extends Model
     public function signatures(){
         return $this->hasMany(Signature::class, 'direccion_administrativa_id');
     }
+
+    public function bonuses(){
+        return $this->hasMany(Bonus::class, 'direccion_id');
+    }
 }

@@ -21,8 +21,18 @@
                                     <select name="direccion_id" class="form-control select2" required>
                                         <option value="">--Seleccione la dirección administrativa--</option>
                                         @foreach ($direcciones as $item)
+                                            @if ($item->bonuses->count() <= 1)
                                             <option value="{{ $item->id }}">{{ $item->nombre }}</option>
+                                            @endif
                                         @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="procedure_type_id">Tipo de planilla</label>
+                                    <select name="procedure_type_id" class="form-control select2" @if(Auth::user()->direccion_administrativa_id) required @endif>
+                                        <option value="">Todas</option>
+                                        <option value="1" @if(Auth::user()->direccion_administrativa_id) disabled @endif>Permanente</option>
+                                        <option value="5">Eventual</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -71,6 +81,7 @@
                 $.post($(this).attr('action'), $(this).serialize(), function(response){
                     if(response.error){
                         toastr.error(response.error);
+                        $('#div-results').empty();
                     }else{
                         $('#div-results').html(response);
                     }

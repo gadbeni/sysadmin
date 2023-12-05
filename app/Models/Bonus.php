@@ -13,6 +13,7 @@ class Bonus extends Model
     protected $fillable = [
         'user_id',
         'direccion_id',
+        'procedure_type_id',
         'year',
         'status',
     ];
@@ -27,5 +28,9 @@ class Bonus extends Model
 
     public function details(){
         return $this->hasMany(BonusesDetail::class, 'bonus_id');
+    }
+
+    public function procedure_type(){
+        return $this->belongsTo(ProcedureType::class, 'procedure_type_id');
     }
 }
