@@ -1667,6 +1667,22 @@ class MenuItemsTableSeeder extends Seeder
                 'route' => 'attendances-permits.index',
                 'parameters' => 'null',
             ),
+            103 => 
+            array (
+                'id' => 115,
+                'menu_id' => 1,
+                'title' => 'Trabajos recurrentes',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => 'voyager-list',
+                'color' => NULL,
+                'parent_id' => 29,
+                'order' => 17,
+                'created_at' => '2023-12-15 11:39:20',
+                'updated_at' => '2023-12-15 11:39:58',
+                'route' => 'voyager.asset-maintenance-types.index',
+                'parameters' => NULL,
+            ),
         ));
         
         

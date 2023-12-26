@@ -20,12 +20,15 @@ class CreateAssetMaintenancesTable extends Migration
             $table->foreignId('supervisor_id')->nullable()->constrained('contracts');
             $table->foreignId('asset_id')->nullable()->constrained('assets');
             $table->foreignId('direccion_id')->nullable()->constrained('direcciones')->comment('En caso de ser una una de mantenimiento de una DA desconcentrada se registra');
+            $table->string('type')->nullable();
             $table->string('code')->unique();
-            $table->date('date')->nullable();
+            $table->date('date_start')->nullable();
+            $table->date('date_finish')->nullable();
             $table->text('reference')->nullable();
-            $table->text('details')->nullable();
+            $table->text('report')->nullable();
             $table->text('observations')->nullable();
             $table->text('images')->nullable();
+            $table->smallInteger('work_place')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

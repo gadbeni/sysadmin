@@ -703,6 +703,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2023-11-24 13:32:27',
                 'updated_at' => '2023-11-24 13:58:33',
             ),
+            38 => 
+            array (
+                'id' => 50,
+                'name' => 'asset_maintenance_types',
+                'slug' => 'asset-maintenance-types',
+                'display_name_singular' => 'Trabajo recurrente',
+                'display_name_plural' => 'Trabajos recurrentes',
+                'icon' => 'voyager-list',
+                'model_name' => 'App\\Models\\assetMaintenanceType',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2023-12-15 11:39:20',
+                'updated_at' => '2023-12-15 11:59:15',
+            ),
         ));
         
         

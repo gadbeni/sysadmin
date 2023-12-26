@@ -1,4 +1,6 @@
+Eliminar tabla asset_maintenances
 Ejecutar migraciones
+Ejecutar seeders de bread, permisos y AssetMaintenanceTypesTableSeeder
 
 NOTA:
 - formulario de creación de proyectos

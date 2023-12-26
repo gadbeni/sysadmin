@@ -95,7 +95,8 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('assets_accessories');
         Permission::generateFor('assets_type_accessories');
         Permission::generateFor('holidays');
-        Permission::generateFor('attendances-permits');
+        Permission::generateFor('attendances_permits');
+        Permission::generateFor('asset_maintenance_types');
 
         // people
         $keys = [

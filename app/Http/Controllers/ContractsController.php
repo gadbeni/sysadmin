@@ -198,7 +198,7 @@ class ContractsController extends Controller
 
             // Verificar que no haya ningun proceso de contratación vigente
             $contract_person = Contract::where('person_id', $request->person_id)->where('status', '<>', 'concluido')->where('deleted_at', NULL)->first();
-            if($contract_person){
+            if($contract_person && !setting('auxiliares.enable_all_people_for_contract')){
                 return redirect()->route('contracts.index')->with(['message' => 'La persona seleccionada ya tiene un contrato activo o en proceso', 'alert-type' => 'warning']);
             }
 
@@ -391,7 +391,6 @@ class ContractsController extends Controller
     }
 
     public function contracts_status(Request $request){
-        // dd($request->all());
         DB::beginTransaction();
         try {
             // Si es una resolución de contrato
@@ -422,6 +421,8 @@ class ContractsController extends Controller
                         }
                     }
                 }
+
+                // ! Validar que no se haya planillado el aguinaldo
             }
 
             // Si se finaliza el contrato

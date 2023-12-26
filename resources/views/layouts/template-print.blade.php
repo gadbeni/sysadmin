@@ -26,7 +26,7 @@
             }
             .sheet {
                 padding: 30px;
-                max-width: 780px;
+                width: 750px;
                 background-color: white
             }
             .content {
@@ -37,7 +37,7 @@
             }
             #logo{
                 margin: 0px;
-                width: 90px;
+                height: 60px;
             }
             .page-head {
                 text-align: center;
@@ -87,7 +87,7 @@
                 }
                 .sheet {
                     padding: 0px;
-                    max-width: 100%;
+                    width: 100%;
                     background-color: white
                 }
                 .container {
@@ -110,8 +110,9 @@
             <div class="sheet">
                 <table width="100%">
                     <tr>
-                        <td><img id="logo" src="{{ asset('images/icon.png') }}" /></td>
-                        <td style="text-align: right">@yield('qr_code')</td>
+                        <td width="100px"><img id="logo" src="{{ asset('images/icon.png') }}" /></td>
+                        <td>@yield('title')</td>
+                        <td width="100px" style="text-align: right">@yield('qr_code')</td>
                     </tr>
                 </table>
                 <div class="options" style="position: fixed; bottom: 10px; right: 20px">

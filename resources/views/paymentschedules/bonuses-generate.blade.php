@@ -61,6 +61,7 @@
                                             $amounts = array();
                                             $subtotal = 0;
                                             $count = 1;
+                                            $count_contracts = 1;
                                             $contracts = array();
                                             $current_contract = $contracts_list['contracts'][0];
                                             foreach ($contracts_list['contracts'] as $contract) {
@@ -69,7 +70,7 @@
                                                 
                                                 // El último pago no se toma en cuenta a menos que sea de diciembre (porque no se ha planillado)
                                                 // solo se aplica para el último pago del primer contrato (último contrato ORDER BY DESC)
-                                                if(date('m', strtotime($contract->finish)) < 12 && $count == 1){
+                                                if(date('m', strtotime($contract->finish)) < 12 && $count_contracts == 1){
                                                     $contract_paymentschedules_details = $contract_paymentschedules_details->slice(1);
                                                 }
 
@@ -85,8 +86,20 @@
                                                         $amounts[$index_search]['seniority_bonus_amount'] += $seniority_bonus_amount;
                                                     }else{
                                                         array_push($amounts, ['period' => $key, 'salary' => $salary, 'seniority_bonus_amount' => $seniority_bonus_amount]);
-                                                        $count++;
+                                                        // En caso de que haya un contrato que se haya pagado en 2 periodos se quita un recorrido
+                                                        if(count($contracts_list['contracts']) >= $count_contracts){
+                                                            for ($i=$count_contracts; $i < count($contracts_list['contracts']); $i++) { 
+                                                                foreach ($contracts_list['contracts'][$i]->paymentschedules_details->sortByDesc('paymentschedule.period.name')->groupBy('paymentschedule.period.name') as $period => $value) {
+                                                                    if($period == $key){
+                                                                        $count--;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
                                                     }
+
+                                                    $count++;
+
                                                     if ($count > 3) {
                                                         break;
                                                     }
@@ -94,6 +107,7 @@
                                                 if ($count > 3) {
                                                     break;
                                                 }
+                                                $count_contracts++;
                                             }
                                             $amount_subtotal = (($subtotal /3) /360) * ($contracts_list['days']);
                                             $amount_accumulated += $amount_subtotal;

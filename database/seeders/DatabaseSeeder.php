@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(MenuItemsTableSeeder::class);
         // $this->call(SettingsTableSeeder::class);
         // $this->call(HolidaysTableSeeder::class);
+        // $this->call(AssetMaintenanceTypesTableSeeder::class);
     }
 }

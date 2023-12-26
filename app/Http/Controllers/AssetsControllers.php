@@ -13,6 +13,7 @@ use App\Models\AssetsSubcategory;
 use App\Models\Asset;
 use App\Models\AssetMaintenance;
 use App\Models\Contract;
+use App\Models\AssetMaintenanceDetail;
 
 class AssetsControllers extends Controller
 {
@@ -147,7 +148,7 @@ class AssetsControllers extends Controller
     public function show($id)
     {
         $this->custom_authorize('read_assets');
-        $asset = Asset::findOrFail($id);
+        $asset = Asset::with(['maintenances.details.type'])->where('id', $id)->first();
         return view('assets.read', compact('asset'));
     }
 
@@ -261,32 +262,71 @@ class AssetsControllers extends Controller
     }
 
     public function maintenances_store(Request $request){
-        $last_maintenance_code = AssetMaintenance::where('direccion_id', Auth::user()->direccion_administrativa_id)->whereYear('date', date('Y', strtotime($request->date)))->count();
-        $contract_technical = Contract::where('person_id', Auth::user()->person_id)->where('status', 'firmado')->first();
+        if(!$request->asset_maintenance_type_id && !$request->observations){
+            return redirect()->route('assets.show', $request->asset_id)->with(['message' => 'Debe seleccionar el trabajo realizado', 'alert-type' => 'error']);
+        }
+        $last_maintenance_code = AssetMaintenance::where('direccion_id', Auth::user()->direccion_administrativa_id)->whereYear('date_start', date('Y', strtotime($request->date_start)))->count();
+        $contract_technical = Contract::where('person_id', Auth::user()->person_id)->orderBy('start', 'DESC')->first();
 
         try {
-            AssetMaintenance::create([
+            $asset_maintenance = AssetMaintenance::create([
                 'asset_id' => $request->asset_id,
                 'technical_id' => $contract_technical ? $contract_technical->id : null,
-                'destiny_id' => $request->destiny_id,
-                'supervisor_id' => $request->supervisor_id,
                 'direccion_id' => Auth::user()->direccion_administrativa_id,
-                'code' => str_pad($last_maintenance_code +1, 3, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->date)),
-                'date' => $request->date,
-                'reference' => Str::upper($request->reference),
-                'details' => Str::upper($request->details),
-                'observations' => Str::upper($request->observations)
+                'type' => $request->type,
+                'code' => str_pad($last_maintenance_code +1, 3, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->date_start)),
+                'date_start' => $request->date_start,
+                'date_finish' => $request->date_finish,
+                'work_place' => $request->work_place,
+                'observations' => $request->observations
             ]);
+
+            // Guardar detalle de mantenimiento
+            if ($request->asset_maintenance_type_id) {
+                for ($i=0; $i < count($request->asset_maintenance_type_id); $i++) { 
+                    AssetMaintenanceDetail::create([
+                        'asset_maintenance_id' => $asset_maintenance->id,
+                        'asset_maintenance_type_id' => $request->asset_maintenance_type_id[$i],
+                    ]);
+                }
+            }
+
+            // Guardar detalle de mantenimiento si se seleccionó "Otro"
+            if ($request->observations) {
+                AssetMaintenanceDetail::create([
+                    'asset_maintenance_id' => $asset_maintenance->id,
+                    'observations' => $request->details_observations
+                ]);
+            }
+
             return redirect()->route('assets.show', $request->asset_id)->with(['message' => 'Informe registrado exitosamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
-            throw $th;
             return redirect()->route('assets.show', $request->asset_id)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }
 
-    public function maintenances_print($id){
-        $maintenance = AssetMaintenance::with(['asset.assignments.person_asset.contract.direccion_administrativa'])->where('id', $id)->first();
-        return view('assets.print.maintenance', compact('maintenance'));
+    public function maintenances_report_store(Request $request){
+        try {
+            AssetMaintenance::where('id', $request->id)->update([
+                'destiny_id' => $request->destiny_id,
+                'supervisor_id' => $request->supervisor_id,
+                'reference' => $request->reference,
+                'report' => $request->report
+            ]);
+            return redirect()->route('assets.show', $request->asset_id)->with(['message' => 'Informe registrado exitosamente', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            return redirect()->route('assets.show', $request->asset_id)->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
+    }
+
+    public function maintenances_print($id, $type = null){
+        $maintenance = AssetMaintenance::with(['technical.person', 'asset.assignments.person_asset.contract.direccion_administrativa', 'asset.subcategory.category', 'details.type'])->where('id', $id)->first();
+        if ($type) {
+            return view('assets.print.report', compact('maintenance'));
+        }else{
+            return view('assets.print.maintenance', compact('maintenance'));
+        }
+        
     }
 
     // Métodos funcionales

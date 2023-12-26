@@ -16,12 +16,15 @@ class AssetMaintenance extends Model
         'destiny_id',
         'supervisor_id',
         'direccion_id',
+        'type',
         'code',
-        'date',
+        'date_start',
+        'date_finish',
         'reference',
-        'details',
+        'report',
         'observations',
-        'images'
+        'images',
+        'work_place'
     ];
 
     public function asset(){
@@ -42,5 +45,9 @@ class AssetMaintenance extends Model
 
     public function direccion(){
         return $this->belongsTo(Direccion::class, 'direccion_id');
+    }
+
+    public function details(){
+        return $this->hasMany(AssetMaintenanceDetail::class, 'asset_maintenance_id');
     }
 }

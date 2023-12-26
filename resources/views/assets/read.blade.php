@@ -277,10 +277,10 @@
                                         <th>N&deg;</th>
                                         <th>ID</th>
                                         <th>Fecha</th>
-                                        <th>Código de mantenimiento</th>
+                                        <th>Código</th>
+                                        <th>Tipo</th>
                                         <th>Técnico</th>
-                                        <th>Diagnóstico</th>
-                                        <th>Observaciones</th>
+                                        <th>Detalles</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -292,8 +292,9 @@
                                         <tr>
                                             <td>{{ $cont }}</td>
                                             <td>{{ $item->id }}</td>
-                                            <td>{{ date('d/m/Y', strtotime($item->date)) }}</td>
+                                            <td>{{ $item->date_start == $item->date_finish ? date('d/m/Y', strtotime($item->date)) : date('d/m/Y', strtotime($item->date_start)).' - '.date('d/m/Y', strtotime($item->date_finish)) }}</td>
                                             <td>{{ $item->code }}</td>
+                                            <td>{{ ucfirst($item->type) }}</td>
                                             <td>
                                                 @if ($item->technical)
                                                     {{ $item->technical->person->first_name }} {{ $item->technical->person->last_name }} <br>
@@ -302,16 +303,34 @@
                                                     No definido
                                                 @endif
                                             </td>
-                                            <td>{{ strlen($item->details) <= 100 ? $item->details : substr($item->details, 0, 100).'...' }}</td>
                                             <td>
-                                                @if ($item->observations)
-                                                {{ strlen($item->observations) <= 100 ? $item->observations : substr($item->observations, 0, 100).'...' }}
-                                                @endif
+                                                <ul>
+                                                    @foreach ($item->details as $detail)
+                                                    @if ($detail->type)
+                                                        <li>{{ $detail->type->name }}</li>                                                        
+                                                    @else
+                                                        <li>{{ $detail->observations }}</li>
+                                                    @endif
+                                                    @endforeach
+                                                </ul>
                                             </td>
                                             <td class="no-sort no-click bread-actions text-right">
-                                                <a href="{{ route('maintenances.print', $item->id) }}" title="Imprimir" class="btn btn-sm btn-default" target="_blank">
-                                                    <i class="fa fa-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
-                                                </a>
+                                                @if (!$item->destiny)
+                                                    <a href="#" title="Generar informe" class="btn btn-sm btn-primary btn-add-maintenances-report" data-id="{{ $item->id }}" data-reference="{{ 'MANTENIMIENTO '.Str::upper($item->type) }}" data-toggle="modal" data-target="#modal-add-maintenances-report">
+                                                        <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Informe</span>
+                                                    </a>
+                                                @endif
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                        Imprimir <span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu" role="menu" style="left: -90px !important">
+                                                        <li><a href="{{ route('maintenances.print', ['id' => $item->id]) }}" title="Imprimir acta de trabajo" target="_blank">Acta de trabajo</a></li>
+                                                        @if ($item->destiny)
+                                                        <li><a href="{{ route('maintenances.print', ['id' => $item->id, 'type' => 'report']) }}" title="Imprimir informe" target="_blank">Informe</a></li>
+                                                        @endif
+                                                    </ul>
+                                                </div>
                                             </td>
                                         </tr>
                                         @php
@@ -331,6 +350,7 @@
         </div>
     </div>
 
+    {{-- Crear mantenimiento --}}
     <form class="form-submit" id="maintenances-form" action="{{ route('maintenances.store') }}" method="post">
         @csrf
         <input type="hidden" name="asset_id" value="{{ $asset->id }}">
@@ -343,33 +363,105 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="form-group col-md-6">
-                                <label>Destinatario</label>
-                                <select name="destiny_id" id="select-destiny_id" class="form-control" required></select>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>Vía</label>
-                                <select name="supervisor_id" id="select-supervisor_id" class="form-control" required></select>
+                            <div class="form-group col-md-12">
+                                <label>Tipo de mantenimiento</label> <br>
+                                <label class="radio-inline"><input type="radio" name="type" value="preventivo" checked>Preventivo</label>
+                                <label class="radio-inline"><input type="radio" name="type" value="correctivo">Correctivo</label>
+                                <label class="radio-inline"><input type="radio" name="type" value="planificado">Planificado</label>
+                                <label class="radio-inline"><input type="radio" name="type" value="hardware">Hardware</label>
+                                <label class="radio-inline"><input type="radio" name="type" value="software">Software</label>
+                                <label class="radio-inline"><input type="radio" name="type" value="otro">Otro</label>
                             </div>
                             <div class="form-group col-md-12">
-                                <label>Referencia</label>
-                                <input type="text" name="reference" class="form-control" required>
+                                <label>Trabajo realizado</label>
+                                <div style="padding: 10px 20px; border: 1px solid #aaa">
+                                    @php
+                                        $types = App\Models\assetMaintenanceType::where('status', 1)->get();
+                                    @endphp
+                                    @foreach ($types->sortBy('category')->groupBy('category')->chunk(3) as $chunk)
+                                        <div class="row">
+                                            @foreach ($chunk as $key => $item)
+                                                <div class="col-md-4">
+                                                    <b>{{ Str::upper($key) }}</b> <br>
+                                                    @foreach ($item as $type)
+                                                    <div class="checkbox">
+                                                        <label><input type="checkbox" name="asset_maintenance_type_id[]" value="{{ $type->id }}">{{ $type->name }}</label>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endforeach
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label class="checkbox-inline"><input type="checkbox" value="" id="checkbox-another">Otro</label>
+                                            <div id="div-another" style="display: none">
+                                                <textarea name="details_observations" class="form-control" rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Fecha de ingreso</label>
+                                <input type="date" name="date_start" class="form-control" value="{{ date('Y-m-d') }}">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Fecha de salida</label>
+                                <input type="date" name="date_finish" class="form-control" value="{{ date('Y-m-d') }}">
                             </div>
                             <div class="form-group col-md-12">
-                                <label>Diagnóstico</label>
-                                <textarea name="details" class="form-control" rows="5" required></textarea>
+                                <label>Lugar de trabajo</label> <br>
+                                <label class="radio-inline"><input type="radio" name="work_place" value="1" checked>Unidad de sistemas</label>
+                                <label class="radio-inline"><input type="radio" name="work_place" value="2">Oficina del funcionario</label>
                             </div>
                             <div class="form-group col-md-12">
                                 <label>Observaciones</label>
                                 <textarea name="observations" class="form-control" rows="5"></textarea>
-                            </div>
-                            <div class="form-group col-md-12">
-                                <label>Fecha</label>
-                                <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}" required>
+                                <small>Lo que se ingrese aquí se mostrará en el informe, en caso de generarlo</small>
                             </div>
                             <div class="form-group col-md-12 text-right">
                                 <label class="checkbox-inline"><input type="checkbox" value="1" name="check" required> Aceptar y guardar</label>
                             </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark btn-submit" value="Guardar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {{-- Agregar informe a mantenimiento --}}
+    <form class="form-submit" id="maintenances-report-form" action="{{ route('maintenances.report.store') }}" method="post">
+        @csrf
+        <input type="hidden" name="id">
+        <input type="hidden" name="asset_id" value="{{ $asset->id }}">
+        <div class="modal modal-primary fade modal-option" tabindex="-1" id="modal-add-maintenances-report" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-list"></i> Agregar informe</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group col-md-6">
+                            <label>Destinatario</label>
+                            <select name="destiny_id" id="select-destiny_id" class="form-control" required></select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Vía</label>
+                            <select name="supervisor_id" id="select-supervisor_id" class="form-control" required></select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label>Referencia</label>
+                            <input type="text" name="reference" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label>Informe</label>
+                            <textarea name="report" class="form-control" rows="8" required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -401,8 +493,24 @@
     <script>
         moment.locale('es');
         $(document).ready(function () {
-            customSelect('#select-destiny_id', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#modal-add-maintenances'));
-            customSelect('#select-supervisor_id', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#modal-add-maintenances'));
+            customSelect('#select-destiny_id', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#modal-add-maintenances-report'));
+            customSelect('#select-supervisor_id', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#modal-add-maintenances-report'));
+
+            $('#checkbox-another').click(function(){
+                $('#maintenances-form textarea[name="observations"]').val('');
+                if($(this).is(':checked')){
+                    $('#div-another').fadeIn('fast');
+                }else{
+                    $('#div-another').fadeOut('fast');
+                }
+            });
+
+            $('.btn-add-maintenances-report').click(function(){
+                let id = $(this).data('id');
+                let reference = $(this).data('reference');
+                $('#maintenances-report-form input[name="id"]').val(id);
+                $('#maintenances-report-form input[name="reference"]').val(reference);
+            });
         });
     </script>
     <script src="{{ asset('vendor/leaflet/leaflet-1.9.4.js') }}"></script>

@@ -50,12 +50,12 @@
                     $contract_finish = $item->finish;
                 }
 
+                $duracion_adenda = '';
+                $total_adenda = '';
                 if($item->start && $contract_finish){
                     $contract_duration = contract_duration_calculate($item->start, $contract_finish);
                     $duracion = ($contract_duration->months *30) + $contract_duration->days;
                     $total = ($salary *$contract_duration->months) + (number_format($salary /30, 5) *$contract_duration->days);
-                    $duracion_adenda = '';
-                    $total_adenda = '';
                     if($contract_finish != $item->finish){
                         $contract_total_duration = contract_duration_calculate($item->start, $item->finish);
                         $duracion_adenda = ($contract_total_duration->months *30) + $contract_total_duration->days;

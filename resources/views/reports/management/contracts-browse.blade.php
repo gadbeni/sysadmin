@@ -27,7 +27,7 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <select name="status" class="form-control select2">
+                                    <select name="status[]" class="form-control select2" multiple>
                                         <option value="">Todos los estados</option>
                                         <option value="elaborado">Elaborados</option>
                                         <option value="enviado">Enviado</option>
@@ -65,13 +65,20 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-12">
+                                    <label class="radio-inline"><input type="radio" class="radio-type_range" name="type_range" value="1" checked>Rango de fecha</label>
+                                    <label class="radio-inline"><input type="radio" class="radio-type_range" name="type_range" value="2">Periodo</label>
+                                </div>
+                                <div class="form-group col-md-6 div-range">
                                     <input type="month" name="start" class="form-control">
                                     <small class="text-muted">Inicio de contrato</small>
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-6 div-range">
                                     <input type="month" name="finish" class="form-control">
                                     <small class="text-muted">Fin de contrato</small>
+                                </div>
+                                <div class="form-group col-md-12 div-period" style="display: none">
+                                    <input type="number" name="period" class="form-control" step="1" min="2022" max="{{ date('Y') }}" placeholder="{{ date('Y') }}">
                                 </div>
                                 <div class="col-md-12 text-right">
                                     <button type="submit" class="btn btn-primary" style="padding: 5px 10px"> <i class="voyager-settings"></i> Generar</button>
@@ -115,8 +122,20 @@
                 
             });
 
+            $('.radio-type_range').click(function(){
+                if ($(this).val() == 1) {
+                    $('.div-range').fadeIn('fast');
+                    $('.div-period').fadeOut('fast');
+                    $('.div-period input').val('');
+                }else{
+                    $('.div-period').fadeIn('fast');
+                    $('.div-range').fadeOut('fast');
+                    $('.div-range input').val('');
+                }
+            });
+
             $('#form-search').on('submit', function(e){
-                e.preventDefault();
+                // e.preventDefault();
                 $('#div-results').empty();
                 $('#div-results').loading({message: 'Cargando...'});
                 $.post($('#form-search').attr('action'), $('#form-search').serialize(), function(res){
