@@ -25,6 +25,7 @@ class Contract extends Model
         'user_id',
         'signature_id',
         'signature_alt_id',
+        'signature_date',
         'code',
         'details_work',
         'preventive_number',

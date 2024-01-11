@@ -727,17 +727,17 @@ class MenuItemsTableSeeder extends Seeder
             array (
                 'id' => 46,
                 'menu_id' => 1,
-                'title' => 'Programas',
+                'title' => 'Programas/Proyectos',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-documentation',
-                'color' => NULL,
+                'color' => '#000000',
                 'parent_id' => 45,
                 'order' => 5,
                 'created_at' => '2022-01-04 10:56:31',
-                'updated_at' => '2023-03-29 16:16:39',
+                'updated_at' => '2024-01-11 13:49:14',
                 'route' => 'voyager.programs.index',
-                'parameters' => NULL,
+                'parameters' => 'null',
             ),
             45 => 
             array (

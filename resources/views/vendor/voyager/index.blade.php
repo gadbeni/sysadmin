@@ -552,7 +552,7 @@
                                                 </p>
                                             </div>
                                         </div>
-                                        @if(setting('servidores.whatsapp'))
+                                        @if(setting('servidores.whatsapp') && setting('servidores.whatsapp-session'))
                                             <div>
                                                 <button title="Enviar felicitación" class="btn btn-success btn-send-message" data-toggle="modal" data-target="#send-message-modal" data-phone="{{ $item->phone }}" @if(!$item->phone) disabled @endif > <i class="fa fa-paper-plane"></i></button>
                                             </div>
@@ -592,7 +592,12 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <textarea id="textarea-message" name="message" class="form-control" rows="5">Hace unos años, una persona muy especial vino al mundo para hacerlo un lugar mejor. ¡Feliz cumpleaños! Que disfrutes de este día con ilusión y mucha alegría. Y que cumplas muchos más años de vida! Son los sinceros deseos de GADBENI❤️</textarea>
+                                    <label class="radio-inline"><input type="radio" name="radio_messaje" value="Hace unos años, una persona muy especial vino al mundo para hacerlo un lugar mejor. ¡Feliz cumpleaños! Que disfrutes de este día con ilusión y mucha alegría. Y que cumplas muchos más años de vida! Son los sinceros deseos de GADBENI❤️" checked>Mensaje 1</label>
+                                    <label class="radio-inline"><input type="radio" name="radio_messaje" value="En tu día especial, deseo que cada momento esté lleno de amor, risas y felicidad. ¡Feliz cumpleaños! Son los sinceros deseos de GADBENI❤️">Mensaje 2</label>
+                                    <label class="radio-inline"><input type="radio" name="radio_messaje" value="En tu cumpleaños, deseo que recibas tanto amor y felicidad como has dado a los demás. ¡Que este sea tu mejor año hasta ahora! ¡Feliz cumpleaños! Son los sinceros deseos de GADBENI❤️">Mensaje 3</label>
+                                </div>
+                                <div class="form-group">
+                                    <textarea id="textarea-message" name="message" class="form-control" rows="5"></textarea>
                                 </div>
                                 <input type="hidden" name="phone" id="input-phone-number">
                             </div>
@@ -671,8 +676,12 @@
     <script>
         
         $('.btn-send-message').click(function(){
-
             $('#input-phone-number').val($(this).data('phone'));
+            $('#textarea-message').val($('#form-submit-message input[name="radio_messaje"]:checked').val());
+        });
+
+        $('#form-submit-message input[name="radio_messaje"]').click(function(){
+            $('#textarea-message').val($('#form-submit-message input[name="radio_messaje"]:checked').val());
         });
 
         $('#form-submit-message').submit(function(e){

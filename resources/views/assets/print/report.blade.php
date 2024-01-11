@@ -10,7 +10,7 @@
 @section('qr_code')
     <div id="qr_code" >
         @php
-            $qrcode = QrCode::size(80)->generate('INFORME TECNICO Nro '.$maintenance->code.' del técnico '.($maintenance->technical ? $maintenance->technical->person->first_name.' '.$maintenance->technical->person->last_name : 'S/N').' dirigida a '.$maintenance->destiny->person->first_name.' '.$maintenance->destiny->person->last_name.' en fecha '.date('d/m/Y', strtotime($maintenance->date)));
+            $qrcode = QrCode::size(80)->generate('INFORME TECNICO Nro '.$maintenance->code.' del técnico '.($maintenance->technical ? $maintenance->technical->person->first_name.' '.$maintenance->technical->person->last_name : 'S/N').' dirigida a '.$maintenance->destiny->person->first_name.' '.$maintenance->destiny->person->last_name.' en fecha '.date('d/m/Y', strtotime($maintenance->date_finish)));
         @endphp
         {!! $qrcode !!}
     </div>
@@ -56,7 +56,7 @@
                         <td>FECHA</td>
                         <td style="width: 20px; text-align: center">:</td>
                         <td>
-                            <span>Santísima Trinidad</span>, {{ date('d', strtotime($maintenance->date)) }} de {{ Str::upper($months[intval(date('m', strtotime($maintenance->date)))]) }} de {{ date('Y', strtotime($maintenance->date)) }}
+                            <span>Santísima Trinidad</span>, {{ date('d', strtotime($maintenance->date_finish)) }} de {{ Str::upper($months[intval(date('m', strtotime($maintenance->date_finish)))]) }} de {{ date('Y', strtotime($maintenance->date_finish)) }}
                         </td>
                     </tr>
                 </table>
@@ -80,7 +80,7 @@
                 <b>OBSERVACIONES:</b>
                 <p>{{ $maintenance->observations }}</p>
             @endif
-            <br><br><br>
+            <br><br>
             <p>Sin otro particular me despido de usted con las consideraciones más distinguidas.</p>
 
             <div style="margin-top: 100px">

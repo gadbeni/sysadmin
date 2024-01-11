@@ -69,9 +69,9 @@ class HomeController extends Controller
 
     public function send_message(Request $request){
         try {
-            if (setting('servidores.whatsapp')) {
+            if (setting('servidores.whatsapp') && setting('servidores.whatsapp-session')) {
                 $phone = strlen($request->phone) == 8 ? '591'.$request->phone : $request->phone;
-                Http::post(setting('servidores.whatsapp').'/send', [
+                Http::post(setting('servidores.whatsapp').'/send?id='.setting('servidores.whatsapp-session'), [
                     'phone' => $phone,
                     'text' => $request->message
                 ]);

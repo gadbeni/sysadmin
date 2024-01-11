@@ -61,7 +61,7 @@
                                             $amounts = array();
                                             $subtotal = 0;
                                             $count = 1;
-                                            $count_contracts = 1;
+					                        $count_contracts = 1;
                                             $contracts = array();
                                             $current_contract = $contracts_list['contracts'][0];
                                             foreach ($contracts_list['contracts'] as $contract) {
@@ -107,7 +107,7 @@
                                                 if ($count > 3) {
                                                     break;
                                                 }
-                                                $count_contracts++;
+						                        $count_contracts++;
                                             }
                                             $amount_subtotal = (($subtotal /3) /360) * ($contracts_list['days']);
                                             $amount_accumulated += $amount_subtotal;

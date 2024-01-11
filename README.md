@@ -7,6 +7,13 @@
 composer install
 cp .env.example .env
 php artisan sysadmin:install
+chmod -R 777 storage bootstrap/cache
+```
+
+## Actualización
+```
+sudo chown -R user ./
+sudo chmod -R 777 storage bootstrap/cache
 ```
 
 ## Colaboradores

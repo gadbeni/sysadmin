@@ -292,7 +292,7 @@ class AssetsControllers extends Controller
             }
 
             // Guardar detalle de mantenimiento si se seleccionó "Otro"
-            if ($request->observations) {
+            if ($request->details_observations) {
                 AssetMaintenanceDetail::create([
                     'asset_maintenance_id' => $asset_maintenance->id,
                     'observations' => $request->details_observations

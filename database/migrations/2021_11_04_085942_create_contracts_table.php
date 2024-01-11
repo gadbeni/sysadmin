@@ -30,6 +30,7 @@ class CreateContractsTable extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->foreignId('signature_id')->nullable()->constrained('signatures');
             $table->foreignId('signature_alt_id')->nullable()->constrained('signatures');
+            $table->date('signature_date')->nullable();
             $table->string('code')->nullable();
             $table->text('details_work')->nullable();
             $table->string('preventive_number')->nullable();

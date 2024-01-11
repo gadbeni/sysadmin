@@ -95,7 +95,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::generateFor('assets_accessories');
         Permission::generateFor('assets_type_accessories');
         Permission::generateFor('holidays');
-        Permission::generateFor('attendances_permits');
+        Permission::generateFor('attendances-permits');
         Permission::generateFor('asset_maintenance_types');
 
         // people
@@ -133,6 +133,7 @@ class PermissionsTableSeeder extends Seeder
             'delete_addendum_contracts',
             'transfer_contracts',
             'promotion_contracts',
+            'position_reassignment_contracts',
         ];
 
         foreach ($keys as $key) {

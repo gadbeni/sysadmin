@@ -20,6 +20,7 @@
         if($finish->format('m') != 2 && $finish->format('d') > 30){
             $finish->addDays(-1);
         }
+        
         $dias_primera_cuota = $start->diffInDays($finish) +1;
 
         // Si el contrato tiene mas de 30 días

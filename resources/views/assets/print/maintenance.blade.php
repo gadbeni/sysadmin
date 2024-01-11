@@ -100,7 +100,7 @@
             <table width="100%" border="1" cellpadding="5px">
                 <tr style="height: 120px">
                     <td width="50%" align="center" style="vertical-align: bottom;">
-                        <b>-----------------------------------------------------------
+                        <b>--------------------------------------------------------- <br>
                             {{ $maintenance->technical ? $maintenance->technical->person->first_name.' '.$maintenance->technical->person->last_name : ' ' }} <br>
                             TECNICO RESPONSABLE
                         </b>

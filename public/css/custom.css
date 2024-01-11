@@ -10,6 +10,11 @@
     background-color: #F4F6F9;
 }
 
+#dataTable th a{
+    color: white !important;
+    font-weight: bold;
+}
+
 .panel-bordered{
     box-shadow: 0 0 1px rgb(0 0 0 / 13%), 0 1px 3px rgb(0 0 0 / 20%) !important;
     margin-bottom: 1rem !important;

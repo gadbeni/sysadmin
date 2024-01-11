@@ -644,14 +644,14 @@ class ContractsController extends Controller
 
             $program = Program::where('procedure_type_id', 1)->where('year', date('Y'))->where('deleted_at', NULL)->first();
             if(!$program){
-                return response()->json(['success'=> 1, 'message' => 'No existe un programa para la planilla permanente']);
+                return response()->json(['error'=> 1, 'message' => 'No existe un programa para la planilla permanente']);
             }
             
             $code = $d_a->sigla.'-'.str_pad($number_contract, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->date));
             $new_contratc = Contract::create([
                 'user_id' => Auth::user()->id,
                 'person_id' => $contract->person_id,
-                'procedure_type_id' => 1,
+                'procedure_type_id' => $contract->procedure_type_id,
                 'program_id' => $program->id,
                 'current_program_id' => $program->id,
                 'job_id' => $request->job_id,
@@ -707,14 +707,14 @@ class ContractsController extends Controller
 
             $program = Program::where('procedure_type_id', 1)->where('year', date('Y'))->where('deleted_at', NULL)->first();
             if(!$program){
-                return response()->json(['success'=> 1, 'message' => 'No existe un programa para la planilla permanente']);
+                return response()->json(['error'=> 1, 'message' => 'No existe un programa para la planilla permanente']);
             }
             
             $code = $d_a->sigla.'-'.str_pad($number_contract, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->date));
             $new_contratc = Contract::create([
                 'user_id' => Auth::user()->id,
                 'person_id' => $contract->person_id,
-                'procedure_type_id' => 1,
+                'procedure_type_id' => $contract->procedure_type_id,
                 'program_id' => $program->id,
                 'current_program_id' => $program->id,
                 'job_id' => $request->job_id,
@@ -742,10 +742,70 @@ class ContractsController extends Controller
                 'observations' => $request->contract_id,
             ]);
             DB::commit();
-            return response()->json(['success'=> 1, 'message' => 'Promición registrada exitosamente']);
+            return response()->json(['success'=> 1, 'message' => 'Promoción registrada exitosamente']);
         } catch (\Throwable $th) {
             DB::rollback();
             // dd($th);
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
+        }
+    }
+
+    public function contracts_reassignment_store(Request $request){
+        DB::beginTransaction();
+        try {
+            // Verificar que el cargo esté acéfalo
+            $contract = Contract::where('job_id', $request->job_id)->where('status', '<>', 'concluido')->first();
+            if($contract){
+                return response()->json(['error' => 1, 'message' => 'El cargo seleccionado está asignado en otro contrato']);
+            }
+
+            // Concluir contrato actual
+            $contract = Contract::find($request->id);
+            $contract->finish = date('Y-m-d', strtotime($request->date.' -1 days'));
+            $contract->status = 'concluido'; 
+            $contract->update();
+
+            // Nuevo contrato
+            $d_a = Direccion::find(Job::find($request->job_id)->direccion_administrativa_id);
+            $last_contract = Contract::whereYear('start', date('Y', strtotime($request->date)))
+                                    ->where('procedure_type_id', $contract->procedure_type_id)
+                                    ->where('direccion_administrativa_id', $d_a->id)
+                                    ->orderBy('id', 'DESC')->first();
+            $number_contract = $last_contract ? explode('/', explode('-', $last_contract->code)[1])[0] +1 : 1;
+
+            $program = Program::where('procedure_type_id', 1)->where('year', date('Y'))->where('deleted_at', NULL)->first();
+            if(!$program){
+                return response()->json(['error'=> 1, 'message' => 'No existe un programa para la planilla permanente en la gestión '.date('Y', strtotime($request->date))]);
+            }
+            
+            $code = $d_a->sigla.'-'.str_pad($number_contract, 2, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->date));
+            $new_contratc = Contract::create([
+                'user_id' => Auth::user()->id,
+                'person_id' => $contract->person_id,
+                'procedure_type_id' => $contract->procedure_type_id,
+                'program_id' => $program->id,
+                'current_program_id' => $program->id,
+                'job_id' => $request->job_id,
+                'direccion_administrativa_id' => $d_a->id,
+                'code' => $code,
+                'start' => $request->date,
+                'signature_date' => $request->signature_date,
+                'details_work' => $contract->details_work,
+                'table_report' => $contract->table_report,
+            ]);
+
+            ContractsHistory::create([
+                'contract_id' => $request->id,
+                'user_id' => Auth::user()->id,
+                'status' => 'Reasignado',
+                'observations' => $request->observations,
+            ]);
+
+            DB::commit();
+            return response()->json(['success'=> 1, 'message' => 'Reasignación de cargo registrada exitosamente']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            //throw $th;
             return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
         }
     }

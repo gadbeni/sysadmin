@@ -171,6 +171,10 @@
                                         @if (auth()->user()->role_id == 1 && $item->finished && $item->procedure_type_id != 1)
                                         <li><a href="#" title="Editar resolución de contrato" data-toggle="modal" data-target="#finish-modal" onclick='finishContract(@json($item))'>Editar resolución</a></li>
                                         @endif
+                                        {{-- Reasignación de cargo permanente --}}
+                                        @if ($item->procedure_type_id == 1 && auth()->user()->hasPermission('position_reassignment_contracts'))
+                                        <li><a href="#" class="btn-position-reassignment" title="Reasignación de cargo" data-toggle="modal" data-target="#position_reassignment-modal" data-id="{{ $item->id }}">Reasignación de cargo</a></li>
+                                        @endif
                                         {{-- Restaurar contrato --}}
                                         @if (auth()->user()->hasPermission('restore_contracts') && $item->finished)
                                         <li><a href="#" title="Anular resolución de contrato" onclick="setFormAction('{{ route('contracts.finished.destroy', ['id' => $item->id]) }}', '#restore-form')" data-toggle="modal" data-target="#restore-modal">Anular resolución <br> ({{ $item->finished->previus_date ? date('d/m/Y', strtotime($item->finished->previus_date)) : 'Indefinido' }})</a></li>
@@ -489,6 +493,11 @@
         $('.btn-addendum-status').click(function(){
             let id = $(this).data('id');
             $('#addendum-status-form input[name="id"]').val(id);
+        });
+
+        $('.btn-position-reassignment').click(function(){
+            let id = $(this).data('id');
+            $('#form-position_reassignment input[name="id"]').val(id);
         });
     });
 </script>

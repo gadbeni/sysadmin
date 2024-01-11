@@ -277,7 +277,7 @@ class SettingsTableSeeder extends Seeder
                 'id' => 27,
                 'key' => 'servidores.whatsapp',
                 'display_name' => 'Whatsapp',
-                'value' => NULL,
+                'value' => 'https://wa1.desarrollocreativo.dev',
                 'details' => NULL,
                 'type' => 'text',
                 'order' => 22,
@@ -293,6 +293,17 @@ class SettingsTableSeeder extends Seeder
                 'type' => 'checkbox',
                 'order' => 20,
                 'group' => 'Auxiliares',
+            ),
+            25 => 
+            array (
+                'id' => 29,
+                'key' => 'servidores.whatsapp-session',
+                'display_name' => 'Sesión Whatsapp',
+                'value' => NULL,
+                'details' => NULL,
+                'type' => 'text',
+                'order' => 24,
+                'group' => 'Servidores',
             ),
         ));
         

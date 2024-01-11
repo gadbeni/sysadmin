@@ -184,6 +184,56 @@
         </div>
     </form>
 
+    {{-- Finish modal --}}
+    <form class="form-submit" action="{{ route('contracts.reassignment.store') }}" id="form-position_reassignment" method="POST">
+        @csrf
+        <div class="modal fade" tabindex="-1" id="position_reassignment-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-documentation"></i> Reasignación de cargo</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id">
+                        <div class="form-group">
+                            <label for="job_id">Item</label>
+                            <select name="job_id" id="select-job_id-reassignment" class="form-control" required>
+                                <option value="">--Seleccionar Item--</option>
+                                @php
+                                    $jobs = App\Models\Job::where('status', 1)->where('deleted_at', NULL)
+                                                // Mostrar solo cargos que estén acefalos
+                                                ->whereRaw(!setting('auxiliares.enable_all_jobs_for_contract') ? "id not in (select job_id from contracts where job_id is not NULL and status <> 'concluido' and deleted_at is null)" : 1)
+                                                ->get();
+                                @endphp
+                                @foreach ($jobs as $item)
+                                <option value="{{ $item->id }}" data-item='@json($item)'>ITEM {{ $item->item }} : {{ $item->name }} - Bs.{{ $item->salary }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Fecha de reasignación</label>
+                            <input type="date" name="date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signature_date">Fecha de suscripción</label>
+                            <input type="date" name="signature_date" class="form-control" required>
+                            <small>Fecha en la que se suscribe la reasignación</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="observations">Observaciones</label>
+                            <textarea name="observations" class="form-control" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark btn-submit" value="Aceptar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
     {{-- Ratificate modal --}}
     <form action="{{ route('contracts.ratificate') }}" id="form-ratificate" class="form-submit" method="POST">
         {{ csrf_field() }}
@@ -529,6 +579,7 @@
         $(document).ready(() => {
             $('#select-job_id').select2({dropdownParent: $('#transfer-modal')});
             $('#select-job_id-alt').select2({dropdownParent: $('#promotion-modal')});
+            $('#select-job_id-reassignment').select2({dropdownParent: $('#position_reassignment-modal')});
             $('#select-signature_id').select2({dropdownParent: $('#addendum-modal')});
             $('#select-destiny_id').select2({dropdownParent: $('#modal-rotation')});
             $('#select-destiny_dependency').select2({dropdownParent: $('#modal-rotation')});
@@ -572,6 +623,7 @@
                     $('.form-submit').trigger('reset');
                     $('.btn-submit').removeAttr('disabled');
                     $('#select-applicant_id').val(null).trigger('change');
+                    $('#select-job_id-reassignment').val(null).trigger('change');
                 });
             });
 
@@ -602,6 +654,12 @@
                         $('#div-results').loading('toggle');
                     }
                 });
+            });
+
+            $('#form-position_reassignment input[name="date"]').change(function(){
+                if(!$('#form-position_reassignment input[name="signature_date"]').val()){
+                    $('#form-position_reassignment input[name="signature_date"]').val($('#form-position_reassignment input[name="date"]').val())
+                }
             });
 
             $('#delete_form_alt').submit(function(e){

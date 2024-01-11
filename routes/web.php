@@ -31,6 +31,7 @@ use App\Http\Controllers\SchedulesController;
 use App\Http\Controllers\AssetsControllers;
 use App\Http\Controllers\AttendancesController;
 use App\Http\Controllers\AttendancePermitsController;
+use App\Http\Controllers\ProgramsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -256,12 +257,16 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('contracts/addendum/delete', [ContractsController::class, 'contracts_addendum_delete'])->name('contracts.addendum.delete');
     Route::post('contracts/transfer/store', [ContractsController::class, 'contracts_transfer_store'])->name('contracts.transfer.store');
     Route::post('contracts/promotion/store', [ContractsController::class, 'contracts_promotion_store'])->name('contracts.promotion.store');
+    Route::post('contracts/reassignment/store', [ContractsController::class, 'contracts_reassignment_store'])->name('contracts.reassignment.store');
     Route::get('contracts/direccion-administrativa/{id}', [ContractsController::class, 'contracts_direccion_administrativa']);
     Route::get('contracts/{id}/print/{document}', [ContractsController::class, 'print'])->name('contracts.print');
     Route::post('contracts/{id}/file/store', [ContractsController::class, 'file_store'])->name('contracts.file.store');
     Route::delete('contracts/file/{id}/destroy', [ContractsController::class, 'file_destroy'])->name('contracts.file.destroy');
     Route::delete('contracts/finished/{id}/destroy', [ContractsController::class, 'finished_destroy'])->name('contracts.finished.destroy');
     Route::get('contracts/search/ajax', [ContractsController::class, 'search']);
+
+    // Programs
+    Route::get('programs/ajax/list', [ProgramsController::class, 'list']);
     
     // Bonos antigüedad
     Route::get('seniority-bonus-people', [SeniorityBonusPeopleController::class, 'index'])->name('voyager.seniority-bonus-people.index');

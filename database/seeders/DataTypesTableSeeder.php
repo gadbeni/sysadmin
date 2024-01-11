@@ -186,8 +186,8 @@ class DataTypesTableSeeder extends Seeder
                 'id' => 10,
                 'name' => 'programs',
                 'slug' => 'programs',
-                'display_name_singular' => 'Programa',
-                'display_name_plural' => 'Programas',
+                'display_name_singular' => 'Programa/Proyecto',
+                'display_name_plural' => 'Programas/Proyectos',
                 'icon' => 'voyager-documentation',
                 'model_name' => 'App\\Models\\Program',
                 'policy_name' => NULL,
@@ -197,7 +197,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"name","order_display_column":"name","order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2022-01-04 10:56:30',
-                'updated_at' => '2022-02-14 18:17:33',
+                'updated_at' => '2024-01-11 14:04:43',
             ),
             10 => 
             array (

@@ -31,7 +31,7 @@
             <table class="table-head" cellpadding="10">
                 <tr>
                     <td class="td-left">
-                        <span>{{ Str::upper($contract->direccion_administrativa->city ? $contract->direccion_administrativa->city->name : 'Santísima Trinidad') }}</span>, {{ date('d', strtotime($contract->start)) }} de {{ Str::upper($months[intval(date('m', strtotime($contract->start)))]) }} de {{ date('Y', strtotime($contract->start)) }} <br>
+                        <span>{{ Str::upper($contract->direccion_administrativa->city ? $contract->direccion_administrativa->city->name : 'Santísima Trinidad') }}</span>, {{ date('d', strtotime($contract->signature_date ?? $contract->start)) }} de {{ Str::upper($months[intval(date('m', strtotime($contract->signature_date ?? $contract->start)))]) }} de {{ date('Y', strtotime($contract->signature_date ?? $contract->start)) }} <br>
                     </td>
                     <td class="td-right">
                         <b>DE:</b> {{ Str::upper($signature ? $signature->name : setting('firma-autorizada.name')) }} <br>
@@ -49,7 +49,7 @@
                 @php
                     $numeros_a_letras = new NumeroALetras();
                 @endphp
-                Que en cumplimiento a la escala <b>APROBADA</b> mediante <b>RESOLUCION DE ASAMBLEA N° 131/2022-2023 del 28 de febrero del 2023</b>,  Comunico a usted que a partir del {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }} ha sido designado como <b>{{ Str::upper($contract->job->name) }}</b>, con el Ítem N&deg; {{ $contract->job->item }} y nivel salarial {{ $contract->job->level }} de nuestra escala salarial en vigencia, y con el haber mensual de <b>Bs. {{ number_format($contract->job->salary, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice($contract->job->salary, 2, 'Bolivianos') }})</b>, bajo dependencia de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b>.
+                Que en cumplimiento a la escala <b>APROBADA</b> mediante <b>RESOLUCION DE ASAMBLEA N° 036/2023-2024 del 11 de octubr e del 2023</b>,  Comunico a usted que a partir del {{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }} ha sido designado como <b>{{ Str::upper($contract->job->name) }}</b>, con el Ítem N&deg; {{ $contract->job->item }} y nivel salarial {{ $contract->job->level }} de nuestra escala salarial en vigencia, y con el haber mensual de <b>Bs. {{ number_format($contract->job->salary, 2, ',', '.') }} ({{ $numeros_a_letras->toInvoice($contract->job->salary, 2, 'Bolivianos') }})</b>, bajo dependencia de la/el <b>{{ Str::upper($contract->direccion_administrativa->nombre) }}</b>.
             </p>
             <p>
                 Asimismo, en cumplimiento a normativa R/CE/17 se le recuerda que debe realizar la correspondiente actualización de su cargo al momento de realizar la actualización de su declaración jurada de bienes y rentas, en el mes de su cumpleaños, cuya copia deberá ser presentada a la Dirección Departamental de Recursos Humanos del Gobierno Departamental del Beni.
