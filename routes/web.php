@@ -266,6 +266,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('contracts/search/ajax', [ContractsController::class, 'search']);
 
     // Programs
+    Route::post('programs/store', [ProgramsController::class, 'store'])->name('programs.store');
+    Route::put('programs/{id}/update', [ProgramsController::class, 'update'])->name('programs.update');
+    Route::post('programs/restrict', [ProgramsController::class, 'restrict'])->name('programs.restrict');
     Route::get('programs/ajax/list', [ProgramsController::class, 'list']);
     
     // Bonos antigüedad

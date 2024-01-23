@@ -127,9 +127,15 @@
             <div class="row">
                 <div class="col-md-12 div-hidden div-5">
                     <div class="panel panel-bordered">
-                        <div class="panel-heading"><h6 class="panel-title">Datos de complementarios</h6></div>
+                        <div class="panel-heading"><h6 class="panel-title">Datos complementarios</h6></div>
                         <div class="panel-body">
                             <div class="row">
+                                <div class="form-group col-md-6">
+                                    <input type="text" class="form-control" name="name_job_alt" value="{{ isset($contract) ? $contract->name_job_alt : '' }}" placeholder="Denominación de cargo">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <input type="text" class="form-control" name="work_location" value="{{ isset($contract) ? $contract->work_location : '' }}" placeholder="Lugar de prestación de servicio">
+                                </div>
                                 <div class="form-group col-md-12">
                                     <label for="details_work">Funciones generales</label>
                                     <textarea class="form-control richTextBox" name="details_work">
@@ -137,7 +143,7 @@
                                             isset($contract) ?
                                             $contract->details_work :
                                             '<ul>
-                                            <li>Coordinar la planificaci&oacute;n, ejecuci&oacute;n y seguimiento de las actividades del &aacute;rea.</li>
+                                            <li>Coordinar la planificaci&oacute;n, ejecuci&oacute;n y seguimiento de las actividades del &aacute;rea asignada.</li>
                                             <li>Proporcionar apoyo t&eacute;cnico en la ejecuci&oacute;n de pol&iacute;ticas y objetivos de la Entidad.</li>
                                             <li>Informar, recomendar y emitir criterios t&eacute;cnico-administrativos a su inmediato superior en lo que corresponde al &aacute;rea de su especialidad.</li>
                                             </ul>'
@@ -256,12 +262,6 @@
                         <div class="panel-heading"><h6 class="panel-title">Datos de contratos SEDEGES</h6></div>
                         <div class="panel-body">
                             <div class="row">
-                                <div class="form-group col-md-6">
-                                    <input type="text" class="form-control" name="name_job_alt" value="{{ isset($contract) ? $contract->name_job_alt : '' }}" placeholder="Denominación de cargo">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <input type="text" class="form-control" name="work_location" value="{{ isset($contract) ? $contract->work_location : '' }}" placeholder="Lugar de prestación de servicio">
-                                </div>
                                 <div class="form-group col-md-12">
                                     <textarea class="form-control richTextBox" name="documents_contract">
                                         {{
@@ -419,15 +419,16 @@
             $('#select-procedure_type_id').select2();
 
             $('#select-direccion_administrativa_id').change(function(){
+                var direccion_administrativa_id = $('#select-direccion_administrativa_id option:selected').val();
                 $('#select-unidad_administrativa_id').html(`<option value="">Seleccione una unidad administrativa</option>`);
                 unidad_administrativas.map(item => {
-                    if($('#select-direccion_administrativa_id option:selected').val() == item.direccion_id){
+                    if(direccion_administrativa_id == item.direccion_id){
                         $('#select-unidad_administrativa_id').append(`<option value="${item.id}">${item.nombre}</option>`);
                     }
                 });
                 $('#select-program_id').html(`<option value="">Seleccione un programa</option>`);
                 programs.map(item => {
-                    if($('#select-direccion_administrativa_id option:selected').val() == item.direccion_administrativa_id && $('#select-procedure_type_id option:selected').val() == item.procedure_type_id){
+                    if((direccion_administrativa_id == item.direccion_administrativa_id || item.direcciones_administrativas.find(da => da.id == direccion_administrativa_id)) && $('#select-procedure_type_id option:selected').val() == item.procedure_type_id){
                         $('#select-program_id').append(`<option value="${item.id}">${item.name} ${item.programatic_category ? ' ('+item.programatic_category+')' : ''}</option>`);
                     }
                 });

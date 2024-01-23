@@ -85,6 +85,32 @@
             </div>
         </div>
     </div>
+
+    {{-- Restrict modal --}}
+    <form action="{{ route('programs.restrict') }}" id="form-restrict" class="form-submit" method="POST">
+        @csrf
+        <div class="modal fade" tabindex="-1" id="restrict-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-list"></i> Restringir a una sola Jefatura/Unidad</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id">
+                        <div class="form-group">
+                            <label for="unidad_administrativa_id">Unidad Administrativa</label>
+                            <select name="unidad_administrativa_id" id="select-unidad_administrativa_id" class="form-control" required></select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-dark" value="Aceptar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 @stop
 
 @section('css')
@@ -101,6 +127,7 @@
 
         $(document).ready(function() {
             list();
+            $('#select-unidad_administrativa_id').select2();
             $('#input-search').on('keyup', function(e){
                 if(e.keyCode == 13) {
                     list();

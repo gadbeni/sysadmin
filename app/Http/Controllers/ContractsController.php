@@ -153,7 +153,7 @@ class ContractsController extends Controller
                                         }])->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1)
                                         ->where('estado', 1)->get();
         $unidad_administrativas = Unidad::get();
-        $programs = Program::where('year', date('Y'))->where('deleted_at', NULL)->get();
+        $programs = Program::with(['direcciones_administrativas'])->where('year', date('Y'))->where('deleted_at', NULL)->get();
         $cargos = Cargo::with(['nivel' => function($q){
             $q->where('Estado', 1);
         }])->where('estado', 1)->get();
@@ -302,7 +302,7 @@ class ContractsController extends Controller
                                         $q->where('status', 1)->where('deleted_at', NULL);
                                     }])->whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1)->get();
         $unidad_administrativas = Unidad::get();
-        $programs = Program::where('year', date('Y'))->where('deleted_at', NULL)->get();
+        $programs = Program::with(['direcciones_administrativas'])->where('year', date('Y'))->where('deleted_at', NULL)->get();
         $cargos = Cargo::with(['nivel' => function($q){
                         $q->where('Estado', 1);
                     }])->where('estado', 1)->get();
@@ -754,7 +754,7 @@ class ContractsController extends Controller
         DB::beginTransaction();
         try {
             // Verificar que el cargo esté acéfalo
-            $contract = Contract::where('job_id', $request->job_id)->where('status', '<>', 'concluido')->first();
+            $contract = Contract::where('job_id', $request->job_id)->where('status', '<>', 'concluido')->where('deleted_at', null)->first();
             if($contract){
                 return response()->json(['error' => 1, 'message' => 'El cargo seleccionado está asignado en otro contrato']);
             }

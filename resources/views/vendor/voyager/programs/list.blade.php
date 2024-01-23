@@ -26,9 +26,19 @@
                         <td>{{ $item->id }}</td>
                         <td>
                             {{ $item->name }} <br>
-                            <label class="label label-default">{{ $item->procedure_type->name }}</label>
+                            <label class="label label-default">{{ $item->procedure_type->name }}</label>  @if($item->unidad_administrativa_id) <i class="voyager-info-circled" title="Restringido para {{ $item->unidad_administrativa->nombre }}"></i> @endif
                         </td>
-                        <td>{{ $item->direccion_administrativa->nombre }}</td>
+                        <td>
+                            @if ($item->direccion_administrativa)
+                                {{ $item->direccion_administrativa->nombre }}        
+                            @else
+                                <ul style="padding-left: 20px">
+                                    @foreach ($item->direcciones_administrativas as $direccion_administrativa)
+                                        <li>{{ $direccion_administrativa->nombre }}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </td>
                         <td>{{ $item->number }}</td>
                         <td>{{ $item->programatic_category }}</td>
                         <td>{{ $item->amount }}</td>
@@ -38,12 +48,20 @@
                             <small>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</small>
                         </td>
                         <td class="no-sort no-click bread-actions text-right">
-                            @if (auth()->user()->hasPermission('delete_programs'))
+                            @if (auth()->user()->hasPermission('edit_programs') && $item->direcciones_administrativas->count() == 1)
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Más <span class="caret"></span></button>
+                                <ul class="dropdown-menu" role="menu" style="left: -90px !important">
+                                    <li><a href="#" data-toggle="modal" data-target="#restrict-modal" data-item='@json($item)' class="btn btn-restrict" title="Restingir a una sola Jefatura/Unidad/Sección">Restringir</a></li>
+                                </ul>
+                            </div>
+                            @endif
+                            @if (auth()->user()->hasPermission('read_programs'))
                             <a href="{{ route('voyager.programs.show', $item->id) }}" title="Ver" class="btn btn-sm btn-warning view">
                                 <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                             </a>
                             @endif
-                            @if (auth()->user()->hasPermission('delete_programs'))
+                            @if (auth()->user()->hasPermission('edit_programs'))
                             <a href="{{ route('voyager.programs.edit', $item->id) }}" title="Editar" class="btn btn-sm btn-primary edit">
                                 <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
                             </a>
@@ -102,6 +120,17 @@
                 page = link.split('=')[1];
                 list(page);
             }
+        });
+
+        $('.btn-restrict').click(function(){
+            let item = $(this).data('item');
+            $('#form-restrict input[name="id"]').val(item.id);
+            $('#select-unidad_administrativa_id').html('<option>Seleccionar Jefatura/Unidad</option>');
+            item.direcciones_administrativas.map(da => {
+                da.unidades_administrativas.map(ua => {
+                    $('#select-unidad_administrativa_id').append(`<option value="${ua.id}">${ua.nombre}</option>`);
+                });
+            });
         });
     });
 </script>

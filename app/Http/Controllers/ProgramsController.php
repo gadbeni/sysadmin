@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 // Models
 use App\Models\Program;
@@ -26,7 +27,7 @@ class ProgramsController extends Controller
         $procedure_type_id = request('procedure_type_id') ?? null;
         $year = request('year') ?? null;
         $paginate = request('paginate') ?? 10;
-        $data = Program::with(['direccion_administrativa', 'procedure_type'])
+        $data = Program::with(['direccion_administrativa', 'unidad_administrativa', 'procedure_type', 'direcciones_administrativas.unidades_administrativas'])
                     ->whereRaw($direccion_administrativa_id ? "direccion_administrativa_id = ".$direccion_administrativa_id : 1)
                     ->whereRaw($procedure_type_id ? "procedure_type_id = ".$procedure_type_id : 1)
                     ->whereRaw($year ? "year = '".$year."'" : 1)
@@ -37,6 +38,9 @@ class ProgramsController extends Controller
                             })
                             ->OrwhereHas('procedure_type', function($query) use($search){
                                 $query->whereRaw("name like '%$search%'");
+                            })
+                            ->OrwhereHas('direcciones_administrativas', function($query) use($search){
+                                $query->whereRaw("nombre like '%$search%'");
                             })
                             ->OrWhereRaw("name = '$search'")
                             ->orWhereRaw("class like '%$search%'")
@@ -68,7 +72,25 @@ class ProgramsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $program = Program::create([
+                'procedure_type_id' => $request->procedure_type_id,
+                'name' => strtoupper($request->name),
+                'description' => $request->description,
+                'class' => strtoupper($request->class),
+                'number' => $request->number,
+                'programatic_category' => $request->programatic_category,
+                'amount' => $request->amount,
+                'year' => $request->year
+            ]);
+            $program->direcciones_administrativas()->sync($request->direccion_id);
+            DB::commit();
+            return redirect()->route('voyager.programs.index')->with(['message' => 'Programa registrado exitosamente', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return redirect()->route('voyager.programs.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
     }
 
     /**
@@ -102,7 +124,38 @@ class ProgramsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $program = Program::find($id);
+            $program->procedure_type_id = $request->procedure_type_id;
+            $program->name = strtoupper($request->name);
+            $program->description = $request->description;
+            $program->class = strtoupper($request->class);
+            $program->number = $request->number;
+            $program->programatic_category = $request->programatic_category;
+            $program->amount = $request->amount;
+            $program->year = $request->year;
+            $program->direcciones_administrativas()->sync($request->direccion_id);
+            $program->update();
+            DB::commit();
+            return redirect()->route('voyager.programs.index')->with(['message' => 'Programa editado exitosamente', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            dd($th);
+            return redirect()->route('voyager.programs.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
+    }
+
+    public function restrict(Request $request){
+        try {
+            $program = Program::find($request->id);
+            $program->unidad_administrativa_id = $request->unidad_administrativa_id;
+            $program->update();
+            return redirect()->route('voyager.programs.index')->with(['message' => 'Programa restringido exitosamente', 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('voyager.programs.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
+        }
     }
 
     /**
