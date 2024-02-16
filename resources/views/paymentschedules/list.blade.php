@@ -126,11 +126,11 @@
                                     <span class="voyager-plus"> <span class="hidden-xs hidden-sm">Más</span> <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu" style="left: -90px !important">
-                                    @if ($item->centralize && auth()->user()->hasPermission('edit_paymentschedules') && $item->status != 'pagada')
+                                    @if (($item->centralize && auth()->user()->hasPermission('edit_paymentschedules') && $item->status != 'pagada' && !Auth::user()->direccion_administrativa_id) || Auth::user()->role_id == 1)
                                         <li><a href="#" class="btn-update-centralize" data-id="{{ $item->id }}" data-type="decentralize" data-toggle="modal" data-target="#update-centralize-modal" title="Descentralizar">Descentralizar</a></li>
                                     @endif
 
-                                    @if (!$item->centralize && auth()->user()->hasPermission('edit_paymentschedules') && $item->status != 'pagada')
+                                    @if ((!$item->centralize && auth()->user()->hasPermission('edit_paymentschedules') && $item->status != 'pagada' && !Auth::user()->direccion_administrativa_id) || Auth::user()->role_id == 1)
                                         <li><a href="#" class="btn-update-centralize" data-id="{{ $item->id }}" data-type="centralize" data-toggle="modal" data-target="#update-centralize-modal" title="Centralizar">Centralizar</a></li>
                                     @endif
 

@@ -28,9 +28,15 @@ class ProgramsController extends Controller
         $year = request('year') ?? null;
         $paginate = request('paginate') ?? 10;
         $data = Program::with(['direccion_administrativa', 'unidad_administrativa', 'procedure_type', 'direcciones_administrativas.unidades_administrativas'])
-                    ->whereRaw($direccion_administrativa_id ? "direccion_administrativa_id = ".$direccion_administrativa_id : 1)
                     ->whereRaw($procedure_type_id ? "procedure_type_id = ".$procedure_type_id : 1)
                     ->whereRaw($year ? "year = '".$year."'" : 1)
+                    ->where(function($query) use ($direccion_administrativa_id){
+                        if($direccion_administrativa_id){
+                            $query->whereHas('direcciones_administrativas', function($query) use($direccion_administrativa_id){
+                                $query->where('direccion_administrativa_id', $direccion_administrativa_id);
+                            });
+                        }
+                    })
                     ->where(function($query) use ($search){
                         if($search){
                             $query->OrwhereHas('direccion_administrativa', function($query) use($search){

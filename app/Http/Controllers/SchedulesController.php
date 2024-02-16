@@ -28,7 +28,8 @@ class SchedulesController extends Controller
         try {
             $schedule = Schedule::create([
                 'name' => $request->name,
-                'description' => $request->description
+                'description' => $request->description,
+                'user_id' => Auth::user()->id
             ]);
 
             for ($i=1; $i <= $request->days; $i++) { 
@@ -128,7 +129,7 @@ class SchedulesController extends Controller
                     'schedule_id' => $id,
                     'contract_id' => $item,
                     'start' => $contract->start,
-                    // Si es un contrato permanente se pone como fin el 2030
+                    // * Si es un contrato permanente se pone como fin el 2030
                     'finish' => $contract->finish ?? '2030-12-30'
                 ]);
             }

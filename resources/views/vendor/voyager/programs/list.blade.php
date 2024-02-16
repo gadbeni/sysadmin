@@ -29,14 +29,14 @@
                             <label class="label label-default">{{ $item->procedure_type->name }}</label>  @if($item->unidad_administrativa_id) <i class="voyager-info-circled" title="Restringido para {{ $item->unidad_administrativa->nombre }}"></i> @endif
                         </td>
                         <td>
-                            @if ($item->direccion_administrativa)
-                                {{ $item->direccion_administrativa->nombre }}        
-                            @else
+                            @if ($item->direcciones_administrativas->count())
                                 <ul style="padding-left: 20px">
                                     @foreach ($item->direcciones_administrativas as $direccion_administrativa)
                                         <li>{{ $direccion_administrativa->nombre }}</li>
                                     @endforeach
                                 </ul>
+                            @else
+                                {{ $item->direccion_administrativa->nombre }}        
                             @endif
                         </td>
                         <td>{{ $item->number }}</td>

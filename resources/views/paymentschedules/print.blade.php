@@ -193,13 +193,13 @@
                                 });
                                 $data_group = $data_group->sortBy('order');
                             }else{
-                                $data_group = $data_group->map(function($item, $key){
+                                $data_group = $data_group->map(function($item, $key) use($data){
                                     $program = \App\Models\Program::find($key);
                                     return [
                                         'id' => $program->id,
                                         'programatic_category' => $program->programatic_category,
                                         'name' => $program->name,
-                                        'direccion_administrativa' =>$program->direccion_administrativa->nombre,
+                                        'direccion_administrativa' => $data->direccion_administrativa->nombre,
                                         'details' => $item
                                     ];
                                 });

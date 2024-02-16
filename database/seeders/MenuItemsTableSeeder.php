@@ -231,7 +231,7 @@ class MenuItemsTableSeeder extends Seeder
             array (
                 'id' => 14,
                 'menu_id' => 1,
-                'title' => 'Planillas y cajas',
+                'title' => 'Planillas',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-window-list',
@@ -239,7 +239,7 @@ class MenuItemsTableSeeder extends Seeder
                 'parent_id' => NULL,
                 'order' => 4,
                 'created_at' => '2021-08-13 10:25:22',
-                'updated_at' => '2023-09-08 17:15:39',
+                'updated_at' => '2024-02-16 14:54:29',
                 'route' => NULL,
                 'parameters' => '',
             ),

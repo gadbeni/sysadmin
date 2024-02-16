@@ -130,8 +130,8 @@ class ReportsController extends Controller
         $contracts = Contract::with(['user', 'person', 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'unidad_administrativa', 'type', 'addendums'])
                         ->whereRaw($request->procedure_type_id ? "procedure_type_id = ".$request->procedure_type_id : 1)
                         ->whereRaw($request->status ? "status in ".str_replace(array('[', ']'), array('(', ')'), json_encode($request->status)) : 1)
-                        ->whereRaw($request->start ? "DATE_FORMAT(start, '%Y-%m') = '".$request->start."'" : 1)
-                        ->whereRaw($request->finish ? "DATE_FORMAT(finish, '%Y-%m') = '".$request->finish."'" : 1)
+                        ->whereRaw($request->start ? "DATE_FORMAT(start, '%Y-%m') >= '".$request->start."'" : 1)
+                        ->whereRaw($request->finish ? "DATE_FORMAT(start, '%Y-%m') <= '".$request->finish."'" : 1)
                         ->whereRaw($request->period ? "(YEAR(start) = ".$request->period." or YEAR(finish) = ".$request->period.")" : 1)
                         ->whereHas('direccion_administrativa', function($q) use($request){
                             $q->whereRaw($request->direcciones_tipo_id ? "direcciones_tipo_id = ".$request->direcciones_tipo_id : 1);

@@ -70,7 +70,7 @@ class MemosController extends Controller
     public function store(Request $request){
         // dd($request->all());
         try {
-            $last_memo = Memo::orderBy('id', 'DESC')->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)->first();
+            $last_memo = Memo::orderBy('id', 'DESC')->whereRaw(Auth::user()->direccion_administrativa_id ? "direccion_administrativa_id = ".Auth::user()->direccion_administrativa_id : 1)->whereYear('date', $request->date)->first();
             $memo = Memo::create([
                 'user_id' => Auth::user()->id,
                 'direccion_administrativa_id' => Auth::user()->direccion_administrativa_id,
@@ -81,7 +81,7 @@ class MemosController extends Controller
                 'memos_type_id' => $request->memos_type_id,
                 'person_external_id' => $request->person_external_id,
                 'type' => $request->type,
-                'code' => ($last_memo ? explode('/', $last_memo->code)[0] +1 : 1).'/'.date('Y', strtotime($request->date)),
+                'code' => ($last_memo ? explode('/', $last_memo->code)[0] +1 : '1').'/'.date('Y', strtotime($request->date)),
                 'number' => $request->number,
                 'da_sigep' => $request->da_sigep,
                 'source' => $request->source,

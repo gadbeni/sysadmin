@@ -23,11 +23,19 @@
                                 <input type="hidden" name="type">
                                 <div class="row">
                                     <div class="form-group col-md-12 text-right">
-                                        <label class="radio-inline"><input type="radio" value="0" name="type" class="radio-type" checked>Personal</label>
-                                        <label class="radio-inline"><input type="radio" value="1" name="type" class="radio-type">General</label>
+                                        <label class="radio-inline"><input type="radio" value="personal" name="type" class="radio-type" checked>Personal</label>
+                                        <label class="radio-inline"><input type="radio" value="group" name="type" class="radio-type">General</label>
                                     </div>
                                     <div class="form-group col-md-12 div-personal">
-                                        <select name="person_id" id="select-person_id" class="form-control"></select>
+                                        <select name="person_id" id="select-person_id" class="form-control" required></select>
+                                    </div>
+                                    <div class="form-group col-md-12 div-group">
+                                        <select name="direccion_administrativa_id" id="select-direccion_id" class="form-control select2">
+                                            <option value="">Todas las secretarías</option>
+                                            @foreach (App\Models\Direccion::where('estado', 1)->whereRaw(Auth::user()->direccion_administrativa_id ? "id = ".Auth::user()->direccion_administrativa_id : 1)->get() as $item)
+                                            <option value="{{ $item->id }}">{{ $item->nombre }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <input type="date" name="start" value="{{ date('Y-m') }}-01" class="form-control" required>
@@ -59,7 +67,9 @@
 
 @section('css')
     <style>
-        
+        .div-group{
+            display: none;
+        }
     </style>
 @stop
 
@@ -72,11 +82,16 @@
 
             $('.radio-type').change(function(){
                 let value = $(this).val();
-                if(value == 1){
-                    $('.div-personal').fadeOut();
-                }else{
+                if(value == 'personal'){
                     $('.div-personal').fadeIn();
+                    $('.div-group').fadeOut();
+                    $('#select-person_id').prop('required', true);
+                }else{
+                    $('.div-group').fadeIn();
+                    $('.div-personal').fadeOut();
+                    $('#select-person_id').prop('required', false);
                 }
+                $('#select-person_id').val('').trigger('change');
             });
 
             $('#form-search').on('submit', function(e){

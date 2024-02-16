@@ -41,7 +41,7 @@ class HomeController extends Controller
         try {
             $person = PersonExternal::where('ci_nit', $request->ci_nit)->first();
             if($person){
-                return response()->json(['error' => 1, 'message' => 'La persona ya está registrada']);
+                return response()->json(['error' => 1, 'message' => 'La CI ingresada ya está registrada']);
             }
             PersonExternal::create([
                 'city_id' => $request->city_id,
@@ -56,13 +56,19 @@ class HomeController extends Controller
                 'location' => $request->location
             ]);
             try {
-                Http::get('https://whatsapp-api.beni.gob.bo/?number=591'.$request->phone.'&message=Muchas gracias '.$request->full_name.', por contribuir en el desarrollo del Departamento del Beni con tu registro nos ayudará a tomar decisiones en beneficio del departamento.');
+                if (setting('servidores.whatsapp') && setting('servidores.whatsapp-session')) {
+                    $phone = strlen($request->phone) == 8 ? '591'.$request->phone : $request->phone;
+                    Http::post(setting('servidores.whatsapp').'/send?id='.setting('servidores.whatsapp-session'), [
+                        'phone' => $phone,
+                        'text' => 'Muchas gracias '.$request->full_name.', por contribuir en el desarrollo del Departamento del Beni con tu registro nos ayudará a tomar decisiones en beneficio del departamento.'
+                    ]);
+                }
             } catch (\Throwable $th) {
                 //throw $th;
             }
             return response()->json(['success' => 1, 'message' => 'Datos registrados correctamente']);
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (Exception $e) {
+            Log::debug($e->getMessage());
             return response()->json(['error' => 1, 'message' => 'Ocurrió un error en el servidor']);
         }
     }

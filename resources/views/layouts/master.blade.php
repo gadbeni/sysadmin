@@ -141,7 +141,7 @@
         <!-- Template Main JS File -->
         <script src="{{ asset('vendor/landingpage/js/main.js') }}"></script>
 
-        <script src="{{ asset('vendor/jquery/jquery-3.6.0.min.js') }}" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="{{ asset('vendor/jquery/jquery-3.6.0.min.js') }}"></script>
 
         {{-- Loading --}}
         <link rel="stylesheet" href="{{ asset('vendor/loading/loading.css') }}">
@@ -209,29 +209,28 @@
         @endif
 
         {{-- Socket.io --}}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
             const socket = io("{{ env('APP_URL_SOCKET') }}:{{ env('APP_PORT_SOCKET') }}");
-        </script>
+        </script> --}}
         <style>
-        #odometer{
-            background: white;
-            border-radius: 7px;
-            border: 3px solid #3f3f3f;
-            font-size: 30px;
-            padding: 0px 20px
-        }
+            #odometer{
+                background: white;
+                border-radius: 7px;
+                border: 3px solid #3f3f3f;
+                font-size: 30px;
+                padding: 0px 20px
+            }
         </style>
         <!-- Odometr includes -->
         <link rel="stylesheet" href="{{ asset('vendor/odometer/odometer-theme-default.css') }}" />
         <script src="{{ asset('vendor/odometer/odometer.js') }}"></script>
         <script>
-        socket.on('get new ticket', data => {
-            odometer.innerHTML = data.ticket;
-        });
+            // socket.on('get new ticket', data => {
+            //     odometer.innerHTML = data.ticket;
+            // });
         </script>
 
         @yield('script')
     </body>
-
 </html>

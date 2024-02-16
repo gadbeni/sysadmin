@@ -35,4 +35,8 @@ class Direccion extends Model
     public function bonuses(){
         return $this->hasMany(Bonus::class, 'direccion_id');
     }
+
+    public function scopeActivo($query){
+        return $query->where('estado', 1);
+    }
 }

@@ -2736,7 +2736,7 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"validation":{"rule":"required|max:191|unique:periods"},"display":{"width":6},"options":{"202301":"202301","202302":"202302","202303":"202303","202304":"202304","202305":"202305","202306":"202306","202307":"202307","202308":"202308","202309":"202309","202310":"202310","202311":"202311","202312":"202312"}}',
+                'details' => '{"validation":{"rule":"required|max:191|unique:periods"},"display":{"width":6},"options":{"202401":"202401","202402":"202402","202403":"202403","202404":"202404","202405":"202405","202406":"202406","202407":"202407","202408":"202408","202409":"202409","202410":"202410","202411":"202411","202412":"202412"}}',
                 'order' => 2,
             ),
             170 => 
@@ -6065,7 +6065,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 5,
+                'order' => 7,
             ),
             378 => 
             array (
@@ -6081,7 +6081,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 6,
+                'order' => 8,
             ),
             379 => 
             array (
@@ -6097,7 +6097,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 7,
+                'order' => 9,
             ),
             380 => 
             array (
@@ -6113,7 +6113,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{}',
-                'order' => 2,
+                'order' => 6,
             ),
             381 => 
             array (
@@ -6402,6 +6402,22 @@ class DataRowsTableSeeder extends Seeder
                 'delete' => 1,
                 'details' => '{"display":{"width":6},"options":{"Mantenimiento":"Mantenimiento","Instalaci\\u00f3n":"Instalaci\\u00f3n","Configuraci\\u00f3n":"Configuraci\\u00f3n","Limpieza":"Limpieza","Otros":"Otros"}}',
                 'order' => 2,
+            ),
+            399 => 
+            array (
+                'id' => 492,
+                'data_type_id' => 46,
+                'field' => 'schedule_belongsto_user_relationship',
+                'type' => 'relationship',
+                'display_name' => 'Usuario',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"model":"TCG\\\\Voyager\\\\Models\\\\User","table":"users","type":"belongsTo","column":"user_id","key":"id","label":"name","pivot_table":"addendums","pivot":"0","taggable":"0"}',
+                'order' => 5,
             ),
         ));
         

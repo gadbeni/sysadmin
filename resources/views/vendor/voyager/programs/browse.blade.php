@@ -1,6 +1,6 @@
 @extends('voyager::master')
 
-@section('page_title', 'Viendo Activos')
+@section('page_title', 'Viendo Programas/Proyectos')
 
 @section('page_header')
     <div class="container-fluid">
@@ -72,7 +72,7 @@
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label for="year">Gestión</label>
-                                            <input type="number" class="form-control" name="year" step="1" min="2020" max="{{ date('Y') }}">
+                                            <input type="number" class="form-control select-filter" id="input-year" name="year" step="1" min="2020" max="{{ date('Y') }}">
                                         </div>
                                     </div>
                                     <hr>
@@ -123,7 +123,7 @@
         var countPage = 10, order = 'id', typeOrder = 'desc';
         var direccion_administrativa_id = '';
         var procedure_type_id = '';
-        var user_id = '';
+        var year = '';
 
         $(document).ready(function() {
             list();
@@ -138,7 +138,7 @@
                 countPage = $('#select-paginate option:selected').val();
                 direccion_administrativa_id = $('#select-direccion_administrativa_id option:selected').val();
                 procedure_type_id = $('#select-procedure_type_id option:selected').val();
-                user_id = $('#select-user_id option:selected').val();
+                year = $('#input-year').val();
                 list();
             });
         });
@@ -148,7 +148,7 @@
             let url = '{{ url("admin/programs/ajax/list") }}';
             let search = $('#input-search').val() ? $('#input-search').val() : '';
             $.ajax({
-                url: `${url}?search=${search}&direccion_administrativa_id=${direccion_administrativa_id}&user_id=${user_id}&procedure_type_id=${procedure_type_id}&paginate=${countPage}&page=${page}`,
+                url: `${url}?search=${search}&direccion_administrativa_id=${direccion_administrativa_id}&year=${year}&procedure_type_id=${procedure_type_id}&paginate=${countPage}&page=${page}`,
                 type: 'get',
                 success: function(response){
                     $('#div-results').html(response);

@@ -50,20 +50,29 @@ class AttendancesController extends Controller
     }
 
     public function generate(Request $request){
-        $contract = Contract::find($request->person_id);
-        $ci = str_replace(' ', '-', $contract->person->ci); // Reemplazar los espacios en blancos con -
-        $ci = explode('-', $ci)[0]; // Obtener solo el valor numérico de CI
+        $direccion_administrativa_id = $request->direccion_administrativa_id;
         $start = $request->start;
         $finish = $request->finish;
-        $attendances = DB::connection('sia')
+        if ($request->type == 'personal') {
+            $contract = Contract::find($request->person_id);
+            $ci = str_replace(' ', '-', $contract->person->ci); // Reemplazar los espacios en blancos con -
+            $ci = explode('-', $ci)[0]; // Obtener solo el valor numérico de CI
+            $attendances = DB::connection('sia')
                             ->table('Asistencia')
                             ->where('IdPersona', $ci)
                             ->whereDate('Fecha', '>=', $request->start)
                             ->whereDate('Fecha', '<=', $request->finish)
                             ->select(DB::raw('IdPersona as ci'), DB::raw('Fecha as fecha'), DB::raw('Hora as hora'))
                             ->get();
-        // dd($attendances->groupBy('fecha'));
-        return view('biometrics.attendances.list', compact('attendances', 'contract', 'start', 'finish'));
+            return view('biometrics.attendances.list-personal', compact('attendances', 'contract', 'start', 'finish'));
+        }else{
+            $contracts = Contract::with(['person'])
+                            ->whereRaw("((start <= '$start' and (finish >= '$start' or finish is NULL)) or (start <= '$finish' and (finish >= '$finish' or finish is NULL)) or (start <= '$start' and (finish >= '$finish' or finish is NULL)))")
+                            ->whereRaw("(status = 'firmado' or status = 'concluido')")
+                            ->whereRaw($direccion_administrativa_id ? "direccion_administrativa_id = $direccion_administrativa_id" : 1)->get();
+            // dd($contracts);
+            return view('biometrics.attendances.list-group', compact('contracts', 'start', 'finish'));
+        }
     }
 
     /**

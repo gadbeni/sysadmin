@@ -415,7 +415,6 @@
             $.extend(additionalConfig, {})
             tinymce.init(window.voyagerTinyMCE.getConfig(additionalConfig));
             
-            // $('#select-workers_memo').select2();
             $('#select-procedure_type_id').select2();
 
             $('#select-direccion_administrativa_id').change(function(){
@@ -429,7 +428,7 @@
                 $('#select-program_id').html(`<option value="">Seleccione un programa</option>`);
                 programs.map(item => {
                     if((direccion_administrativa_id == item.direccion_administrativa_id || item.direcciones_administrativas.find(da => da.id == direccion_administrativa_id)) && $('#select-procedure_type_id option:selected').val() == item.procedure_type_id){
-                        $('#select-program_id').append(`<option value="${item.id}">${item.name} ${item.programatic_category ? ' ('+item.programatic_category+')' : ''}</option>`);
+                        $('#select-program_id').append(`<option value="${item.id}" data-unidad_id="${item.unidad_administrativa_id}">${item.name} ${item.programatic_category ? ' ('+item.programatic_category+')' : ''}</option>`);
                     }
                 });
 
@@ -544,6 +543,27 @@
                         $('#input-salary').removeAttr('required');
                         $('#input-finish').prop('required', true);
                         $('.div-signatures').css('display', 'block');
+                    }
+                }
+            });
+
+            $('#select-unidad_administrativa_id').change(function(){
+                let id = $('#select-unidad_administrativa_id option:selected').val();
+                if(id){
+                    let found = false;
+                    $('#select-program_id option').each(function(){
+                        if(id == $(this).data('unidad_id')){
+                            found = true;
+                        }
+                    });
+                    if(found){
+                        $('#select-program_id option').each(function(){
+                            if(id != $(this).data('unidad_id')){
+                                $(this).prop('disabled', true);
+                            }
+                        });
+                    }else{
+                        $('#select-program_id option').prop('disabled', false);
                     }
                 }
             });

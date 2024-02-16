@@ -15,4 +15,8 @@ class Unidad extends Model
     public function direccion_administrativa(){
         return $this->belongsTo(Direccion::class, 'direccion_id', 'id');
     }
+
+    public function scopeActivo($query){
+        return $query->where('estado', 1);
+    }
 }
