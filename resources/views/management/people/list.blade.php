@@ -40,7 +40,7 @@
                                         @php
                                             $contract = $item->contracts->where('status', 'firmado')->first();
                                         @endphp
-                                        <a href="{{ $contract->procedure_type_id != 6 ? route('contracts.show', ['contract' => $contract->id]) : '#' }}"><label class="label label-success" title="{{ $contract->code }}" style="cursor: pointer">Con contrato</label></a>
+                                        <a href="{{ $contract->procedure_type_id != 6 ? route('contracts.show', ['contract' => $contract->id]) : '#' }}"><label class="label label-success" title="{{ $contract->code }} del {{ date('d/m/Y', strtotime($contract->start)) }} {{ $contract->finish ? ' al '.date('d/m/Y', strtotime($contract->finish)) : '' }}" style="cursor: pointer">Con contrato</label></a>
                                     @endif
                                     @if ($item->contracts->whereIn('status', ['elaborado', 'enviado'])->count())
                                         @php
@@ -79,7 +79,7 @@
                             <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
                                 Más <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu" role="menu" style="left: -90px !important">
+                            <ul class="dropdown-menu" role="menu" style="top: -10px !important; left: -180px !important">
                                 @if (auth()->user()->hasPermission('add_file_people'))
                                 <li><a href="#" class="btn-add-file" data-url="{{ route('people.file.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-add-file" >Agregar documentación</a></li>
                                 @endif
@@ -97,8 +97,16 @@
                                 <li><a href="#" class="btn-afp-options" data-item="{{ $item }}" data-url="{{ route('people.afp_status.update', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-options-afp" >Opciones de AFP</a></li>
                                 @endif
                                 {{-- Opciones de marcaciones --}}
+                                @if ($item->contracts->where('status', 'firmado')->count())
+                                <li><a href="#" class="btn-schedules" data-contract='@json($item->contracts->where('status', 'firmado')->first())' data-schedules='@json($item->schedules)' data-toggle="modal" data-target="#modal-schedules">Horario</a></li>
+                                @endif
                                 @if (auth()->user()->hasPermission('edit_attendances_people'))
                                 <li><a href="#" class="btn-attendance-options" data-item="{{ $item }}" data-url="{{ route('people.attendances', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-options-attendance" >Marcaciones</a></li>
+                                @endif
+                                <li class="divider" style="margin: 5px 0px"></li>
+                                <li><a href="#" class="btn-qr-generate" data-item="{{ $item }}" data-toggle="modal" data-target="#modal-qr">Generar QR</a></li>
+                                @if (setting('servidores.whatsapp') && setting('servidores.whatsapp-session'))
+                                <li><a href="#" class="btn-notification" data-item="{{ $item }}" data-toggle="modal" data-target="#modal-notification" >Notificar <i class="voyager-paper-plane"></i></a></li>
                                 @endif
                             </ul>
                         </div>
@@ -192,6 +200,40 @@
             urlListAttendances = $(this).data('url');
             $('#details-attendaces').html('<tr><td colspan="3">Seleccione la fecha</td></tr>');
             $('#options-attendance-form').trigger('reset');
+        });
+
+        $('.btn-schedules').click(function(){
+            let schedules = $(this).data('schedules');
+            let contract = $(this).data('contract');
+            $('#form-schedules input[name="contract_id"]').val(contract.id);
+            $('#form-schedules input[name="start"]').attr('min', contract.start);
+            $('#form-schedules input[name="finish"]').val(contract.finish ? contract.finish : '');
+            
+            $('#form-schedules input[name="start"]').val('');
+            if (schedules.length) {
+                let last_schedule = schedules[schedules.length -1];
+                $('#label-last-schedule').html(`Horario de <b>${last_schedule.schedule.name}</b> desde el ${moment(last_schedule.start).format('DD [de] MMMM [de] YYYY')} ${moment(last_schedule.finish).format('YYYY-MMMM-DD') < moment().format('YYYY-MMMM-DD') ? ' hasta '+moment(last_schedule.finish).format('DD [de] MMMM [de] YYYY') : ''}`);
+                $('#form-schedules input[name="contract_schedule_id"]').val(last_schedule.id);
+                $(`#select-schedule_id option[value="${last_schedule.schedule.id}"]`).prop('disabled', true);
+            } else {
+                $('#label-last-schedule').html('No tiene horarios asignados <i class="fa fa-ban"></i>');
+                $(`#select-schedule_id option`).prop('disabled', false);
+                $('#form-schedules input[name="start"]').val(contract.start);
+            }
+        });
+
+        $('.btn-notification').click(function(){
+            let item = $(this).data('item');
+            $('#form-notification input[name="person_id"]').val(item.id);
+            $('#form-notification input[name="phone"]').val(item.phone);
+        });
+
+        $('.btn-qr-generate').click(function(){
+            $('#div-qr').empty();
+            let item = $(this).data('item');
+            generarQR("{{ url('person') }}/"+item.id, 'div-qr');
+            $('#qr-detail').text(`QR para credencial de ${item.first_name} ${item.last_name}`);
+            fileName = `${item.first_name} ${item.last_name}`;
         });
     });
 </script>

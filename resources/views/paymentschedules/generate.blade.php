@@ -80,6 +80,7 @@
                                     $cont = 1;
                                     $contracts_rc_iva = $paymentschedules_file->where('type', 'rc-iva')->first();
                                     $contracts_faults = $paymentschedules_file->where('type', 'biométrico')->first();
+                                    $contracts_retentions = $paymentschedules_file->where('type', 'retención')->first();
 
                                     $array_contract_id = [];
                                     $array_worked_days = [];
@@ -102,7 +103,6 @@
                                     $array_faults_quantity = [];
                                     $array_faults_amount = [];
                                     $array_liquid_payable = [];
-                                    // dd($contracts);
                                 @endphp
                                 @forelse ($procedure_type_id == 1 ? $contracts->sortBy('job.id') : $contracts as $item)
                                     @php
@@ -234,8 +234,11 @@
                                         $rc_iva_amount = number_format($rc_iva ? json_decode($rc_iva->details)->iva : 0, 2, '.', '');
 
                                         // Faltas
+                                        // * Desde los archivos subidos
                                         $faults = $contracts_faults ? $contracts_faults->details->where('person_id', $item->person->id)->first() : null;
                                         $faults_quantity = number_format($faults ? json_decode($faults->details)->faults : 0, 2, '.', '');
+                                        // * Desde el cálculo de ausencias
+                                        $faults_quantity += $item->absences->sum('quantity');
                                         $faults_amount = number_format(($salary / 30) * $faults_quantity, 2, '.', '');
 
                                         // Descuentos

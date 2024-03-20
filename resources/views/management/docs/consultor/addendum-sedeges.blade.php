@@ -52,7 +52,7 @@
                     @endif
                     ,
                 @empty
-                    Mercedes Suarez Chávez, 
+                EVELYN DIANA GARCIA VALLE, 
                 @endforelse
                 <b>Responsable(s) de Evaluación</b>, resolvió adjudicar mediante <b>Nota de Adjudicación NA/GAD-BENI/{{ $code }} de fecha {{ date('d', strtotime($contract->date_note)) }} de {{ $months[intval(date('m', strtotime($contract->date_note)))] }} de {{ date('Y', strtotime($contract->date_note)) }}</b> la contratación del Servicio de Consultoría Individual <b>{{ $contract->person->gender == 'masculino' ? 'el señor' : 'la señora' }} {{ $contract->person->first_name }} {{ $contract->person->last_name }}</b>, con Cédula de Identidad <b>Nº {{ $contract->person->ci }}</b> al cumplir su propuesta con todos los requisitos solicitados por la entidad en los Términos de Referencia, contrato que es suscrito en fecha <b>{{ date('d', strtotime($contract->start)) }} de {{ $months[intval(date('m', strtotime($contract->start)))] }} de {{ date('Y', strtotime($contract->start)) }}</b>.
             </p>

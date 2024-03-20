@@ -92,7 +92,7 @@
             <p><em><strong>6.2. DEPENDENCIA Y CONTROLES</strong></em></p>
             <p><em>Para el cumplimiento de sus funciones y de acuerdo a las responsabilidades {!! $contract->person->gender == 'masculino' ? 'del <b>CONTRATADO</b>' : 'de la <b>CONTRATADA</b>' !!} depende jer&aacute;rquicamente del inmediato superior y la MAE, que establecer&aacute;n adicionalmente otras funciones y &oacute;rdenes de acuerdo al objeto del presente contrato. También podrá ser sujeto a movilidad funcional según la nececidad de la institución u otras que creyera conveniente.</em></p>
             <p><em><strong>6.3. HORARIO Y DISPONIBILIDAD {{ $contract->person->gender == 'masculino' ? 'DEL CONTRATADO' : 'DE LA CONTRATADA' }}</strong></em></p>
-            <p><em>{!! $contract->person->gender == 'masculino' ? 'El <b>CONTRATADO</b>' : 'La <b>CONTRATADA</b>' !!} cumplir&aacute; con el horario de trabajo de 8:00 Hrs diarias que ser&aacute; de {{ $contract->direccion_administrativa_id == 32 ? '7:30 a 13:30' : '8:00 a 12:30 y de 14:30 a 18:00' }}</strong> <strong>de lunes a viernes</strong>, en el lugar que le sea asignado, así mismo, de acuerdo a necesidades Institucionales se podr&aacute; cambiar el horario manteniendo las 8 Horas laborales, adem&aacute;s el servidor deber&aacute; prestar servicios fuera de los horarios establecidos, conforme instrucción de sus superiores.</em></p>
+            <p><em>{!! $contract->person->gender == 'masculino' ? 'El <b>CONTRATADO</b>' : 'La <b>CONTRATADA</b>' !!} cumplir&aacute; con el horario de trabajo de 8:00 Hrs diarias que ser&aacute; de {{ $contract->direccion_administrativa_id == 32 ? '7:30 a 13:30' : '8:00 a 12:30 y de 14:30 a 18:00' }}</strong> <strong>de lunes a viernes</strong>, en el lugar que le sea asignado, así mismo, de acuerdo a necesidades Institucionales se podr&aacute; cambiar el horario manteniendo las 8 Horas laborales, adem&aacute;s el servidor deber&aacute; prestar servicios fuera de los horarios establecidos, conforme instrucción de sus superiores, mediante informe y/o cronograma de turno.</em></p>
             <p><em>{!! $contract->person->gender == 'masculino' ? 'El <b>CONTRATADO</b>' : 'La <b>CONTRATADA</b>' !!} declara su plena e inmediata disponibilidad para el desempe&ntilde;o de las funciones para las cuales es {{ $contract->person->gender == 'masculino' ? 'contratado' : 'contratada' }}; con absoluta dedicaci&oacute;n, &eacute;tica y pro actividad, conducentes al logro de los objetivos de este contrato, no pudiendo realizar actividades que deterioren o menoscaben la imagen de LA INSTITUCION. En consecuencia, el servicio es de dedicaci&oacute;n exclusiva, no pudiendo prestar servicios o funciones similares y/o iguales a terceros en horarios se&ntilde;alados en el numeral.</em></p>
             @php
                 $numeros_a_letras = new NumeroALetras();
@@ -177,10 +177,9 @@
             </ul>
             <p><em><strong>CLÁUSULA D&Eacute;CIMA CUARTA: (ACEPTACI&Oacute;N)</strong></em></p>
             <p><em>En se&ntilde;al de aceptaci&oacute;n y estricto cumplimiento firman el presente Contrato en tres ejemplares de un mismo tenor y validez, la/el <b>{{ $signature ? $signature->name : setting('firma-autorizada.name') }}</b>, en su calidad de <b>{{ $signature ? $signature->job : setting('firma-autorizada.job') }} GAD-BENI </b>y por otra parte {{ $contract->person->gender == 'masculino' ? 'el Sr.' : 'la Sra.' }} <b>{{ $contract->person->first_name }} {{ $contract->person->last_name }}</b>, en calidad de <b>{{ $contract->person->gender == 'masculino' ? 'CONTRATADO' : 'CONTRATADA' }}</b>.</em></p>
-            <br>
-                <p style="text-align: right;">
-                    <span>{{ Str::upper($contract->direccion_administrativa->city ? $contract->direccion_administrativa->city->name : 'Santísima Trinidad') }}</span>, {{ date('d', strtotime($contract->start)) }} de {{ Str::upper($months[intval(date('m', strtotime($contract->start)))]) }} de {{ date('Y', strtotime($contract->start)) }}
-                </p>
+            <p style="text-align: right;">
+                <span>{{ Str::upper($contract->direccion_administrativa->city ? $contract->direccion_administrativa->city->name : 'Santísima Trinidad') }}</span>, {{ date('d', strtotime($contract->start)) }} de {{ Str::upper($months[intval(date('m', strtotime($contract->start)))]) }} de {{ date('Y', strtotime($contract->start)) }}
+            </p>
             <table class="table-signature">
                 <tr>
                     <td style="width: 50%">

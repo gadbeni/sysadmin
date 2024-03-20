@@ -208,11 +208,6 @@
         <script src="{{ asset('js/snowfall.js') }}"></script>
         @endif
 
-        {{-- Socket.io --}}
-        {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script>
-            const socket = io("{{ env('APP_URL_SOCKET') }}:{{ env('APP_PORT_SOCKET') }}");
-        </script> --}}
         <style>
             #odometer{
                 background: white;
@@ -225,11 +220,6 @@
         <!-- Odometr includes -->
         <link rel="stylesheet" href="{{ asset('vendor/odometer/odometer-theme-default.css') }}" />
         <script src="{{ asset('vendor/odometer/odometer.js') }}"></script>
-        <script>
-            // socket.on('get new ticket', data => {
-            //     odometer.innerHTML = data.ticket;
-            // });
-        </script>
 
         @yield('script')
     </body>

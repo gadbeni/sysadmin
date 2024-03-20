@@ -2,19 +2,33 @@
 
 @section('page_title', 'Reporte de Contratos')
 
+@php
+    $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+@endphp
+
 @section('content')
     <div class="content">
         <table width="100%">
             <tr>
                 <td><img src="{{ asset('images/icon.png') }}" alt="GADBENI" width="120px"></td>
                 <td style="text-align: right">
-                    <h2 style="margin-bottom: -20px; margin-top: 10px">Reporte de Contratos</h2>
+                    <h2 style="margin-bottom: -20px; margin-top: 10px">
+                        Reporte de Contratos <br>
+                        <small style="font-size: 15px">
+                            @if ($start && $finish)
+                                De {{ $months[intval(date('m', strtotime($start.'-01')))].'/'.date('Y', strtotime($start.'-01')) }} a {{ $months[intval(date('m', strtotime($finish.'-01')))].'/'.date('Y', strtotime($finish.'-01')) }}
+                            @else
+                                @if ($start)
+                                    Inicio en {{ $months[intval(date('m', strtotime($start.'-01')))].'/'.date('Y', strtotime($start.'-01')) }}
+                                @endif
+                                @if ($finish)
+                                    Finalización en {{ $months[intval(date('m', strtotime($finish.'-01')))].'/'.date('Y', strtotime($finish.'-01')) }}
+                                @endif
+                            @endif
+                        </small>
+                    </h2>
                     <small>
                          <br>
-                        @php
-                            $months = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-                        @endphp
-                        {{-- <small>RECURSOS HUMANOS</small> <br> --}}
                         <small style="font-size: 11px; font-weight: 100">Impreso por: {{ Auth::user()->name }} <br> {{ date('d/M/Y H:i:s') }}</small>
                     </small>
                 </td>

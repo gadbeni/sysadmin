@@ -35,7 +35,7 @@
     <div class="page-content browse container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <div class="panel panel-bordered">
+                <div class="panel panel-custom">
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-10">
@@ -52,7 +52,7 @@
                                 <input type="text" id="input-search" class="form-control">
                             </div>
                         </div>
-                        <div class="row" id="div-results" style="min-height: 120px; padding-bottom: 120px"></div>
+                        <div class="row" id="div-results" style="min-height: 120px; overflow-x: auto"></div>
                     </div>
                 </div>
             </div>
@@ -94,7 +94,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" class="btn btn-dark btn-submit" value="Guardar">
+                        <button type="submit" class="btn btn-dark btn-submit">Guardar</button>
                     </div>
                 </div>
             </div>
@@ -123,7 +123,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" class="btn btn-dark btn-submit" value="Guardar">
+                        <button type="submit" class="btn btn-dark btn-submit">Guardar</button>
                     </div>
                 </div>
             </div>
@@ -171,6 +171,49 @@
         </div>
     </div>
 
+    {{-- Modal attendance schedules --}}
+    <form action="{{ route('schedules.assignments.update') }}" id="form-schedules" class="form-submit" method="post">
+        @csrf
+        <input type="hidden" name="contract_id">
+        <input type="hidden" name="contract_schedule_id">
+        <div class="modal fade modal-option" tabindex="-1" id="modal-schedules" role="dialog">
+            <div class="modal-dialog modal-primary">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-calendar"></i> Horario</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <h4 id="label-last-schedule"></h4>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="schedule_id">Tipo</label>
+                            <select name="schedule_id" id="select-schedule_id" class="form-control select2" required>
+                                <option value="">--Seleccionar horario</option>
+                                @foreach (App\Models\Schedule::where('status', 1)->get() as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="start">Desde</label>
+                            <input type="date" name="start" class="form-control" required>
+                            <input type="hidden" name="finish">
+                        </div>
+                        <div class="from-group">
+                            <label class="checkbox-inline"><input type="checkbox" name="delete_previous" value="1">Eliminar el horario actual</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-dark btn-submit">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
     {{-- Modal add file --}}
     @include('management.people.partials.modal-add-file')
 
@@ -179,11 +222,72 @@
 
     {{-- Modal rotation --}}
     @include('management.people.partials.modal-rotation')
+
+    {{-- Modal notificatión --}}
+    <form action="{{ route('send.whatsapp') }}" id="form-notification" class="form-submit" method="post">
+        @csrf
+        <input type="hidden" name="person_id">
+        <input type="hidden" name="phone">
+        <div class="modal modal-primary fade modal-option" tabindex="-1" id="modal-notification" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-paper-plane"></i> Notificatión</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="message">Mensaje</label>
+                            <textarea name="message" class="form-control" rows="5" placeholder="Observación en su proceso de contratación" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Fotografía (Opcional)</label>
+                            <input type="file" name="image" accept=".jpg, .jpeg, .png">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-dark btn-submit">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {{-- Modal qr --}}
+    <div class="modal modal-primary fade modal-option" tabindex="-1" id="modal-qr" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="fa fa-qrcode"></i> Generar QR</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 text-center" style="margin-bottom: 20px">
+                        <div id="div-qr"></div>
+                        <h4 id="qr-detail"></h4>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-dark btn-download-image">Generar <i class="fa fa-cloud-download"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
     
 @stop
 
 @section('css')
     <style>
+        #div-qr{
+            width: 350px;
+            height: 350px;
+            margin: 0px auto
+        }
+        #div-qr img{
+            padding: 25px
+        }
         @media (max-width: 767px) {
             .table-responsive .dropdown-menu {
                 position: static !important;
@@ -198,17 +302,22 @@
 @stop
 
 @section('javascript')
-    <script src="{{ url('js/main.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/html2canvas.min.js') }}"></script>
+    <script src="{{ asset('js/qrcode.min.js') }}"></script>
     <script>
         moment.locale('es');
         var countPage = 10, order = 'id', typeOrder = 'desc';
         var assetSelected = null;
         var urlListAttendances = null; // Variavle auxiliar para almacenar la ruta de acceso a la lista de marcaciones del funcionario actual (al que se le dió click)
+        var fileName;
         $(document).ready(() => {
 
             $('#select-destiny_id').select2({dropdownParent: $('#modal-rotation')});
             $('#select-destiny_dependency').select2({dropdownParent: $('#modal-rotation')});
             $('#select-responsible_id').select2({dropdownParent: $('#modal-rotation')});
+            $('#select-schedule_id').select2({dropdownParent: $('#modal-schedules')});
+            
             customSelect('#select-asset_id', '{{ url("admin/assets/search/ajax") }}', formatResultAssets, data => {assetSelected = data}, $('#modal-add-assets'));
             customSelect('#select-signature_id', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#modal-add-assets'));
             list();
@@ -228,40 +337,42 @@
 
             $('#select-asset_id').change(function(){
                 let asset = assetSelected;
-                if (document.getElementById(`tr-asset-${asset.id}`)) {
-                    toastr.info('El activo ya se encuentra en la lista', 'Aviso')
-                    return 0;
+                if(asset){
+                    if (document.getElementById(`tr-asset-${asset.id}`)) {
+                        toastr.info('El activo ya se encuentra en la lista', 'Aviso')
+                        return 0;
+                    }
+                    $('#assets-list').append(`
+                        <tr id="tr-asset-${asset.id}">
+                            <td class="td-assets"></td>
+                            <td>
+                                <input type="hidden" name="asset_id[]" value="${asset.id}" />
+                                ${asset.code}
+                            </td>
+                            <td>${asset.description}</td>
+                            <td>
+                                <input type="hidden" name="status[]" value="${asset.status}" />
+                                ${asset.status.charAt(0).toUpperCase() + asset.status.slice(1)}
+                            </td>
+                            <td><textarea name="asset_observations[]" class="form-control"></textarea></td>
+                            <td>
+                                <button class="btn btn-link" onclick="deleteAssetTr(${asset.id})"><i class="voyager-trash text-danger"></i></button>
+                            </td>
+                        </tr>
+                    `);
+                    generateNumberRow();
                 }
-                $('#assets-list').append(`
-                    <tr id="tr-asset-${asset.id}">
-                        <td class="td-assets"></td>
-                        <td>
-                            <input type="hidden" name="asset_id[]" value="${asset.id}" />
-                            ${asset.code}
-                        </td>
-                        <td>${asset.description}</td>
-                        <td>
-                            <input type="hidden" name="status[]" value="${asset.status}" />
-                            ${asset.status.charAt(0).toUpperCase() + asset.status.slice(1)}
-                        </td>
-                        <td><textarea name="asset_observations[]" class="form-control"></textarea></td>
-                        <td>
-                            <button class="btn btn-link" onclick="deleteAssetTr(${asset.id})"><i class="voyager-trash text-danger"></i></button>
-                        </td>
-                    </tr>
-                `);
-                generateNumberRow();
             });
 
             $('.form-submit').submit(function(e){
-                $('.form-submit .btn-submit').val('Guardando...');
+                $('.form-submit .btn-submit').text('Guardando...');
                 e.preventDefault();
                 var formData = new FormData($(this)[0]);
                 $.ajax({
                     url: $(this).attr('action'),
                     type: 'POST',
                     data: formData,
-                    async: false,
+                    async: true,
                     cache: false,
                     contentType: false,
                     enctype: 'multipart/form-data',
@@ -270,6 +381,7 @@
                         if(res.success){
                             toastr.success(res.message, 'Bien hecho');
                             $('.modal-option').modal('hide');
+                            $('.modal-notification').modal('hide');
                             $(this).trigger('reset');
                             $('#assets-list').html(`<tr id="tr-empty"><td colspan="5" class="text-center">Ningun activo seleccionado</td></tr>`);
                             list();
@@ -283,12 +395,10 @@
                         }else{
                             toastr.error(res.message, 'Error');
                         }
-                        $('.form-submit .btn-submit').val('Guardar');
                         $('#select-asset_id').val(null).trigger('change');
                         $('#select-signature_id').val(null).trigger('change');
-                        setTimeout(() => {
-                            $('.form-submit .btn-submit').removeAttr('disabled');
-                        }, 0);
+                        $('.form-submit .btn-submit').text('Guardar');
+                        $('.form-submit .btn-submit').removeAttr('disabled');
                     }
                 });
             });
@@ -326,6 +436,11 @@
                         $('#details-attendaces').html(`<tr id="tr-0"><td colspan="3">No hay marcaciones <button type="button" class="btn btn-link" title="Agregar nuevo" id="btn-add-0" onclick="trAdd(0, ${res.person_id})"><i class="voyager-plus text-success"></i></button></td></tr>`);
                     }
                 });
+            });
+
+            $('.btn-download-image').click(function(){
+                generarImagen('div-qr', fileName);
+                $('#modal-qr').modal('hide');
             });
         });
 

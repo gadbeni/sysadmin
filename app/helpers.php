@@ -189,22 +189,11 @@ if (! function_exists('calculate_recordes')) {
         }
 
         if ($delay) {
-            // Mayor a 10 y menor a 31 minutos se acumula
-            if ($delay > 10 && $delay < 31) {
+            // Mayor a 10 y menor a 90 minutos se acumula
+            if ($delay > 10 && $delay <= 90) {
                 $accumulated_minutes += $delay;
-            // Mayor a 30 y menor a 46 minutos se descuenta medio día
-            }elseif($delay > 30 && $delay < 46){
-                $faults_entry += 0.5;
-                // Mayor a 45 y menor a 61 se descuenta un día
-            }elseif($delay > 45 && $delay < 61){
-                $faults_entry += 1;
-                // Mayor a 60 y menor a 91 minutos se descuenta un día
-            }elseif($delay > 60 && $delay < 91){
-                // $faults_entry += 2;
-                $faults_entry += 1;
-                // Mayor a 1 hora se descuenta un día
+            // Mayor a 90 se toma como falta
             }elseif($delay > 90){
-                // $faults_entry += 3;
                 $faults_entry += 1;
             }
         }

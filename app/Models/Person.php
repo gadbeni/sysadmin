@@ -47,4 +47,8 @@ class Person extends Model
     public function assignments(){
         return $this->hasMany(PersonAsset::class, 'person_id');
     }
+
+    public function schedules(){
+        return $this->hasManyThrough(ContractSchedule::class, Contract::class);
+    }
 }

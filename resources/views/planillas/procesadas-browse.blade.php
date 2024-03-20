@@ -88,15 +88,6 @@
                 </div>
             </div>
         </div>
-
-        @if ((Auth::user()->role_id >= 2 && Auth::user()->role_id <= 5) || Auth::user()->role_id == 1)
-            <div style="position: fixed; bottom: 40px; right: 20px; z-index: 10;padding: 10px 20px; background-color: white; box-shadow: 0px 0px 15px 10px white; border-radius: 5px">
-                <div class="btn-group btn-group-lg">
-                    <button type="button" class="btn btn-warning btn-lg btn-increment-ticket" ><h4>{{ setting('auxiliares.numero_ticket') == 0  ? 'Iniciar' : 'Siguiente' }} <span class="voyager-double-right"></span></h4></button>
-                    <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#reset-tickets-modal"><h4><span class="voyager-settings"></span></h4></button>
-                </div>
-            </div>
-        @endif
     </div>
 @stop
 
@@ -381,13 +372,6 @@
 @stop
 
 @section('javascript')
-
-    {{-- Socket.io --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        const socket = io("{{ env('APP_URL_SOCKET') }}:{{ env('APP_PORT_SOCKET') }}");
-    </script>
-
     <script>
         $(document).ready(function() {
             $('#form-search').on('submit', function(e){
@@ -415,20 +399,6 @@
                         break;
                 }
             });
-
-            $('.btn-increment-ticket').click(function(){
-                $('.btn-increment-ticket').attr('disabled', true);
-                $.post("{{ url('admin/plugins/cashiers/tickets/set') }}", {
-                    _token: '{{ csrf_token() }}',
-                }, function(data){
-                    $('.btn-increment-ticket').html('<h4>Siguiente <span class="voyager-double-right"></span></h4>');
-                    toastr.info('Ticket solicitado #'+data.ticket, 'Información');
-                    socket.emit(`set new ticket`, data);
-                });
-                setTimeout(() => {
-                    $('.btn-increment-ticket').attr('disabled', false);
-                }, 5000);
-            })
 
             $('#select-people_id').select2({
                 ajax: {

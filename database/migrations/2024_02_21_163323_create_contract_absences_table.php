@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAttendancePermitTypesTable extends Migration
+class CreateContractAbsencesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,14 @@ class CreateAttendancePermitTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('attendance_permit_types', function (Blueprint $table) {
+        Schema::create('contract_absences', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('contract_id')->nullable()->constrained('contracts');
             $table->foreignId('user_id')->nullable()->constrained('users');
-            $table->string('name')->nullable();
-            $table->text('description')->nullable();
-            $table->smallInteger('default_days')->nullable();
-            $table->smallInteger('status')->nullable()->default(1);
+            $table->foreignId('period_id')->nullable()->constrained('periods');
+            $table->decimal('quantity', 10, 2)->nullable();
+            $table->date('date_register')->nullable();
+            $table->text('observations')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +33,6 @@ class CreateAttendancePermitTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attendance_permit_types');
+        Schema::dropIfExists('contract_absences');
     }
 }

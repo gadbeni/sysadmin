@@ -187,7 +187,7 @@ class ContractsController extends Controller
             $contract_person = Contract::where('person_id', $request->person_id)
                                 ->where('finish', '>=', $request->start)->where('status', '<>', 'anulado')
                                 ->where('deleted_at', NULL)->first();
-            if($contract_person){
+            if($contract_person && !setting('auxiliares.enable_all_people_for_contract')){
                 return redirect()->route('contracts.create')->with(['message' => 'El inicio de contrato coincide con el fin de otro contrato', 'alert-type' => 'warning']);
             }
         }
@@ -368,7 +368,7 @@ class ContractsController extends Controller
                 'date_response' => $request->date_response,
                 'date_statement' => $request->date_statement,
                 'date_memo' => $request->date_memo,
-                'workers_memo_alt' => $request->workers_memo ? json_encode($request->workers_memo) : NULL,
+                'workers_memo_alt' => $request->workers_memo ? json_encode($request->workers_memo) : $contract->workers_memo_alt,
                 'date_memo_res' => $request->date_memo_res,
                 'date_note' => $request->date_note,
                 'date_report' => $request->date_report,

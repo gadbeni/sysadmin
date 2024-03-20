@@ -6,7 +6,7 @@
     $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
     $code = $contract->code;
     $signature = $contract->signature_alt ?? $contract->signature;
-    if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
+    if(!in_array($contract->direccion_administrativa_id, [55, 70, 71]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
         $signature = null;   
     }
     // Calcular finalización de contrato en caso de tener adenda
@@ -97,46 +97,41 @@
                     </tr>
                 </table>
 
-                <p>
-                    Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la Unidad Jurídica de la/el {{ $signature ? $signature->direccion_administrativa->nombre : 'Unidad de Contrataciones de Bienes y Servicios dependiente de la Secretaría Departamental Administrativa' }}, ubicada en {{ $signature ? $signature->direccion_administrativa->direccion : 'Edificio de Gobernación en Acera Sud de la Plaza Mariscal José Ballivián' }}, con un plazo no mayor a 48 horas a partir la fecha, debiendo presentar la siguiente documentación:
-                </p>
-
-                <table align="center">
+                <p>Por otra parte, para la suscripción de contrato debe apersonarse por las oficinas de la Unidad Jurídica de la/el {{ $signature ? ($signature->direccion_administrativa->direcciones_tipo_id == 1 ? 'SECRETARIA DEPARTAMENTAL DE ADMINISTRACION Y FINANZAS' : $signature->direccion_administrativa->nombre) : 'SECRETARIA DEPARTAMENTAL DE ADMINISTRACION Y FINANZAS' }}, ubicada en {{ $signature ? $signature->direccion_administrativa->direccion : 'Edificio de Gobernación en Acera Sud de la Plaza Mariscal José Ballivián' }}, con un plazo no mayor a 2 días hábiles a partir de la fecha, debiendo presentar la siguiente documentación:</p>
+                <table>
+                    @if ($contract->certification_pac != "" && $contract->certification_pac != "N/C" && $contract->certification_pac != "N/A")
                     <tr>
-                        <td style="width: 500px;">
-                            <table>
-                                @if ($contract->certification_pac != "" && $contract->certification_pac != "N/C")
-                                <tr>
-                                    <td>&#10003;</td>
-                                    <td>Certificado RUPE</td>
-                                </tr>
-                                @endif
-                                <tr>
-                                    <td>&#10003;</td>
-                                    <td>Certificado No Deudor a la Gobernación (original).</td>
-                                </tr>
-                                <tr>
-                                    <td>&#10003;</td>
-                                    <td>Fotocopia de C.I. legible.</td>
-                                </tr>
-                                <tr>
-                                    <td>&#10003;</td>
-                                    <td>Certificado de inscripción del NIT, con la actividad correspondiente a la consultoría</td>
-                                </tr>
-                                <tr>
-                                    <td>&#10003;</td>
-                                    <td>Registro AFP (CUA o NUA)</td>
-                                </tr>
-                                <tr>
-                                    <td>&#10003;</td>
-                                    <td>Certificado de No violencia (Emitido por la Magistratura)</td>
-                                </tr>
-                                <tr>
-                                    <td>&#10003;</td>
-                                    <td>Certificado de Antecedentes Penales - REJAP (Emitido por la Magistratura)</td>
-                                </tr>
-                            </table>
-                        </td>
+                        <td>&#10003;</td>
+                        <td>Certificado RUPE</td>
+                    </tr>
+                    @endif
+                    <tr>
+                        <td>&#10003;</td>
+                        <td>Formulario de Registro de Beneficiario (SIGEP).</td>
+                    </tr>
+                    <tr>
+                        <td>&#10003;</td>
+                        <td>Certificado No Deudor a la Gobernación (original).</td>
+                    </tr>
+                    <tr>
+                        <td>&#10003;</td>
+                        <td>Fotocopia de C.I. legible.</td>
+                    </tr>
+                    <tr>
+                        <td>&#10003;</td>
+                        <td>Certificado de inscripción del NIT, con la actividad correspondiente a la consultoría</td>
+                    </tr>
+                    <tr>
+                        <td>&#10003;</td>
+                        <td>Certificado de Registro (GESTORA)</td>
+                    </tr>
+                    <tr>
+                        <td>&#10003;</td>
+                        <td>Certificado de No violencia (Emitido por la Magistratura)</td>
+                    </tr>
+                    <tr>
+                        <td>&#10003;</td>
+                        <td>Certificado de Antecedentes Penales - REJAP (Emitido por la Magistratura)</td>
                     </tr>
                 </table>
                 <p>

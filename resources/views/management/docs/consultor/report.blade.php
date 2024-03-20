@@ -17,7 +17,7 @@
             $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
             $code = $contract->code;
             $signature = $contract->signature_alt ?? $contract->signature;
-            if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
+            if(!in_array($contract->direccion_administrativa_id, [55, 70, 71]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
                 $signature = null;   
             }
             $qrcode = QrCode::size(70)->generate("INFORME ".$contract->code." - CONSULTORÍA DE LÍNEA");
@@ -60,7 +60,7 @@
                                         @if ($item->alternate_job->count() > 0)
                                             <b>{{ Str::upper($item->alternate_job->last()->name) }}</b> <br> <br>
                                         @else
-                                            <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b> <br> <br>
+                                            <b>{{ Str::upper($item->job ? $item->job->name : ($item->cargo ? $item->cargo->Descripcion : $item->job_description)) }}</b> <br> <br>
                                         @endif
                                     @else
                                         {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
@@ -95,7 +95,7 @@
                     El objeto del presente informe, es la evaluación y recomendación de adjudicación o declaratoria desierta del Proceso de Contratación, en la modalidad contratación menor consultoría, <b>GAD-BENI/{{ $code }} "CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }} {{ ($contract->name_job_alt ? ' - '.$contract->name_job_alt : '') }} {{ ($contract->work_location  ? ' PARA LA/EL '.$contract->work_location  : '') }}"</b>. <br> <br>
                     <b>1. ANTECEDENTES</b> <br>
                     El Gobierno Autónomo Departamental del Beni, a través de la/el {{ $signature ? $signature->direccion_administrativa->nombre : 'Secretaría de Administración y Finanzas' }}, cuenta con diferentes programas y para la ejecución de los mismos, mediante Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation-alt') }}, de fecha {{ $signature ? $signature->designation_date ? date('d', strtotime($signature->designation_date)).' de '.$months[intval(date('m', strtotime($signature->designation_date)))].' de '.date('Y', strtotime($signature->designation_date)) : setting('firma-autorizada.designation-date-alt') : setting('firma-autorizada.designation-date-alt') }}, el Gobernador del Departamento del Beni en el marco de sus funciones, designa como Responsable del Proceso de Contratación al {{ $signature ? $signature->name : setting('firma-autorizada.name') }}, {{ $signature ? $signature->job : 'Responsable de Proceso de Contratación de Apoyo Nacional a la Producción y Empleo - RPA' }}, en el marco del Decreto Supremo N° 0181 de fecha 28 de junio de 2009. <br> <br>
-                    LA/El {{ Str::upper($contract->unidad_administrativa->nombre) }}, mediante solicitud de fecha {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }}, requiere la contratación de un Consultor Individual de Línea, para el cargo de {{ Str::upper($contract->cargo->Descripcion) }} {{ ($contract->name_job_alt ? ' - '.$contract->name_job_alt : '') }} {{ ($contract->work_location  ? ' PARA LA/EL '.$contract->work_location  : '') }}, con cargo al {{ Str::upper($contract->program->class) }}: “{{ Str::upper($contract->program->name) }}”, para tal efecto adjunta al requerimiento los Términos de Referencia, Certificación Presupuestaria. <br> <br>
+                    LA/El {{ Str::upper($contract->unidad_administrativa->nombre) }}, mediante solicitud de fecha {{ date('d', strtotime($contract->date_invitation)) }} de {{ $months[intval(date('m', strtotime($contract->date_invitation)))] }} de {{ date('Y', strtotime($contract->date_invitation)) }}, requiere la contratación de un Consultor Individual de Línea, para el cargo de {{ Str::upper($contract->cargo->Descripcion) }} {{ ($contract->name_job_alt ? ' - '.$contract->name_job_alt : '') }} {{ ($contract->work_location  ? ' PARA LA/EL '.$contract->work_location  : '') }}, con cargo al {{ Str::upper($contract->program->class) }}: “{{ Str::upper($contract->program->name) }}”, para tal efecto adjunta al requerimiento los Términos de Referencia, Certificación Presupuestaria y Certificación POA.<br> <br>
                     <b>2. EVALUACIÓN</b> <br>
                     La evaluación de la documentación presentada por {{ $contract->person->gender == 'masculino' ? 'el' : 'la' }} postulante <b>{{ $contract->person->first_name }} {{ $contract->person->last_name }}</b>, para el Proceso de Contratación <b>“GAD-BENI/{{ $code }}”</b> para la prestación de servicios de un <b>CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO {{ Str::upper($contract->cargo->Descripcion) }} {{ ($contract->name_job_alt ? ' - '.$contract->name_job_alt : '') }} {{ ($contract->work_location  ? ' PARA LA/EL '.$contract->work_location  : '') }}</b>, se detalla en el siguiente cuadro:
                 </p>
@@ -136,10 +136,8 @@
 
                     <p>Para efectos del pago de sus haberes mensuales, se, deberá de presentar Informe de Actividades mensuales, el cual deberá de estar debidamente aprobado por su inmediato superior.</p>
                     
-                    <p>
-                        En su condición de Responsable del Proceso de Contratación de Apoyo Nacional a la Producción Empleo – RPA podrá aprobar el presente informe y sus recomendaciones o solicitar su complementación o sustentación, conforme establece el Artículo 34 del D.S. 0181 Normas Básicas del Sistema de Administración de Bienes y Servicios.
-                        Es cuanto informo, para los fines consiguientes.
-                    </p>
+                    <p>En su condición de Responsable del Proceso de Contratación de Apoyo Nacional a la Producción Empleo – RPA podrá aprobar el presente informe y sus recomendaciones o solicitar su complementación o sustentación, conforme establece el Artículo 34 del D.S. 0181 Normas Básicas del Sistema de Administración de Bienes y Servicios.</p>
+                    <p>Es cuanto informo, para los fines consiguientes.</p>
                     <table width="100%" style="text-align: center; margin: 60px 0px; margin-bottom: 10px">
                         <tr>
                             @forelse ($contract->workers as $item)
@@ -150,7 +148,7 @@
                                         @if ($item->alternate_job->count() > 0)
                                             <b>{{ Str::upper($item->alternate_job->last()->name) }}</b>
                                         @else
-                                            <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b>
+                                            <b>{{ Str::upper($item->job ? $item->job->name : ($item->cargo ? $item->cargo->Descripcion : $item->job_description)) }}</b>
                                         @endif
                                     @else
                                         <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
@@ -166,7 +164,7 @@
                     </table>
                     <hr>
                     <p style="text-align: justify">
-                        En cumplimiento a lo establecido en el artículo 34 del D.S. 0181 Normas Básicas del Sistema de Administración de Bienes y Servicios y Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation-alt') }}, de fecha {{ $signature ? $signature->designation_date ? date('d', strtotime($signature->designation_date)).' de '.$months[intval(date('m', strtotime($signature->designation_date)))].' de '.date('Y', strtotime($signature->designation_date)) : setting('firma-autorizada.designation-date-alt') : setting('firma-autorizada.designation-date-alt') }}, en mi calidad de RPA, apruebo el presente informe Evaluación y sus recomendaciones emitido por los Responsables de Evaluación, para el proceso GAD-BENI/{{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO  {{ Str::upper($contract->cargo->Descripcion.($contract->name_job_alt ? ' - '.$contract->name_job_alt : '')) }}.
+                        En cumplimiento a lo establecido en el artículo 34 del D.S. 0181 Normas Básicas del Sistema de Administración de Bienes y Servicios y Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation-alt') }}, de fecha {{ $signature ? $signature->designation_date ? date('d', strtotime($signature->designation_date)).' de '.$months[intval(date('m', strtotime($signature->designation_date)))].' de '.date('Y', strtotime($signature->designation_date)) : setting('firma-autorizada.designation-date-alt') : setting('firma-autorizada.designation-date-alt') }}, en mi calidad de RPA, apruebo el presente Informe de Evaluación y sus recomendaciones emitido por los Responsables de Evaluación, para el proceso GAD-BENI/{{ $code }} “CONTRATACIÓN DE UN CONSULTOR INDIVIDUAL DE LÍNEA PARA EL CARGO  {{ Str::upper($contract->cargo->Descripcion.($contract->name_job_alt ? ' - '.$contract->name_job_alt : '')) }}.
                     </p>
                 </div>
 

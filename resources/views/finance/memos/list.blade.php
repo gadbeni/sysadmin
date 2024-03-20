@@ -33,7 +33,7 @@
                         </td>
                         <td>
                             <span data-toggle="popover" data-placement="top" data-trigger="hover" title="Glosa" data-content="{{ $item->concept }}" style="cursor: pointer">
-                                {{ $item->memos_type->description }} <br>
+                                {{ $item->memos_type ? $item->memos_type->description : 'No definido' }} <br>
                                 <small><b>{{ $item->type }}</b></small>
                             </span>
                         </td>

@@ -8,7 +8,7 @@
             $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
             $code = $contract->code;
             $signature = $contract->signature_alt ?? $contract->signature;
-            if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
+            if(!in_array($contract->direccion_administrativa_id, [55, 70, 71]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
                 $signature = null;   
             }
             $qrcode = QrCode::size(70)->generate("MEMORANDUM DE PROCESO DE CONTRATACIÓN ".$contract->code." - CONSULTORÍA DE LÍNEA");
@@ -45,7 +45,7 @@
                                     @if ($item->alternate_job->count() > 0)
                                         <b>{{ Str::upper($item->alternate_job->last()->name) }}</b> <br> <br>
                                     @else
-                                        <b>{{ Str::upper($item->job ? $item->job->name : $item->cargo->Descripcion) }}</b> <br> <br>    
+                                        <b>{{ Str::upper($item->job ? $item->job->name : ($item->cargo ? $item->cargo->Descripcion : $item->job_description)) }}</b> <br> <br>    
                                     @endif
                                 @else
                                     <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
@@ -61,7 +61,7 @@
                 </table>
                 <p>
                     De mi consideración: <br> <br>
-                    En uso de las atribuciones que me confiere el Decreto Supremo 0181 y la Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation-alt') }}, de fecha {{ $signature ? $signature->designation_date ? date('d', strtotime($signature->designation_date)).' de '.$months[intval(date('m', strtotime($signature->designation_date)))].' de '.date('Y', strtotime($signature->designation_date)) : setting('firma-autorizada.designation-date-alt') : setting('firma-autorizada.designation-date-alt') }}, bajo la Modalidad de Contratación Menor, transfiero a usted(es) como <b>RESPONSABLE(S) DE EVALUACIÓN</b>, el siguiente proceso de contratación: <br>
+                    En uso de las atribuciones que me confiere el Decreto Supremo 0181 y la Resolución Administrativa de Gobernación {{ $signature ? $signature->designation : setting('firma-autorizada.designation-alt') }}, de fecha {{ $signature ? $signature->designation_date ? date('d', strtotime($signature->designation_date)).' de '.$months[intval(date('m', strtotime($signature->designation_date)))].' de '.date('Y', strtotime($signature->designation_date)) : setting('firma-autorizada.designation-date-alt') : setting('firma-autorizada.designation-date-alt') }}, bajo la Modalidad de Contratación Menor, designo a usted(es) como <b>RESPONSABLE(S) DE EVALUACIÓN</b>, el siguiente proceso de contratación: <br>
                 </p>
                 <table border="1" cellspacing="0" cellpadding="10">
                     <thead>

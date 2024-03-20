@@ -12,6 +12,7 @@ use App\Models\Aguinaldo;
 use App\Models\PaymentschedulesDetail;
 use App\Models\PersonExternal;
 use App\Models\Suggestion;
+use App\Models\PersonNotification;
 
 class HomeController extends Controller
 {
@@ -33,56 +34,34 @@ class HomeController extends Controller
         }
     }
 
-    public function register_person(){
-        return view('register');
-    }
-
-    public function register_person_store(Request $request){
-        try {
-            $person = PersonExternal::where('ci_nit', $request->ci_nit)->first();
-            if($person){
-                return response()->json(['error' => 1, 'message' => 'La CI ingresada ya está registrada']);
-            }
-            PersonExternal::create([
-                'city_id' => $request->city_id,
-                'full_name' => $request->full_name,
-                'birthday' => $request->birthday,
-                'gender' => $request->gender,
-                'job' => $request->job,
-                'family' => $request->family,
-                'ci_nit' => $request->ci_nit,
-                'phone' => $request->phone,
-                'address' => $request->address,
-                'location' => $request->location
-            ]);
-            try {
-                if (setting('servidores.whatsapp') && setting('servidores.whatsapp-session')) {
-                    $phone = strlen($request->phone) == 8 ? '591'.$request->phone : $request->phone;
-                    Http::post(setting('servidores.whatsapp').'/send?id='.setting('servidores.whatsapp-session'), [
-                        'phone' => $phone,
-                        'text' => 'Muchas gracias '.$request->full_name.', por contribuir en el desarrollo del Departamento del Beni con tu registro nos ayudará a tomar decisiones en beneficio del departamento.'
-                    ]);
-                }
-            } catch (\Throwable $th) {
-                //throw $th;
-            }
-            return response()->json(['success' => 1, 'message' => 'Datos registrados correctamente']);
-        } catch (Exception $e) {
-            Log::debug($e->getMessage());
-            return response()->json(['error' => 1, 'message' => 'Ocurrió un error en el servidor']);
-        }
+    public function person($id){
+        return 'info';
     }
 
     public function send_message(Request $request){
         try {
             if (setting('servidores.whatsapp') && setting('servidores.whatsapp-session')) {
-                $phone = strlen($request->phone) == 8 ? '591'.$request->phone : $request->phone;
-                Http::post(setting('servidores.whatsapp').'/send?id='.setting('servidores.whatsapp-session'), [
-                    'phone' => $phone,
-                    'text' => $request->message
-                ]);
+                $phone = strlen($request->phone) == 8 ? '591'.$request->phone : (strlen($request->phone) == 11 ? $request->phone : null);
+                if ($phone) {
+                    $image = $this->store_image($request->image, 'notifications');
+                    Http::post(setting('servidores.whatsapp').'/send?id='.setting('servidores.whatsapp-session'), [
+                        'phone' => $phone,
+                        'text' => $request->message,
+                        'image_url' => $image
+                    ]);
+
+                    PersonNotification::create([
+                        'user_id' => Auth::user()->id,
+                        'person_id' => $request->person_id,
+                        'phone' => $phone,
+                        'message' => $request->message,
+                        'file' => $image
+                    ]);
+                }else{
+                    return response()->json(['error' => 1]);
+                }
             }
-            return response()->json(['success' => 1, 'phone' => $request->phone, 'message' => $request->message]);
+            return response()->json(['success' => 1, 'message' => 'Notificación enviada']);
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json(['error' => 1]);

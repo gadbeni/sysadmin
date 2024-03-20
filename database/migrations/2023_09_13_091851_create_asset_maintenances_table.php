@@ -24,6 +24,8 @@ class CreateAssetMaintenancesTable extends Migration
             $table->string('code')->unique();
             $table->date('date_start')->nullable();
             $table->date('date_finish')->nullable();
+            $table->text('income_status')->nullable();
+            $table->text('origin')->nullable();
             $table->text('reference')->nullable();
             $table->text('report')->nullable();
             $table->text('observations')->nullable();

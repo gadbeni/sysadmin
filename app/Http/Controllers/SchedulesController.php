@@ -141,6 +141,38 @@ class SchedulesController extends Controller
         }
     }
 
+    public function assignments_update(Request $request){
+        DB::beginTransaction();
+        try {
+            if($request->contract_schedule_id){
+                $contract_schedule = ContractSchedule::find($request->contract_schedule_id);
+                if($request->delete_previous){
+                    $contract_schedule->delete();
+                }else{
+                    $contract_schedule->finish = date('Y-m-d', strtotime($request->start.' -1 days'));
+                    $contract_schedule->update();
+                }
+            }
+
+            ContractSchedule::create([
+                'user_id' => Auth::user()->id,
+                'schedule_id' => $request->schedule_id,
+                'contract_id' => $request->contract_id,
+                'start' => $request->start,
+                // * Si es un contrato permanente se pone como fin el 2030
+                'finish' => $request->finish ?? '2030-12-30'
+            ]);
+
+            DB::commit();
+            return response()->json(['success' => 1, 'message' => 'Horario actualizado']);
+
+        } catch (\Throwable $th) {
+            DB::rollback();
+            //throw $th;
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
+        }
+    }
+
     public function assignments_delete($id, Request $request){
         try {
             ContractSchedule::where('id', $id)->delete();

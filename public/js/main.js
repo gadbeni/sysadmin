@@ -182,7 +182,7 @@ function formatResultContracts(data) {
                         ${data.person.first_name.toUpperCase()} ${data.person.last_name.toUpperCase()} <br>
                         <p style="font-size: 13px; margin-top: 5px">
                             ${data.person.ci} <br>
-                            ${(data.cargo_id ? data.cargo.Descripcion : data.job.name).toUpperCase()} ${data.procedure_type_id != 1 ? ' - '+(data.unidad_administrativa ? data.unidad_administrativa.nombre : data.direccion_administrativa.nombre).toUpperCase() : ''}
+                            ${(data.cargo_id ? data.cargo.Descripcion : data.job ? data.job.name : data.job_description).toUpperCase()} ${data.procedure_type_id != 1 ? ' - '+(data.unidad_administrativa ? data.unidad_administrativa.nombre : data.direccion_administrativa.nombre).toUpperCase() : ''}
                         </p>
                     </h5>
                 </div>
@@ -237,3 +237,37 @@ function formatResultAssets(data) {
     );
     return $container;
 }
+
+function generarImagen(id, fileName = null) {
+    var divElement = document.getElementById(id);
+
+    html2canvas(divElement).then(function(canvas) {
+        // Crear un enlace de descarga
+        var enlaceDescarga = document.createElement('a');
+        enlaceDescarga.href = canvas.toDataURL('image/png');
+        enlaceDescarga.download = fileName ? fileName+'.png' : 'image.png';
+
+        // Agregar el enlace al cuerpo del documento
+        document.body.appendChild(enlaceDescarga);
+
+        // Simular un clic en el enlace para iniciar la descarga
+        enlaceDescarga.click();
+
+        // Eliminar el enlace después de la descarga
+        document.body.removeChild(enlaceDescarga);
+    });
+}
+
+function generarQR(texto, id) {
+    // Verificar si hay texto antes de generar el código QR
+    if (texto.trim() !== '') {
+      // Crear el objeto QRCode
+      var qrcode = new QRCode(document.getElementById(id), {
+        text: texto,
+        width: 300,
+        height: 300
+      });
+    } else {
+      alert('Ingrese un texto para generar el código QR.');
+    }
+  }

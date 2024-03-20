@@ -17,6 +17,8 @@ use App\Models\PersonFile;
 use App\Models\PersonAsset;
 use App\Models\PersonAssetDetail;
 use App\Models\PersonAssetSignature;
+use App\Models\ContractScheduleRegisterEdit;
+use App\Models\Holiday;
 
 class PeopleController extends Controller
 {
@@ -33,7 +35,7 @@ class PeopleController extends Controller
 
     public function list($search = null){
         $paginate = request('paginate') ?? 10;
-        $data = Person::with(['city', 'afp_type', 'contracts', 'irremovabilities' => function($q){
+        $data = Person::with(['city', 'afp_type', 'contracts', 'schedules.schedule', 'irremovabilities' => function($q){
                         $q->where('start', '<=', date('Y-m-d'))->whereRaw("(finish is NULL or finish >= '".date('Y-m-d')."')");
                     }, 'assignments.details' => function($q){
                         $q->where('active', 1);
@@ -334,8 +336,8 @@ class PeopleController extends Controller
                 ->table('Asistencia')
                 ->insert([
                     'IdPersona' => $ci,
-                    'Fecha' => date('Y-m-d', strtotime($request->date)),
-                    'Hora' => '1899-12-30 '.$request->new_hour.':'.rand(10,59),
+                    'Fecha' => date('Ymd', strtotime($request->date)),
+                    'Hora' => '18991230 '.$request->new_hour.':'.rand(10,59),
                     'Tipo' => 'R'
                 ]);
             return response()->json(['success' => 1]);
@@ -345,18 +347,81 @@ class PeopleController extends Controller
     }
 
     public function attendances_update($id, Request $request){
+        DB::beginTransaction();
         try {
             $person = Person::find($id);
             $ci = str_replace(' ', '-', $person->ci); // Reemplazar los espacios en blancos con -
             $ci = explode('-', $ci)[0]; // Obtener solo el valor numérico de CI
-            DB::connection('sia')
-                ->table('Asistencia')
-                ->where('IdPersona', $ci)
-                ->whereDate('Fecha', $request->date)
-                ->whereTime('Hora', $request->current_hour)
-                ->update(['Hora' => '1899-12-30 '.$request->new_hour]);
+            if($request->update_range){
+                // Obtener el contrato de la persona
+                $contract = Contract::with(['schedules.schedule.details'])->where('id', $request->contract_id)->first();;
+                // Inicializar las fechas para recorrerla
+                $date = date('Y-m-d', strtotime($request->start));
+                $finish = date('Y-m-d', strtotime($request->finish));
+                $details = [];
+                // Iniciar el recorrido
+                while ($date <= $finish) {
+                    // Buscar las marcaciones de el día que se está recorriendo
+                    $asistencias = DB::connection('sia')->table('Asistencia')->where('IdPersona', $ci)->whereDate('Fecha', $date)->get();
+                    // Verificar que no sea feriado
+                    $holiday = Holiday::where('status', 1)->whereRaw('CONCAT(LPAD(month,2,0),LPAD(day,2,0)) = "'.date('md', strtotime($date)).'"')->first();
+                    // Si no tiene marcaciones en ese día
+                    if ($asistencias->count() == 0 && !$holiday) {
+                        // Obtener el horario que tenía asignado esa fecha
+                        $current_schedule = $contract->schedules->where('start', '<=', $date)->where('finish', '>=', $date)->first();
+                        // Si existe horario asignado para esa fecha 
+                        if($current_schedule->schedule){
+                            // Variable auxiliar para confirmar que se registró ese día
+                            $registered = false;
+                            // Recorrer el horario de ese día (en caso de que no sea continuo)
+                            foreach ($current_schedule->schedule->details->where('day', date('N', strtotime($date))) as $schedule_detail) {
+                                // Insertar ingreso
+                                DB::connection('sia')->table('Asistencia')->insert([
+                                    'IdPersona' => $ci,
+                                    'Fecha' => date('Ymd', strtotime($date)),
+                                    'Hora' => '18991230 '.$schedule_detail->entry,
+                                    'Tipo' => 'M'
+                                ]);
+                                // Insertar salida
+                                DB::connection('sia')->table('Asistencia')->insert([
+                                    'IdPersona' => $ci,
+                                    'Fecha' => date('Ymd', strtotime($date)),
+                                    'Hora' => '18991230 '.$schedule_detail->exit,
+                                    'Tipo' => 'M'
+                                ]);
+                                $registered = true;
+                            }
+
+                            if ($registered) {
+                                array_push($details, $date);
+                            }
+                        }
+                    }
+                    $date = date('Y-m-d', strtotime($date.' +1 days'));
+                }
+
+                // Registrar actualización
+                ContractScheduleRegisterEdit::create([
+                    'user_id' => Auth::user()->id,
+                    'contract_id' => $request->contract_id,
+                    'start' => $request->start,
+                    'finish' => $request->finish,
+                    'reason' => $request->reason,
+                    'details' => json_encode($details),
+                    'file' => $request->file
+                ]);
+            }else{
+                DB::connection('sia')
+                    ->table('Asistencia')
+                    ->where('IdPersona', $ci)
+                    ->whereDate('Fecha', $request->date)
+                    ->whereTime('Hora', $request->current_hour)
+                    ->update(['Hora' => '18991230 '.$request->new_hour]);
+            }
+            DB::commit();
             return response()->json(['success' => 1]);
         } catch (\Throwable $th) {
+            DB::rollback();
             return response()->json(['error' => 1]);
         }
     }

@@ -71,11 +71,11 @@
                                 </div>
                                 <div class="form-group col-md-6 div-range">
                                     <input type="month" name="start" class="form-control">
-                                    <small class="text-muted">Desde</small>
+                                    <small class="text-muted">Inicio de contrato</small>
                                 </div>
                                 <div class="form-group col-md-6 div-range">
                                     <input type="month" name="finish" class="form-control">
-                                    <small class="text-muted">Hasta</small>
+                                    <small class="text-muted">Fin de contrato</small>
                                 </div>
                                 <div class="form-group col-md-12 div-period" style="display: none">
                                     <input type="number" name="period" class="form-control" step="1" min="2022" max="{{ date('Y') }}" placeholder="{{ date('Y') }}">

@@ -4,6 +4,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Fotografía</th>
                     <th>Código</th>
                     <th>Tipo</th>
                     <th>Persona</th>
@@ -19,12 +20,17 @@
                 @endphp
                 @forelse ($data as $item)
                     @php
+                        $image = asset('images/default.jpg');
+                        if($item->image){
+                            $image = asset('storage/'.str_replace('.', '-cropped.', $item->person->image));
+                        }
                         // Contrato posteriores al actual
                         $contracts = \App\Models\Contract::where('person_id', $item->person_id)->where('deleted_at', NULL)->where('start', '>', $item->start)->get();
                         $addendums = $item->addendums;
                     @endphp
                     <tr>
                         <td>{{ $item->id }}</td>
+                        <td><img src="{{ $image }}" alt="{{ $item->first_name }} {{ $item->last_name }}" style="width: 60px; height: 60px; border-radius: 30px; margin-right: 10px"></td>
                         <td>{{ $item->code }}</td>
                         <td>{{ $item->type->name }}</td>
                         <td>

@@ -20,6 +20,8 @@ class AssetMaintenance extends Model
         'code',
         'date_start',
         'date_finish',
+        'income_status',
+        'origin',
         'reference',
         'report',
         'observations',

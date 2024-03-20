@@ -8,7 +8,7 @@
             $months = array('', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
             $code = $contract->code;
             $signature = $contract->signature_alt ?? $contract->signature;
-            if(!in_array($contract->direccion_administrativa_id, [8, 42, 61]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
+            if(!in_array($contract->direccion_administrativa_id, [55, 70, 71]) && !in_array($contract->direccion_administrativa->direcciones_tipo_id, [3, 4, 5])){
                 $signature = null;   
             }
             $qrcode = QrCode::size(70)->generate("DECLARACIÓN JURADA DE NO INCOMPATIBILIDAD LEGAL ".$contract->code." - CONSULTORÍA DE LÍNEA");
@@ -46,7 +46,7 @@
             <br><br>
             <div class="page-body">
                 <p>
-                    Dando cumplimiento a los establecido en el D.S. 4126 “<b>REGLAMENTO A LA LEY FINANCIAL 2020</b>” de fecha 03 de enero de 2020, en su Art. 24.- (DOBLE PERCEPCIÓN), Parágrafo I y II, Declaro expresamente que no percibo ni percibiré remuneraciones provenientes de recursos públicos contra otras entidades, por el periodo de prestación del presente servicio de Consultoría.
+                    Dando cumplimiento a lo establecido en el D.S. 4126 “<b>REGLAMENTO A LA LEY FINANCIAL 2020</b>” de fecha 03 de enero de 2020, en su Art. 24.- (DOBLE PERCEPCIÓN), Parágrafo I y II, Declaro expresamente que no percibo ni percibiré remuneraciones provenientes de recursos públicos contra otras entidades, por el periodo de prestación del presente servicio de Consultoría.
                 </p>
                 <p>
                     Declaro también, que no tengo relación de parentesco directa o indirectamente hasta el cuarto grado de consanguinidad o segundo en afinidad, de acuerdo al código de familia, dentro de la Gobernación Departamental del Beni.

@@ -142,4 +142,8 @@ class Contract extends Model
     public function schedules(){
         return $this->hasMany(ContractSchedule::class);
     }
+
+    public function absences(){
+        return $this->hasMany(ContractAbsence::class);
+    }
 }

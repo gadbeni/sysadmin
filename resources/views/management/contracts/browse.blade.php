@@ -31,7 +31,7 @@
     <div class="page-content browse container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <div class="panel panel-bordered">
+                <div class="panel panel-custom">
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-9">
@@ -562,7 +562,7 @@
 @stop
 
 @section('css')
-    <style>
+    {{-- <style>
         @media (max-width: 767px) {
             .table-responsive .dropdown-menu {
                 position: static !important;
@@ -573,7 +573,7 @@
                 overflow: visible;
             }
         }
-    </style>
+    </style> --}}
 @stop
 
 @section('javascript')

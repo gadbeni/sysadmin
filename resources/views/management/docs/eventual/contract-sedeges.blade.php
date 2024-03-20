@@ -42,8 +42,8 @@
             <p><span>El presente Contrato se celebra al amparo de las siguientes disposiciones:</span></p>
             <p style="margin-left: 36.0pt;"><span>La Constituci&oacute;n Pol&iacute;tica del Estado</span></p>
             <p style="margin-left: 36.0pt;"><span>Ley de Administraci&oacute;n y Control Gubernamental N&ordm; 1178, de 20 de julio de 1990 </span></p>
-            <p style="margin-left: 36.0pt;"><span>Ley de Presupuesto de General del Estado N&ordm; 1493, de 17 de diciembre del 2022</span></p>
-            <p style="margin-left: 36.0pt;"><span>Decreto Supremo N&ordm; 4848, de fecha 28 de diciembre del 2022 &ldquo;Reglamento a la Ley 1493&rdquo;</span></p>
+            <p style="margin-left: 36.0pt;"><span>Ley  Nº 1546 del Presupuesto General del Estado Gestión 2024, de fecha 31 de diciembre del 2023.</span></p>
+            <p style="margin-left: 36.0pt;"><span>Decreto Supremo Nº 5094, de fecha 03 de enero del 2024.</span></p>
             <p style="margin-left: 36.0pt;"><span>Ley Marco de Autonom&iacute;a y Descentralizaci&oacute;n &ldquo;Andr&eacute;s Ib&aacute;&ntilde;ez&rdquo;, de fecha 19 de julio de 2010</span></p>
             <p style="margin-left: 36.0pt;"><span>Ley Contra el Racismo y toda forma de Discriminaci&oacute;n N&ordm; 045, de 08 de octubre de 2010</span></p>
             <p style="margin-left: 36.0pt;"><span>Ley de Lucha contra la Corrupci&oacute;n Enriquecimiento Il&iacute;cito e Investigaci&oacute;n de Fortunas &ldquo;Marcelo Quiroga Santa Cruz&rdquo; N&ordm; 004, de 31 de marzo de 2010.</span></p>

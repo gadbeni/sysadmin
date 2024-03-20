@@ -55,6 +55,7 @@
                                         <option value="">--Seleccione el tipo de archivo--</option>
                                         <option value="rc-iva">RC IVA</option>
                                         <option value="biométrico">Biométrico</option>
+                                        {{-- <option value="retención">Retención</option> --}}
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">

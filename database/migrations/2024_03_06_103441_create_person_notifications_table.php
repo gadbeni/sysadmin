@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAttendancePermitTypesTable extends Migration
+class CreatePersonNotificationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateAttendancePermitTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('attendance_permit_types', function (Blueprint $table) {
+        Schema::create('person_notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users');
-            $table->string('name')->nullable();
-            $table->text('description')->nullable();
-            $table->smallInteger('default_days')->nullable();
-            $table->smallInteger('status')->nullable()->default(1);
+            $table->foreignId('person_id')->nullable()->constrained('people');
+            $table->string('phone')->nullable();
+            $table->text('message')->nullable();
+            $table->string('file')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +32,6 @@ class CreateAttendancePermitTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attendance_permit_types');
+        Schema::dropIfExists('person_notifications');
     }
 }

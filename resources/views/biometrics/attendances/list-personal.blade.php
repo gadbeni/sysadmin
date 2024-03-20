@@ -1,92 +1,120 @@
-<div class="col-md-12">
-    <div class="table-responsive">
-        <table id="dataTable" class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>N&deg;</th>
-                    <th>Fecha</th>
-                    <th>Marcaciones</th>
-                    <th>Atrasos</th>
-                    <th>Faltas</th>
-                    <th>Abandonos</th>
-                    <th>Días de <br> descuentos</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    $days = array('', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
-                    $months = array('', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic');
-                    // Obtener los feriados del periodo de tiempo
-                    $holidays = App\Models\Holiday::where('status', 1)
-                                    ->whereRaw('CONCAT(LPAD(month,2,0),LPAD(day,2,0)) >= "'.date('md', strtotime($start)).'"' )
-                                    ->whereRaw('CONCAT(LPAD(month,2,0),LPAD(day,2,0)) <= "'.date('md', strtotime($finish)).'"' )
-                                    ->get();
-                    $holidays_array = array();
-                    foreach ($holidays as $item) {
-                        array_push($holidays_array, ($item->year ?? date('Y')).'-'.str_pad($item->month, 2, "0", STR_PAD_LEFT).'-'.str_pad($item->day, 2, "0", STR_PAD_LEFT));
-                    }
-                    $contracts_schedules = App\Models\ContractSchedule::with(['schedule.details'])->where('contract_id', $contract->id)
-                                                ->whereRaw('DATE_FORMAT(start, "%Y%m") <= "'.date('Ym', strtotime($start)).'" and (DATE_FORMAT(finish, "%Y%m") >= "'.date('Ym', strtotime($finish)).'" or finish is null)')
-                                                ->get();
-                    $cont = 1;
-                    $days_faults = 0;
-                    $days_enabled = getDiasHabiles($start, $finish, $holidays_array);
-                @endphp
-                @if ($contracts_schedules->count())
-                    @forelse ($attendances->groupBy('fecha') as $date => $item)
+@if ($contracts_schedules->count())
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table id="dataTable" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>N&deg;</th>
+                        <th>Fecha</th>
+                        <th>Marcaciones</th>
+                        <th>Atrasos</th>
+                        <th>Faltas</th>
+                        <th>Abandonos</th>
+                        <th>Días de <br> descuentos</th>
+                        {{-- <th>Acciones</th> --}}
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $days = array('', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+                        $months = array('', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic');
+                        
+                        $cont = 1;
+                        $days_faults = 0;
+                        $days_enabled = getDiasHabiles($start, $finish, $holidays_array);
+                    @endphp
+                    
+                    @foreach ($days_enabled as $day_enabled)
                         <tr>
                             <td>{{ $cont }}</td>
-                            <td>{{ $days[date('N', strtotime($date))] }} {{ date('d', strtotime($date)) }} de {{ $months[intval(date('m', strtotime($date)))] }}</td>
+                            <td>{{ $days[date('N', strtotime($day_enabled))] }} {{ date('d', strtotime($day_enabled)) }} de {{ $months[intval(date('m', strtotime($day_enabled)))] }}</td>
                             <td>
                                 @php
-                                    $contracts_schedule_date = $contracts_schedules->where('start', '<=', $date)->where('finish', '>=', $date)->first();
-                                    $recorded_schedules = recorded_schedules($item, $contracts_schedule_date, $date);
-                                    
+                                    $recorded_schedules = [];
                                     $delay = 0;
                                     $abandonment = 0;
+                                    $recordes = null;
+                                    $attendance = $attendances->where('fecha', $day_enabled);
+                                    if($attendance->count()){
+                                        $contracts_schedule_date = $contracts_schedules->where('start', '<=', $day_enabled)->where('finish', '>=', $day_enabled)->first();
+                                        $recorded_schedules = recorded_schedules($attendance, $contracts_schedule_date, $day_enabled);
+                                    }
+                                    $faults_entry = 0;
+                                    $faults_abandonment = 0;
+                                    $faults_half_day = 0;
                                 @endphp
-                                
-                                @foreach ($recorded_schedules as $record)
-                                    {{ $record['entry_record'] ? $record['entry_record'] : 'No registardo' }} - {{ $record['exit_record'] ? $record['exit_record'] : 'No registardo' }} <br>
+                                @forelse ($recorded_schedules as $record)
+                                    <a href="#">{{ $record['entry_record'] ? $record['entry_record'] : 'No registardo' }}</a> - <a href="#">{{ $record['exit_record'] ? $record['exit_record'] : 'No registardo' }}</a> <br>
                                     @php
                                         $delay += $record['delay'];
                                         $abandonment += $record['abandonment'];
+                                        $recordes = calculate_recordes($recorded_schedules, $record, $delay, $abandonment);
                                     @endphp
-                                @endforeach
-
+                                @empty
+                                    <a href="#" data-toggle="modal" data-target="#attendance_permit-modal">FALTA</a>
+                                @endforelse
                                 @php
-                                    $faults = calculate_recordes($recorded_schedules, $record, $delay, $abandonment);
+                                    if($recordes){
+                                        $faults_entry = $recordes->faults_entry;
+                                        $faults_abandonment = $recordes->faults_abandonment;
+                                        $faults_half_day = $recordes->faults_half_day;
+                                    }else{
+                                        $faults_entry += 2;
+                                        // $faults_entry++;
+                                    }
                                 @endphp
                             </td>
                             <td class="text-right">{{ $delay }}</td>
-                            <td class="text-right">{{ $faults->faults_entry }}</td>
+                            <td class="text-right">{{ $faults_entry }}</td>
                             <td class="text-right">
                                 @if($abandonment)
                                     <b class="text-danger">ABANDONO</b>
                                 @endif
                             </td>
-                            <td class="text-right">{{ $faults->faults_entry + $faults->faults_abandonment + $faults->faults_half_day }}</td>
-                            <td></td>
+                            <td class="text-right">{{ $faults_entry + $faults_abandonment + $faults_half_day }}</td>
+                            {{-- <td></td> --}}
                         </tr>
                         @php
                             $cont++;
-                            $days_faults += $faults->faults_entry + $faults->faults_abandonment + $faults->faults_half_day;
+                            $days_faults += $faults_entry + $faults_abandonment + $faults_half_day;
                         @endphp
-                    @empty
-                        <tr>
-                            <td colspan="7">No hay datos</td>
-                        </tr>
-                    @endforelse
-                @endif
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="6">TOTAL</td>
-                    <td class="text-right">{{ $days_faults + (count($days_enabled) - $cont) }}</td>
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6" class="text-right"><b>TOTAL</b></td>
+                        <td class="text-right"><b>{{ $days_faults + (count($days_enabled) - ($cont -1)) }}</b></td>
+                        {{-- <td></td> --}}
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
-</div>
+
+    {{-- Edita date modal --}}
+    {{-- <div class="modal fade" tabindex="-1" id="store-modal" role="dialog">
+        <div class="modal-dialog modal-primary">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="voyager-calendar"></i> Manejo de registros</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="period_id">Periodo</label>
+                        <select name="period_id" id="select-period_id" class="form-control" required>
+                            
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" class="btn btn-primary" value="Aceptar">
+                </div>
+            </div>
+        </div>
+    </div> --}}
+@else
+    <h4 class="text-center text-danger">No tiene horarios asignados en ese intervalo de fechas</h4>
+@endif
+    

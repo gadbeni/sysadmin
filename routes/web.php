@@ -49,13 +49,12 @@ Route::get('login', function () {
 })->name('login');
 
 Route::get('/', [HomeController::class, 'index']);
+Route::get('/person/{code}', [HomeController::class, 'person']);
 Route::post('search', [HomeController::class, 'search_payroll_by_ci'])->name('home.search.payroll.ci');
 
 Route::get('policies', function(){
     return view('policies');
 })->name('home.policies');
-Route::get('register', [HomeController::class, 'register_person'])->name('home.register.person');
-Route::post('register/store', [HomeController::class, 'register_person_store'])->name('home.register.person.store');
 
 // Enviar mensaje de whatsapp
 Route::post('send-whatsapp', [HomeController::class, 'send_message'])->name('send.whatsapp');
@@ -104,6 +103,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('people/{id}/irremovability', [PeopleController::class, 'irremovability_store'])->name('people.irremovability.store');
     Route::delete('people/{people}/irremovability/{id}', [PeopleController::class, 'irremovability_delete'])->name('people.irremovability.delete');
     Route::post('people/{id}/afp_status', [PeopleController::class, 'afp_status'])->name('people.afp_status.update');
+    
     Route::post('people/{id}/attendance', [PeopleController::class, 'attendances'])->name('people.attendances');
     Route::post('people/{id}/attendance/store', [PeopleController::class, 'attendances_store'])->name('people.attendances.store');
     Route::post('people/{id}/attendance/update', [PeopleController::class, 'attendances_update'])->name('people.attendances.update');
@@ -300,10 +300,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('schedules/{id}/assignments', [SchedulesController::class, 'assignments_index'])->name('schedules.assignments');
     Route::get('schedules/{id}/assignments/create', [SchedulesController::class, 'assignments_create'])->name('schedules.assignments.create');
     Route::post('schedules/{id}/assignments/store', [SchedulesController::class, 'assignments_store'])->name('schedules.assignments.store');
+    Route::post('schedules/assignments/update', [SchedulesController::class, 'assignments_update'])->name('schedules.assignments.update');
     Route::delete('schedules/assignments/{id}/delete', [SchedulesController::class, 'assignments_delete'])->name('schedules.assignments.delete');
 
     Route::resource('attendances', AttendancesController::class);
     Route::post('attendances/generate', [AttendancesController::class, 'generate'])->name('attendances.generate');
+
+    Route::post('attendances/absences', [AttendancesController::class, 'absences_store'])->name('attendances.absences.store');
 
     Route::resource('attendances-permits', AttendancePermitsController::class);
 

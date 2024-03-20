@@ -262,7 +262,7 @@ class AssetsControllers extends Controller
     }
 
     public function maintenances_store(Request $request){
-        if(!$request->asset_maintenance_type_id && !$request->observations){
+        if(!$request->asset_maintenance_type_id && !$request->details_observations){
             return redirect()->route('assets.show', $request->asset_id)->with(['message' => 'Debe seleccionar el trabajo realizado', 'alert-type' => 'error']);
         }
         $last_maintenance_code = AssetMaintenance::where('direccion_id', Auth::user()->direccion_administrativa_id)->whereYear('date_start', date('Y', strtotime($request->date_start)))->count();
@@ -273,12 +273,13 @@ class AssetsControllers extends Controller
                 'asset_id' => $request->asset_id,
                 'technical_id' => $contract_technical ? $contract_technical->id : null,
                 'direccion_id' => Auth::user()->direccion_administrativa_id,
+                'income_status' => $request->income_status,
+                'origin' => $request->origin,
                 'type' => $request->type,
                 'code' => str_pad($last_maintenance_code +1, 3, "0", STR_PAD_LEFT).'/'.date('Y', strtotime($request->date_start)),
                 'date_start' => $request->date_start,
                 'date_finish' => $request->date_finish,
                 'work_place' => $request->work_place,
-                'observations' => $request->observations
             ]);
 
             // Guardar detalle de mantenimiento
@@ -311,7 +312,8 @@ class AssetsControllers extends Controller
                 'destiny_id' => $request->destiny_id,
                 'supervisor_id' => $request->supervisor_id,
                 'reference' => $request->reference,
-                'report' => $request->report
+                'report' => $request->report,
+                'observations' => $request->observations
             ]);
             return redirect()->route('assets.show', $request->asset_id)->with(['message' => 'Informe registrado exitosamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {

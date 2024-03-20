@@ -288,11 +288,11 @@
                                     @php
                                         $cont = 1;
                                     @endphp
-                                    @forelse ($asset->maintenances as $item)
+                                    @forelse ($asset->maintenances->sortByDesc('date_start') as $item)
                                         <tr>
                                             <td>{{ $cont }}</td>
                                             <td>{{ $item->id }}</td>
-                                            <td>{{ $item->date_start == $item->date_finish ? date('d/m/Y', strtotime($item->date)) : date('d/m/Y', strtotime($item->date_start)).' - '.date('d/m/Y', strtotime($item->date_finish)) }}</td>
+                                            <td>{{ $item->date_start == $item->date_finish ? date('d/m/Y', strtotime($item->date_start)) : date('d/m/Y', strtotime($item->date_start)).' - '.date('d/m/Y', strtotime($item->date_finish)) }}</td>
                                             <td>{{ $item->code }}</td>
                                             <td>{{ ucfirst($item->type) }}</td>
                                             <td>
@@ -351,7 +351,7 @@
     </div>
 
     {{-- Crear mantenimiento --}}
-    <form class="form-submit" id="maintenances-form" action="{{ route('maintenances.store') }}" method="post">
+    <form class="form-submit" id="maintenances-form" action="{{ route('maintenances.store') }}" enctype="multipart/form-data" method="post">
         @csrf
         <input type="hidden" name="asset_id" value="{{ $asset->id }}">
         <div class="modal modal-primary fade modal-option" tabindex="-1" id="modal-add-maintenances" role="dialog">
@@ -364,13 +364,18 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group col-md-12">
+                                <label>Estado de ingreso</label>
+                                <textarea name="income_status" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label>Procedencia</label>
+                                <input type="text" name="origin" class="form-control">
+                            </div>
+                            <div class="form-group col-md-12">
                                 <label>Tipo de mantenimiento</label> <br>
                                 <label class="radio-inline"><input type="radio" name="type" value="preventivo" checked>Preventivo</label>
                                 <label class="radio-inline"><input type="radio" name="type" value="correctivo">Correctivo</label>
                                 <label class="radio-inline"><input type="radio" name="type" value="planificado">Planificado</label>
-                                <label class="radio-inline"><input type="radio" name="type" value="hardware">Hardware</label>
-                                <label class="radio-inline"><input type="radio" name="type" value="software">Software</label>
-                                <label class="radio-inline"><input type="radio" name="type" value="otro">Otro</label>
                             </div>
                             <div class="form-group col-md-12">
                                 <label>Trabajo realizado</label>
@@ -404,22 +409,21 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Fecha de ingreso</label>
-                                <input type="date" name="date_start" class="form-control" value="{{ date('Y-m-d') }}">
+                                <input type="date" name="date_start" class="form-control" value="{{ date('Y-m-d') }}" required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Fecha de salida</label>
-                                <input type="date" name="date_finish" class="form-control" value="{{ date('Y-m-d') }}">
+                                <input type="date" name="date_finish" class="form-control" value="{{ date('Y-m-d') }}" required>
                             </div>
                             <div class="form-group col-md-12">
                                 <label>Lugar de trabajo</label> <br>
                                 <label class="radio-inline"><input type="radio" name="work_place" value="1" checked>Unidad de sistemas</label>
                                 <label class="radio-inline"><input type="radio" name="work_place" value="2">Oficina del funcionario</label>
                             </div>
-                            <div class="form-group col-md-12">
-                                <label>Observaciones</label>
-                                <textarea name="observations" class="form-control" rows="5"></textarea>
-                                <small>Lo que se ingrese aquí se mostrará en el informe, en caso de generarlo</small>
-                            </div>
+                            {{-- <div class="form-group col-md-12">
+                                <label>Fotografía (opcional)</label>
+                                <input type="file" name="file" class="form-control" accept="image/jpg, image/jpeg, image/png">
+                            </div> --}}
                             <div class="form-group col-md-12 text-right">
                                 <label class="checkbox-inline"><input type="checkbox" value="1" name="check" required> Aceptar y guardar</label>
                             </div>
@@ -461,7 +465,11 @@
                         </div>
                         <div class="form-group col-md-12">
                             <label>Informe</label>
-                            <textarea name="report" class="form-control" rows="8" required></textarea>
+                            <textarea name="report" class="form-control" rows="5" required></textarea>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label>Sugerencias</label>
+                            <textarea name="observations" class="form-control" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">

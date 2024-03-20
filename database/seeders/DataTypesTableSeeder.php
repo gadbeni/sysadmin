@@ -721,6 +721,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2023-12-15 11:39:20',
                 'updated_at' => '2023-12-15 11:59:15',
             ),
+            39 => 
+            array (
+                'id' => 51,
+                'name' => 'attendance_permit_types',
+                'slug' => 'attendance-permit-types',
+                'display_name_singular' => 'Tipo de permiso',
+                'display_name_plural' => 'Tipo de permisos',
+                'icon' => 'voyager-list',
+                'model_name' => 'App\\Models\\AttendancePermitType',
+                'policy_name' => NULL,
+                'controller' => NULL,
+                'description' => NULL,
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
+                'created_at' => '2024-03-12 14:59:22',
+                'updated_at' => '2024-03-13 14:05:07',
+            ),
         ));
         
         

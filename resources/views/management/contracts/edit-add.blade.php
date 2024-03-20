@@ -84,6 +84,14 @@
                                     <label for="requested_by">Persona o unidad solicitante (Opcional)</label>
                                     <input type="text" name="requested_by" value="{{ isset($contract) ? $contract->requested_by : '' }}" class="form-control">
                                 </div>
+                                <div class="form-group col-md-6">
+                                    <label for="name_job_alt">Denominación de cargo (Opcional)</label>
+                                    <input type="text" class="form-control" name="name_job_alt" value="{{ isset($contract) ? $contract->name_job_alt : '' }}">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="work_location">Lugar de prestación de servicio (Opcional)</label>
+                                    <input type="text" class="form-control" name="work_location" value="{{ isset($contract) ? $contract->work_location : '' }}">
+                                </div>
                                 <div class="form-group col-md-6 div-signatures">
                                     <label for="signature_id">
                                         Firma autorizada 
@@ -130,12 +138,6 @@
                         <div class="panel-heading"><h6 class="panel-title">Datos complementarios</h6></div>
                         <div class="panel-body">
                             <div class="row">
-                                <div class="form-group col-md-6">
-                                    <input type="text" class="form-control" name="name_job_alt" value="{{ isset($contract) ? $contract->name_job_alt : '' }}" placeholder="Denominación de cargo">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <input type="text" class="form-control" name="work_location" value="{{ isset($contract) ? $contract->work_location : '' }}" placeholder="Lugar de prestación de servicio">
-                                </div>
                                 <div class="form-group col-md-12">
                                     <label for="details_work">Funciones generales</label>
                                     <textarea class="form-control richTextBox" name="details_work">
@@ -225,6 +227,16 @@
                                 <div class="form-group col-md-6">
                                     <label for="workers_memo">Responsable(s) de evaluación</label>
                                     <select name="workers_memo[]" id="select-workers_memo" class="form-control" multiple></select>
+                                    @isset($contract)
+                                        @if ($contract->workers_memo_alt)
+                                            @foreach (json_decode($contract->workers_memo_alt) as $item)
+                                                @php
+                                                    $workers_memo = App\Models\Contract::find($item);
+                                                @endphp
+                                                <a href="#">{{ $workers_memo->person->first_name }} {{ $workers_memo->person->last_name }}</a> 
+                                            @endforeach
+                                        @endif
+                                    @endisset
                                 </div>
                             </div>
                         </div>
@@ -266,8 +278,8 @@
                                     <textarea class="form-control richTextBox" name="documents_contract">
                                         {{
                                             isset($contract) ?
-                                            $contract->documents_contract ?? '<ol type="a"><li><p>Declaraci&oacute;n Jurada de No Doble Percepci&oacute;n.</p></li><li><p>T&eacute;rminos de Referencia.</p></li><li><p>Informe de Evaluaci&oacute;n y Recomendaci&oacute;n del proceso de contrataci&oacute;n N&deg; 123.</p></li><li><p>Certificaci&oacute;n Presupuestaria (Preventivo N&deg; 123)</p></li><li><p>Certificaci&oacute;n Poa N&deg; 123.</p></li><li><p>Declaraci&oacute;n Jurada de No Incompatibilidad Legal.</p></li><li><p>Fotocopia de C&eacute;dula de Identidad.</p></li><li><p>Certificaci&oacute;n de Programaci&oacute;n Operativa Anual (P.O.A.)</p></li><li><p>Curriculum Vitae</p></li><li><p>Certificado de Antecedentes Penales (REJAP)</p></li><li><p>Certificado de No Violencia (Ley 1153)</p></li><li><p>Certificado de Inscripci&oacute;n NIT</p></li><li><p>Certificaci&oacute;n de No Adeudo (AFP)</p></li><li><p>Certificado del RUPE N&deg; 123.( cuando corresponda).</p></li></ol>' :
-                                            '<ol type="a"><li><p>Declaraci&oacute;n Jurada de No Doble Percepci&oacute;n.</p></li><li><p>T&eacute;rminos de Referencia.</p></li><li><p>Informe de Evaluaci&oacute;n y Recomendaci&oacute;n del proceso de contrataci&oacute;n N&deg; 123.</p></li><li><p>Certificaci&oacute;n Presupuestaria (Preventivo N&deg; 123)</p></li><li><p>Certificaci&oacute;n Poa N&deg; 123.</p></li><li><p>Declaraci&oacute;n Jurada de No Incompatibilidad Legal.</p></li><li><p>Fotocopia de C&eacute;dula de Identidad.</p></li><li><p>Certificaci&oacute;n de Programaci&oacute;n Operativa Anual (P.O.A.)</p></li><li><p>Curriculum Vitae</p></li><li><p>Certificado de Antecedentes Penales (REJAP)</p></li><li><p>Certificado de No Violencia (Ley 1153)</p></li><li><p>Certificado de Inscripci&oacute;n NIT</p></li><li><p>Certificaci&oacute;n de No Adeudo (AFP)</p></li><li><p>Certificado del RUPE N&deg; 123.( cuando corresponda).</p></li></ol>'
+                                            $contract->documents_contract ?? '<ol type="a"><li><p>Declaraci&oacute;n Jurada de No Doble Percepci&oacute;n.</p></li><li><p>T&eacute;rminos de Referencia.</p></li><li><p>Informe de Evaluaci&oacute;n y Recomendaci&oacute;n del proceso de contrataci&oacute;n N&deg; 123.</p></li><li>Nota de adjudicaci&oacute;n</li><li><p>Certificaci&oacute;n Presupuestaria (Preventivo N&deg; 123)</p></li><li><p>Declaraci&oacute;n Jurada de No Incompatibilidad Legal.</p></li><li><p>Fotocopia de C&eacute;dula de Identidad.</p></li><li><p>Certificaci&oacute;n de Programaci&oacute;n Operativa Anual (P.O.A.)</p></li><li><p>Curriculum Vitae</p></li><li><p>Certificado de Antecedentes Penales (REJAP)</p></li><li><p>Certificado de No Violencia (Ley 1153)</p></li><li><p>Certificado de Inscripci&oacute;n NIT</p></li><li>Formulario de registro de beneficiario (SIGEP)</li><li><p>Certificaci&oacute;n de registro en la Gestora P&uacute;blica de la Seguridad Social de Largo Plazo</p></li><li><p>Certificado del RUPE N&deg; 123.( cuando corresponda).</p></li></ol>' :
+                                            '<ol type="a"><li><p>Declaraci&oacute;n Jurada de No Doble Percepci&oacute;n.</p></li><li><p>T&eacute;rminos de Referencia.</p></li><li><p>Informe de Evaluaci&oacute;n y Recomendaci&oacute;n del proceso de contrataci&oacute;n N&deg; 123.</p></li><li>Nota de adjudicaci&oacute;n</li><li><p>Certificaci&oacute;n Presupuestaria (Preventivo N&deg; 123)</p></li><li><p>Declaraci&oacute;n Jurada de No Incompatibilidad Legal.</p></li><li><p>Fotocopia de C&eacute;dula de Identidad.</p></li><li><p>Certificaci&oacute;n de Programaci&oacute;n Operativa Anual (P.O.A.)</p></li><li><p>Curriculum Vitae</p></li><li><p>Certificado de Antecedentes Penales (REJAP)</p></li><li><p>Certificado de No Violencia (Ley 1153)</p></li><li><p>Certificado de Inscripci&oacute;n NIT</p></li><li>Formulario de registro de beneficiario (SIGEP)</li><li><p>Certificaci&oacute;n de registro en la Gestora P&uacute;blica de la Seguridad Social de Largo Plazo</p></li><li><p>Certificado del RUPE N&deg; 123.( cuando corresponda).</p></li></ol>'
                                         }}
                                     </textarea>
                                 </div>

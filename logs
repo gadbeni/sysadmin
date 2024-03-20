@@ -1,4 +1,5 @@
 Ejecutar SettingsTableSeeder, UpdateBreadSeeder
+eliminar attendance_permits, attendance_permit_contracts, attendance_permit_types
 Ejecutar migraciones
 
 NOTA:
@@ -13,3 +14,7 @@ NOTA:
 - jalar la fecha de suscripción y no la de inicio en la adendas
 - Reporte de contratos activos agrupados por mes
 - Al hacer resolución de contrato se debe modificar la adenda si tiene
+- Buscador de programas
+- Agregar tipo de características de equipo
+- dashboard para técnicos (cantidad de actas, cantidad de informes, cantidad de equipos registrados)
+- Agregar imagen de llegada

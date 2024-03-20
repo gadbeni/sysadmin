@@ -505,7 +505,7 @@
             </div>
         </div>
 
-        @if (Auth::user()->role_id == 1)
+        @if (auth()->user()->hasPermission('edit_contracts'))
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-bordered" style="padding-bottom:5px;">

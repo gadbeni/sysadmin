@@ -77,7 +77,7 @@
             <p>{{ ucfirst($maintenance->report) }}</p>
             <br>
             @if ($maintenance->observations)
-                <b>OBSERVACIONES:</b>
+                <b>SUGERENCIAS:</b>
                 <p>{{ $maintenance->observations }}</p>
             @endif
             <br><br>

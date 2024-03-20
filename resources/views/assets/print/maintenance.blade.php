@@ -60,11 +60,20 @@
             </div>
             <div class="panel">
                 <div class="panel-header">
-                    <b style="padding: 10px 20px;">MANTENIMIENTO</b>
+                    <b style="padding: 10px 20px;">ESTADO DE INGRESO</b>
                 </div>
                 <br>
                 <div style="padding: 5px 10px">
-                    <b>TIPO DE MANTENIMIENTO</b> : {{ ucfirst($maintenance->type) }}
+                    {{ strtoupper($maintenance->income_status) }}
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">
+                    <b style="padding: 10px 20px;">TIPO DE MANTENIMIENTO</b>
+                </div>
+                <br>
+                <div style="padding: 5px 10px">
+                    {{ strtoupper($maintenance->type) }}
                 </div>
             </div>
             <div class="panel">
@@ -90,10 +99,6 @@
                         </ul>
                     </div>
                     <br>
-                    <div>
-                        <b>OBSERVACIONES</b>
-                        <p>{{ $maintenance->observations ?? 'Ninguna' }}</p>
-                    </div>
                 </div>
             </div>
             <br>

@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <div class="panel panel-bordered">
+                <div class="panel panel-custom">
                     <div class="panel-body" style="padding: 0px">
                         <div class="col-md-8" style="padding: 0px">
                             <h1 class="page-title">
@@ -15,9 +15,13 @@
                         </div>
                         <div class="col-md-4 text-right" style="margin-top: 30px">
                             @if (auth()->user()->hasPermission('add_attendances-permits'))
-                                <a href="{{ route('attendances-permits.create') }}" class="btn btn-success">
-                                    <i class="voyager-plus"></i> <span>Crear</span>
-                                </a>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><i class="voyager-plus"></i> Crear <span class="caret"></span></button>
+                                    <ul class="dropdown-menu" role="menu" style="left: -170px !important; top: 0px !important;">
+                                        <li><a href="{{ route('attendances-permits.create') }}" title="Permiso a un solo funcionario">Personal</a></li>
+                                        <li><a href="#" title="Agregar permiso masivo">Grupal</a></li>
+                                    </ul>
+                                </div>
                             @endif
                         </div>
                     </div>
@@ -47,7 +51,11 @@
 @stop
 
 @section('css')
-
+    <style>
+        .panel-custom{
+            box-shadow: 0 0 1px rgb(0 0 0 / 13%), 0 1px 3px rgb(0 0 0 / 20%) !important;
+        }
+    </style>
 @stop
 
 @section('javascript')
