@@ -75,10 +75,8 @@ class PeopleController extends Controller
                                 ->whereHas('direccion_administrativa.tipo', function($q) use($direcciones_tipo_id){
                                     $q->whereRaw($direcciones_tipo_id ? "id = $direcciones_tipo_id" : 1);
                                 })
-                                ->whereHas('direccion_administrativa', function($q) use($direccion_administrativa_id){
-                                    $q->whereRaw($direccion_administrativa_id ? "id = $direccion_administrativa_id" : 1);
-                                })
-                                ->withCount('schedules')->where('status', 'firmado')->get()->where('schedules_count', 0);
+                                ->whereRaw($direccion_administrativa_id ? "direccion_administrativa_id = $direccion_administrativa_id" : 1)
+                                ->withCount('schedules')->where('status', 'firmado')->get()->where('schedules_count', '>', 0);
                 return view('schedules.partials.people-list', compact('contracts'));
                 break;
             

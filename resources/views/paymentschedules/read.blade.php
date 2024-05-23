@@ -166,6 +166,7 @@
                                         <th rowspan="3">TOTAL APORTES AFP</th>
                                         <th rowspan="3">RC-IVA</th>
                                         <th colspan="2">FONDO SOCIAL</th>
+                                        <th rowspan="3">DESC. ADICIONAL</th>
                                         <th rowspan="3">TOTAL DESC.</th>
                                         <th rowspan="3">LÍQUIDO PAGABLE</th>
 
@@ -237,6 +238,7 @@
                                         $labor_total = 0;
                                         $labor_rc_iva_amount = 0;
                                         $labor_faults_amount = 0;
+                                        $additional_discounts = 0;
                                         $labor_liquid_payable = 0;
                                         $employer_total = 0;
                                     @endphp
@@ -256,6 +258,7 @@
                                             $labor_total += $item->labor_total;
                                             $labor_rc_iva_amount += $item->rc_iva_amount;
                                             $labor_faults_amount += $item->faults_amount;
+                                            $additional_discounts += $item->additional_discounts;
                                             $labor_liquid_payable += $item->liquid_payable;
 
                                             $employer_amount = $item->common_risk + $item->solidary_employer + $item->housing_employer + $item->health;
@@ -298,6 +301,7 @@
                                             <td class="text-right">{{ number_format($item->rc_iva_amount, 2, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($item->faults_quantity, floor($item->faults_quantity) < $item->faults_quantity ? 1 : 0, ',', '.') }}</td>
                                             <td class="text-right">{{ number_format($item->faults_amount, 2, ',', '.') }}</td>
+                                            <td class="text-right">{{ number_format($item->additional_discounts, 2, ',', '.') }}</td>
                                             <td class="text-right">
                                                 @php
                                                     // Si el planilla es permanenteo eventual restamos el total de aportes laborales al líquido pagable
@@ -306,7 +310,7 @@
                                                         $labor_total = $item->labor_total;
                                                     }
                                                 @endphp
-                                                {{ number_format($labor_total + $item->rc_iva_amount + $item->faults_amount, 2, ',', '.') }}
+                                                {{ number_format($labor_total + $item->rc_iva_amount + $item->faults_amount + $item->additional_discounts, 2, ',', '.') }}
                                             </td>
                                             <td class="text-right"><b>{{ number_format($item->liquid_payable, 2, ',', '.') }}</b></td>
 
@@ -355,6 +359,7 @@
                                         <td class="text-right"><b>{{ number_format($data->details->sum('rc_iva_amount'), 2, ',', '.') }}</b></td>
                                         <td></td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('faults_amount'), 2, ',', '.') }}</b></td>
+                                        <td class="text-right"><b>{{ number_format($data->details->sum('additional_discounts'), 2, ',', '.') }}</b></td>
                                         <td class="text-right">
                                                 @php
                                                     // Si el planilla es permanente o eventual restamos el total de aportes laborales al líquido pagable
@@ -363,7 +368,7 @@
                                                         $labor_total = $data->details->sum('labor_total');
                                                     }
                                                 @endphp
-                                            <b>{{ number_format($labor_total + $data->details->sum('rc_iva_amount') + $data->details->sum('faults_amount'), 2, ',', '.') }}</b>
+                                            <b>{{ number_format($labor_total + $data->details->sum('rc_iva_amount') + $data->details->sum('faults_amount') + $data->details->sum('additional_discounts'), 2, ',', '.') }}</b>
                                         </td>
                                         <td class="text-right"><b>{{ number_format($data->details->sum('liquid_payable'), 2, ',', '.') }}</b></td>
 
@@ -650,7 +655,7 @@
                                             {{-- ========== --}}
                                             <td></td>
                                             @php
-                                            $total_haber += $labor_faults_amount;
+                                            $total_haber += $labor_faults_amount + $additional_discounts;
                                         @endphp
                                         <td class="text-right">{{ number_format($labor_faults_amount, 2, ',', '.') }}</td>
                                         </tr>

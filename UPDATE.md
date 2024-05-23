@@ -1,0 +1,3 @@
+Ejecutar SettingsTableSeeder, UpdateBreadSeeder
+eliminar attendance_permits, attendance_permit_contracts, attendance_permit_types
+Ejecutar migraciones

@@ -131,7 +131,7 @@
     </form>
 
     {{-- Modal attendance options --}}
-    <div class="modal modal-primary fade modal-option" tabindex="-1" id="modal-options-attendance" role="dialog">
+    <div class="modal modal-primary fade modal-option" tabindex="-1" id="modal-options-attendance-alt" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -275,6 +275,92 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal attendance permit --}}
+    <form action="{{ route('attendances-permits.store.personal') }}" class="form-submit" id="form-attendance_permit" method="post">
+        @csrf
+        <input type="hidden" name="contract_id[]">
+        <input type="hidden" name="ajax" value="1">
+        <div class="modal fade" tabindex="-1" id="attendance_permit-modal" role="dialog">
+            <div class="modal-dialog modal-primary">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-certificate"></i> Agregar permiso</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{-- <div class="panel panel-bordered" style="border-left: 5px solid #62A8Ea">
+                            <div class="panel-body" style="padding: 10px">
+                                <div class="col-md-12">
+                                    <p class="text-info">Solo se aplica a los días en los que no se ha registrado marcación.</p>
+                                </div>
+                            </div>
+                        </div> --}}
+                        <div class="form-group">
+                            <label class="radio-inline"><input type="radio" name="category" class="radio-category" value="1" checked>Licencia</label>
+                            <label class="radio-inline"><input type="radio" name="category" class="radio-category" value="2">Comisión</label>
+                        </div>
+                        <div class="form-group div-form div-1">
+                            <label for="attendance_permit_type_id">Tipo</label>
+                            <select name="attendance_permit_type_id" id="select-attendance_permit_type_id" class="form-control" required>
+                                <option value="" selected disabled>Seleccionar tipo</option>
+                                @foreach (App\Models\AttendancePermitType::where('status', 1)->get() as $item)
+                                <option value="{{ $item->id }}" data-item='@json($item)'>{{ $item->name }}</option>
+                                @endforeach
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Fecha de solicitud</label>
+                            <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}" required>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="start">Desde</label>
+                                <input type="date" name="start" class="form-control" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="finish">Hasta</label>
+                                <input type="date" name="finish" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="row div-form div-1">
+                            <div class="form-group col-md-6">
+                                <label for="start">De horas</label>
+                                <input type="time" name="time_start" class="form-control">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="finish">A horas</label>
+                                <input type="time" name="time_finish" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group div-form div-1">
+                            <label for="observations">Observaciones</label>
+                            <textarea name="observations" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="form-group div-form div-2">
+                            <label for="purpose">Objetivo de la actividad</label>
+                            <textarea name="purpose" class="form-control" rows="5"></textarea>
+                        </div>
+                        <div class="form-group div-form div-2">
+                            <label for="justification">Justificación de Viaje y/o comisión</label>
+                            <textarea name="justification" class="form-control" rows="5"></textarea>
+                        </div>
+                        <div class="form-group div-form div-2">
+                            <label for="type_transport">Tipo de Transporte</label>
+                            <select name="type_transport" class="form-control" id="select-type_transport">
+                                <option value="">Seleccione el tipo de transporte</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" class="btn btn-primary btn-submit" value="Aceptar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
     
 @stop
 
@@ -306,7 +392,6 @@
     <script src="{{ asset('js/html2canvas.min.js') }}"></script>
     <script src="{{ asset('js/qrcode.min.js') }}"></script>
     <script>
-        moment.locale('es');
         var countPage = 10, order = 'id', typeOrder = 'desc';
         var assetSelected = null;
         var urlListAttendances = null; // Variavle auxiliar para almacenar la ruta de acceso a la lista de marcaciones del funcionario actual (al que se le dió click)
@@ -317,6 +402,9 @@
             $('#select-destiny_dependency').select2({dropdownParent: $('#modal-rotation')});
             $('#select-responsible_id').select2({dropdownParent: $('#modal-rotation')});
             $('#select-schedule_id').select2({dropdownParent: $('#modal-schedules')});
+            $('#select-type_transport').select2({dropdownParent: $("#attendance_permit-modal")});
+
+            $(`.div-2`).fadeOut();
             
             customSelect('#select-asset_id', '{{ url("admin/assets/search/ajax") }}', formatResultAssets, data => {assetSelected = data}, $('#modal-add-assets'));
             customSelect('#select-signature_id', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#modal-add-assets'));
@@ -392,6 +480,10 @@
                             if(res.person_asset){
                                 window.open(`{{ url('admin/people') }}/${res.person_id}/assets/${res.person_asset.id}/print`, '_blank').focus();
                             }
+
+                            // Resetar y ocultar formulario de registro de permisos
+                            $('#form-attendance_permit').trigger('reset');
+                            $('#attendance_permit-modal').modal('hide');
                         }else{
                             toastr.error(res.message, 'Error');
                         }
@@ -441,6 +533,32 @@
             $('.btn-download-image').click(function(){
                 generarImagen('div-qr', fileName);
                 $('#modal-qr').modal('hide');
+            });
+
+            $('.radio-category').click(function(){
+                let value = $('.radio-category:checked').val();
+                $('.div-form').fadeOut();
+                $(`.div-${value}`).fadeIn();
+            });
+
+            $('#form-attendance_permit input[name="finish"]').change(function(){
+                if($(this).val() != $('#form-attendance_permit input[name="start"]').val()){
+                    $('#form-attendance_permit input[name="time_start"]').val('');
+                    $('#form-attendance_permit input[name="time_start"]').prop('disabled', true);
+                    $('#form-attendance_permit input[name="time_finish"]').val('');
+                    $('#form-attendance_permit input[name="time_finish"]').prop('disabled', true);
+                }else{
+                    $('#form-attendance_permit input[name="time_start"]').prop('disabled', false);
+                    $('#form-attendance_permit input[name="time_finish"]').prop('disabled', false);
+                }
+            });
+
+            $('#select-attendance_permit_type_id').change(function(){
+                calculateDateAttendancePermit();
+            });
+
+            $('#form-attendance_permit input[name="start"]').change(function(){
+                calculateDateAttendancePermit();
             });
         });
 
@@ -550,6 +668,18 @@
                     toastr.error('Ocurrió un error', 'Error');
                 }
             });
+        }
+
+        function calculateDateAttendancePermit(){
+            let type = $('#select-attendance_permit_type_id option:selected').data('item');
+            let start = $('#form-attendance_permit input[name="start"]').val();
+            if(type && start){
+                if (type.default_days > 1) {
+                    $('#form-attendance_permit input[name="finish"]').val(moment(start, "YYYY-MM-DD").add(type.default_days -1, 'days').format('YYYY-MM-DD'));
+                }else{
+                    $('#form-attendance_permit input[name="finish"]').val('');
+                }
+            }
         }
     </script>
 @stop

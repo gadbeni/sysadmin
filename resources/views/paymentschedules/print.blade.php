@@ -90,12 +90,12 @@
                         <th rowspan="3">TOTAL APORTES AFP</th>
                         <th rowspan="3">RC-IVA</th>
                         <th colspan="2">FONDO SOCIAL</th>
+                        <th rowspan="3">DESC. ADICIONAL</th>
                         <th rowspan="3">TOTAL DESC.</th>
                         <th rowspan="3">LÍQUIDO PAGABLE</th>
 
                         @if ($type_generate == 1)
                         <th rowspan="3">FIRMA</th>
-                        <th rowspan="3">N&deg;</th>
                         @endif
 
                         {{-- Si es planilla de funcionamiento se muestran los aportes patronales--}}
@@ -172,6 +172,7 @@
                         $total_labor_total = 0;
                         $total_rc_iva_amount = 0;
                         $total_faults_amount = 0;
+                        $total_additional_discounts = 0;
                         $total_liquid_payable = 0;
                         $employer_total = 0;
                     @endphp
@@ -199,7 +200,6 @@
                                         'id' => $program->id,
                                         'programatic_category' => $program->programatic_category,
                                         'name' => $program->name,
-                                        'direccion_administrativa' => $data->direccion_administrativa->nombre,
                                         'details' => $item
                                     ];
                                 });
@@ -223,6 +223,8 @@
                             $total_solidary_national_group = 0;
                             $total_labor_total_group = 0;
                             $total_rc_iva_amount_group = 0;
+                            $total_faults_amount_group = 0;
+                            $total_additional_discounts_group = 0;
                             $total_discount_group = 0;
                             $total_payable_liquid_group = 0;
                             $total_solidary_employer_group = 0;
@@ -237,7 +239,7 @@
                                 @if ($group == 1)
                                 <td colspan="@if ($data->procedure_type_id == 2) 27 @else 26  @endif"><b>{{ $item_group['name'] }}</b></td>
                                 @else
-                                <td colspan="@if ($data->procedure_type_id == 2) 27 @else 26  @endif"><b>{{ $item_group['programatic_category'] }} - {{ $item_group['name'] }} / {{ $item_group['direccion_administrativa'] }}</b></td>
+                                <td colspan="@if ($data->procedure_type_id == 2) 27 @else 26  @endif"><b>{{ $item_group['programatic_category'] }} - {{ $item_group['name'] }}</b></td>
                                 @endif
 
                                 @if ($type_generate == 2)
@@ -258,6 +260,8 @@
                                     $total_solidary_national_group_program = 0;
                                     $total_labor_total_group_program = 0;
                                     $total_rc_iva_amount_group_program = 0;
+                                    $total_faults_amount_group_program = 0;
+                                    $total_additional_discounts_group_program = 0;
                                     $total_discount_group_program = 0;
                                     $total_payable_liquid_group_program = 0;
                                     $total_solidary_employer_group_program = 0;
@@ -287,6 +291,7 @@
                                     $total_labor_total += $item->labor_total;
                                     $total_rc_iva_amount += $item->rc_iva_amount;
                                     $total_faults_amount += $item->faults_amount;
+                                    $total_additional_discounts += $item->additional_discounts;
                                     $total_liquid_payable += $item->liquid_payable;
 
                                     $employer_amount = number_format($item->common_risk + $item->solidary_employer + $item->housing_employer + $item->health, 2, '.', '');
@@ -301,6 +306,8 @@
                                         $total_solidary_national_group += $item->solidary_national;
                                         $total_labor_total_group += number_format($item->labor_total + ($data->procedure_type_id == 2 ? $item->common_risk : 0 ), 2, '.', '');
                                         $total_rc_iva_amount_group += $item->rc_iva_amount;
+                                        $total_faults_amount_group += $item->faults_amount;
+                                        $total_additional_discounts_group += $item->additional_discounts;
                                         $total_discount_group += number_format($item->labor_total + $item->rc_iva_amount + $item->faults_amount, 2, '.', '');
                                         $total_payable_liquid_group += $item->liquid_payable;
                                         $total_solidary_employer_group += $item->solidary_employer;
@@ -317,6 +324,8 @@
                                             $total_solidary_national_group_program += $item->solidary_national;
                                             $total_labor_total_group_program += number_format($item->labor_total + ($data->procedure_type_id == 2 ? $item->common_risk : 0 ), 2, '.', '');
                                             $total_rc_iva_amount_group_program += $item->rc_iva_amount;
+                                            $total_faults_amount_group_program += $item->faults_amount;
+                                            $total_additional_discounts_group_program += $item->additional_discounts;
                                             $total_discount_group_program += number_format($item->labor_total + $item->rc_iva_amount + $item->faults_amount, 2, '.', '');
                                             $total_payable_liquid_group_program += $item->liquid_payable;
                                             $total_solidary_employer_group_program += $item->solidary_employer;
@@ -327,7 +336,7 @@
                                     }
                                 @endphp
                                 <tr>
-                                    <td>@if($group) {{ $cont }} @else {{ $item->item ?? $cont }} @endif</td>
+                                    <td>{{ $cont }}</td>
                                     <td>
                                         <b>{{ $item->contract->person->last_name }} {{ $item->contract->person->first_name }}</b> <br>
                                         <small>{{ $item->job }}</small>
@@ -361,6 +370,7 @@
                                     <td style="text-align: right">{{ number_format($item->rc_iva_amount, 2, ',', '.') }}</td>
                                     <td style="text-align: right">{{ number_format($item->faults_quantity, floor($item->faults_quantity) < $item->faults_quantity ? 1 : 0, ',', '.') }}</td>
                                     <td style="text-align: right">{{ number_format($item->faults_amount, 2, ',', '.') }}</td>
+                                    <td style="text-align: right">{{ number_format($item->additional_discounts, 2, ',', '.') }}</td>
                                     
                                     {{-- Faults total --}}
                                     <td style="text-align: right">
@@ -373,14 +383,13 @@
                                             $rc_iva_amount = $item->rc_iva_amount;
                                             $faults_amount = $item->faults_amount;
                                         @endphp
-                                        {{ number_format($labor_total + $rc_iva_amount + $faults_amount, 2, ',', '.') }}
+                                        {{ number_format($labor_total + $rc_iva_amount + $faults_amount + $item->additional_discounts, 2, ',', '.') }}
                                     </td>
 
                                     <td style="text-align: right"><b>{{ number_format($item->liquid_payable, 2, ',', '.') }}</b></td>
                                     
                                     @if ($type_generate == 1)
                                     <td style="width: 150px; height: 50px"></td>
-                                    <td>@if($group) {{ $cont }} @else {{ $item->item ?? $cont }} @endif</td>
                                     @endif
 
                                     {{-- Si es planilla de funcionamiento --}}
@@ -420,7 +429,9 @@
                                     <td style="text-align: right"><b>{{ number_format($total_solidary_national_group_program, 2, ',', '.') }}</b></td>
                                     <td style="text-align: right"><b>{{ number_format($total_labor_total_group_program, 2, ',', '.') }}</b></td>
                                     <td style="text-align: right"><b>{{ number_format($total_rc_iva_amount_group_program, 2, ',', '.') }}</b></td>
-                                    <td colspan="2"></td>
+                                    <td></td>
+                                    <td style="text-align: right"><b>{{ number_format($total_faults_amount_group_program, 2, ',', '.') }}</b></td>
+                                    <td style="text-align: right"><b>{{ number_format($total_additional_discounts_group_program, 2, ',', '.') }}</b></td>
                                     <td style="text-align: right"><b>{{ number_format($data->procedure_type_id != 2 ? $total_discount_group_program : 0, 2, ',', '.') }}</b></td>
                                     <td style="text-align: right"><b>{{ number_format($total_payable_liquid_group_program, 2, ',', '.') }}</b></td>
                                     
@@ -457,7 +468,9 @@
                                 <td style="text-align: right"><b>{{ number_format($total_solidary_national_group, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_labor_total_group, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_rc_iva_amount_group, 2, ',', '.') }}</b></td>
-                                <td colspan="2"></td>
+                                <td></td>
+                                <td style="text-align: right"><b>{{ number_format($total_faults_amount_group, 2, ',', '.') }}</b></td>
+                                <td style="text-align: right"><b>{{ number_format($total_additional_discounts_group, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($data->procedure_type_id != 2 ? $total_discount_group : 0, 2, ',', '.') }}</b></td>
                                 <td style="text-align: right"><b>{{ number_format($total_payable_liquid_group, 2, ',', '.') }}</b></td>
                                 
@@ -503,6 +516,7 @@
                         <td style="text-align: right"><b>{{ number_format($total_rc_iva_amount, 2, ',', '.') }}</b></td>
                         <td></td>
                         <td style="text-align: right"><b>{{ number_format($total_faults_amount, 2, ',', '.') }}</b></td>
+                        <td style="text-align: right"><b>{{ number_format($total_additional_discounts, 2, ',', '.') }}</b></td>
                         <td style="text-align: right">
                             @php
                                 // Si el planilla es permanente o eventual restamos el total de aportes laborales al líquido pagable
@@ -511,12 +525,11 @@
                                     $labor_total = $total_labor_total;
                                 }
                             @endphp
-                            <b>{{ number_format($labor_total + $total_rc_iva_amount + $total_faults_amount, 2, ',', '.') }}</b>
+                            <b>{{ number_format($labor_total + $total_rc_iva_amount + $total_faults_amount + $total_additional_discounts, 2, ',', '.') }}</b>
                         </td>
                         <td style="text-align: right"><b>{{ number_format($total_liquid_payable, 2, ',', '.') }}</b></td>
                         
                         @if ($type_generate == 1)
-                        <td></td>
                         <td></td>
                         @endif
 
@@ -845,7 +858,7 @@
                             {{-- ========== --}}
                             <td></td>
                             @php
-                            $total_haber += $total_faults_amount;
+                            $total_haber += $total_faults_amount + $total_additional_discounts;
                         @endphp
                         <td style="text-align: right">{{ number_format($total_faults_amount, 2, ',', '.') }}</td>
                         </tr>

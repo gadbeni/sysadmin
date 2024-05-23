@@ -557,6 +557,48 @@
         </div>
     </form>
 
+    {{-- Agreagr descuento adicional modal --}}
+    <form action="{{ route('contracts.additional.discount.store') }}" class="form-submit" id="add-discount-form" method="POST">
+        @csrf
+        <input type="hidden" name="contract_id">
+        <input type="hidden" name="salary_amount">
+        <div class="modal modal-dark fade" tabindex="-1" id="add-discount-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-edit"></i> Crear descuento adicional</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="type">Tipo de descuento</label>
+                            <select name="type" class="form-control" required>
+                                <option value="1">Monto fijo</option>
+                                <option value="2">Porcentaje</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Monto</label>
+                            <input type="number" name="amount" min="1" step="0.1" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reason">Motivo</label>
+                            <textarea name="reason" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="details">Detalles adicionales</label>
+                            <textarea name="details" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-dark btn-submit">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
     {{-- Modal rotation --}}
     @include('management.people.partials.modal-rotation')
 @stop

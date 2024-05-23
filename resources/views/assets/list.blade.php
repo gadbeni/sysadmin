@@ -124,7 +124,6 @@
 </style>
 
 <script>
-    moment.locale('es');
     var page = "{{ request('page') }}";
     $(document).ready(function(){
         $('.page-link').click(function(e){

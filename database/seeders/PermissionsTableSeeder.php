@@ -112,6 +112,7 @@ class PermissionsTableSeeder extends Seeder
             'add_assets_people',
             'add_assets_maintenances',
             'edit_attendances_people',
+            'edit_attendances_people_alt',
         ];
 
         foreach ($keys as $key) {

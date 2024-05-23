@@ -84,7 +84,7 @@ class AttendancesController extends Controller
                                     ->get();
             return view('biometrics.attendances.list-personal', compact('attendances', 'contracts_schedules', 'contract', 'holidays_array', 'start', 'finish'));
         }else{
-            $contracts = Contract::with(['person', 'absences.period'])
+            $contracts = Contract::with(['person', 'absences.period', 'cargo', 'job'])
                             ->whereRaw("((start <= '$start' and (finish >= '$start' or finish is NULL)) or (start <= '$finish' and (finish >= '$finish' or finish is NULL)) or (start <= '$start' and (finish >= '$finish' or finish is NULL)))")
                             ->whereRaw("(status = 'firmado' or status = 'concluido')")
                             ->whereRaw($direccion_administrativa_id ? "direccion_administrativa_id = $direccion_administrativa_id" : 1)->get();

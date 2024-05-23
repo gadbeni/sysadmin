@@ -94,19 +94,38 @@
                                 <li><a href="#" class="btn-irremovability" data-url="{{ route('people.irremovability.store', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-irremovability" >Inamovilidad</a></li>
                                 @endif
                                 @if (auth()->user()->hasPermission('edit_people'))
-                                <li><a href="#" class="btn-afp-options" data-item="{{ $item }}" data-url="{{ route('people.afp_status.update', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-options-afp" >Opciones de AFP</a></li>
+                                <li><a href="#" class="btn-afp-options" data-afp_status="{{ $item->afp_status }}" data-retired="{{ $item->retired }}" data-url="{{ route('people.afp_status.update', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-options-afp" >Opciones de AFP</a></li>
                                 @endif
                                 {{-- Opciones de marcaciones --}}
+                                <li class="divider" style="margin: 5px 0px"></li>
+                                {{-- Licencias y comisiones --}}
+                                @php
+                                    $current_contract = $item->contracts->where('status', 'firmado')->first();
+                                    $contract_id = null;
+                                    $contract_start = null;
+                                    $contract_finish = null;
+                                    if($current_contract){
+                                        $contract_id = $current_contract->id;
+                                        $contract_start = $current_contract->start;
+                                        $contract_finish = $current_contract->finish;
+                                    }
+                                @endphp
                                 @if ($item->contracts->where('status', 'firmado')->count())
-                                <li><a href="#" class="btn-schedules" data-contract='@json($item->contracts->where('status', 'firmado')->first())' data-schedules='@json($item->schedules)' data-toggle="modal" data-target="#modal-schedules">Horario</a></li>
+                                <li><a href="#" class="btn-attendance_permit" data-contract_id="{{ $contract_id }}" data-toggle="modal" data-target="#attendance_permit-modal" >Licencias/Comisión</a></li>
+                                @endif
+                                @if ($item->contracts->where('status', 'firmado')->count())
+                                <li><a href="#" class="btn-schedules" data-contract_id="{{ $contract_id }}" data-contract_start="{{ $contract_start }}" data-contract_finish="{{ $contract_finish }}" data-schedules='@json($item->schedules)' data-toggle="modal" data-target="#modal-schedules">Horario</a></li>
+                                @endif
+                                @if (auth()->user()->hasPermission('edit_attendances_people_alt'))
+                                <li><a href="#" class="btn-attendance-options-alt" data-url="{{ route('people.attendances', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-options-attendance-alt" >Marcaciones</a></li>
                                 @endif
                                 @if (auth()->user()->hasPermission('edit_attendances_people'))
-                                <li><a href="#" class="btn-attendance-options" data-item="{{ $item }}" data-url="{{ route('people.attendances', ['id' => $item->id]) }}" data-toggle="modal" data-target="#modal-options-attendance" >Marcaciones</a></li>
+                                <li><a href="#" class="btn-attendance-options">Marcaciones</a></li>
                                 @endif
                                 <li class="divider" style="margin: 5px 0px"></li>
-                                <li><a href="#" class="btn-qr-generate" data-item="{{ $item }}" data-toggle="modal" data-target="#modal-qr">Generar QR</a></li>
+                                <li><a href="#" class="btn-qr-generate" data-id="{{ $item->id }}" data-full_name="{{ $item->first_name.' '.$item->last_name }}" data-toggle="modal" data-target="#modal-qr">Generar QR</a></li>
                                 @if (setting('servidores.whatsapp') && setting('servidores.whatsapp-session'))
-                                <li><a href="#" class="btn-notification" data-item="{{ $item }}" data-toggle="modal" data-target="#modal-notification" >Notificar <i class="voyager-paper-plane"></i></a></li>
+                                <li><a href="#" class="btn-notification" data-id="{{ $item->id }}" data-phone="{{ $item->phone }}" data-toggle="modal" data-target="#modal-notification" >Notificar <i class="voyager-paper-plane"></i></a></li>
                                 @endif
                             </ul>
                         </div>
@@ -189,13 +208,14 @@
         $('.btn-afp-options').click(function(e){
             e.preventDefault();
             let url = $(this).data('url');
-            let item = $(this).data('item');
-            $('#checkbox-afp_status').bootstrapToggle(item.afp_status ? 'on' : 'off');
-            $('#checkbox-retired').bootstrapToggle(item.retired ? 'on' : 'off');
+            let afp_status = $(this).data('afp_status');
+            let retired = $(this).data('retired');
+            $('#checkbox-afp_status').bootstrapToggle(afp_status ? 'on' : 'off');
+            $('#checkbox-retired').bootstrapToggle(retired ? 'on' : 'off');
             $('#options-afp-form').attr('action', url);
         });
 
-        $('.btn-attendance-options').click(function(e){
+        $('.btn-attendance-options-alt').click(function(e){
             e.preventDefault();
             urlListAttendances = $(this).data('url');
             $('#details-attendaces').html('<tr><td colspan="3">Seleccione la fecha</td></tr>');
@@ -204,10 +224,12 @@
 
         $('.btn-schedules').click(function(){
             let schedules = $(this).data('schedules');
-            let contract = $(this).data('contract');
-            $('#form-schedules input[name="contract_id"]').val(contract.id);
-            $('#form-schedules input[name="start"]').attr('min', contract.start);
-            $('#form-schedules input[name="finish"]').val(contract.finish ? contract.finish : '');
+            let contract_id = $(this).data('contract_id');
+            let contract_start = $(this).data('contract_start');
+            let contract_finish = $(this).data('contract_finish');
+            $('#form-schedules input[name="contract_id"]').val(contract_id);
+            $('#form-schedules input[name="start"]').attr('min', contract_start);
+            $('#form-schedules input[name="finish"]').val(contract_finish ? contract_finish : '');
             
             $('#form-schedules input[name="start"]').val('');
             if (schedules.length) {
@@ -218,22 +240,29 @@
             } else {
                 $('#label-last-schedule').html('No tiene horarios asignados <i class="fa fa-ban"></i>');
                 $(`#select-schedule_id option`).prop('disabled', false);
-                $('#form-schedules input[name="start"]').val(contract.start);
+                $('#form-schedules input[name="start"]').val(contract_start);
             }
         });
 
         $('.btn-notification').click(function(){
-            let item = $(this).data('item');
-            $('#form-notification input[name="person_id"]').val(item.id);
-            $('#form-notification input[name="phone"]').val(item.phone);
+            let id = $(this).data('id');
+            let phone = $(this).data('phone');
+            $('#form-notification input[name="person_id"]').val(id);
+            $('#form-notification input[name="phone"]').val(phone);
         });
 
         $('.btn-qr-generate').click(function(){
             $('#div-qr').empty();
-            let item = $(this).data('item');
-            generarQR("{{ url('person') }}/"+item.id, 'div-qr');
-            $('#qr-detail').text(`QR para credencial de ${item.first_name} ${item.last_name}`);
-            fileName = `${item.first_name} ${item.last_name}`;
+            let id = $(this).data('id');
+            let full_name = $(this).data('full_name');
+            generarQR("{{ url('person') }}/"+id, 'div-qr');
+            $('#qr-detail').text(`QR para credencial de ${full_name}`);
+            fileName = full_name;
+        });
+
+        $('.btn-attendance_permit').click(function(){
+            let contract_id = $(this).data('contract_id');
+            $('#form-attendance_permit input[name="contract_id[]"]').val(contract_id);
         });
     });
 </script>

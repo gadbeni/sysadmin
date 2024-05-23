@@ -44,6 +44,7 @@
                                                         ->get();
                                 $absences = 0;
                                 $array_faults = collect();
+                                $days_faults = 0;
                                 $count_days = 0;
                                 $count_delay = 0;
                                 $count_abandonment = 0;
@@ -56,26 +57,58 @@
                                         
                                         // $delay = 0;
                                         // $abandonment = 0;
-    
+
                                         foreach($recorded_schedules as $record){
                                             $delay += $record['delay'];
                                             $abandonment += $record['abandonment'];
                                         }
-                                        $faults = calculate_recordes($recorded_schedules, $record, $delay, $abandonment);
+                                        $faults = calculate_recordes($recorded_schedules, $delay, $abandonment);
                                         $array_faults->push($faults);
                                         $count_days++;
                                     }
                                     $count_delay += $delay;
                                     $count_abandonment += $abandonment;
-    
-                                    $absences = (count($days_enabled) - $attendances->groupBy('fecha')->count());
-                                }
-                                $days_faults = $array_faults->sum('faults_entry') + $array_faults->sum('faults_abandonment') + $array_faults->sum('faults_half_day');
 
-                                // Si existe algún funcionario que no tenga horario asignado en ese periodo
-                                // if($contracts_schedules->count() == 0){
-                                //     $form_send_status = false;
-                                // }
+                                    // Recorer los días hábiles no marcados
+                                    $days_not_recorded = [];
+                                    foreach ($days_enabled as $day_enabled) {
+                                        $day_recorded = false;
+                                        foreach ($attendances->groupBy('fecha') as $date => $attendance_date) {
+                                            if($day_enabled == date('Y-m-d', strtotime($date))){
+                                                $day_recorded = true;
+                                            }
+                                        }
+                                        // Si no está en la lista de marcaciones se lo pone en la lista de días no marcados
+                                        if(!$day_recorded){
+                                            array_push($days_not_recorded, $day_enabled);
+                                        }
+                                    }
+                                    // Recorrer los días para buscar si tienen permisos
+                                    $days_permit = 0;
+                                    foreach ($days_not_recorded as $day_not_recorded) {
+                                        $permit = App\Models\AttendancePermitContract::with(['attendance_permit.type'])
+                                                    ->where('contract_id', $contracts_schedule_date->contract_id)
+                                                    ->whereHas('attendance_permit', function($q) use($day_not_recorded){
+                                                        $q->where('start', '<=', $day_not_recorded)->where('finish', '>=', $day_not_recorded)
+                                                        // Solo para permisos de jornada completa
+                                                        ->whereRaw('time_start is NULL and time_finish is NULL');
+                                                    })->first();
+                                        if($permit){
+                                            $days_permit++;
+                                        }
+                                    }
+    
+                                    $absences = count($days_enabled) - $attendances->groupBy('fecha')->count() - $days_permit;
+                                    $days_faults = $array_faults->sum('faults_entry') + $array_faults->sum('faults_abandonment') + $array_faults->sum('faults_half_day');
+                                }
+
+                                // Si el nivel del funcionario es <= 7 no se toma en cuenta su marcación
+                                if($item->job){
+                                    if($item->job->level <= 7){
+                                        $days_faults = 0;
+                                        $absences = 0;
+                                    }
+                                }
                             @endphp
                             <td>{{ $cont }}</td>
                             <td title="{{ $item->absences->count() ? 'Último perido generado '.$item->absences->sortByDesc('period_id')->first()->period->name : '' }}">
@@ -164,7 +197,6 @@
 </form>
 
 <script>
-    moment.locale('es');
     $(document).ready(function(){
         $('#select-period_id').select2({ dropdownParent: "#store-modal" });
         

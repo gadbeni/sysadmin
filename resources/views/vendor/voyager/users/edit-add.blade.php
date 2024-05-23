@@ -156,7 +156,6 @@
 @section('javascript')
     <script src="{{ url('js/main.js') }}"></script>
     <script>
-        moment.locale('es');
         var personSelected = null;
         $('document').ready(function () {
             $('.toggleswitch').bootstrapToggle();

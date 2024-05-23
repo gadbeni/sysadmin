@@ -505,6 +505,64 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-bordered" style="padding-bottom:5px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel-heading" style="border-bottom:0;">
+                                <h3 class="panel-title">Descuentos adicionales</h3>
+                            </div>
+                            <div class="table-responsive">
+                                <table id="dataTable" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>N&deg;</th>
+                                            <th>ID</th>
+                                            <th>Tipo</th>
+                                            <th>Monto</th>
+                                            <th>Motivo</th>
+                                            <th>Detalles adicionales</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $cont = 0;
+                                        @endphp
+                                        @forelse ($contract->additional_discounts as $item)
+                                            @php
+                                                $cont++;
+                                            @endphp
+                                            <tr>
+                                                <td>{{ $cont }}</td>
+                                                <td>{{ $item->id }}</td>
+                                                <td>{{ $item->type == 1 ? 'Monto fijo' : $item->amount.'%' }}</td>
+                                                <td>{{ $item->amount_total }}</td>
+                                                <td>{{ $item->reason }}</td>
+                                                <td>{{ $item->details }}</td>
+                                                <td><label class="label label-{{ $item->status == 1 ? 'success' : 'danger' }}">{{ $item->status == 1 ? 'Habilitado' : 'Inhabilitado' }}</label></td>
+                                                <td class="no-sort no-click bread-actions text-right">
+                                                    <button title="Borrar" class="btn btn-sm btn-danger delete" onclick="deleteItem('{{ route('contracts.additional.discount.delete', ['id' => $item->id]) }}')" data-toggle="modal" data-target="#delete-modal">
+                                                        <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Eliminar</span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="8" class="text-center text-muted"><h5>No hay registros</h5></td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @if (auth()->user()->hasPermission('edit_contracts'))
         <div class="row">
             <div class="col-md-12">
@@ -694,7 +752,6 @@
     <script>
         var main_contract_duration = "{{ $contract_duration_days }}";
         $(document).ready(function () {
-            moment.locale('es');
             $('#select-signature_id').select2({dropdownParent: $('#update-addendum-modal')});
             $('#select-program_id').select2({dropdownParent: $('#update-addendum-modal')});
 

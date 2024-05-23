@@ -43,6 +43,7 @@
                                     <th rowspan="3">TOTAL APORTES AFP</th>
                                     <th rowspan="3">RC-IVA</th>
                                     <th colspan="2">FONDO SOCIAL</th>
+                                    <th rowspan="3">DESC. ADICIONAL</th>
                                     <th rowspan="3">TOTAL DESC.</th>
                                     <th rowspan="3">LÍQUIDO PAGABLE</th>
                                 </tr>
@@ -102,6 +103,7 @@
                                     $array_rc_iva_amount = [];
                                     $array_faults_quantity = [];
                                     $array_faults_amount = [];
+                                    $array_additional_discounts = [];
                                     $array_liquid_payable = [];
                                 @endphp
                                 @forelse ($procedure_type_id == 1 ? $contracts->sortBy('job.id') : $contracts as $item)
@@ -234,19 +236,27 @@
                                         $rc_iva_amount = number_format($rc_iva ? json_decode($rc_iva->details)->iva : 0, 2, '.', '');
 
                                         // Faltas
-                                        // * Desde los archivos subidos
-                                        $faults = $contracts_faults ? $contracts_faults->details->where('person_id', $item->person->id)->first() : null;
-                                        $faults_quantity = number_format($faults ? json_decode($faults->details)->faults : 0, 2, '.', '');
-                                        // * Desde el cálculo de ausencias
-                                        $faults_quantity += $item->absences->sum('quantity');
-                                        $faults_amount = number_format(($salary / 30) * $faults_quantity, 2, '.', '');
+                                        $faults_quantity = 0;
+                                        $faults_amount = 0;
+                                        
+                                        if(true){
+                                            // * Desde los archivos subidos
+                                            $faults = $contracts_faults ? $contracts_faults->details->where('person_id', $item->person->id)->first() : null;
+                                            $faults_quantity = number_format($faults ? json_decode($faults->details)->faults : 0, 2, '.', '');
+                                            // * Desde el cálculo de ausencias
+                                            $faults_quantity += $item->absences->sum('quantity');
+                                            $faults_amount = number_format(($salary / 30) * $faults_quantity, 2, '.', '');
+                                        }
+
+                                        // Descuentos adicionales
+                                        $additional_discounts_amount = $item->additional_discounts->sum('amount_total');
 
                                         // Descuentos
                                         // Si el planilla es permanenteo eventual restamos el total de aportes laborales al líquido pagable
                                         if($procedure_type_id == 1 || $procedure_type_id == 5){
-                                            $total_discount = number_format($labor_total + $faults_amount + $rc_iva_amount, 2, '.', '');
+                                            $total_discount = number_format($labor_total + $faults_amount + $rc_iva_amount + $additional_discounts_amount, 2, '.', '');
                                         }else{
-                                            $total_discount = number_format($faults_amount + $rc_iva_amount, 2, '.', '');
+                                            $total_discount = number_format($faults_amount + $rc_iva_amount + $additional_discounts_amount, 2, '.', '');
                                         }
 
                                         // Líquido pagable
@@ -273,6 +283,7 @@
                                         array_push($array_rc_iva_amount, $rc_iva_amount);
                                         array_push($array_faults_quantity, $faults_quantity);
                                         array_push($array_faults_amount, $faults_amount);
+                                        array_push($array_additional_discounts, $additional_discounts_amount);
                                         array_push($array_liquid_payable, $liquid_payable);
                                     @endphp
                                     <tr>
@@ -310,6 +321,7 @@
                                         <td class="text-right">{{ number_format($rc_iva_amount, 2, ',', '.') }}</td>
                                         <td class="text-right">{{ number_format($faults_quantity, floor($faults_quantity) < $faults_quantity ? 1 : 0, ',', '.') }}</td>
                                         <td class="text-right">{{ number_format($faults_amount, 2, ',', '.') }}</td>
+                                        <td class="text-right">{{ number_format($additional_discounts_amount, 2, ',', '.') }}</td>
                                         <td class="text-right">{{ number_format($total_discount, 2, ',', '.') }}</td>
                                         <td class="text-right"><b>{{ number_format($liquid_payable, 2, ',', '.') }}</b></td>
                                     </tr>
@@ -343,6 +355,7 @@
                                     <td class="text-right"><b>{{ number_format(collect($array_rc_iva_amount)->sum(), 2, ',', '.') }}</b></td>
                                     <td></td>
                                     <td class="text-right"><b>{{ number_format(collect($array_faults_amount)->sum(), 2, ',', '.') }}</b></td>
+                                    <td class="text-right"><b>{{ number_format(collect($array_additional_discounts)->sum(), 2, ',', '.') }}</b></td>
                                     <td class="text-right">
                                         @php
                                             // Si el planilla es permanenteo eventual restamos el total de aportes laborales al líquido pagable
@@ -351,7 +364,7 @@
                                                 $labor_total = collect($array_labor_total)->sum();
                                             }
                                         @endphp
-                                        <b>{{ number_format($labor_total + collect($array_faults_amount)->sum() + collect($array_rc_iva_amount)->sum(), 2, ',', '.') }}</b>
+                                        <b>{{ number_format($labor_total + collect($array_faults_amount)->sum() + collect($array_additional_discounts)->sum() + collect($array_rc_iva_amount)->sum(), 2, ',', '.') }}</b>
                                     </td>
                                     <td class="text-right"><b>{{ number_format(collect($array_liquid_payable)->sum(), 2, ',', '.') }}</b></td>
                                 </tr>
@@ -396,6 +409,7 @@
                     <input type="hidden" name="rc_iva_amount" value="{{ json_encode($array_rc_iva_amount) }}">
                     <input type="hidden" name="faults_quantity" value="{{ json_encode($array_faults_quantity) }}">
                     <input type="hidden" name="faults_amount" value="{{ json_encode($array_faults_amount) }}">
+                    <input type="hidden" name="additional_discounts" value="{{ json_encode($array_additional_discounts) }}">
                     <input type="hidden" name="liquid_payable" value="{{ json_encode($array_liquid_payable) }}">
 
                     <div class="form-group" style="@if(Auth::user()->direccion_administrativa_id) display:none @endif">

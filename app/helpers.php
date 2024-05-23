@@ -159,15 +159,42 @@ if (! function_exists('recorded_schedules')) {
                 $abandonment = 1;
             }
 
+            // Obtener los si tiene permiso para el día actual
+            $permit = App\Models\AttendancePermitContract::with(['attendance_permit.type'])
+                        ->where('contract_id', $contracts_schedule_date->contract_id)
+                        ->whereHas('attendance_permit', function($q) use($date){
+                            $q->where('start', '<=', $date)->where('finish', '>=', $date);
+                        })->first();
+            $entry_permit = false;
+            $exit_permit = false;
+            if($permit){
+                // Si tiene permiso sin hora definida
+                if(!$permit->attendance_permit->time_start && !$permit->attendance_permit->time_finish){
+                    $entry_permit = $permit;
+                    $exit_permit = $permit;
+                }elseif($permit->attendance_permit->time_start && $permit->attendance_permit->time_finish){
+                    // Si la hora de permiso es a la hora de entrada
+                    if($permit->attendance_permit->time_start <= $detail->entry && $permit->attendance_permit->time_finish >= $detail->entry){
+                        $entry_permit = $permit;
+                    }
+                    // Si la hora de permiso es a la hora de salida
+                    if($permit->attendance_permit->time_start <= $detail->exit && $permit->attendance_permit->time_finish >= $detail->exit){
+                        $exit_permit = $permit;
+                    }
+                }
+            }
+
             $recorded_schedules->push([
                 'entry' => $detail->entry,
                 'entry_record' => $entry_register_selected,
                 'entry_minutes' => $min_diff_minutes_entry,
+                'entry_permit' => $entry_permit,
                 'exit' => $detail->exit,
                 'exit_record' => $exit_register_selected,
                 'exit_minutes' => $min_diff_minutes_exit,
-                'delay' => $delay,
-                'abandonment' => $abandonment
+                'exit_permit' => $exit_permit,
+                'delay' => $entry_permit ? 0 : $delay,
+                'abandonment' => $exit_permit ? 0 : $abandonment
             ]);
         }
 
@@ -176,39 +203,30 @@ if (! function_exists('recorded_schedules')) {
 }
 
 if (! function_exists('calculate_recordes')) {
-    function calculate_recordes($recorded_schedules, $record, $delay, $abandonment) {
+    function calculate_recordes($recorded_schedules, $delay, $abandonment) {
         // Acumular munitos de atraso o descuento de medio día/día completo
         $faults_entry = 0;
         $faults_abandonment = 0;
         $faults_half_day = 0;
         $accumulated_minutes = 0;
 
-        // Si no marco a la llegada 1 falta
-        if(!$record['entry_record']){
-            $faults_entry++;
-        }
-
-        if ($delay) {
-            // Mayor a 10 y menor a 90 minutos se acumula
-            if ($delay > 10 && $delay <= 90) {
-                $accumulated_minutes += $delay;
-            // Mayor a 90 se toma como falta
-            }elseif($delay > 90){
-                $faults_entry += 1;
+        foreach ($recorded_schedules as $item) {
+            // Si no marco a la llegada 1 falta
+            if(!$item['entry_record'] && !$item['entry_permit']){
+                $faults_entry++;
             }
-        }
-        // El abandono equivale a medio día de descuento (solo es abandono si marcó la llegada)
-        if ($abandonment > 0 && $record['entry_record'] && $faults_entry < 1 ) {
-            $faults_abandonment += 0.5;
-        }
-
-        // En caso de trabajar en horario de oficina
-        // Si falta media jornada
-        if($recorded_schedules->count() == 2){
-            foreach ($recorded_schedules as $record) {
-                if(!$record['entry_record'] && !$record['exit_record']){
-                    $faults_half_day++;
+            if ($delay) {
+                // Mayor a 10 y menor a 90 minutos se acumula
+                if ($delay > 10 && $delay <= 90) {
+                    $accumulated_minutes += $delay;
+                // Mayor a 90 se toma como falta
+                }elseif($delay > 90){
+                    $faults_entry += 1;
                 }
+            }
+            // El abandono equivale a medio día de descuento (solo es abandono si marcó la llegada)
+            if ($abandonment > 0 && $item['entry_record'] && $faults_entry < 1 && !$item['exit_permit']) {
+                $faults_abandonment += 0.5;
             }
         }
 

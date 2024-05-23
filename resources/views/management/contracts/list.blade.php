@@ -191,6 +191,11 @@
                                             <li><a class="btn-addendum-status" title="Firmar adenda" data-toggle="modal" data-target="#addendum-status-modal" data-id="{{ $addendums->first()->id }}" href="#">Firmar adenda</a></li>
                                             @endif
                                         @endif
+                                        <li class="divider"></li>
+                                        {{-- Agregar descuentos adicional --}}
+                                        @if (auth()->user()->hasPermission('add_addendum_contracts') && $item->status == 'firmado')
+                                            <li><a href="#" class="btn-add-discount" title="Agregar descuento adicional" data-id="{{ $item->id }}" data-salary_amount="{{ $salary }}" data-toggle="modal" data-target="#add-discount-modal">Agregar descuento adicional</a></li>
+                                        @endif
                                     </ul>
                                 </div>
                             @endif
@@ -354,7 +359,6 @@
 </style>
 
 <script>
-    moment.locale('es');
     var page = "{{ request('page') }}";
     $(document).ready(function(){
 
@@ -504,6 +508,13 @@
         $('.btn-position-reassignment').click(function(){
             let id = $(this).data('id');
             $('#form-position_reassignment input[name="id"]').val(id);
+        });
+
+        $('.btn-add-discount').click(function(){
+            let id = $(this).data('id');
+            let salary_amount = $(this).data('salary_amount');
+            $('#add-discount-form input[name="contract_id"]').val(id);
+            $('#add-discount-form input[name="salary_amount"]').val(salary_amount);
         });
     });
 </script>

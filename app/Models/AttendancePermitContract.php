@@ -13,4 +13,12 @@ class AttendancePermitContract extends Model
     protected $fillable = [
         'attendance_permit_id', 'contract_id'
     ];
+
+    public function attendance_permit(){
+        return $this->belongsTo(AttendancePermit::class);
+    }
+
+    public function contract(){
+        return $this->belongsTo(Contract::class);
+    }
 }

@@ -40,6 +40,7 @@ class CreatePaymentschedulesDetailsTable extends Migration
             $table->decimal('rc_iva_amount', 10, 5)->nullable();
             $table->decimal('faults_quantity', 10, 5)->nullable();
             $table->decimal('faults_amount', 10, 5)->nullable();
+            $table->decimal('additional_discounts', 10, 5)->nullable();
             $table->decimal('liquid_payable', 10, 5)->nullable();
             $table->string('status')->nullable()->default('procesado');
             $table->timestamps();

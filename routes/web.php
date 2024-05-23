@@ -261,6 +261,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('contracts/direccion-administrativa/{id}', [ContractsController::class, 'contracts_direccion_administrativa']);
     Route::get('contracts/{id}/print/{document}', [ContractsController::class, 'print'])->name('contracts.print');
     Route::post('contracts/{id}/file/store', [ContractsController::class, 'file_store'])->name('contracts.file.store');
+    Route::post('contracts/additional/discount/store', [ContractsController::class, 'contracts_additional_discount_store'])->name('contracts.additional.discount.store');
+    Route::delete('contracts/additional/discount/{id}/delete', [ContractsController::class, 'contracts_additional_discount_delete'])->name('contracts.additional.discount.delete');
     Route::delete('contracts/file/{id}/destroy', [ContractsController::class, 'file_destroy'])->name('contracts.file.destroy');
     Route::delete('contracts/finished/{id}/destroy', [ContractsController::class, 'finished_destroy'])->name('contracts.finished.destroy');
     Route::get('contracts/search/ajax', [ContractsController::class, 'search']);
@@ -309,6 +311,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::post('attendances/absences', [AttendancesController::class, 'absences_store'])->name('attendances.absences.store');
 
     Route::resource('attendances-permits', AttendancePermitsController::class);
+    Route::get('attendances-permits/ajax/list', [AttendancePermitsController::class, 'list'])->name('attendances-permits.list');
+    Route::post('attendances-permits/store/personal', [AttendancePermitsController::class, 'store_personal'])->name('attendances-permits.store.personal');
 
     // Reportes
 

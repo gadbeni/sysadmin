@@ -60,7 +60,7 @@
                                         @if ($item->alternate_job->count() > 0)
                                             <b>{{ Str::upper($item->alternate_job->last()->name) }}</b> <br> <br>
                                         @else
-                                            <b>{{ Str::upper($item->job ? $item->job->name : ($item->cargo ? $item->cargo->Descripcion : $item->job_description)) }}</b> <br> <br>
+                                        <b>{{ Str::upper($item->job ? $item->job->name : ($item->cargo ? $item->cargo->Descripcion.($item->name_job_alt ? ' - '.$item->name_job_alt : '') : $item->job_description)) }}</b> <br> <br>
                                         @endif
                                     @else
                                         {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>
@@ -148,7 +148,7 @@
                                         @if ($item->alternate_job->count() > 0)
                                             <b>{{ Str::upper($item->alternate_job->last()->name) }}</b>
                                         @else
-                                            <b>{{ Str::upper($item->job ? $item->job->name : ($item->cargo ? $item->cargo->Descripcion : $item->job_description)) }}</b>
+                                            <b>{{ Str::upper($item->job ? $item->job->name : ($item->cargo ? $item->cargo->Descripcion.($item->name_job_alt ? ' - '.$item->name_job_alt : '') : $item->job_description)) }}</b>
                                         @endif
                                     @else
                                         <b>A:</b> {{ str_replace('  ', ' ', $item->NombreCompleto) }} <br>

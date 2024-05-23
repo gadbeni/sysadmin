@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contract extends Model
 {
-    use HasFactory;
-
+    use HasFactory, SoftDeletes;
+    protected $dates = ['deleted_at'];
     protected $fillable = [
         'person_id',
         'program_id',
@@ -76,11 +77,11 @@ class Contract extends Model
     }
 
     public function direccion_administrativa(){
-        return $this->belongsTo(Direccion::class, 'direccion_administrativa_id', 'id');
+        return $this->belongsTo(Direccion::class, 'direccion_administrativa_id', 'id')->withTrashed();
     }
 
     public function unidad_administrativa(){
-        return $this->belongsTo(Unidad::class, 'unidad_administrativa_id');
+        return $this->belongsTo(Unidad::class, 'unidad_administrativa_id')->withTrashed();
     }
 
     public function cargo(){
@@ -88,7 +89,7 @@ class Contract extends Model
     }
 
     public function job(){
-        return $this->belongsTo(Job::class);
+        return $this->belongsTo(Job::class)->withTrashed();
     }
 
     public function finished(){
@@ -100,7 +101,7 @@ class Contract extends Model
     }
 
     public function signature(){
-        return $this->belongsTo(Signature::class, 'signature_id', 'id');
+        return $this->belongsTo(Signature::class, 'signature_id', 'id')->withTrashed();
     }
     
     public function signature_alt(){
@@ -132,7 +133,7 @@ class Contract extends Model
     }
 
     public function jobs(){
-        return $this->hasMany(ContractsJob::class);
+        return $this->hasMany(ContractsJob::class)->withTrashed();
     }
 
     public function files(){
@@ -145,5 +146,9 @@ class Contract extends Model
 
     public function absences(){
         return $this->hasMany(ContractAbsence::class);
+    }
+
+    public function additional_discounts(){
+        return $this->hasMany(ContractAdditionalDiscount::class);
     }
 }

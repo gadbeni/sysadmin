@@ -52,6 +52,9 @@ class AssetsControllers extends Controller
                             ->OrwhereHas('subcategory.category', function($query) use($search){
                                 $query->whereRaw("name like '%$search%'");
                             })
+                            ->OrwhereHas('user', function($query) use($search){
+                                $query->whereRaw("name like '%$search%'");
+                            })
                             ->OrwhereHas('assignments.person_asset.person', function($query) use($search){
                                 $query->whereRaw("(first_name like '%$search%' or last_name like '%$search%' or ci like '%$search%' or phone like '%$search%' or CONCAT(first_name, ' ', last_name) like '%$search%')");
                             })

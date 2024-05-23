@@ -3,8 +3,7 @@
 @section('content')
     <div class="page-content browse container-fluid">
         @include('voyager::alerts')
-        {{-- Vista de cajero(a) --}}
-        @if (Auth::user()->role_id == 4 || Auth::user()->role_id == 5)
+        {{-- @if (Auth::user()->role_id == 4 || Auth::user()->role_id == 5)
             @php
                 $cashier = \App\Models\Cashier::with(['payments.aguinaldo', 'payments.stipend', 'movements' => function($q){
                     $q->where('deleted_at', NULL);
@@ -16,7 +15,6 @@
                 ->where('user_id', Auth::user()->id)
                 ->where('status', '<>', 'cerrada')
                 ->where('deleted_at', NULL)->first();
-                // dd($cashier);
             @endphp
             @if ($cashier)
                 @if ($cashier->status == 'abierta' || $cashier->status == 'apertura pendiente')
@@ -347,7 +345,6 @@
                             </div>
                         </div>
 
-                        {{-- Aceptar apertura de caja --}}
                         <form action="{{ route('cashiers.change.status', ['cashier' => $cashier->id]) }}" method="post">
                             @csrf
                             <input type="hidden" name="status" value="abierta">
@@ -370,7 +367,6 @@
                             </div>
                         </form>
 
-                        {{-- Rechazar apertura de caja --}}
                         <form action="{{ route('cashiers.change.status', ['cashier' => $cashier->id]) }}" method="post">
                             @csrf
                             <input type="hidden" name="status" value="cerrada">
@@ -437,22 +433,22 @@
                     </div>
                 </div>
             @endif
-        @endif
-
-        {{-- Vista de recursos humanos --}}
-        @if (Auth::user()->role_id == 1 || (Auth::user()->role_id >= 9 && Auth::user()->role_id <= 12) || Auth::user()->role_id == 23 || Auth::user()->role_id == 30)
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel panel-bordered">
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h2>Hola, {{ Auth::user()->name }}</h2>
-                                </div>
+        @endif --}}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-bordered">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12" style="margin-bottom: 0px">
+                                <h2>Hola, {{ Auth::user()->name }}</h2>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+ 
+            {{-- Vista de recursos humanos --}}
+            @if (Auth::user()->role_id == 1 || (Auth::user()->role_id >= 9 && Auth::user()->role_id <= 12) || Auth::user()->role_id == 23 || Auth::user()->role_id == 30)
                 <div class="col-md-3">
                     <div class="panel panel-bordered" style="border-left: 5px solid #52BE80">
                         <div class="panel-body" style="height: 100px;padding: 15px 20px">
@@ -579,37 +575,87 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
 
-            <form action="{{ route('send.whatsapp') }}" id="form-submit-message" method="post">
-                @csrf
-                <div class="modal fade" tabindex="-1" id="send-message-modal" role="dialog">
-                    <div class="modal-dialog modal-success">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title"><i class="fa fa-paper-plane"></i> Enviar mensaje de felicitación</h4>
+            {{-- Vista de sistemas --}}
+            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 39)
+                @php
+                    $maintenance = App\Models\AssetMaintenance::whereHas('technical.person', function($q){
+                                        $q->where('id', Auth::user()->person_id);
+                                    })
+                                    ->whereYear('date_start', date('Y'))->whereMonth('date_start', date('m'))
+                                    ->get();
+                @endphp
+                <div class="col-md-4">
+                    <div class="panel panel-bordered" style="border-left: 5px solid #52BE80">
+                        <div class="panel-body" style="height: 100px;padding: 15px 20px">
+                            <div class="col-md-9">
+                                <h5>Mantenimientos</h5>
+                                <h2>{{ $maintenance->count() }}</h2>
                             </div>
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label class="radio-inline"><input type="radio" name="radio_messaje" value="Hace unos años, una persona muy especial vino al mundo para hacerlo un lugar mejor. ¡Feliz cumpleaños! Que disfrutes de este día con ilusión y mucha alegría. Y que cumplas muchos más años de vida! Son los sinceros deseos de GADBENI❤️" checked>Mensaje 1</label>
-                                    <label class="radio-inline"><input type="radio" name="radio_messaje" value="En tu día especial, deseo que cada momento esté lleno de amor, risas y felicidad. ¡Feliz cumpleaños! Son los sinceros deseos de GADBENI❤️">Mensaje 2</label>
-                                    <label class="radio-inline"><input type="radio" name="radio_messaje" value="En tu cumpleaños, deseo que recibas tanto amor y felicidad como has dado a los demás. ¡Que este sea tu mejor año hasta ahora! ¡Feliz cumpleaños! Son los sinceros deseos de GADBENI❤️">Mensaje 3</label>
-                                </div>
-                                <div class="form-group">
-                                    <textarea id="textarea-message" name="message" class="form-control" rows="5"></textarea>
-                                </div>
-                                <input type="hidden" name="phone" id="input-phone-number">
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" id="btn-submit-message" class="btn btn-success"> <i class="fa fa-paper-plane"></i> Enviar</button>
+                            <div class="col-md-3 text-right">
+                                <i class="icon voyager-tools" style="color: #52BE80"></i>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
-        @endif
+                <div class="col-md-4">
+                    <div class="panel panel-bordered" style="border-left: 5px solid #E67E22">
+                        <div class="panel-body" style="height: 100px;padding: 15px 20px">
+                            <div class="col-md-9">
+                                <h5>Informes</h5>
+                                <h2>{{ $maintenance->where('destiny_id', '!=', NULL)->where('supervisor_id', '!=', NULL)->count() }}</h2>
+                            </div>
+                            <div class="col-md-3 text-right">
+                                <i class="icon voyager-documentation" style="color: #E67E22"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-bordered" style="border-left: 5px solid #3498DB">
+                        <div class="panel-body" style="height: 100px;padding: 15px 20px">
+                            <div class="col-md-9">
+                                <h5>Activo registrados</h5>
+                                <h2>{{ App\Models\Asset::where('user_id', Auth::user()->id)->count() }}</h2>
+                            </div>
+                            <div class="col-md-3 text-right">
+                                <i class="icon voyager-edit" style="color: #3498DB"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+
+        <form action="{{ route('send.whatsapp') }}" id="form-submit-message" method="post">
+            @csrf
+            <div class="modal fade" tabindex="-1" id="send-message-modal" role="dialog">
+                <div class="modal-dialog modal-success">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title"><i class="fa fa-paper-plane"></i> Enviar mensaje de felicitación</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="radio-inline"><input type="radio" name="radio_messaje" value="Hace unos años, una persona muy especial vino al mundo para hacerlo un lugar mejor. ¡Feliz cumpleaños! Que disfrutes de este día con ilusión y mucha alegría. Y que cumplas muchos más años de vida! Son los sinceros deseos de GADBENI❤️" checked>Mensaje 1</label>
+                                <label class="radio-inline"><input type="radio" name="radio_messaje" value="En tu día especial, deseo que cada momento esté lleno de amor, risas y felicidad. ¡Feliz cumpleaños! Son los sinceros deseos de GADBENI❤️">Mensaje 2</label>
+                                <label class="radio-inline"><input type="radio" name="radio_messaje" value="En tu cumpleaños, deseo que recibas tanto amor y felicidad como has dado a los demás. ¡Que este sea tu mejor año hasta ahora! ¡Feliz cumpleaños! Son los sinceros deseos de GADBENI❤️">Mensaje 3</label>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="textarea-message" name="message" class="form-control" rows="5"></textarea>
+                            </div>
+                            <input type="hidden" name="phone" id="input-phone-number">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" id="btn-submit-message" class="btn btn-success"> <i class="fa fa-paper-plane"></i> Enviar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 @stop
 

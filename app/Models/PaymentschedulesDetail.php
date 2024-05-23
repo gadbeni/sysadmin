@@ -37,6 +37,7 @@ class PaymentschedulesDetail extends Model
         'rc_iva_amount',
         'faults_quantity',
         'faults_amount',
+        'additional_discounts',
         'liquid_payable',
         'status'
     ];

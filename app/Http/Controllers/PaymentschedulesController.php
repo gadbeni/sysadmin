@@ -13,6 +13,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 // Imports
 use App\Imports\PaymentschedulesFilesImport;
+
+// Exports
 use App\Exports\PaymentsExport;
 
 // Models
@@ -142,6 +144,8 @@ class PaymentschedulesController extends Controller
                             $q->where('deleted_at', NULL)->where('status', 1);
                         }, 'program', 'cargo.nivel', 'job.direccion_administrativa', 'direccion_administrativa', 'type', 'absences' => function($q) use($period){
                             $q->where('period_id', $period->id);
+                        }, 'additional_discounts' => function($q){
+                            $q->where('status', 1);
                         }])
                         ->where('direccion_administrativa_id', $direccion_administrativa_id)
                         ->where('procedure_type_id', $procedure_type_id)
@@ -171,6 +175,19 @@ class PaymentschedulesController extends Controller
     {
         DB::beginTransaction();
         try {
+            // Si no es una planilla adicional verificar que no se haya generado una antes
+            if(!$request->aditional){
+                $paymentschedule = Paymentschedule::where([
+                    'direccion_administrativa_id' =>  $request->direccion_administrativa_id,
+                    'period_id' => $request->period_id,
+                    'procedure_type_id' => $request->procedure_type_id,
+                    'deleted_at' => NULL,
+                ])->first();
+
+                if($paymentschedule){
+                    return redirect()->route('paymentschedules.index')->with(['message' => 'Ya se generó una planilla de este tipo y para este periodo', 'alert-type' => 'error']);
+                }
+            }
 
             // Buscar o registrar nueva planilla
             if($request->paymentschedule_id && !$request->aditional){
@@ -187,7 +204,6 @@ class PaymentschedulesController extends Controller
                     'user_id' => Auth::user()->id,
                 ]);
             }
-            // dd($paymentschedule);
 
             // En caso de ser centralizada asignarle el número correspondiente
             if($request->centralize){
@@ -231,6 +247,7 @@ class PaymentschedulesController extends Controller
             $rc_iva_amount = json_decode($request->rc_iva_amount);
             $faults_quantity = json_decode($request->faults_quantity);
             $faults_amount = json_decode($request->faults_amount);
+            $additional_discounts = json_decode($request->additional_discounts);
             $liquid_payable = json_decode($request->liquid_payable);
             
             for ($i=0; $i < count($contract_id); $i++) {
@@ -260,6 +277,7 @@ class PaymentschedulesController extends Controller
                     'rc_iva_amount' => $rc_iva_amount[$i],
                     'faults_quantity' => $faults_quantity[$i],
                     'faults_amount' => $faults_amount[$i],
+                    'additional_discounts' => $additional_discounts[$i],
                     'liquid_payable' => $liquid_payable[$i],
                 ]);
             }
@@ -302,7 +320,7 @@ class PaymentschedulesController extends Controller
         
         if($centralize){
             $centralize_code = $data->centralize_code;
-            $data->details = PaymentschedulesDetail::with(['program', 'contract.type'])
+            $data->details = PaymentschedulesDetail::with(['program', 'contract.type', 'contract.direccion_administrativa'])
                             ->whereHas('paymentschedule', function($q) use($centralize_code){
                                 $q->where('centralize_code', $centralize_code)->where('deleted_at', NULL);
                             })
@@ -484,7 +502,7 @@ class PaymentschedulesController extends Controller
                 $item = Paymentschedule::find($request->id);
                 $paymentschedule = Paymentschedule::where('period_id', $item->period_id)
                                         ->where('procedure_type_id', $item->procedure_type_id)->where('centralize', 1)
-                                        ->where('status', "<>", $item->status)->where('deleted_at', NULL)->first();
+                                        ->where('deleted_at', NULL)->first();
                 if(!$paymentschedule){
                     return response()->json(['error' => 'No existe planilla centralizada para este periodo.']);
                 }

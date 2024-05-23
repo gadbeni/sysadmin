@@ -217,7 +217,7 @@ class SocialSecurityController extends Controller
 
     public function checks_edit($id){
         $type = 'edit';
-        $data = ChecksPayment::with('spreadsheet', 'paymentschedule', 'data.afp_details.name')->where('id', $id)->where('deleted_at', NULL)->first();
+        $data = ChecksPayment::with(['spreadsheet', 'paymentschedule', 'afp_details'])->where('id', $id)->where('deleted_at', NULL)->first();
         $planilla = DB::connection('mysqlgobe')->table('planillahaberes')->where('ID', $data->planilla_haber_id)->first();
         return view('social-security.checks-edit-add', compact('type', 'id', 'data', 'planilla'));
     }

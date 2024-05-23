@@ -26,6 +26,7 @@ use App\Models\ContractRatification;
 use App\Models\ContractsTransfer;
 use App\Models\ContractsPromotion;
 use App\Models\ContractsFile;
+use App\Models\ContractAdditionalDiscount;
 
 class ContractsController extends Controller
 {
@@ -890,9 +891,31 @@ class ContractsController extends Controller
             ]);
             return redirect()->route('contracts.print', ['id' => $id, 'document' => $request->name])->with(['message' => 'Contrato editado exitosamente', 'alert-type' => 'success']);
         } catch (\Throwable $th) {
-            //throw $th;
             return redirect()->route('contracts.print', ['id' => $id, 'document' => $request->name])->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
+    }
+
+    public function contracts_additional_discount_store(Request $request) {
+        try {
+            ContractAdditionalDiscount::create([
+                'user_id' => Auth::user()->id,
+                'contract_id' => $request->contract_id,
+                'type' => $request->type,
+                'amount' => $request->amount,
+                'amount_total' => $request->type == 1 ? $request->amount : $request->salary_amount * ($request->amount /100),
+                'reason' => $request->reason,
+                'details' => $request->details,
+            ]);
+            return response()->json(['success'=> 1, 'message' => 'Descuento adicional registrado exitosamente']);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => 1, 'message' => 'Ocurrió un error']);
+        }
+    }
+
+    public function contracts_additional_discount_delete($id, Request $request) {
+        $discount = ContractAdditionalDiscount::find($id);
+        $discount->delete();
+        return redirect()->to($_SERVER['HTTP_REFERER'])->with(['message' => 'Descuento adicional anulado', 'alert-type' => 'success']);
     }
 
     public function file_destroy($id, Request $request){

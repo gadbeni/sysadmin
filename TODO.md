@@ -1,8 +1,3 @@
-Ejecutar SettingsTableSeeder, UpdateBreadSeeder
-eliminar attendance_permits, attendance_permit_contracts, attendance_permit_types
-Ejecutar migraciones
-
-NOTA:
 - formulario de creación de proyectos
 - Generar reporte de cargos asignados a funcionarios (5 tecnicos II, 4 tecnicos III)
 - agregar fotos del funcionario en reporte de contratos
@@ -18,3 +13,10 @@ NOTA:
 - Agregar tipo de características de equipo
 - dashboard para técnicos (cantidad de actas, cantidad de informes, cantidad de equipos registrados)
 - Agregar imagen de llegada
+- Lista de contratos sin horario asignado en la página principal
+- Permisos oficiales y personales (máximo 1 hora por mes)
+- Marcaciones grupales
+- Agregar checkbox (entrada/salida) en la edición de marcaciones
+- marcación obligatoria en permisos especiales (1 hora antes)
+- importar datos de marcación (resaltar si no existe un funcionario con marcaciones)
+- Marcar desde tu celular

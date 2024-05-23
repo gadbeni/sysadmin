@@ -18,6 +18,7 @@ class CreateAttendancePermitsTable extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->foreignId('attendance_permit_type_id')->nullable()->constrained('attendance_permit_types');
             $table->string('category')->nullable();
+            $table->date('date')->nullable();
             $table->date('start')->nullable();
             $table->date('finish')->nullable();
             $table->time('time_start')->nullable();

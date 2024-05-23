@@ -499,7 +499,6 @@
 @section('javascript')
     <script src="{{ url('js/main.js') }}"></script>
     <script>
-        moment.locale('es');
         $(document).ready(function () {
             customSelect('#select-destiny_id', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#modal-add-maintenances-report'));
             customSelect('#select-supervisor_id', '{{ url("admin/contracts/search/ajax") }}', formatResultContracts, data => data.person.first_name+' '+data.person.last_name, $('#modal-add-maintenances-report'));
